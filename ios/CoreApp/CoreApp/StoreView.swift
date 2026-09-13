@@ -27,7 +27,7 @@ struct StoreView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }.foregroundStyle(.appAccent)
+                Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -65,7 +65,7 @@ struct StoreView: View {
                 } label: {
                     Text(appState.isSubscribed ? "SUBSCRIBED" : "SUBSCRIBE")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.appAccent)
+                        .foregroundStyle(Color.appAccent)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                         .background(Color.white)
@@ -91,7 +91,7 @@ private struct ProductTile: View {
                     .fill(Color.appSurfaceElevated)
                 Text(product.code)
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
             }
             .frame(height: 70)
 
@@ -104,7 +104,7 @@ private struct ProductTile: View {
             HStack {
                 Text("₽\(product.price)")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
                     .strikethrough()
                 Spacer()
                 Button(action: onAdd) {

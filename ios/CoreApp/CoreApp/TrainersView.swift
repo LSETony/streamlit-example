@@ -29,7 +29,7 @@ struct TrainersView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }.foregroundStyle(.appAccent)
+                Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
         .sheet(item: $selectedTrainer) { trainer in
@@ -51,24 +51,24 @@ private struct TrainerRow: View {
                     .foregroundStyle(.white)
                 Text(trainer.specialty)
                     .font(.system(size: 13))
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
                 HStack(spacing: 10) {
                     HStack(spacing: 3) {
-                        Image(systemName: "star.fill").font(.system(size: 11)).foregroundStyle(.appAccent)
-                        Text(String(format: "%.1f", trainer.rating)).font(.system(size: 13, weight: .semibold)).foregroundStyle(.appAccent)
+                        Image(systemName: "star.fill").font(.system(size: 11)).foregroundStyle(Color.appAccent)
+                        Text(String(format: "%.1f", trainer.rating)).font(.system(size: 13, weight: .semibold)).foregroundStyle(Color.appAccent)
                     }
                     Text("\(trainer.reviews) reviews")
                         .font(.system(size: 12))
-                        .foregroundStyle(.appTextTertiary)
+                        .foregroundStyle(Color.appTextTertiary)
                     Text("₽\(trainer.pricePerHour)/h")
                         .font(.system(size: 12))
-                        .foregroundStyle(.appTextTertiary)
+                        .foregroundStyle(Color.appTextTertiary)
                 }
             }
             Spacer()
             Text(trainer.nextAvailable)
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(trainer.isTodayAvailable ? .appSuccess : .appTextSecondary)
+                .foregroundStyle(trainer.isTodayAvailable ? Color.appSuccess : Color.appTextSecondary)
         }
         .padding(16)
         .background(Color.appSurface)
@@ -87,7 +87,7 @@ private struct TrainerDetailSheet: View {
                 InitialsAvatar(initials: trainer.initials, color: trainer.avatarColor, size: 56)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(trainer.name).font(.system(size: 20, weight: .bold)).foregroundStyle(.white)
-                    Text(trainer.specialty).font(.system(size: 14)).foregroundStyle(.appTextSecondary)
+                    Text(trainer.specialty).font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
                 }
                 Spacer()
             }
@@ -100,7 +100,7 @@ private struct TrainerDetailSheet: View {
             if didBook {
                 Text("Session request sent — \(trainer.name) will confirm shortly.")
                     .font(.system(size: 14))
-                    .foregroundStyle(.appSuccess)
+                    .foregroundStyle(Color.appSuccess)
             }
             PrimaryButton(title: didBook ? "Requested" : "Book a session", isEnabled: !didBook) {
                 didBook = true
@@ -113,7 +113,7 @@ private struct TrainerDetailSheet: View {
     private func statBlock(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(value).font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(.white)
-            Text(label.uppercased()).font(.system(size: 11, weight: .semibold)).foregroundStyle(.appTextSecondary)
+            Text(label.uppercased()).font(.system(size: 11, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
         }
     }
 }

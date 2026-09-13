@@ -180,10 +180,10 @@ struct ScannerView: View {
         VStack(spacing: 14) {
             Image(systemName: "camera.fill")
                 .font(.system(size: 34))
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
             Text(camera.isCameraAvailable ? "Waiting for camera access…" : "Camera not available on this device")
                 .font(.system(size: 14))
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
                 .multilineTextAlignment(.center)
                 .screenPadding()
         }
@@ -238,7 +238,7 @@ struct ScannerView: View {
             ScrollView {
                 Text(capturedText ?? "")
                     .font(.system(size: 14))
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxHeight: 160)

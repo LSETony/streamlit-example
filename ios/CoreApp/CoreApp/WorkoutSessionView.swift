@@ -17,7 +17,7 @@ struct WorkoutSessionView: View {
                         .monospacedDigit()
                     Text("\(completedCount) of \(appState.lifts.count) lifts complete")
                         .font(.system(size: 14))
-                        .foregroundStyle(.appTextSecondary)
+                        .foregroundStyle(Color.appTextSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .multilineTextAlignment(.center)
@@ -35,7 +35,7 @@ struct WorkoutSessionView: View {
                         } label: {
                             HStack {
                                 Image(systemName: lift.isDone ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(lift.isDone ? .appSuccess : .appTextTertiary)
+                                    .foregroundStyle(lift.isDone ? Color.appSuccess : Color.appTextTertiary)
                                     .font(.system(size: 20))
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(lift.name)
@@ -44,7 +44,7 @@ struct WorkoutSessionView: View {
                                         .strikethrough(lift.isDone)
                                     Text("\(lift.sets) sets · \(lift.reps) reps")
                                         .font(.system(size: 12))
-                                        .foregroundStyle(.appTextSecondary)
+                                        .foregroundStyle(Color.appTextSecondary)
                                 }
                                 Spacer()
                             }
@@ -65,7 +65,7 @@ struct WorkoutSessionView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }.foregroundStyle(.appAccent)
+                Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
         .onAppear {

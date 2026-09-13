@@ -16,7 +16,7 @@ struct DiagnosticsView: View {
                         Text("LAST SCAN \(appState.lastScanDate) · NEXT \(appState.nextScanDate)")
                             .font(.system(size: 11, weight: .semibold))
                             .tracking(0.4)
-                            .foregroundStyle(.appTextSecondary)
+                            .foregroundStyle(Color.appTextSecondary)
                         Text("Diagnostics")
                             .font(.system(size: 26, weight: .bold))
                             .foregroundStyle(.white)
@@ -48,7 +48,7 @@ struct DiagnosticsView: View {
                 } label: {
                     Text(t.rawValue)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(tab == t ? .white : .appTextSecondary)
+                        .foregroundStyle(tab == t ? Color.white : Color.appTextSecondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .background(tab == t ? Color.appAccent : Color.clear)
@@ -69,8 +69,8 @@ struct DiagnosticsView: View {
                     Text(String(format: "%.1f", appState.weightHistory.last?.value ?? 0))
                         .font(.system(size: 40, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
-                    Text("kg").font(.system(size: 16)).foregroundStyle(.appTextSecondary)
-                    Text("+1.4").font(.system(size: 14, weight: .semibold)).foregroundStyle(.appSuccess)
+                    Text("kg").font(.system(size: 16)).foregroundStyle(Color.appTextSecondary)
+                    Text("+1.4").font(.system(size: 14, weight: .semibold)).foregroundStyle(Color.appSuccess)
                 }
                 WeightChart(points: appState.weightHistory)
                     .frame(height: 90)
@@ -92,7 +92,7 @@ struct DiagnosticsView: View {
                 Text(value).font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(.white)
             }
             ProgressBarView(value: progress, color: color, height: 5)
-            Text(note).font(.system(size: 12)).foregroundStyle(.appTextTertiary)
+            Text(note).font(.system(size: 12)).foregroundStyle(Color.appTextTertiary)
         }
     }
 
@@ -110,7 +110,7 @@ struct DiagnosticsView: View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text(name).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                Text(note).font(.system(size: 12)).foregroundStyle(.appTextTertiary)
+                Text(note).font(.system(size: 12)).foregroundStyle(Color.appTextTertiary)
             }
             Spacer()
             Text(value).font(.system(size: 14, weight: .semibold)).foregroundStyle(color)
@@ -146,7 +146,7 @@ private struct WeightChart: View {
                     ForEach(points) { p in
                         Text(p.label)
                             .font(.system(size: 11))
-                            .foregroundStyle(.appTextTertiary)
+                            .foregroundStyle(Color.appTextTertiary)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }

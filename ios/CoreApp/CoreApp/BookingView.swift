@@ -12,7 +12,7 @@ struct BookingView: View {
                     Text("2 · ZONE")
                         .font(.system(size: 12, weight: .semibold))
                         .tracking(0.5)
-                        .foregroundStyle(.appTextSecondary)
+                        .foregroundStyle(Color.appTextSecondary)
                     Text("Book a zone")
                         .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(.white)
@@ -36,7 +36,7 @@ struct BookingView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done") { dismiss() }
-                    .foregroundStyle(.appAccent)
+                    .foregroundStyle(Color.appAccent)
             }
         }
         .alert("Spot reserved", isPresented: Binding(get: { reservedAlertZone != nil }, set: { if !$0 { reservedAlertZone = nil } })) {
@@ -58,7 +58,7 @@ private struct ZoneRow: View {
             HStack(alignment: .top) {
                 HStack(spacing: 10) {
                     Image(systemName: zone.icon)
-                        .foregroundStyle(.appAccent)
+                        .foregroundStyle(Color.appAccent)
                         .frame(width: 20)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(zone.name)
@@ -66,7 +66,7 @@ private struct ZoneRow: View {
                             .foregroundStyle(.white)
                         Text("\(zone.freeSpots) of \(zone.capacity) spots free now")
                             .font(.system(size: 13))
-                            .foregroundStyle(.appTextSecondary)
+                            .foregroundStyle(Color.appTextSecondary)
                     }
                 }
                 Spacer()
@@ -78,7 +78,7 @@ private struct ZoneRow: View {
             Button(action: onReserve) {
                 Text("Reserve")
                     .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.appAccent)
+                    .foregroundStyle(Color.appAccent)
             }
             .buttonStyle(.plain)
             .disabled(zone.freeSpots == 0)

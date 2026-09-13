@@ -8,7 +8,7 @@ struct VitaminsListView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Your protocol, derived from the panel. Tap an item for dosage, benefits and interactions.")
                 .font(.system(size: 13))
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
 
             ForEach(appState.vitamins) { item in
                 Button {
@@ -20,7 +20,7 @@ struct VitaminsListView: View {
                                 .fill(Color.appAccentDim)
                             Text(item.symbol)
                                 .font(.system(size: 13, weight: .bold))
-                                .foregroundStyle(.appAccent)
+                                .foregroundStyle(Color.appAccent)
                         }
                         .frame(width: 42, height: 42)
 
@@ -30,7 +30,7 @@ struct VitaminsListView: View {
                                 .foregroundStyle(.white)
                             Text(item.dosage)
                                 .font(.system(size: 12))
-                                .foregroundStyle(.appTextSecondary)
+                                .foregroundStyle(Color.appTextSecondary)
                         }
                         Spacer()
                         StatusBadge(text: item.status.rawValue, color: item.status.color)

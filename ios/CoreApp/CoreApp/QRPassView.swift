@@ -22,7 +22,7 @@ struct QRPassView: View {
 
                         Text("Code refreshes in \(appState.qrSecondsRemaining)s")
                             .font(.system(size: 13))
-                            .foregroundStyle(.appTextSecondary)
+                            .foregroundStyle(Color.appTextSecondary)
 
                         PrimaryButton(title: "Confirm check-in") {
                             appState.confirmCheckIn()
@@ -31,7 +31,7 @@ struct QRPassView: View {
                         if let lastCheckIn = appState.lastCheckIn {
                             Text(lastCheckIn)
                                 .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.appSuccess)
+                                .foregroundStyle(Color.appSuccess)
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -47,7 +47,7 @@ struct QRPassView: View {
                                 Spacer()
                                 Text(visit.timeRange)
                                     .font(.system(size: 13))
-                                    .foregroundStyle(.appTextSecondary)
+                                    .foregroundStyle(Color.appTextSecondary)
                             }
                             AppDivider()
                         }

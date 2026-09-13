@@ -32,7 +32,7 @@ struct ProfileView: View {
             InitialsAvatar(initials: appState.userName.prefix(2).uppercased(), size: 56)
             VStack(alignment: .leading, spacing: 2) {
                 Text(appState.userName).font(.system(size: 20, weight: .bold)).foregroundStyle(.white)
-                Text("Member since Mar 2023").font(.system(size: 13)).foregroundStyle(.appTextSecondary)
+                Text("Member since Mar 2023").font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
         }
@@ -49,7 +49,7 @@ struct ProfileView: View {
             Button { showManageSheet = true } label: {
                 Text("MANAGE")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(.appAccent)
+                    .foregroundStyle(Color.appAccent)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .background(Color.white)
@@ -74,7 +74,7 @@ struct ProfileView: View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Apple Health").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                Text("Steps, sleep, heart rate syncing").font(.system(size: 12)).foregroundStyle(.appTextSecondary)
+                Text("Steps, sleep, heart rate syncing").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             Toggle("", isOn: $appState.appleHealthSyncEnabled)
@@ -106,12 +106,12 @@ private struct SettingsRow: View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                Text(subtitle).font(.system(size: 12)).foregroundStyle(.appTextSecondary)
+                Text(subtitle).font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(.appTextTertiary)
+                .foregroundStyle(Color.appTextTertiary)
         }
         .padding(.vertical, 14)
     }
@@ -126,7 +126,7 @@ private struct ManageMembershipSheet: View {
             Text("Membership").font(.system(size: 20, weight: .bold)).foregroundStyle(.white)
             Text("Renews \(appState.membershipRenewDate) at ₽\(appState.membershipMonthlyPrice)/month. Cancel anytime from here — you'll keep access until the renewal date.")
                 .font(.system(size: 14))
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
             Spacer()
             PrimaryButton(title: "Close") { dismiss() }
         }

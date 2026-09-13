@@ -64,7 +64,7 @@ struct OnboardingView: View {
                 .foregroundStyle(.white)
             Text("Book zones, follow your training plan, track nutrition and diagnostics — all synced with the club in real time.")
                 .font(.system(size: 15))
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
         }
     }
 
@@ -90,7 +90,7 @@ struct OnboardingView: View {
                 .foregroundStyle(.white)
             Text("We've loaded a sample training plan, nutrition targets and your membership pass so you can explore core. right away.")
                 .font(.system(size: 15))
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
         }
     }
 }

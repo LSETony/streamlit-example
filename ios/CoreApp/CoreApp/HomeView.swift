@@ -50,7 +50,7 @@ struct HomeView: View {
                 Text(Date.now.formatted(.dateTime.weekday(.wide).day().month(.wide)).uppercased())
                     .font(.system(size: 12, weight: .semibold))
                     .tracking(0.5)
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
                 Text("Hey, \(appState.userName)")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(.white)
@@ -59,7 +59,7 @@ struct HomeView: View {
             HStack(spacing: 8) {
                 Text("\(appState.membershipDay) DAY")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(.appAccent)
+                    .foregroundStyle(Color.appAccent)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
                     .background(Color.appAccentDim)
@@ -81,13 +81,13 @@ struct HomeView: View {
                 Text("RECOMMENDED TODAY")
                     .font(.system(size: 12, weight: .bold))
                     .tracking(0.5)
-                    .foregroundStyle(.appAccent)
+                    .foregroundStyle(Color.appAccent)
                 Text(appState.recommendedWorkoutTitle)
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(.white)
                 Text(appState.recommendedWorkoutMeta)
                     .font(.system(size: 13))
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
             }
             Spacer(minLength: 0)
         }
@@ -136,7 +136,7 @@ struct HomeView: View {
                         .foregroundStyle(.white)
                     Text("38 of 90 in the club")
                         .font(.system(size: 13))
-                        .foregroundStyle(.appTextSecondary)
+                        .foregroundStyle(Color.appTextSecondary)
                 }
                 BarChartView(bars: appState.occupancyByHour, highlightHour: 10)
             }
@@ -201,7 +201,7 @@ private struct UpcomingRow: View {
         HStack(alignment: .top, spacing: 14) {
             Text(event.time)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.appAccent)
+                .foregroundStyle(Color.appAccent)
                 .frame(width: 44, alignment: .leading)
             VStack(alignment: .leading, spacing: 2) {
                 Text(event.title)
@@ -209,7 +209,7 @@ private struct UpcomingRow: View {
                     .foregroundStyle(.white)
                 Text(event.subtitle)
                     .font(.system(size: 12))
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             Button {

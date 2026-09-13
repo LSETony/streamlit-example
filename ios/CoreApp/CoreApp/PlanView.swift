@@ -46,7 +46,7 @@ struct PlanView: View {
                 VStack(spacing: 4) {
                     Text("\(day)")
                         .font(.system(size: 15, weight: day == selectedDay ? .bold : .regular))
-                        .foregroundStyle(day == selectedDay ? .white : .appTextPrimary)
+                        .foregroundStyle(day == selectedDay ? Color.white : Color.appTextPrimary)
                         .frame(width: 32, height: 32)
                         .background(day == selectedDay ? Color.appAccent : Color.clear)
                         .clipShape(Circle())
@@ -79,7 +79,7 @@ struct PlanView: View {
             Circle().fill(color).frame(width: 7, height: 7)
             Text(label)
                 .font(.system(size: 13))
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
         }
     }
 }
@@ -105,7 +105,7 @@ private struct EventRow: View {
                         .foregroundStyle(.white)
                     Text(event.subtitle)
                         .font(.system(size: 12))
-                        .foregroundStyle(.appTextSecondary)
+                        .foregroundStyle(Color.appTextSecondary)
                 }
                 Spacer()
                 StatusBadge(text: event.status.rawValue, color: event.status.color)

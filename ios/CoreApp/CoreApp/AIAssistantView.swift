@@ -76,7 +76,7 @@ struct AIAssistantView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }.foregroundStyle(.appAccent)
+                Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
     }

@@ -14,7 +14,7 @@ struct NutritionView: View {
                 if appState.proteinTarget - appState.proteinCurrent > 0 {
                     Text("Protein is running \(appState.proteinTarget - appState.proteinCurrent) g under target on training days.")
                         .font(.system(size: 12))
-                        .foregroundStyle(.appTextTertiary)
+                        .foregroundStyle(Color.appTextTertiary)
                 }
             }
             .screenPadding()
@@ -26,7 +26,7 @@ struct NutritionView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }.foregroundStyle(.appAccent)
+                Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
         .sheet(isPresented: $showAddMeal) {
@@ -47,10 +47,10 @@ struct NutritionView: View {
 
     private func macroColumn(label: String, current: Int, target: Int, color: Color) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(.appTextSecondary)
+            Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
             HStack(alignment: .lastTextBaseline, spacing: 2) {
                 Text("\(current)").font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(.white)
-                Text("/\(target)").font(.system(size: 12)).foregroundStyle(.appTextTertiary)
+                Text("/\(target)").font(.system(size: 12)).foregroundStyle(Color.appTextTertiary)
             }
             ProgressBarView(value: Double(current) / Double(target), color: color, height: 4)
         }
@@ -103,11 +103,11 @@ struct NutritionView: View {
                 HStack(spacing: 14) {
                     Text(meal.time)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.appTextSecondary)
+                        .foregroundStyle(Color.appTextSecondary)
                         .frame(width: 44, alignment: .leading)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(meal.name).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                        Text(meal.subtitle).font(.system(size: 12)).foregroundStyle(.appTextSecondary)
+                        Text(meal.subtitle).font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
                     }
                     Spacer()
                     Text("\(meal.calories)")
@@ -118,7 +118,7 @@ struct NutritionView: View {
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(.appTextTertiary)
+                            .foregroundStyle(Color.appTextTertiary)
                     }
                     .buttonStyle(.plain)
                 }

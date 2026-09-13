@@ -24,7 +24,7 @@ struct RingProgressView: View {
                 Text(centerLabel.uppercased())
                     .font(.system(size: size * 0.11, weight: .semibold))
                     .tracking(0.5)
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
             }
         }
         .frame(width: size, height: size)
@@ -75,7 +75,7 @@ struct StatTile: View {
             Text(label.uppercased())
                 .font(.system(size: 11, weight: .semibold))
                 .tracking(0.4)
-                .foregroundStyle(.appTextSecondary)
+                .foregroundStyle(Color.appTextSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
@@ -96,14 +96,14 @@ struct ServiceTile: View {
             VStack(alignment: .leading, spacing: 10) {
                 Image(systemName: icon)
                     .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(.appAccent)
+                    .foregroundStyle(Color.appAccent)
                 Spacer(minLength: 0)
                 Text(title)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                 Text(subtitle)
                     .font(.system(size: 12))
-                    .foregroundStyle(.appTextSecondary)
+                    .foregroundStyle(Color.appTextSecondary)
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -154,7 +154,7 @@ struct SectionHeaderRow: View {
                     Text(trailing.uppercased())
                         .font(.system(size: 12, weight: .bold))
                         .tracking(0.4)
-                        .foregroundStyle(.appAccent)
+                        .foregroundStyle(Color.appAccent)
                 }
                 .buttonStyle(.plain)
             }
@@ -182,7 +182,7 @@ struct BarChartView: View {
                 ForEach(bars, id: \.hour) { bar in
                     Text(String(format: "%02d", bar.hour))
                         .font(.system(size: 11))
-                        .foregroundStyle(.appTextTertiary)
+                        .foregroundStyle(Color.appTextTertiary)
                         .frame(maxWidth: .infinity)
                 }
             }
