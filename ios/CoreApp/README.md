@@ -130,16 +130,23 @@ CoreApp/
 
 ## Notes
 
-- The bundle identifier, display name, and app icon are placeholders —
-  update `Info.plist`'s `CFBundleDisplayName`, the target's
-  `PRODUCT_BUNDLE_IDENTIFIER`, and `Assets.xcassets/AppIcon.appiconset` with
-  your own branding before shipping.
+- The bundle identifier and display name are placeholders — update
+  `Info.plist`'s `CFBundleDisplayName` and the target's
+  `PRODUCT_BUNDLE_IDENTIFIER` with your own before shipping. The app icon
+  and splash (`Assets.xcassets/AppIcon.appiconset`,
+  `Assets.xcassets/CoreLogo.imageset`) are generated from the actual "core."
+  logo file supplied with the design export, composited onto the app's
+  `--bg` color (`#0A0A0B`) with its own background keyed out to transparent.
 - The sign-in screen's background (`Assets.xcassets/AuthBackground`) is a
   generated abstract dark gradient, not a licensed photo — swap it for your
   own gym photography before shipping.
 - The app forces dark mode (`UIUserInterfaceStyle = Dark`) to match the
   source design; remove that key from `Info.plist` if you want to support
   light mode too.
+- **Colors and corner radii** in `Theme.swift` are ported 1:1 from the
+  design's CSS custom properties (`--bg`, `--surf`, `--surf2`, `--line`,
+  `--ink`, `--muted`, `--accent`, `--good`, `--warn`, `--r`, `--r-s`) rather
+  than approximated, so they match the source exactly.
 - **Fonts**: bundled in `CoreApp/Fonts/` and registered via `UIAppFonts` in
   Info.plist. `Francy-Regular.ttf` is the display font used for the splash
   wordmark and every big stat number (`Font.brand(_:)` in `Theme.swift`);

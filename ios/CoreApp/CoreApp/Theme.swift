@@ -1,19 +1,21 @@
 import SwiftUI
 
-/// Central design tokens for the app. Colors approximate the "core." dark,
-/// orange-accented gym-club design used throughout every screen.
+/// Central design tokens for the app — ported 1:1 from the source design's
+/// CSS custom properties (:root, :root[data-core-theme="dark"] in
+/// "core App.dc.html"): --bg, --surf, --surf2, --line, --ink, --muted,
+/// --accent, --good, --warn, --r, --r-s.
 extension Color {
-    static let appBackground = Color(red: 0.043, green: 0.043, blue: 0.047)
-    static let appSurface = Color(red: 0.094, green: 0.094, blue: 0.102)
-    static let appSurfaceElevated = Color(red: 0.135, green: 0.135, blue: 0.145)
-    static let appAccent = Color(red: 1.0, green: 0.341, blue: 0.129)
-    static let appAccentDim = Color(red: 0.30, green: 0.14, blue: 0.07)
-    static let appTextPrimary = Color.white
-    static let appTextSecondary = Color(white: 0.62)
-    static let appTextTertiary = Color(white: 0.42)
-    static let appSuccess = Color(red: 0.20, green: 0.78, blue: 0.35)
-    static let appWarning = Color(red: 0.95, green: 0.62, blue: 0.07)
-    static let appDivider = Color(white: 0.16)
+    static let appBackground = Color(red: 0x0A / 255, green: 0x0A / 255, blue: 0x0B / 255)       // --bg
+    static let appSurface = Color(red: 0x14 / 255, green: 0x14 / 255, blue: 0x17 / 255)          // --surf
+    static let appSurfaceElevated = Color(red: 0x1D / 255, green: 0x1D / 255, blue: 0x22 / 255)  // --surf2
+    static let appAccent = Color(red: 0xFF / 255, green: 0x5A / 255, blue: 0x1F / 255)           // --accent
+    static let appAccentDim = Color.appAccent.opacity(0.14)                                       // --soft
+    static let appTextPrimary = Color(red: 0xF6 / 255, green: 0xF6 / 255, blue: 0xF5 / 255)      // --ink
+    static let appTextSecondary = Color(red: 0x8A / 255, green: 0x8A / 255, blue: 0x93 / 255)    // --muted
+    static let appTextTertiary = Color(red: 0x8A / 255, green: 0x8A / 255, blue: 0x93 / 255).opacity(0.7)
+    static let appSuccess = Color(red: 0x4A / 255, green: 0xDE / 255, blue: 0x80 / 255)          // --good
+    static let appWarning = Color(red: 0xFA / 255, green: 0xCC / 255, blue: 0x15 / 255)          // --warn
+    static let appDivider = Color(red: 0x27 / 255, green: 0x27 / 255, blue: 0x30 / 255)          // --line
 
     /// Primary brand/interactive color used for buttons, the in-progress
     /// banner and the tab bar's "+" action — introduced with the
@@ -27,8 +29,8 @@ extension Color {
 }
 
 enum AppMetrics {
-    static let cardCorner: CGFloat = 20
-    static let smallCorner: CGFloat = 14
+    static let cardCorner: CGFloat = 24   // --r
+    static let smallCorner: CGFloat = 16  // --r-s
     static let screenPadding: CGFloat = 20
 }
 
