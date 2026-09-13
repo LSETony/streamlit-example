@@ -100,16 +100,18 @@ struct ProfileView: View {
             .buttonStyle(.plain)
             AppDivider()
             SettingsRow(title: "Monthly box", subtitle: "Ships 28 Sep")
-            AppDivider()
-            Button {
-                authService.signOut()
-            } label: {
-                Text("Sign out")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Color.appAccent)
-                    .padding(.vertical, 14)
+            if requiresSignIn {
+                AppDivider()
+                Button {
+                    authService.signOut()
+                } label: {
+                    Text("Sign out")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Color.appAccent)
+                        .padding(.vertical, 14)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
     }
 }

@@ -18,7 +18,12 @@ struct CoreAppApp: App {
     }
 }
 
-/// Launch flow: splash, then sign-in (Google / Apple / phone), then the app.
+/// Sign-in is built (Apple/Google fully working, see AuthWelcomeView +
+/// AuthService) but disabled for now at the user's request — flip this back
+/// to `true` to re-gate the app behind it.
+let requiresSignIn = false
+
+/// Launch flow: splash, then (optionally) sign-in, then the app.
 struct RootView: View {
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var appState: AppState
@@ -29,7 +34,7 @@ struct RootView: View {
             if showSplash {
                 SplashView()
                     .transition(.opacity)
-            } else if authService.isAuthenticated {
+            } else if !requiresSignIn || authService.isAuthenticated {
                 ContentView()
                     .transition(.opacity)
             } else {
@@ -41,7 +46,7 @@ struct RootView: View {
         .animation(.easeInOut, value: authService.isAuthenticated)
         .onAppear {
             authService.restorePreviousGoogleSignIn()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
                 showSplash = false
             }
         }
