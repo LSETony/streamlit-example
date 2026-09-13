@@ -14,6 +14,16 @@ extension Color {
     static let appSuccess = Color(red: 0.20, green: 0.78, blue: 0.35)
     static let appWarning = Color(red: 0.95, green: 0.62, blue: 0.07)
     static let appDivider = Color(white: 0.16)
+
+    /// Primary brand/interactive color used for buttons, the in-progress
+    /// banner and the tab bar's "+" action — introduced with the
+    /// sign-in flow and Home/Progress redesign.
+    static let appPurple = Color(red: 0.373, green: 0.290, blue: 0.965)
+    static let appPurpleDim = Color(red: 0.373, green: 0.290, blue: 0.965).opacity(0.16)
+
+    /// Warm reddish glow used behind the "Club occupancy" and "Your streak" cards.
+    static let appGlowStart = Color(red: 0.28, green: 0.08, blue: 0.04)
+    static let appGlowEnd = Color(red: 0.11, green: 0.05, blue: 0.05)
 }
 
 enum AppMetrics {
@@ -35,6 +45,27 @@ extension View {
     func screenPadding() -> some View {
         self.padding(.horizontal, AppMetrics.screenPadding)
     }
+
+    /// Warm reddish "glow" card treatment used by Club Occupancy and Your Streak.
+    func glowCard(padding: CGFloat = 18, corner: CGFloat = AppMetrics.cardCorner) -> some View {
+        self
+            .padding(padding)
+            .background(
+                LinearGradient(
+                    colors: [.appGlowStart, .appGlowEnd],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
+    }
+}
+
+/// Digital/7-segment-style monospaced font used for the workout timer.
+extension Font {
+    static func digitalTimer(_ size: CGFloat) -> Font {
+        .system(size: size, weight: .bold, design: .monospaced)
+    }
 }
 
 /// A small uppercase, letter-spaced label used above sections ("UPCOMING", "CLUB OCCUPANCY", ...).
@@ -47,19 +78,5 @@ struct EyebrowLabel: View {
             .font(.system(size: 12, weight: .semibold))
             .tracking(0.6)
             .foregroundStyle(color)
-    }
-}
-
-/// Big rounded numeric display used for readiness, weight, macros, etc.
-struct BigNumber: View {
-    let value: String
-    var size: CGFloat = 40
-    var color: Color = .appTextPrimary
-
-    var body: some View {
-        Text(value)
-            .font(.system(size: size, weight: .bold, design: .rounded))
-            .foregroundStyle(color)
-            .monospacedDigit()
     }
 }

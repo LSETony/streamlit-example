@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var authService: AuthService
     @State private var showManageSheet = false
 
     var body: some View {
@@ -91,9 +92,24 @@ struct ProfileView: View {
             AppDivider()
             SettingsRow(title: "Payments", subtitle: "Card · 4417 · invoices")
             AppDivider()
-            SettingsRow(title: "Diagnostics history", subtitle: "6 reports since Mar 2023")
+            NavigationLink {
+                DiagnosticsView()
+            } label: {
+                SettingsRow(title: "Diagnostics history", subtitle: "6 reports since Mar 2023")
+            }
+            .buttonStyle(.plain)
             AppDivider()
             SettingsRow(title: "Monthly box", subtitle: "Ships 28 Sep")
+            AppDivider()
+            Button {
+                authService.signOut()
+            } label: {
+                Text("Sign out")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Color.appAccent)
+                    .padding(.vertical, 14)
+            }
+            .buttonStyle(.plain)
         }
     }
 }
@@ -139,4 +155,5 @@ private struct ManageMembershipSheet: View {
 #Preview {
     ProfileView()
         .environmentObject(AppState())
+        .environmentObject(AuthService())
 }

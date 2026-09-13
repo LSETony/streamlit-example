@@ -149,6 +149,19 @@ struct Visit: Identifiable {
     let timeRange: String
 }
 
+// MARK: - Progress
+
+enum StreakDayState {
+    case completed, today, upcoming
+}
+
+struct StreakDay: Identifiable {
+    let id = UUID()
+    let letter: String
+    let number: Int
+    let state: StreakDayState
+}
+
 // MARK: - AI Assistant
 
 struct ChatMessage: Identifiable {

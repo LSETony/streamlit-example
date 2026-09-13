@@ -1,36 +1,5 @@
 import SwiftUI
 
-/// Circular readiness ring, e.g. the "72 READY" indicator on Home.
-struct RingProgressView: View {
-    let progress: Double // 0...1
-    var size: CGFloat = 84
-    var lineWidth: CGFloat = 8
-    var color: Color = .appAccent
-    var centerValue: String
-    var centerLabel: String
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.white.opacity(0.08), lineWidth: lineWidth)
-            Circle()
-                .trim(from: 0, to: progress)
-                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-            VStack(spacing: 0) {
-                Text(centerValue)
-                    .font(.system(size: size * 0.32, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
-                Text(centerLabel.uppercased())
-                    .font(.system(size: size * 0.11, weight: .semibold))
-                    .tracking(0.5)
-                    .foregroundStyle(Color.appTextSecondary)
-            }
-        }
-        .frame(width: size, height: size)
-    }
-}
-
 /// Horizontal capacity/occupancy bar used in Booking and Nutrition.
 struct ProgressBarView: View {
     let value: Double // 0...1
@@ -84,43 +53,12 @@ struct StatTile: View {
     }
 }
 
-/// Square icon tile used in the "Club services" grid on Home.
-struct ServiceTile: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-    var action: () -> Void = {}
-
-    var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 10) {
-                Image(systemName: icon)
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(Color.appAccent)
-                Spacer(minLength: 0)
-                Text(title)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
-                Text(subtitle)
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color.appTextSecondary)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(height: 100)
-            .padding(14)
-            .background(Color.appSurface)
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 /// Filled, full-width call-to-action button used across screens ("Capture",
 /// "Confirm check-in", "Subscribe" ...).
 struct PrimaryButton: View {
     let title: String
     var isEnabled: Bool = true
+    var color: Color = .appAccent
     var action: () -> Void
 
     var body: some View {
@@ -130,7 +68,7 @@ struct PrimaryButton: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(isEnabled ? Color.appAccent : Color.appAccent.opacity(0.4))
+                .background(isEnabled ? color : color.opacity(0.4))
                 .clipShape(Capsule())
         }
         .disabled(!isEnabled)

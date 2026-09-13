@@ -9,35 +9,33 @@ struct DiagnosticsView: View {
     @State private var tab: DiagnosticsTab = .body
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("LAST SCAN \(appState.lastScanDate) · NEXT \(appState.nextScanDate)")
-                            .font(.system(size: 11, weight: .semibold))
-                            .tracking(0.4)
-                            .foregroundStyle(Color.appTextSecondary)
-                        Text("Diagnostics")
-                            .font(.system(size: 26, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-
-                    segmentedControl
-
-                    switch tab {
-                    case .body: bodyContent
-                    case .blood: bloodContent
-                    case .vitamins: VitaminsListView()
-                    }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("LAST SCAN \(appState.lastScanDate) · NEXT \(appState.nextScanDate)")
+                        .font(.system(size: 11, weight: .semibold))
+                        .tracking(0.4)
+                        .foregroundStyle(Color.appTextSecondary)
+                    Text("Diagnostics")
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundStyle(.white)
                 }
-                .screenPadding()
-                .padding(.top, 12)
-                .padding(.bottom, 24)
+
+                segmentedControl
+
+                switch tab {
+                case .body: bodyContent
+                case .blood: bloodContent
+                case .vitamins: VitaminsListView()
+                }
             }
-            .background(Color.appBackground.ignoresSafeArea())
-            .navigationTitle("Body")
-            .navigationBarTitleDisplayMode(.inline)
+            .screenPadding()
+            .padding(.top, 12)
+            .padding(.bottom, 24)
         }
+        .background(Color.appBackground.ignoresSafeArea())
+        .navigationTitle("Body")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var segmentedControl: some View {
@@ -157,6 +155,6 @@ private struct WeightChart: View {
 }
 
 #Preview {
-    DiagnosticsView()
+    NavigationStack { DiagnosticsView() }
         .environmentObject(AppState())
 }

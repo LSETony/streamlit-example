@@ -11,7 +11,6 @@ final class AppState: ObservableObject {
     // MARK: Profile / Home
 
     @Published var userName: String = "Artem"
-    @Published var membershipDay: Int = 12
     @Published var readiness: Int = 72
     @Published var sleepHours: Double = 7.67
 
@@ -74,28 +73,10 @@ final class AppState: ObservableObject {
     @Published var occupancyByHour: [(hour: Int, value: Double)] = [
         (6, 0.10), (10, 0.22), (14, 0.55), (18, 0.95), (22, 0.30)
     ]
-    var occupancyLabel: String {
-        switch occupancyPercent {
-        case ..<40: return "QUIET"
-        case 40..<75: return "BUSY"
-        default: return "PACKED"
-        }
-    }
-    var occupancyColor: Color {
-        switch occupancyPercent {
-        case ..<40: return .appSuccess
-        case 40..<75: return .appWarning
-        default: return .appAccent
-        }
-    }
 
     // MARK: Quick stats
 
-    @Published var volumeThisWeekTons: Double = 4.1
     @Published var kcalInToday: Int = 1846
-    @Published var kcalTarget: Int = 3036
-    @Published var muscleKg: Double = 34.2
-    var kcalRemaining: Int { max(kcalTarget - kcalInToday, 0) }
 
     // MARK: Calendar / schedule
 
@@ -104,17 +85,6 @@ final class AppState: ObservableObject {
         ScheduleEvent(time: "18:00", title: "Strength floor reserved", subtitle: "90 min · zone booking", kind: .reservation, status: .you),
         ScheduleEvent(time: "18:30", title: "Push A · heavy upper", subtitle: "6 lifts · 52 min", kind: .workout, status: .plan),
     ]
-
-    @Published var upcoming: [ScheduleEvent] = [
-        ScheduleEvent(time: "18:30", title: "Strength 45 · Hall 2", subtitle: "Mika Orlov · 11/16 booked", kind: .trainer, status: .booked),
-        ScheduleEvent(time: "17.09", title: "Body scan · diagnostics", subtitle: "Lab room · Elena V. · 20 min", kind: .reservation, status: .confirm),
-    ]
-
-    func confirmEvent(_ event: ScheduleEvent) {
-        if let idx = upcoming.firstIndex(where: { $0.id == event.id }) {
-            upcoming[idx].status = .booked
-        }
-    }
 
     // MARK: Booking / zones
 
@@ -308,6 +278,26 @@ final class AppState: ObservableObject {
         lastCheckIn = "Checked in just now"
         visits.insert(Visit(date: "Today", zone: "Strength floor", timeRange: "just now"), at: 0)
     }
+
+    // MARK: Progress
+
+    @Published var streakDateLabel: String = "Wed 3 Oct"
+    @Published var streakDays: [StreakDay] = [
+        StreakDay(letter: "S", number: 1, state: .completed),
+        StreakDay(letter: "M", number: 2, state: .completed),
+        StreakDay(letter: "T", number: 3, state: .today),
+        StreakDay(letter: "W", number: 4, state: .upcoming),
+        StreakDay(letter: "T", number: 5, state: .upcoming),
+        StreakDay(letter: "F", number: 6, state: .upcoming),
+        StreakDay(letter: "S", number: 7, state: .upcoming),
+    ]
+    @Published var volumePercentOfGoal: Int = 54
+    @Published var totalSets: Int = 802
+    @Published var exerciseMinutesThisMonth: Int = 54
+    @Published var weeklyVolumeBars: [(day: String, value: Double, isToday: Bool)] = [
+        ("S", 0.55, false), ("M", 0.35, false), ("T", 0.85, false), ("W", 0.6, false),
+        ("T", 1.0, true), ("F", 0.5, false), ("S", 0.7, false),
+    ]
 
     // MARK: Profile
 
