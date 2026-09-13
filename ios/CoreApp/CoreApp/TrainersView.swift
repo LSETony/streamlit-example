@@ -112,7 +112,7 @@ private struct TrainerDetailSheet: View {
 
     private func statBlock(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(value).font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(.white)
+            Text(value).font(.brand(19)).foregroundStyle(.white)
             Text(label.uppercased()).font(.system(size: 11, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
         }
     }

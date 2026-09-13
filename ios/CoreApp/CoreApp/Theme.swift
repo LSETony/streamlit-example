@@ -61,10 +61,17 @@ extension View {
     }
 }
 
-/// Digital/7-segment-style monospaced font used for the workout timer.
+/// The two bundled display fonts from the original mockups: "Francy" for the
+/// wordmark and big stat numbers, and "DotGothic16" (a pixel/LED look) for
+/// anything meant to read like a digital display — the workout timer and
+/// the QR pass member code.
 extension Font {
+    static func brand(_ size: CGFloat) -> Font {
+        .custom("Francy-Regular", size: size)
+    }
+
     static func digitalTimer(_ size: CGFloat) -> Font {
-        .system(size: size, weight: .bold, design: .monospaced)
+        .custom("DotGothic16-Regular", size: size)
     }
 }
 

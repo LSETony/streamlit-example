@@ -96,7 +96,7 @@ struct HomeView: View {
             }
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text("\(appState.occupancyPercent)")
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .font(.brand(44))
                     .foregroundStyle(.white)
                 Text("38 of 90 in the club")
                     .font(.system(size: 13))

@@ -49,7 +49,7 @@ struct NutritionView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
             HStack(alignment: .lastTextBaseline, spacing: 2) {
-                Text("\(current)").font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(.white)
+                Text("\(current)").font(.brand(22)).foregroundStyle(.white)
                 Text("/\(target)").font(.system(size: 12)).foregroundStyle(Color.appTextTertiary)
             }
             ProgressBarView(value: Double(current) / Double(target), color: color, height: 4)
@@ -63,7 +63,7 @@ struct NutritionView: View {
                 EyebrowLabel(text: "Water")
                 Spacer()
                 Text(String(format: "%.2f L", appState.waterLiters))
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
                 Button { appState.removeWater() } label: {
                     Image(systemName: "minus")

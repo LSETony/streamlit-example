@@ -53,7 +53,7 @@ struct StoreView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
-                        Text("₽4 180").font(.system(size: 24, weight: .bold, design: .rounded)).foregroundStyle(.white)
+                        Text("₽4 180").font(.brand(26)).foregroundStyle(.white)
                     }
                     Text("₽3 550 monthly · cancel anytime")
                         .font(.system(size: 12))

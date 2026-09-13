@@ -20,7 +20,7 @@ struct SplashView: View {
             HStack(spacing: 1) {
                 ForEach(letters.indices, id: \.self) { i in
                     Text(String(letters[i]))
-                        .font(.system(size: 42, weight: .heavy, design: .rounded))
+                        .font(.brand(46))
                         .foregroundStyle(.white)
                         .opacity(i < visibleCount ? 1 : 0)
                         .offset(y: i < visibleCount ? 0 : 16)

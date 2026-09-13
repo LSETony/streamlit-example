@@ -123,6 +123,7 @@ CoreApp/
   QRPassView.swift
   ProfileView.swift
   Assets.xcassets/          app icon, accent color, auth background
+  Fonts/                    Francy-Regular.ttf, DotGothic16-Regular.ttf
   Info.plist
   CoreApp.entitlements      Sign in with Apple capability
 ```
@@ -139,3 +140,11 @@ CoreApp/
 - The app forces dark mode (`UIUserInterfaceStyle = Dark`) to match the
   source design; remove that key from `Info.plist` if you want to support
   light mode too.
+- **Fonts**: bundled in `CoreApp/Fonts/` and registered via `UIAppFonts` in
+  Info.plist. `Francy-Regular.ttf` is the display font used for the splash
+  wordmark and every big stat number (`Font.brand(_:)` in `Theme.swift`);
+  `DotGothic16-Regular.ttf` is the pixel/LED font used for the workout timer
+  and the QR pass member code (`Font.digitalTimer(_:)`). Make sure you have
+  the right to embed and redistribute Francy in a shipped app before
+  submitting to the App Store — DotGothic16 is an open-source Google Font
+  (SIL Open Font License) and is fine to ship.

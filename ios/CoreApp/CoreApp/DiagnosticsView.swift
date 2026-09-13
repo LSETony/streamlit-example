@@ -65,7 +65,7 @@ struct DiagnosticsView: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .lastTextBaseline, spacing: 8) {
                     Text(String(format: "%.1f", appState.weightHistory.last?.value ?? 0))
-                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                        .font(.brand(42))
                         .foregroundStyle(.white)
                     Text("kg").font(.system(size: 16)).foregroundStyle(Color.appTextSecondary)
                     Text("+1.4").font(.system(size: 14, weight: .semibold)).foregroundStyle(Color.appSuccess)
@@ -87,7 +87,7 @@ struct DiagnosticsView: View {
             HStack {
                 Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
                 Spacer()
-                Text(value).font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(.white)
+                Text(value).font(.brand(19)).foregroundStyle(.white)
             }
             ProgressBarView(value: progress, color: color, height: 5)
             Text(note).font(.system(size: 12)).foregroundStyle(Color.appTextTertiary)

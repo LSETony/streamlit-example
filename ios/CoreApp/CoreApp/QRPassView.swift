@@ -17,7 +17,7 @@ struct QRPassView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
                         Text(appState.memberCode)
-                            .font(.system(size: 20, weight: .bold, design: .monospaced))
+                            .font(.digitalTimer(22))
                             .foregroundStyle(.white)
 
                         Text("Code refreshes in \(appState.qrSecondsRemaining)s")

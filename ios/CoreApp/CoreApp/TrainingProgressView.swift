@@ -123,7 +123,7 @@ struct TrainingProgressView: View {
                     .rotationEffect(.degrees(-90))
                 VStack(spacing: 0) {
                     Text("\(appState.volumePercentOfGoal)")
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .font(.brand(24))
                         .foregroundStyle(.white)
                     Text("% of goal")
                         .font(.system(size: 10))
@@ -146,7 +146,7 @@ struct TrainingProgressView: View {
                 Text(title).font(.system(size: 13, weight: .semibold)).foregroundStyle(.white)
             }
             Text(value)
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(.brand(24))
                 .foregroundStyle(.white)
         }
         .padding(16)

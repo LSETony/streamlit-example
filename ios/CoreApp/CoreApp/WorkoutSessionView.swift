@@ -12,9 +12,8 @@ struct WorkoutSessionView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     EyebrowLabel(text: "Push A · heavy upper body")
                     Text(appState.workoutTimeString)
-                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .font(.digitalTimer(52))
                         .foregroundStyle(.white)
-                        .monospacedDigit()
                     Text("\(completedCount) of \(appState.lifts.count) lifts complete")
                         .font(.system(size: 14))
                         .foregroundStyle(Color.appTextSecondary)

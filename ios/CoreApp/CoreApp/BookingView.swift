@@ -71,7 +71,7 @@ private struct ZoneRow: View {
                 }
                 Spacer()
                 Text("\(zone.occupancyPercent)%")
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .font(.brand(22))
                     .foregroundStyle(zone.statusColor)
             }
             ProgressBarView(value: Double(zone.occupancyPercent) / 100, color: zone.statusColor)
