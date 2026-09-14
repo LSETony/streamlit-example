@@ -2,83 +2,108 @@ import Foundation
 import Combine
 import SwiftUI
 
-/// Single in-memory store for the whole app. Everything here is local,
-/// mock data meant to demonstrate fully working interactions (timers,
-/// booking, logging, chat) without requiring a backend.
+/// Single in-memory store for the whole app. Data and copy are ported from
+/// the design source ("core App.dc.html") so every screen matches it
+/// exactly; interactions (timers, booking, logging, chat) are real, just
+/// backed by local state instead of a server.
 @MainActor
 final class AppState: ObservableObject {
 
     // MARK: Profile / Home
 
     @Published var userName: String = "Artem"
+    @Published var fullName: String = "Artem Koval"
+    var initials: String {
+        fullName.split(separator: " ").compactMap(\.first).map(String.init).joined().uppercased()
+    }
     @Published var readiness: Int = 72
-    @Published var sleepHours: Double = 7.67
+    @Published var streakDays: Int = 12
 
-    // MARK: Workout session
+    // MARK: Workout session (elapsed time, counts up like the source)
 
     @Published var isWorkoutInProgress: Bool = true
-    @Published var workoutSecondsRemaining: Int = 24 * 60 + 21
+    @Published var workoutSeconds: Int = 1458
     @Published var recommendedWorkoutTitle: String = "Push A · heavy upper body"
     @Published var recommendedWorkoutMeta: String = "6 lifts · 52 min · sleep 7h 40m"
-    @Published var lifts: [WorkoutLift] = [
-        WorkoutLift(name: "Barbell bench press", sets: 4, reps: "6-8"),
-        WorkoutLift(name: "Incline dumbbell press", sets: 3, reps: "8-10"),
-        WorkoutLift(name: "Weighted dips", sets: 3, reps: "10-12"),
-        WorkoutLift(name: "Overhead press", sets: 4, reps: "6-8"),
-        WorkoutLift(name: "Lateral raise", sets: 3, reps: "12-15"),
-        WorkoutLift(name: "Triceps pushdown", sets: 3, reps: "12-15"),
-    ]
+    @Published var currentLiftIndex: Int = 2
+    @Published var currentLiftName: String = "Incline bench press"
+    @Published var currentLiftNote: String = "Last time 82.5 kg × 8 · RPE 8 · target +2.5 kg"
+    @Published var totalLifts: Int = 6
+    @Published var nextLiftName: String = "Cable fly"
+    @Published var avgHeartRate: Int = 142
 
-    var workoutTimeString: String {
-        let m = workoutSecondsRemaining / 60
-        let s = workoutSecondsRemaining % 60
-        return String(format: "%02d:%02d", m, s)
+    @Published var sets: [WorkoutSet] = [
+        WorkoutSet(weight: 85, reps: 8, isDone: true),
+        WorkoutSet(weight: 85, reps: 7, isDone: true),
+        WorkoutSet(weight: 87.5, reps: 6, isDone: false),
+    ]
+    @Published var restSeconds: Int = 0
+    private var workoutTimerCancellable: AnyCancellable?
+
+    var workoutTimeString: String { Self.mmss(workoutSeconds) }
+    var doneSetsCount: Int { sets.filter(\.isDone).count }
+    var completedVolume: Int {
+        Int(sets.filter(\.isDone).reduce(0) { $0 + $1.weight * Double($1.reps) })
     }
 
-    private var timerCancellable: AnyCancellable?
+    static func mmss(_ n: Int) -> String {
+        String(format: "%02d:%02d", n / 60, n % 60)
+    }
 
     func toggleWorkout() {
         isWorkoutInProgress.toggle()
-        if isWorkoutInProgress {
-            startTimer()
-        } else {
-            timerCancellable?.cancel()
-        }
+        if isWorkoutInProgress { startTimer() } else { workoutTimerCancellable?.cancel() }
     }
 
     func startTimer() {
-        timerCancellable?.cancel()
-        timerCancellable = Timer.publish(every: 1, on: .main, in: .common)
+        workoutTimerCancellable?.cancel()
+        workoutTimerCancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                guard let self else { return }
-                guard self.isWorkoutInProgress else { return }
-                if self.workoutSecondsRemaining > 0 {
-                    self.workoutSecondsRemaining -= 1
-                } else {
-                    self.isWorkoutInProgress = false
-                    self.timerCancellable?.cancel()
-                }
+                guard let self, self.isWorkoutInProgress else { return }
+                self.workoutSeconds += 1
+                if self.restSeconds > 0 { self.restSeconds -= 1 }
             }
     }
 
-    func toggleLift(_ lift: WorkoutLift) {
-        guard let idx = lifts.firstIndex(where: { $0.id == lift.id }) else { return }
-        lifts[idx].isDone.toggle()
+    func toggleSet(_ set: WorkoutSet) {
+        guard let idx = sets.firstIndex(where: { $0.id == set.id }) else { return }
+        sets[idx].isDone.toggle()
+        if sets[idx].isDone { restSeconds = 90 }
+    }
+
+    func addSet() {
+        let last = sets.last?.weight ?? 20
+        sets.append(WorkoutSet(weight: last, reps: 6, isDone: false))
+    }
+
+    func startRest(_ seconds: Int) { restSeconds = seconds }
+
+    func advanceToNextLift() {
+        currentLiftIndex = min(currentLiftIndex + 1, totalLifts)
+        currentLiftName = nextLiftName
+        sets = [
+            WorkoutSet(weight: 22.5, reps: 12, isDone: false),
+            WorkoutSet(weight: 22.5, reps: 12, isDone: false),
+            WorkoutSet(weight: 22.5, reps: 10, isDone: false),
+        ]
+        restSeconds = 0
     }
 
     // MARK: Club occupancy
 
     @Published var occupancyPercent: Int = 42
-    @Published var occupancyByHour: [(hour: Int, value: Double)] = [
-        (6, 0.10), (10, 0.22), (14, 0.55), (18, 0.95), (22, 0.30)
-    ]
-
-    // MARK: Quick stats
-
-    @Published var kcalInToday: Int = 1846
+    @Published var occupancyInClub: Int = 38
+    @Published var occupancyCapacity: Int = 90
+    /// Bar heights 0...1 across the day; index 3 is "now" and always accented.
+    @Published var occupancyBars: [Double] = [0.24, 0.18, 0.40, 0.42, 0.56, 0.74, 1.0, 0.82, 0.48, 0.30]
 
     // MARK: Calendar / schedule
+
+    @Published var upcoming: [ScheduleEvent] = [
+        ScheduleEvent(time: "18:30", title: "Strength 45 · Hall 2", subtitle: "Mika Orlov · 11/16 booked", kind: .trainer, status: .booked),
+        ScheduleEvent(time: "17.09", title: "Body scan · diagnostics", subtitle: "Lab room · Elena V. · 20 min", kind: .reservation, status: .confirm),
+    ]
 
     @Published var events: [ScheduleEvent] = [
         ScheduleEvent(time: "09:00", title: "Body scan · diagnostics", subtitle: "Lab room · Elena V.", kind: .trainer, status: .hold),
@@ -88,6 +113,14 @@ final class AppState: ObservableObject {
 
     // MARK: Booking / zones
 
+    @Published var bookingDates: [Int] = [13, 14, 15, 16, 17, 18, 19]
+    @Published var selectedBookingDate: Int = 15
+    @Published var bookingStartTimes: [String] = ["07:00", "09:00", "12:00", "14:00", "16:00", "18:00", "20:00", "21:30"]
+    @Published var selectedBookingTime: String = "18:00"
+    @Published var bookingDurations: [Int] = [60, 90, 120]
+    @Published var selectedBookingDuration: Int = 90
+    @Published var isBooked: Bool = false
+
     @Published var zones: [Zone] = [
         Zone(name: "Strength floor", capacity: 40, occupied: 17, icon: "figure.strengthtraining.traditional"),
         Zone(name: "Free weights", capacity: 24, occupied: 17, icon: "dumbbell.fill"),
@@ -95,64 +128,86 @@ final class AppState: ObservableObject {
         Zone(name: "Functional room", capacity: 16, occupied: 14, icon: "figure.cross.training"),
         Zone(name: "Recovery & sauna", capacity: 12, occupied: 4, icon: "flame.fill"),
     ]
+    @Published var selectedZoneName: String = "Strength floor"
+    var selectedZone: Zone? { zones.first { $0.name == selectedZoneName } }
+    var bookingsLeftThisWeek: Int { max(3 - (isBooked ? 1 : 0), 0) }
 
-    @Published var lastBookedZoneName: String?
-
-    func reserve(_ zone: Zone) {
-        lastBookedZoneName = zone.name
-        if let idx = zones.firstIndex(where: { $0.id == zone.id }), zones[idx].occupied < zones[idx].capacity {
-            zones[idx].occupied += 1
-        }
-    }
+    func reserve() { isBooked.toggle() }
 
     // MARK: Trainers
 
     @Published var trainers: [Trainer] = [
-        Trainer(name: "Mika Orlov", initials: "MO", specialty: "Strength · powerlifting", rating: 4.9, reviews: 212, pricePerHour: 3500, nextAvailable: "MON", avatarColor: .appAccent),
-        Trainer(name: "Elena Vasnetsova", initials: "EV", specialty: "Diagnostics · nutrition", rating: 5.0, reviews: 168, pricePerHour: 4200, nextAvailable: "TUE", avatarColor: .appSuccess),
-        Trainer(name: "Dana Kravets", initials: "DK", specialty: "Conditioning · cycle", rating: 4.8, reviews: 96, pricePerHour: 2900, nextAvailable: "TODAY", avatarColor: .appWarning, isTodayAvailable: true),
-        Trainer(name: "Ruslan Shirin", initials: "RS", specialty: "Rehab · mobility", rating: 4.9, reviews: 140, pricePerHour: 3800, nextAvailable: "THU", avatarColor: .white),
+        Trainer(initials: "MO", name: "Mika Orlov", specialty: "Strength · powerlifting", rating: "4.9", reviews: 212, priceLabel: "₽3 500/h", priceCompact: "3.5k", nextAvailable: "Today", availabilityColor: .appSuccess, yearsExperience: "9 years", clients: 48, sessions: 1840, tags: ["Squat mechanics", "Peaking blocks", "Return to lifting"], bio: "Coaches the strength floor and writes the club's barbell progressions. Works with lifters coming back from long breaks and with members chasing a first 2× bodyweight squat."),
+        Trainer(initials: "EV", name: "Elena Vasnetsova", specialty: "Diagnostics · nutrition", rating: "5.0", reviews: 168, priceLabel: "₽4 200/h", priceCompact: "4.2k", nextAvailable: "Tue", availabilityColor: .appAccent, yearsExperience: "12 years", clients: 62, sessions: 2210, tags: ["Body composition", "Blood panels", "Supplement audit"], bio: "Runs the diagnostics lab. Reads your scans and blood work, then sets the vitamin and macro protocol that the app tracks against."),
+        Trainer(initials: "DK", name: "Dana Kravets", specialty: "Conditioning · cycle", rating: "4.8", reviews: 96, priceLabel: "₽2 900/h", priceCompact: "2.9k", nextAvailable: "Today", availabilityColor: .appSuccess, yearsExperience: "6 years", clients: 71, sessions: 1120, tags: ["Zone 2", "Intervals", "Race prep"], bio: "Builds aerobic base without wrecking your lifting week. Leads the cycle studio and the Sunday long-effort sessions."),
+        Trainer(initials: "RS", name: "Ruslan Shirin", specialty: "Rehab · mobility", rating: "4.9", reviews: 140, priceLabel: "₽3 800/h", priceCompact: "3.8k", nextAvailable: "Thu", availabilityColor: .appTextSecondary, yearsExperience: "11 years", clients: 39, sessions: 1660, tags: ["Shoulder", "Lower back", "Post-injury"], bio: "Physio background. Takes the members the other trainers send over, and clears them to load again on a schedule you can see in the app."),
+    ]
+    @Published var trainerSlots: [String] = ["07:30", "11:00", "17:00", "19:30"]
+
+    // MARK: Plan
+
+    @Published var weekComplianceDone: Int = 3
+    @Published var weekComplianceTotal: Int = 4
+    @Published var planDays: [PlanDay] = [
+        PlanDay(day: "Mon", name: "Push A · heavy upper", detail: "6 lifts · 52 min", isDone: true),
+        PlanDay(day: "Tue", name: "Legs A · squat focus", detail: "5 lifts · 61 min", isDone: true),
+        PlanDay(day: "Thu", name: "Pull B · back and arms", detail: "7 lifts · 58 min", isDone: true),
+        PlanDay(day: "Sun", name: "Push A · heavy upper", detail: "6 lifts · 52 min · today", isDone: false, isToday: true),
+    ]
+    @Published var library: [LibraryExercise] = [
+        LibraryExercise(group: "Chest", name: "Incline bench press", meta: "Barbell · 4 cues"),
+        LibraryExercise(group: "Back", name: "Chest-supported row", meta: "Machine · 3 cues"),
+        LibraryExercise(group: "Legs", name: "Hack squat", meta: "Machine · 5 cues"),
+        LibraryExercise(group: "Shoulders", name: "Cable lateral raise", meta: "Cable · 3 cues"),
+    ]
+    @Published var history: [HistoryEntry] = [
+        HistoryEntry(name: "Pull B · back and arms", date: "11 Sep", duration: "58 min", volume: "5.2t"),
+        HistoryEntry(name: "Legs A · squat focus", date: "09 Sep", duration: "61 min", volume: "7.8t"),
+        HistoryEntry(name: "Push A · heavy upper", date: "07 Sep", duration: "54 min", volume: "4.6t"),
+    ]
+
+    // MARK: Workouts (Personal / Group / Solo)
+
+    @Published var personalSessionsLeft: Int = 3
+    @Published var groupClasses: [GroupClass] = [
+        GroupClass(time: "12:30", name: "Cycle 40", subtitle: "Hall 3 · Dana K. · 22 of 24", state: .waitlist),
+        GroupClass(time: "17:00", name: "Functional 30", subtitle: "Studio · Dana K. · 9 of 16", state: .book),
+        GroupClass(time: "18:30", name: "Strength 45", subtitle: "Hall 2 · Mika Orlov · 11 of 16", state: .booked),
+        GroupClass(time: "20:00", name: "Mobility & recovery", subtitle: "Studio · full", state: .full),
     ]
 
     // MARK: Nutrition
 
-    @Published var proteinCurrent: Int = 116
+    let kcalTarget: Int = 2600
+    var kcalInToday: Int { meals.reduce(0) { $0 + $1.calories } }
+    var kcalLeft: Int { kcalTarget - kcalInToday }
+
     @Published var proteinTarget: Int = 190
     @Published var carbsCurrent: Int = 186
     @Published var carbsTarget: Int = 280
     @Published var fatCurrent: Int = 52
     @Published var fatTarget: Int = 78
+    var proteinCurrent: Int { meals.reduce(0) { $0 + $1.protein } }
 
     @Published var waterGlassesFilled: Int = 5
     let waterGlassesTotal: Int = 8
-    let waterPerGlassLiters: Double = 0.25
-    var waterLiters: Double { Double(waterGlassesFilled) * waterPerGlassLiters }
+    var waterLiters: Double { Double(waterGlassesFilled) * 0.25 }
 
     func addWater() { waterGlassesFilled = min(waterGlassesFilled + 1, waterGlassesTotal) }
     func removeWater() { waterGlassesFilled = max(waterGlassesFilled - 1, 0) }
 
-    @Published var meals: [Meal] = [
-        Meal(time: "08:10", name: "Oats, whey, berries", subtitle: "38 g protein", calories: 520),
-        Meal(time: "13:40", name: "Chicken, rice, greens", subtitle: "52 g protein", calories: 710),
-        Meal(time: "16:20", name: "Casein shake", subtitle: "26 g protein", calories: 180),
+    @Published var meals: [MealEntry] = [
+        MealEntry(time: "08:10", name: "Oats, whey, berries", calories: 520, protein: 38),
+        MealEntry(time: "13:40", name: "Chicken, rice, greens", calories: 710, protein: 52),
+        MealEntry(time: "16:20", name: "Casein shake", calories: 180, protein: 26),
     ]
 
-    func addMeal(name: String, subtitle: String, calories: Int) {
-        let time = Self.timeFormatter.string(from: Date())
-        meals.append(Meal(time: time, name: name, subtitle: subtitle, calories: calories))
-        kcalInToday += calories
+    func addMeal() {
+        meals.append(MealEntry(time: "19:05", name: "Cottage cheese, honey", calories: 320, protein: 34))
     }
-
-    func removeMeal(_ meal: Meal) {
+    func removeMeal(_ meal: MealEntry) {
         meals.removeAll { $0.id == meal.id }
-        kcalInToday = max(kcalInToday - meal.calories, 0)
     }
-
-    private static let timeFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "HH:mm"
-        return f
-    }()
 
     // MARK: Diagnostics / Body
 
@@ -162,11 +217,25 @@ final class AppState: ObservableObject {
         BodyMetricPoint(label: "Jul", value: 33.1),
         BodyMetricPoint(label: "Sep", value: 34.2),
     ]
-    @Published var bodyFatPercent: Double = 14.8
-    @Published var bodyFatNote: String = "Down from 16.1% in July"
-    @Published var totalBodyWaterPercent: Double = 58.1
-    @Published var visceralFatIndex: Int = 4
-    @Published var basalMetabolicRate: Int = 1812
+    @Published var muscleMassGainKg: Double = 1.4
+
+    @Published var bodyMetrics: [BodyMetric] = [
+        BodyMetric(name: "Body fat", value: "14.8%", note: "Down from 16.1% in July"),
+        BodyMetric(name: "Total body water", value: "58.1%", note: "In range"),
+        BodyMetric(name: "Visceral fat index", value: "4", note: "Healthy band is 1–9"),
+        BodyMetric(name: "Basal metabolic rate", value: "1 812", note: "kcal at rest"),
+    ]
+
+    @Published var labResults: [LabResult] = [
+        LabResult(name: "Ferritin", value: "28", range: "30–400 ng/ml", flag: "Low", level: .warn),
+        LabResult(name: "Vitamin D (25-OH)", value: "31", range: "30–100 ng/ml", flag: "Low-normal", level: .warn),
+        LabResult(name: "Testosterone, total", value: "19.4", range: "8.6–29 nmol/l", flag: "In range", level: .ok),
+        LabResult(name: "Creatine kinase", value: "284", range: "30–200 U/l", flag: "High · training", level: .warn),
+        LabResult(name: "HbA1c", value: "5.1", range: "4.0–5.6 %", flag: "In range", level: .ok),
+        LabResult(name: "Magnesium", value: "0.91", range: "0.75–0.95 mmol/l", flag: "In range", level: .ok),
+    ]
+    var flaggedLabs: [LabResult] { labResults.filter { $0.level == .warn } }
+    var okLabs: [LabResult] { labResults.filter { $0.level == .ok } }
 
     @Published var vitamins: [VitaminItem] = [
         VitaminItem(symbol: "D3", name: "Vitamin D3 + K2", dosage: "4 000 IU · with breakfast", status: .taken),
@@ -174,6 +243,7 @@ final class AppState: ObservableObject {
         VitaminItem(symbol: "Mg", name: "Magnesium glycinate", dosage: "400 mg · before sleep", status: .due),
         VitaminItem(symbol: "w3", name: "Omega-3 EPA/DHA", dosage: "2 g · with any meal", status: .taken),
     ]
+    var vitaminsTakenLabel: String { "\(vitamins.filter { $0.status == .taken }.count) of \(vitamins.count) taken" }
 
     func toggleVitamin(_ item: VitaminItem) {
         guard let idx = vitamins.firstIndex(where: { $0.id == item.id }) else { return }
@@ -183,59 +253,95 @@ final class AppState: ObservableObject {
     @Published var lastScanDate: String = "02 SEP"
     @Published var nextScanDate: String = "17 SEP"
 
-    // MARK: Store
+    // MARK: Store / Vitamins catalog
 
     @Published var products: [Product] = [
-        Product(code: "D3K2", name: "Vitamin D3 4000 + K2", price: 1290),
-        Product(code: "Fe", name: "Iron bisglycinate 25", price: 980),
-        Product(code: "Mg", name: "Magnesium glycinate", price: 1150),
-        Product(code: "w3", name: "Omega-3 EPA/DHA 2g", price: 1760),
-        Product(code: "Cr", name: "Creatine monohydrate", price: 1450),
-        Product(code: "Zn", name: "Zinc picolinate 15", price: 890),
+        Product(abbr: "D3K2", name: "Vitamin D3 4000 + K2", form: "Softgel", dose: "4 000 IU", count: "120 softgels", price: 1290, subscriptionPrice: 1090, tag: "In protocol", tagColor: .appAccent,
+                desc: "The club's baseline for the dark half of the year. D3 with MK-7 so calcium is directed to bone rather than soft tissue.",
+                ingredients: [Ingredient(name: "Vitamin D3 (cholecalciferol)", amount: "4 000 IU"), Ingredient(name: "Vitamin K2 (MK-7)", amount: "100 mcg"), Ingredient(name: "MCT oil", amount: "250 mg")],
+                benefits: "Supports bone density, immune response and testosterone in deficient men. Your 02 Sep level was 31 ng/ml, at the bottom of range.",
+                risks: "Do not exceed 10 000 IU daily without a blood test. Excess builds up and raises blood calcium.",
+                interactions: "K2 interferes with warfarin and other vitamin-K antagonists. Thiazide diuretics increase calcium retention."),
+        Product(abbr: "Fe", name: "Iron bisglycinate 25", form: "Capsule", dose: "25 mg", count: "90 capsules", price: 980, subscriptionPrice: 830, tag: "In protocol", tagColor: .appAccent,
+                desc: "Chelated iron, chosen because it is gentler on the stomach than sulphate at the same absorbed dose.",
+                ingredients: [Ingredient(name: "Iron (bisglycinate chelate)", amount: "25 mg"), Ingredient(name: "Vitamin C", amount: "80 mg"), Ingredient(name: "Folate", amount: "200 mcg")],
+                benefits: "Rebuilds ferritin, which sat at 28 ng/ml on your last panel. Low ferritin shows up as flat endurance and poor recovery.",
+                risks: "Iron is the most common cause of supplement poisoning in children — keep it locked away. May darken stools.",
+                interactions: "Take four hours apart from zinc, calcium, coffee and black tea. Reduces absorption of levothyroxine and some antibiotics."),
+        Product(abbr: "Mg", name: "Magnesium glycinate", form: "Capsule", dose: "400 mg", count: "120 capsules", price: 1150, subscriptionPrice: 970, tag: "In protocol", tagColor: .appAccent,
+                desc: "The sleep-and-recovery magnesium. Glycinate is well absorbed and does not act as a laxative at this dose.",
+                ingredients: [Ingredient(name: "Magnesium (glycinate)", amount: "400 mg"), Ingredient(name: "Glycine", amount: "1 200 mg")],
+                benefits: "Shortens time to sleep and reduces cramping in heavy training weeks.",
+                risks: "Loose stools above 600 mg. Anyone with reduced kidney function should ask a doctor first.",
+                interactions: "Blunts absorption of tetracycline and quinolone antibiotics, and of bisphosphonates. Separate by two hours."),
+        Product(abbr: "w3", name: "Omega-3 EPA/DHA 2g", form: "Softgel", dose: "2 g", count: "180 softgels", price: 1760, subscriptionPrice: 1490, tag: "Popular", tagColor: .appTextSecondary,
+                desc: "Triglyceride-form fish oil, IFOS tested for oxidation. Kept in the club fridge, not on a shelf.",
+                ingredients: [Ingredient(name: "EPA", amount: "1 200 mg"), Ingredient(name: "DHA", amount: "800 mg"), Ingredient(name: "Vitamin E", amount: "10 mg")],
+                benefits: "Lowers triglycerides and helps joint comfort through heavy blocks.",
+                risks: "Mild reflux or a fishy aftertaste. Stop two weeks before surgery.",
+                interactions: "Adds to the effect of anticoagulants such as warfarin, apixaban or aspirin — tell your doctor."),
+        Product(abbr: "Cr", name: "Creatine monohydrate", form: "Powder", dose: "5 g", count: "500 g", price: 1420, subscriptionPrice: 1200, tag: "Recommended", tagColor: .appSuccess,
+                desc: "Creapure monohydrate. The most studied performance supplement there is; no loading phase needed.",
+                ingredients: [Ingredient(name: "Creatine monohydrate", amount: "5 000 mg")],
+                benefits: "Adds a few reps at a given load and roughly 1–2 kg of water inside the muscle. Elena flagged it for your next block.",
+                risks: "Safe in healthy adults at 3–5 g. Drink enough water; kidney disease is the one contraindication.",
+                interactions: "No meaningful drug interactions. Caffeine does not cancel it, despite the old claim."),
+        Product(abbr: "Zn", name: "Zinc picolinate 15", form: "Capsule", dose: "15 mg", count: "100 capsules", price: 740, subscriptionPrice: 630, tag: "Watch dose", tagColor: .appWarning,
+                desc: "A 15 mg dose, deliberately lower than the 50 mg tubs sold elsewhere.",
+                ingredients: [Ingredient(name: "Zinc (picolinate)", amount: "15 mg"), Ingredient(name: "Copper (gluconate)", amount: "1 mg")],
+                benefits: "Covers a genuine gap in low-meat diets and supports immune function.",
+                risks: "Above 40 mg daily for months depletes copper and can cause anaemia.",
+                interactions: "Competes with your iron — four hours apart. Also reduces absorption of some antibiotics."),
     ]
-    @Published var isSubscribed: Bool = true
+    @Published var isSubscribed: Bool = false
+    @Published var cart: [CartLine] = []
 
-    var cartCount: Int { products.reduce(0) { $0 + $1.inCart } }
-    var cartTotal: Int { products.reduce(0) { $0 + $1.inCart * $1.price } }
+    var cartCount: Int { cart.count }
+    var cartTotal: Int { cart.reduce(0) { $0 + $1.price } }
 
     func addToCart(_ product: Product) {
-        guard let idx = products.firstIndex(where: { $0.id == product.id }) else { return }
-        products[idx].inCart += 1
+        cart.append(CartLine(name: product.name, price: product.price))
     }
+    func addBundle() {
+        cart.append(contentsOf: [
+            CartLine(name: "Iron bisglycinate 25", price: 980),
+            CartLine(name: "Vitamin D3 4000 + K2", price: 1290),
+            CartLine(name: "Magnesium glycinate", price: 1150),
+        ])
+    }
+    func removeFromCart(_ line: CartLine) {
+        cart.removeAll { $0.id == line.id }
+    }
+    func clearCart() { cart.removeAll() }
+
+    // MARK: Scanner
+
+    @Published var lastScanFlag: String = "Two flags against your protocol"
+    @Published var lastScanDetail: String = "50 mg daily is above the 40 mg upper limit and can suppress copper absorption over months. It also competes with the iron bisglycinate Elena prescribed — separate them by four hours or drop to 15 mg."
 
     // MARK: AI Assistant
 
     @Published var chatMessages: [ChatMessage] = [
-        ChatMessage(isUser: false, text: "Hey Artem — ask me anything about your training, food or supplements.")
+        ChatMessage(isUser: false, text: "Morning. Readiness is 72 and the club is quiet until 16:00. Want me to move Push A earlier?")
     ]
 
     func sendChatMessage(_ text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         chatMessages.append(ChatMessage(isUser: true, text: trimmed))
-        let reply = Self.scriptedReply(for: trimmed, state: self)
+        let reply = Self.scriptedReplies[trimmed] ?? "Noted. Against your 02 Sep panel and this week's volume, I would keep the current protocol and revisit after the 17 Sep scan — ask Elena if you want it changed sooner."
         chatMessages.append(ChatMessage(isUser: false, text: reply))
-    }
-
-    private static func scriptedReply(for question: String, state: AppState) -> String {
-        let q = question.lowercased()
-        if q.contains("zinc") {
-            return "50 mg of zinc is above the 40 mg tolerable upper limit for adults — your current plan uses 15 mg, which is a safer daily dose."
-        } else if q.contains("push a") || q.contains("earlier") {
-            return "You can move Push A to earlier in the day — your readiness score is highest before 11:00 based on recent sleep."
-        } else if q.contains("ferritin") {
-            return "Low ferritin is often linked to iron intake and training volume. You're already taking iron bisglycinate — keep it away from tea or coffee to improve absorption."
-        } else if q.contains("protein") {
-            return "You're at \(state.proteinCurrent)g of your \(state.proteinTarget)g protein target today — about \(state.proteinTarget - state.proteinCurrent)g under. A casein shake before bed would close most of that gap."
-        } else {
-            return "Got it — I'll factor that into your plan. Anything else about training, nutrition or supplements?"
-        }
     }
 
     static let suggestedQuestions: [String] = [
         "Is 50 mg zinc too much?",
         "Move Push A earlier?",
         "Why is my ferritin low?",
+    ]
+    static let scriptedReplies: [String: String] = [
+        "Is 50 mg zinc too much?": "Yes, for daily use. The upper limit is 40 mg and you already get zinc in the club bundle. Drop to 15 mg and keep it four hours away from your iron.",
+        "Move Push A earlier?": "The strength floor sits at 23% until 16:00. Moving Push A to 14:00 gets you a free rack and keeps 5 hours before your 20:00 casein shake.",
+        "Why is my ferritin low?": "Ferritin at 28 ng/ml with your training volume usually means intake, not loss. Your protein is fine but red meat is twice a month — the 25 mg bisglycinate covers the gap in about 8 weeks.",
     ]
 
     // MARK: QR Pass
@@ -251,6 +357,7 @@ final class AppState: ObservableObject {
     ]
 
     var memberCode: String { "AK · 4417 · 0912" }
+    @Published var isCheckedIn: Bool = false
 
     func startQRRotation() {
         regenerateQR()
@@ -273,38 +380,44 @@ final class AppState: ObservableObject {
         qrPayload = "CORECLUB:AK4417:\(token):\(Int(Date().timeIntervalSince1970))"
     }
 
-    @Published var lastCheckIn: String?
     func confirmCheckIn() {
-        lastCheckIn = "Checked in just now"
-        visits.insert(Visit(date: "Today", zone: "Strength floor", timeRange: "just now"), at: 0)
+        isCheckedIn.toggle()
+        if isCheckedIn {
+            visits.insert(Visit(date: "Today", zone: "Strength floor", timeRange: "just now"), at: 0)
+        }
     }
-
-    // MARK: Progress
-
-    @Published var streakDateLabel: String = "Wed 3 Oct"
-    @Published var streakDays: [StreakDay] = [
-        StreakDay(letter: "S", number: 1, state: .completed),
-        StreakDay(letter: "M", number: 2, state: .completed),
-        StreakDay(letter: "T", number: 3, state: .today),
-        StreakDay(letter: "W", number: 4, state: .upcoming),
-        StreakDay(letter: "T", number: 5, state: .upcoming),
-        StreakDay(letter: "F", number: 6, state: .upcoming),
-        StreakDay(letter: "S", number: 7, state: .upcoming),
-    ]
-    @Published var volumePercentOfGoal: Int = 54
-    @Published var totalSets: Int = 802
-    @Published var exerciseMinutesThisMonth: Int = 54
-    @Published var weeklyVolumeBars: [(day: String, value: Double, isToday: Bool)] = [
-        ("S", 0.55, false), ("M", 0.35, false), ("T", 0.85, false), ("W", 0.6, false),
-        ("T", 1.0, true), ("F", 0.5, false), ("S", 0.7, false),
-    ]
 
     // MARK: Profile
 
+    @Published var memberSince: String = "March 2023"
+    @Published var totalVisits: Int = 128
     @Published var septemberVisits: Int = 18
     @Published var scansThisMonth: Int = 6
     @Published var ptSessionsLeft: Int = 3
     @Published var appleHealthSyncEnabled: Bool = true
+    @Published var membershipPlanName: String = "Unlimited 24/7"
     @Published var membershipRenewDate: String = "12 Mar 2027"
     @Published var membershipMonthlyPrice: Int = 7900
+
+    let settingsRows: [SettingsRowItem] = [
+        SettingsRowItem(name: "Notifications", subtitle: "Class reminders, protocol nudges, restock"),
+        SettingsRowItem(name: "Payments", subtitle: "Card ·· 4417 · invoices"),
+        SettingsRowItem(name: "Diagnostics history", subtitle: "6 reports since Mar 2023", destination: .diagnostics),
+        SettingsRowItem(name: "Vitamin subscription", subtitle: "Monthly box · ships 28 Sep", destination: .store),
+        SettingsRowItem(name: "Accessibility", subtitle: "Larger text, reduce motion, VoiceOver"),
+    ]
+}
+
+struct MealEntry: Identifiable {
+    let id = UUID()
+    let time: String
+    let name: String
+    let calories: Int
+    let protein: Int
+}
+
+struct CartLine: Identifiable {
+    let id = UUID()
+    let name: String
+    let price: Int
 }

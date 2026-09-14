@@ -9,33 +9,37 @@ struct QRPassView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    VStack(spacing: 14) {
-                        QRCodeImage(payload: appState.qrPayload)
-                            .frame(width: 200, height: 200)
-                            .padding(16)
-                            .background(Color.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-
-                        Text(appState.memberCode)
-                            .font(.digitalTimer(22))
+                    VStack(alignment: .leading, spacing: 4) {
+                        EyebrowLabel(text: "Turnstile · reception")
+                        Text(appState.isCheckedIn ? "Checked in" : "Check in")
+                            .font(.system(size: 24, weight: .bold))
                             .foregroundStyle(.white)
+                    }
 
-                        Text("Code refreshes in \(appState.qrSecondsRemaining)s")
-                            .font(.system(size: 13))
-                            .foregroundStyle(Color.appTextSecondary)
+                    VStack(spacing: 18) {
+                        QRCodeImage(payload: appState.qrPayload)
+                            .frame(width: 190, height: 190)
+                            .padding(12)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
-                        PrimaryButton(title: "Confirm check-in") {
-                            appState.confirmCheckIn()
+                        VStack(spacing: 4) {
+                            Text(appState.memberCode)
+                                .font(.digitalTimer(18))
+                                .foregroundStyle(.white)
+                            Text("Code refreshes every 30 seconds")
+                                .font(.system(size: 12))
+                                .foregroundStyle(Color.appTextSecondary)
                         }
 
-                        if let lastCheckIn = appState.lastCheckIn {
-                            Text(lastCheckIn)
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(Color.appSuccess)
+                        PrimaryButton(title: appState.isCheckedIn ? "Check out" : "Confirm check-in") {
+                            appState.confirmCheckIn()
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.top, 12)
+                    .padding(24)
+                    .background(Color.appSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
 
                     VStack(alignment: .leading, spacing: 10) {
                         EyebrowLabel(text: "Recent visits")
@@ -46,18 +50,19 @@ struct QRPassView: View {
                                     .foregroundStyle(.white)
                                 Spacer()
                                 Text(visit.timeRange)
-                                    .font(.system(size: 13))
+                                    .font(.digitalTimer(13))
                                     .foregroundStyle(Color.appTextSecondary)
                             }
+                            .padding(.vertical, 12)
                             AppDivider()
                         }
                     }
                 }
                 .screenPadding()
+                .padding(.top, 12)
                 .padding(.bottom, 24)
             }
             .background(Color.appBackground.ignoresSafeArea())
-            .navigationTitle("Pass")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear { appState.startQRRotation() }
         }

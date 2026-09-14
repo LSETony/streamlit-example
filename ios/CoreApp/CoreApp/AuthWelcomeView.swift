@@ -69,7 +69,7 @@ struct AuthWelcomeView: View {
             }
 
             if canContinue {
-                PrimaryButton(title: "Continue", color: .appPurple) { goToVerify = true }
+                PrimaryButton(title: "Continue", color: .appAccent) { goToVerify = true }
             }
 
             HStack(spacing: 12) {

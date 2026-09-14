@@ -12,6 +12,7 @@
 		22CB65E17C3C4F9FA2E84F63 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFCFF1C6A1D454E80B7C92A /* AppState.swift */; };
 		29C465C7919C462EA2F0EE80 /* TrainersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */; };
 		2EBA069E22A0EA94E94F5421 /* DotGothic16-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01B95A7E7A83FB01DEFF099E /* DotGothic16-Regular.ttf */; };
+		33A9D5C4CE0C99DA5A53849C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38601E21E85A9A5EAC317C27 /* CalendarView.swift */; };
 		392881F6855843ACB49B7B46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */; };
 		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
 		44661C6C26614D53B8E53129 /* BookingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC85AB04D48C9B451AAB4 /* BookingView.swift */; };
@@ -21,13 +22,13 @@
 		70011104BBEE4B418B8D61F4 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8520D3ADBD842178D6ED22C /* NutritionView.swift */; };
 		72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */; };
 		73F652550548443DB32F62B9 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D5C91EAAA4F0DB404FA79 /* StoreView.swift */; };
-		7D8CFBBB02BF31DB65D51B42 /* TrainingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B338817F31D9CCFA061936B /* TrainingProgressView.swift */; };
 		84182489B2CA4110BCE20234 /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A23DF3D209D47ABA9E0E041 /* DiagnosticsView.swift */; };
 		883CEF1AA585402E8C0803EB /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EEC3E4AC434CCDB1F33D3B /* Theme.swift */; };
 		8CC53FB278DC4E13B21EC160 /* QRPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F63420EB51A41DEB4087D03 /* QRPassView.swift */; };
 		94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CDD914A646D49A055E8D /* CoreAppApp.swift */; };
 		9C350ECC7CEB4669899F60A7 /* AIAssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CDC43201E4F5C8C3C2C5D /* AIAssistantView.swift */; };
 		A2E860860761333E4C376664 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B3511191EF0FD2AE5A30D /* SplashView.swift */; };
+		BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67286F4868E97187636094AA /* WorkoutsView.swift */; };
 		BCF07185D67071AB4B1B5720 /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB271F79F230C1CD92411C6 /* Francy-Regular.ttf */; };
 		C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */; };
 		CD6C01682CB4019E62A3746B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A6395C7AB467517757FDA0C9 /* GoogleSignIn */; };
@@ -44,15 +45,16 @@
 		0DFCFF1C6A1D454E80B7C92A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		151CDC43201E4F5C8C3C2C5D /* AIAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantView.swift; sourceTree = "<group>"; };
 		187D5C91EAAA4F0DB404FA79 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
-		1B338817F31D9CCFA061936B /* TrainingProgressView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrainingProgressView.swift; sourceTree = "<group>"; };
 		268EC85AB04D48C9B451AAB4 /* BookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingView.swift; sourceTree = "<group>"; };
 		3400C5EA574C43B3B4039970 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		38601E21E85A9A5EAC317C27 /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		4F63420EB51A41DEB4087D03 /* QRPassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRPassView.swift; sourceTree = "<group>"; };
 		522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthWelcomeView.swift; sourceTree = "<group>"; };
 		5A23DF3D209D47ABA9E0E041 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
 		5A3B3511191EF0FD2AE5A30D /* SplashView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreApp.entitlements; sourceTree = "<group>"; };
+		67286F4868E97187636094AA /* WorkoutsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
 		6E46CDD914A646D49A055E8D /* CoreAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppApp.swift; sourceTree = "<group>"; };
 		77F0FD454D2243F9954D55DC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		78EEC3E4AC434CCDB1F33D3B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -138,9 +140,10 @@
 				5A3B3511191EF0FD2AE5A30D /* SplashView.swift */,
 				522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */,
 				AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */,
-				1B338817F31D9CCFA061936B /* TrainingProgressView.swift */,
 				61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */,
 				E09A658973A5EBE5303D09C0 /* Fonts */,
+				38601E21E85A9A5EAC317C27 /* CalendarView.swift */,
+				67286F4868E97187636094AA /* WorkoutsView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -246,7 +249,8 @@
 				A2E860860761333E4C376664 /* SplashView.swift in Sources */,
 				09F5DB40DAE9A527BC3E2532 /* AuthWelcomeView.swift in Sources */,
 				72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */,
-				7D8CFBBB02BF31DB65D51B42 /* TrainingProgressView.swift in Sources */,
+				33A9D5C4CE0C99DA5A53849C /* CalendarView.swift in Sources */,
+				BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,20 +12,9 @@ extension Color {
     static let appAccentDim = Color.appAccent.opacity(0.14)                                       // --soft
     static let appTextPrimary = Color(red: 0xF6 / 255, green: 0xF6 / 255, blue: 0xF5 / 255)      // --ink
     static let appTextSecondary = Color(red: 0x8A / 255, green: 0x8A / 255, blue: 0x93 / 255)    // --muted
-    static let appTextTertiary = Color(red: 0x8A / 255, green: 0x8A / 255, blue: 0x93 / 255).opacity(0.7)
     static let appSuccess = Color(red: 0x4A / 255, green: 0xDE / 255, blue: 0x80 / 255)          // --good
     static let appWarning = Color(red: 0xFA / 255, green: 0xCC / 255, blue: 0x15 / 255)          // --warn
     static let appDivider = Color(red: 0x27 / 255, green: 0x27 / 255, blue: 0x30 / 255)          // --line
-
-    /// Primary brand/interactive color used for buttons, the in-progress
-    /// banner and the tab bar's "+" action — introduced with the
-    /// sign-in flow and Home/Progress redesign.
-    static let appPurple = Color(red: 0.373, green: 0.290, blue: 0.965)
-    static let appPurpleDim = Color(red: 0.373, green: 0.290, blue: 0.965).opacity(0.16)
-
-    /// Warm reddish glow used behind the "Club occupancy" and "Your streak" cards.
-    static let appGlowStart = Color(red: 0.28, green: 0.08, blue: 0.04)
-    static let appGlowEnd = Color(red: 0.11, green: 0.05, blue: 0.05)
 }
 
 enum AppMetrics {
@@ -46,20 +35,6 @@ extension View {
     /// Standard horizontal screen padding used by every screen's content.
     func screenPadding() -> some View {
         self.padding(.horizontal, AppMetrics.screenPadding)
-    }
-
-    /// Warm reddish "glow" card treatment used by Club Occupancy and Your Streak.
-    func glowCard(padding: CGFloat = 18, corner: CGFloat = AppMetrics.cardCorner) -> some View {
-        self
-            .padding(padding)
-            .background(
-                LinearGradient(
-                    colors: [.appGlowStart, .appGlowEnd],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
     }
 }
 

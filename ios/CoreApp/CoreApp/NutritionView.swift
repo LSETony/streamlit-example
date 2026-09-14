@@ -3,54 +3,66 @@ import SwiftUI
 struct NutritionView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
-    @State private var showAddMeal = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                macrosCard
+                header
+                kcalCard
                 waterCard
                 mealsSection
-                if appState.proteinTarget - appState.proteinCurrent > 0 {
-                    Text("Protein is running \(appState.proteinTarget - appState.proteinCurrent) g under target on training days.")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.appTextTertiary)
-                }
+                insightCard
             }
             .screenPadding()
             .padding(.top, 12)
             .padding(.bottom, 24)
         }
         .background(Color.appBackground.ignoresSafeArea())
-        .navigationTitle("Nutrition")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
-        .sheet(isPresented: $showAddMeal) {
-            AddMealSheet()
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            EyebrowLabel(text: "Sunday · target \(formatted(appState.kcalTarget)) kcal")
+            Text("Nutrition")
+                .font(.system(size: 24, weight: .bold))
+                .foregroundStyle(.white)
         }
     }
 
-    private var macrosCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                macroColumn(label: "PROTEIN", current: appState.proteinCurrent, target: appState.proteinTarget, color: .appAccent)
-                macroColumn(label: "CARBS", current: appState.carbsCurrent, target: appState.carbsTarget, color: .white)
-                macroColumn(label: "FAT", current: appState.fatCurrent, target: appState.fatTarget, color: .white)
+    private var kcalCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .bottom, spacing: 12) {
+                Text("\(appState.kcalInToday)")
+                    .font(.digitalTimer(46))
+                    .foregroundStyle(.white)
+                Text("of \(formatted(appState.kcalTarget)) kcal · \(appState.kcalLeft) left")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Color.appTextSecondary)
+                    .padding(.bottom, 6)
+            }
+            ProgressBarView(value: Double(appState.kcalInToday) / Double(appState.kcalTarget), color: .appAccent, height: 10)
+
+            HStack(spacing: 12) {
+                macroColumn(label: "Protein", current: appState.proteinCurrent, target: appState.proteinTarget, color: .appAccent)
+                macroColumn(label: "Carbs", current: appState.carbsCurrent, target: appState.carbsTarget, color: .appTextSecondary)
+                macroColumn(label: "Fat", current: appState.fatCurrent, target: appState.fatTarget, color: .appTextSecondary)
             }
         }
-        .appCard()
+        .appCard(padding: 20)
     }
 
     private func macroColumn(label: String, current: Int, target: Int, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
+        VStack(alignment: .leading, spacing: 3) {
+            Text(label.uppercased()).font(.system(size: 11)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
             HStack(alignment: .lastTextBaseline, spacing: 2) {
-                Text("\(current)").font(.brand(22)).foregroundStyle(.white)
-                Text("/\(target)").font(.system(size: 12)).foregroundStyle(Color.appTextTertiary)
+                Text("\(current)").font(.digitalTimer(20)).foregroundStyle(.white)
+                Text("/\(target)").font(.system(size: 11)).foregroundStyle(Color.appTextSecondary)
             }
             ProgressBarView(value: Double(current) / Double(target), color: color, height: 4)
         }
@@ -58,67 +70,70 @@ struct NutritionView: View {
     }
 
     private var waterCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             HStack {
-                EyebrowLabel(text: "Water")
+                VStack(alignment: .leading, spacing: 4) {
+                    EyebrowLabel(text: "Water")
+                    Text(String(format: "%.2f L", appState.waterLiters))
+                        .font(.digitalTimer(24))
+                        .foregroundStyle(.white)
+                }
                 Spacer()
-                Text(String(format: "%.2f L", appState.waterLiters))
-                    .font(.brand(24))
-                    .foregroundStyle(.white)
                 Button { appState.removeWater() } label: {
                     Image(systemName: "minus")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
-                        .frame(width: 30, height: 30)
-                        .background(Circle().stroke(Color.white.opacity(0.25)))
+                        .frame(width: 40, height: 40)
+                        .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
                 }
                 .buttonStyle(.plain)
                 Button { appState.addWater() } label: {
                     Image(systemName: "plus")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 40, height: 40)
                         .background(Color.appAccent)
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
             }
-            HStack(spacing: 6) {
+            HStack(spacing: 5) {
                 ForEach(0..<appState.waterGlassesTotal, id: \.self) { i in
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(i < appState.waterGlassesFilled ? Color.appAccent : Color.white.opacity(0.08))
-                        .frame(height: 28)
+                        .fill(i < appState.waterGlassesFilled ? Color.appAccent : Color.clear)
+                        .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+                        .frame(height: 26)
                 }
             }
         }
-        .appCard()
+        .appCard(padding: 20)
     }
 
     private var mealsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeaderRow(title: "Meals today", trailing: "+ Add meal") {
-                showAddMeal = true
+                appState.addMeal()
             }
             ForEach(appState.meals) { meal in
                 HStack(spacing: 14) {
                     Text(meal.time)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.digitalTimer(15))
                         .foregroundStyle(Color.appTextSecondary)
                         .frame(width: 44, alignment: .leading)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(meal.name).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                        Text(meal.subtitle).font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                        Text("\(meal.protein) g protein").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
                     }
                     Spacer()
                     Text("\(meal.calories)")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.digitalTimer(17))
                         .foregroundStyle(.white)
                     Button {
                         appState.removeMeal(meal)
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(Color.appTextTertiary)
+                            .foregroundStyle(Color.appTextSecondary)
                     }
                     .buttonStyle(.plain)
                 }
@@ -128,40 +143,27 @@ struct NutritionView: View {
             }
         }
     }
-}
 
-private struct AddMealSheet: View {
-    @EnvironmentObject var appState: AppState
-    @Environment(\.dismiss) private var dismiss
-
-    @State private var name: String = ""
-    @State private var subtitle: String = ""
-    @State private var calories: String = ""
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Meal") {
-                    TextField("Name", text: $name)
-                    TextField("Details (e.g. 30 g protein)", text: $subtitle)
-                    TextField("Calories", text: $calories)
-                        .keyboardType(.numberPad)
-                }
-            }
-            .navigationTitle("Add meal")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        appState.addMeal(name: name.isEmpty ? "Meal" : name, subtitle: subtitle, calories: Int(calories) ?? 0)
-                        dismiss()
-                    }
-                }
-            }
+    private var insightCard: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("FROM YOUR LAST PANEL")
+                .font(.system(size: 11, weight: .bold))
+                .tracking(0.4)
+                .foregroundStyle(Color.appAccent)
+            Text("Protein is running 40 g under target on training days. Elena added a casein shake to the evening slot.")
+                .font(.system(size: 14))
+                .foregroundStyle(.white)
         }
+        .padding(18)
+        .background(Color.appAccentDim)
+        .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appAccent, lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+    }
+
+    private func formatted(_ n: Int) -> String {
+        let s = String(n)
+        guard s.count > 3 else { return s }
+        return String(s.dropLast(3)) + " " + s.suffix(3)
     }
 }
 

@@ -100,7 +100,7 @@ private let knownSupplements: [SupplementMatch] = [
     SupplementMatch(keyword: "iron", name: "Iron", note: "Avoid taking within 2 hours of tea, coffee or dairy."),
     SupplementMatch(keyword: "magnesium", name: "Magnesium", note: "Glycinate form is gentle on digestion; take before sleep."),
     SupplementMatch(keyword: "omega", name: "Omega-3", note: "Take with any meal to improve absorption."),
-    SupplementMatch(keyword: "zinc", name: "Zinc", note: "Doses above 40 mg/day may interfere with copper absorption."),
+    SupplementMatch(keyword: "zinc", name: "Zinc", note: "50 mg daily is above the 40 mg upper limit and can suppress copper absorption over months. It also competes with the iron bisglycinate Elena prescribed — separate them by four hours or drop to 15 mg."),
     SupplementMatch(keyword: "creatine", name: "Creatine", note: "3-5 g daily is effective; timing doesn't matter much."),
     SupplementMatch(keyword: "calcium", name: "Calcium", note: "Space away from iron supplements by a few hours."),
 ]
@@ -130,7 +130,7 @@ struct ScannerView: View {
                 controls
             }
         }
-        .navigationTitle("Scanner")
+        .navigationTitle("Label scanner")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
@@ -192,7 +192,7 @@ struct ScannerView: View {
     private func capture() {
         if !camera.isCameraAvailable || !camera.isSessionRunning {
             // Simulator / no-camera fallback so the flow is always demoable.
-            finish(with: "Vitamin D3 4000 IU + K2 100 mcg")
+            finish(with: "Zinc picolinate 50 mg")
             return
         }
         isProcessing = true

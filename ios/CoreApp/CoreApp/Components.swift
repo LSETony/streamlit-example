@@ -100,34 +100,6 @@ struct SectionHeaderRow: View {
     }
 }
 
-/// Simple bar chart used for club occupancy-by-hour on Home.
-struct BarChartView: View {
-    let bars: [(hour: Int, value: Double)]
-    var highlightHour: Int? = nil
-
-    var body: some View {
-        VStack(spacing: 6) {
-            HStack(alignment: .bottom, spacing: 10) {
-                ForEach(bars, id: \.hour) { bar in
-                    RoundedRectangle(cornerRadius: 3, style: .continuous)
-                        .fill(bar.hour == highlightHour ? Color.appAccent : Color.white.opacity(0.18))
-                        .frame(height: max(6, bar.value * 60))
-                        .frame(maxWidth: .infinity)
-                }
-            }
-            .frame(height: 60, alignment: .bottom)
-            HStack {
-                ForEach(bars, id: \.hour) { bar in
-                    Text(String(format: "%02d", bar.hour))
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color.appTextTertiary)
-                        .frame(maxWidth: .infinity)
-                }
-            }
-        }
-    }
-}
-
 /// Rounded avatar with initials, used by Trainers.
 struct InitialsAvatar: View {
     let initials: String

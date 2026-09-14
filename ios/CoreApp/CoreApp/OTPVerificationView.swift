@@ -64,7 +64,7 @@ struct OTPVerificationView: View {
                 Spacer()
             }
 
-            PrimaryButton(title: "Continue", isEnabled: isCodeComplete, color: .appPurple) {
+            PrimaryButton(title: "Continue", isEnabled: isCodeComplete, color: .appAccent) {
                 verify()
             }
         }
@@ -102,7 +102,7 @@ struct OTPVerificationView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(focusedIndex == index ? Color.appPurple : .clear, lineWidth: 2)
+                .stroke(focusedIndex == index ? Color.appAccent : .clear, lineWidth: 2)
         )
         .focused($focusedIndex, equals: index)
     }

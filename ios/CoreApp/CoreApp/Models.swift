@@ -16,9 +16,9 @@ struct Zone: Identifiable {
     }
     var statusColor: Color {
         switch occupancyPercent {
-        case ..<40: return .appSuccess
-        case 40..<75: return .appWarning
-        default: return .appAccent
+        case ...55: return .appSuccess
+        case 56...80: return .appAccent
+        default: return .appWarning
         }
     }
 }
@@ -34,7 +34,7 @@ enum EventKind: String {
         switch self {
         case .workout: return .appAccent
         case .trainer: return .appSuccess
-        case .reservation: return .white
+        case .reservation: return .appTextSecondary
         }
     }
 }
@@ -50,7 +50,7 @@ enum EventStatus: String {
         switch self {
         case .booked: return .appTextSecondary
         case .confirm: return .appAccent
-        case .hold: return .appTextTertiary
+        case .hold: return .appTextSecondary
         case .you: return .appTextSecondary
         case .plan: return .appAccent
         }
@@ -64,42 +64,71 @@ struct ScheduleEvent: Identifiable {
     let subtitle: String
     let kind: EventKind
     var status: EventStatus
-    var dayOffset: Int = 0 // days from "today" in the demo calendar
+}
+
+struct PlanDay: Identifiable {
+    let id = UUID()
+    let day: String
+    let name: String
+    let detail: String
+    var isDone: Bool
+    var isToday: Bool = false
+}
+
+struct LibraryExercise: Identifiable {
+    let id = UUID()
+    let group: String
+    let name: String
+    let meta: String
+}
+
+struct HistoryEntry: Identifiable {
+    let id = UUID()
+    let name: String
+    let date: String
+    let duration: String
+    let volume: String
 }
 
 // MARK: - Trainers
 
 struct Trainer: Identifiable {
     let id = UUID()
-    let name: String
     let initials: String
+    let name: String
     let specialty: String
-    let rating: Double
+    let rating: String
     let reviews: Int
-    let pricePerHour: Int
+    let priceLabel: String
+    let priceCompact: String
     let nextAvailable: String
-    let avatarColor: Color
-    var isTodayAvailable: Bool = false
+    let availabilityColor: Color
+    let yearsExperience: String
+    let clients: Int
+    let sessions: Int
+    let tags: [String]
+    let bio: String
 }
 
 // MARK: - Workout
 
-struct WorkoutLift: Identifiable {
+struct WorkoutSet: Identifiable {
     let id = UUID()
-    let name: String
-    let sets: Int
-    let reps: String
-    var isDone: Bool = false
+    var weight: Double
+    var reps: Int
+    var isDone: Bool
 }
 
-// MARK: - Nutrition
+enum ClassBookingState {
+    case book, booked, waitlist, full
+}
 
-struct Meal: Identifiable {
+struct GroupClass: Identifiable {
     let id = UUID()
     let time: String
     let name: String
     let subtitle: String
-    let calories: Int
+    let state: ClassBookingState
 }
 
 // MARK: - Diagnostics / Vitamins
@@ -130,14 +159,52 @@ struct BodyMetricPoint: Identifiable {
     let value: Double
 }
 
+struct BodyMetric: Identifiable {
+    let id = UUID()
+    let name: String
+    let value: String
+    let note: String
+}
+
+enum LabFlagLevel {
+    case ok, warn
+}
+
+struct LabResult: Identifiable {
+    let id = UUID()
+    let name: String
+    let value: String
+    let range: String
+    let flag: String
+    let level: LabFlagLevel
+
+    var color: Color { level == .warn ? .appWarning : .appSuccess }
+}
+
 // MARK: - Store
+
+struct Ingredient: Identifiable {
+    let id = UUID()
+    let name: String
+    let amount: String
+}
 
 struct Product: Identifiable {
     let id = UUID()
-    let code: String
+    let abbr: String
     let name: String
+    let form: String
+    let dose: String
+    let count: String
     let price: Int
-    var inCart: Int = 0
+    let subscriptionPrice: Int
+    let tag: String
+    let tagColor: Color
+    let desc: String
+    let ingredients: [Ingredient]
+    let benefits: String
+    let risks: String
+    let interactions: String
 }
 
 // MARK: - QR Pass
@@ -149,23 +216,23 @@ struct Visit: Identifiable {
     let timeRange: String
 }
 
-// MARK: - Progress
-
-enum StreakDayState {
-    case completed, today, upcoming
-}
-
-struct StreakDay: Identifiable {
-    let id = UUID()
-    let letter: String
-    let number: Int
-    let state: StreakDayState
-}
-
 // MARK: - AI Assistant
 
 struct ChatMessage: Identifiable {
     let id = UUID()
     let isUser: Bool
     let text: String
+}
+
+// MARK: - Profile settings
+
+enum SettingsDestination {
+    case none, diagnostics, store
+}
+
+struct SettingsRowItem: Identifiable {
+    let id = UUID()
+    let name: String
+    let subtitle: String
+    var destination: SettingsDestination = .none
 }
