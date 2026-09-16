@@ -224,19 +224,6 @@ struct ChatMessage: Identifiable {
     let text: String
 }
 
-// MARK: - Profile settings
-
-enum SettingsDestination {
-    case none, diagnostics, store
-}
-
-struct SettingsRowItem: Identifiable {
-    let id = UUID()
-    let name: String
-    let subtitle: String
-    var destination: SettingsDestination = .none
-}
-
 // MARK: - Workout library / Food recipes
 
 struct WorkoutCard: Identifiable {

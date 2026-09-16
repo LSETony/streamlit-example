@@ -102,7 +102,7 @@ struct HomeView: View {
                         .padding(.bottom, 6)
                 }
                 HStack(alignment: .bottom, spacing: 6) {
-                    ForEach(appState.occupancyBars.prefix(6).indices, id: \.self) { i in
+                    ForEach(appState.occupancyBars.indices, id: \.self) { i in
                         RoundedRectangle(cornerRadius: 4, style: .continuous)
                             .fill(i == 3 ? Color.appAccent : .white.opacity(0.7))
                             .frame(height: max(4, appState.occupancyBars[i] * 40))

@@ -185,7 +185,7 @@ struct OnboardingView: View {
                     .font(.system(size: 12))
                     .foregroundStyle(Color.appTextSecondary)
             }
-            .frame(maxWidth: .infinity, minHeight: 130, alignment: .topLeading)
+            .frame(maxWidth: .infinity, minHeight: 193, alignment: .topLeading)
             .padding(16)
             .overlay(
                 RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
@@ -220,7 +220,7 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, 18)
             .padding(.vertical, isSelected ? 6 : 18)
-            .frame(maxWidth: .infinity, minHeight: 64)
+            .frame(maxWidth: .infinity, minHeight: 72)
             .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
         }
         .buttonStyle(.plain)

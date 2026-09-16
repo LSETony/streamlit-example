@@ -132,11 +132,12 @@ final class AppState: ObservableObject {
 
     // MARK: Club occupancy
 
-    @Published var occupancyPercent: Int = 42
+    @Published var occupancyPercent: Int = 84
     @Published var occupancyInClub: Int = 38
     @Published var occupancyCapacity: Int = 90
-    /// Bar heights 0...1 across the day; index 3 is "now" and always accented.
-    @Published var occupancyBars: [Double] = [0.24, 0.18, 0.40, 0.42, 0.56, 0.74, 1.0, 0.82, 0.48, 0.30]
+    /// Bar heights 0...1 across the day (6 bars, matching the Figma source's
+    /// exact geometry); index 3 is "now" and always accented.
+    @Published var occupancyBars: [Double] = [0.27, 0.15, 0.35, 0.79, 1.0, 0.35]
 
     // MARK: Calendar / schedule
 
@@ -444,14 +445,6 @@ final class AppState: ObservableObject {
     @Published var membershipPlanName: String = "Unlimited 24/7"
     @Published var membershipRenewDate: String = "12 Mar 2027"
     @Published var membershipMonthlyPrice: Int = 7900
-
-    let settingsRows: [SettingsRowItem] = [
-        SettingsRowItem(name: "Notifications", subtitle: "Class reminders, protocol nudges, restock"),
-        SettingsRowItem(name: "Payments", subtitle: "Card ·· 4417 · invoices"),
-        SettingsRowItem(name: "Diagnostics history", subtitle: "6 reports since Mar 2023", destination: .diagnostics),
-        SettingsRowItem(name: "Vitamin subscription", subtitle: "Monthly box · ships 28 Sep", destination: .store),
-        SettingsRowItem(name: "Accessibility", subtitle: "Larger text, reduce motion, VoiceOver"),
-    ]
 }
 
 struct MealEntry: Identifiable {

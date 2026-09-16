@@ -124,7 +124,7 @@ struct WorkoutsView: View {
                         Text(card.title)
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity, minHeight: 130, alignment: .bottomLeading)
+                            .frame(maxWidth: .infinity, minHeight: 180, alignment: .bottomLeading)
                             .padding(16)
                             .background(Color.appAccentPurple)
                             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
@@ -356,7 +356,7 @@ private struct WorkoutCardTile: View {
             }
             .padding(12)
         }
-        .frame(height: 150)
+        .frame(height: 180)
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))

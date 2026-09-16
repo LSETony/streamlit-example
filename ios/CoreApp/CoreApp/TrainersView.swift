@@ -92,7 +92,7 @@ private struct TrainerTile: View {
                     PhotoPlaceholder(style: .trainer, icon: "person.fill")
                     FavoriteButton(isFavorite: $isFavorite).padding(8)
                 }
-                .frame(height: 150)
+                .aspectRatio(186.0 / 250.0, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
             }

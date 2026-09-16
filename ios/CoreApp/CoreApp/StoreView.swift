@@ -165,11 +165,11 @@ private struct ProductTile: View {
     var body: some View {
         Button(action: onOpen) {
             VStack(alignment: .leading, spacing: 10) {
+                Spacer(minLength: 60)
                 Text(product.name)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(2)
-                Spacer(minLength: 20)
                 HStack {
                     Text("\(product.price)$")
                         .font(.digitalTimer(16))
@@ -186,8 +186,8 @@ private struct ProductTile: View {
                 }
             }
             .padding(16)
-            .frame(height: 130, alignment: .top)
-            .frame(maxWidth: .infinity)
+            .aspectRatio(186.0 / 196.0, contentMode: .fit)
+            .frame(maxWidth: .infinity, alignment: .bottomLeading)
             .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
         }
         .buttonStyle(.plain)

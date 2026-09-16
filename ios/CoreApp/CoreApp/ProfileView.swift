@@ -5,8 +5,6 @@ struct ProfileView: View {
     @EnvironmentObject var authService: AuthService
     @State private var showManageSheet = false
     @State private var showQR = false
-    @State private var showDiagnostics = false
-    @State private var showStore = false
 
     var body: some View {
         NavigationStack {
@@ -17,7 +15,7 @@ struct ProfileView: View {
                     membershipCard
                     statsRow
                     healthCard
-                    settingsSection
+                    Spacer(minLength: 40)
                     logoutButton
                 }
                 .screenPadding()
@@ -27,8 +25,6 @@ struct ProfileView: View {
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showQR) { QRPassView() }
-            .sheet(isPresented: $showDiagnostics) { NavigationStack { DiagnosticsView() } }
-            .sheet(isPresented: $showStore) { NavigationStack { StoreView() } }
         }
         .sheet(isPresented: $showManageSheet) {
             ManageMembershipSheet()
@@ -141,43 +137,6 @@ struct ProfileView: View {
         .padding(.top, 20)
     }
 
-    private var settingsSection: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            EyebrowLabel(text: "Settings").padding(.bottom, 6)
-            ForEach(Array(appState.settingsRows.enumerated()), id: \.element.id) { index, row in
-                AppDivider()
-                Button {
-                    switch row.destination {
-                    case .diagnostics: showDiagnostics = true
-                    case .store: showStore = true
-                    case .none: break
-                    }
-                } label: {
-                    SettingsRow(title: row.name, subtitle: row.subtitle)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-}
-
-private struct SettingsRow: View {
-    let title: String
-    let subtitle: String
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                Text(subtitle).font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
-            }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Color.appTextSecondary)
-        }
-        .padding(.vertical, 15)
-    }
 }
 
 private struct ManageMembershipSheet: View {
