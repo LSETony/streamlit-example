@@ -62,10 +62,9 @@ struct AIAssistantView: View {
                         .font(.system(size: 16, weight: .bold))
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 44)
-                        .background(Color.appAccent)
-                        .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
+                .glassEffect(.regular.tint(.appAccent).interactive(), in: Circle())
                 .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .screenPadding()

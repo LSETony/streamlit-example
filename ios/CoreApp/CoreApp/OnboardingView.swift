@@ -135,24 +135,22 @@ struct OnboardingView: View {
 
             Spacer(minLength: 40)
 
-            HStack(spacing: 10) {
-                TextField("", text: $appState.contradictionsNote, prompt: Text("Type here…").foregroundStyle(.white.opacity(0.4)))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 14)
-                    .background(Color.white.opacity(0.06))
-                    .clipShape(Capsule())
-                    .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
-                Button {} label: {
-                    Image(systemName: "paperplane.fill")
-                        .font(.system(size: 15))
+            GlassEffectContainer(spacing: 10) {
+                HStack(spacing: 10) {
+                    TextField("", text: $appState.contradictionsNote, prompt: Text("Type here…").foregroundStyle(.white.opacity(0.4)))
                         .foregroundStyle(.white)
-                        .frame(width: 48, height: 48)
-                        .background(Color.white.opacity(0.06))
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 14)
+                        .glassEffect(.regular, in: Capsule())
+                    Button {} label: {
+                        Image(systemName: "paperplane.fill")
+                            .font(.system(size: 15))
+                            .foregroundStyle(.white)
+                            .frame(width: 48, height: 48)
+                    }
+                    .buttonStyle(.plain)
+                    .glassEffect(.regular.tint(.appAccentPurple).interactive(), in: Circle())
                 }
-                .buttonStyle(.plain)
             }
         }
         .padding(20)

@@ -42,24 +42,21 @@ extension View {
         self.padding(.horizontal, AppMetrics.screenPadding)
     }
 
-    /// "Liquid glass" card treatment — frosted translucent material with a
-    /// soft top highlight and hairline border, used wherever the design puts
-    /// a panel over a photo (auth cards, the Home hero, onboarding chrome).
-    /// Falls back to plain `.ultraThinMaterial` blur (works from iOS 15) so
-    /// it doesn't require the newer `glassEffect` API/SDK.
+    /// The app's real Liquid Glass card treatment (iOS 26 `glassEffect`) —
+    /// used wherever the design puts a panel over a photo: auth cards, the
+    /// Home hero's occupancy card, onboarding chrome. Deployment target is
+    /// iOS 26+, so this is the genuine system material, not an approximation.
     func glassCard(padding: CGFloat = 16, corner: CGFloat = AppMetrics.cardCorner) -> some View {
         self
             .padding(padding)
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: corner, style: .continuous).fill(.ultraThinMaterial)
-                    RoundedRectangle(cornerRadius: corner, style: .continuous)
-                        .fill(LinearGradient(colors: [.white.opacity(0.10), .clear], startPoint: .top, endPoint: .bottom))
-                }
-                .environment(\.colorScheme, .dark)
-            )
-            .overlay(RoundedRectangle(cornerRadius: corner, style: .continuous).stroke(.white.opacity(0.16), lineWidth: 1))
-            .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
+            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: corner, style: .continuous))
+    }
+
+    /// A round Liquid Glass icon button (search, bag, favorite ...): regular
+    /// glass, interactive so it compresses/highlights on press like a native
+    /// control.
+    func glassCircleButton() -> some View {
+        self.glassEffect(.regular.interactive(), in: Circle())
     }
 }
 

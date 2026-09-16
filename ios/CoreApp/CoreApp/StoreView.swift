@@ -56,15 +56,12 @@ struct StoreView: View {
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
-                    .background(Color.appAccent)
-                    .clipShape(Circle())
+                    .glassEffect(.regular.tint(.appAccent), in: Circle())
             }
             .padding(10)
-            .background(Color.appSurface)
-            .clipShape(Capsule())
-            .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
         }
         .buttonStyle(.plain)
+        .glassEffect(.regular.interactive(), in: Capsule())
     }
 
     private var bundleCard: some View {
@@ -180,9 +177,9 @@ private struct ProductTile: View {
                             .font(.system(size: 13, weight: .bold))
                             .foregroundStyle(.white)
                             .frame(width: 30, height: 30)
-                            .background(.ultraThinMaterial, in: Circle())
                     }
                     .buttonStyle(.plain)
+                    .glassEffect(.regular.tint(.appAccent).interactive(), in: Circle())
                 }
             }
             .padding(16)

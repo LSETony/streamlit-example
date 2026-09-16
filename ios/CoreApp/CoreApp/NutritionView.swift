@@ -79,23 +79,26 @@ struct NutritionView: View {
                         .foregroundStyle(.white)
                 }
                 Spacer()
-                Button { appState.removeWater() } label: {
-                    Image(systemName: "minus")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 40, height: 40)
-                        .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
+                GlassEffectContainer(spacing: 8) {
+                    HStack(spacing: 8) {
+                        Button { appState.removeWater() } label: {
+                            Image(systemName: "minus")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 40, height: 40)
+                        }
+                        .buttonStyle(.plain)
+                        .glassCircleButton()
+                        Button { appState.addWater() } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 40, height: 40)
+                        }
+                        .buttonStyle(.plain)
+                        .glassEffect(.regular.tint(.appAccent).interactive(), in: Circle())
+                    }
                 }
-                .buttonStyle(.plain)
-                Button { appState.addWater() } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 40, height: 40)
-                        .background(Color.appAccent)
-                        .clipShape(Circle())
-                }
-                .buttonStyle(.plain)
             }
             HStack(spacing: 5) {
                 ForEach(0..<appState.waterGlassesTotal, id: \.self) { i in

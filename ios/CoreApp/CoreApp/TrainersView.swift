@@ -54,20 +54,20 @@ struct SearchToolRow: View {
     @Binding var search: String
 
     var body: some View {
-        HStack(spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: "magnifyingglass").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
-                TextField("", text: $search, prompt: Text("search").foregroundStyle(Color.appTextSecondary))
-                    .foregroundStyle(.white)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 13)
-            .background(Color.appSurface)
-            .clipShape(Capsule())
-            .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
+        GlassEffectContainer(spacing: 10) {
+            HStack(spacing: 10) {
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
+                    TextField("", text: $search, prompt: Text("search").foregroundStyle(Color.appTextSecondary))
+                        .foregroundStyle(.white)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 13)
+                .glassEffect(.regular, in: Capsule())
 
-            toolIcon("arrow.up.arrow.down")
-            toolIcon("slider.horizontal.3")
+                toolIcon("arrow.up.arrow.down")
+                toolIcon("slider.horizontal.3")
+            }
         }
     }
 
@@ -76,9 +76,7 @@ struct SearchToolRow: View {
             .font(.system(size: 14, weight: .semibold))
             .foregroundStyle(.white)
             .frame(width: 42, height: 42)
-            .background(Color.appSurface)
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
+            .glassCircleButton()
     }
 }
 

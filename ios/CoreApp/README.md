@@ -12,8 +12,8 @@ required except where noted below).
 
 ## Requirements
 
-- Xcode 15.4+ (built against the iOS 17 SDK)
-- iOS 17+ device or simulator
+- Xcode 26+ (built against the iOS 26 SDK, for real Liquid Glass — see Notes)
+- iOS 26+ device or simulator
 - A free or paid Apple Developer account for signing
 - An internet connection the first time you open the project, so Xcode can
   resolve the GoogleSignIn Swift Package dependency
@@ -145,6 +145,16 @@ CoreApp/
 
 ## Notes
 
+- **Liquid Glass**: the deployment target is iOS 26.0 so the app can use the
+  real system `glassEffect`/`GlassEffectContainer` API and the
+  `.glassProminent` button style — not an `.ultraThinMaterial` approximation.
+  It's used throughout: the tab bar, every floating icon button (search,
+  favorite, add-to-cart, send), the sign-in/verification cards and OTP
+  digit circles, and every primary CTA button (`PrimaryButton`, via
+  `Theme.swift`'s `glassCard`/`glassCircleButton` helpers). This is a real
+  compatibility trade-off — the app no longer runs on iOS 17–25 — so lower
+  the deployment target and fall back to `.ultraThinMaterial` if you need
+  to support older devices.
 - The bundle identifier and display name are placeholders — update
   `Info.plist`'s `CFBundleDisplayName` and the target's
   `PRODUCT_BUNDLE_IDENTIFIER` with your own before shipping. The app icon

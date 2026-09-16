@@ -44,9 +44,11 @@ struct OTPVerificationView: View {
                     .foregroundStyle(.white.opacity(0.6))
             }
 
-            HStack(spacing: 16) {
-                ForEach(0..<4, id: \.self) { i in
-                    digitBox(i)
+            GlassEffectContainer(spacing: 16) {
+                HStack(spacing: 16) {
+                    ForEach(0..<4, id: \.self) { i in
+                        digitBox(i)
+                    }
                 }
             }
             .frame(maxWidth: .infinity)
@@ -75,12 +77,7 @@ struct OTPVerificationView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .environment(\.colorScheme, .dark)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
     }
 
     private var isCodeComplete: Bool { digits.allSatisfy { $0.count == 1 } }
@@ -103,10 +100,9 @@ struct OTPVerificationView: View {
         .font(.system(size: 22, weight: .bold))
         .foregroundStyle(.white)
         .frame(width: 60, height: 60)
-        .background(focusedIndex == index ? Color.appAccentPurple : Color.white.opacity(0.08))
-        .clipShape(Circle())
-        .overlay(
-            Circle().stroke(focusedIndex == index ? .clear : Color.white.opacity(0.16), lineWidth: 1)
+        .glassEffect(
+            focusedIndex == index ? .regular.tint(.appAccentPurple).interactive() : .regular.interactive(),
+            in: Circle()
         )
         .focused($focusedIndex, equals: index)
     }

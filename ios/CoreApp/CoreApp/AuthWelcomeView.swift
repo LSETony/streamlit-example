@@ -78,12 +78,14 @@ struct AuthWelcomeView: View {
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
             }
 
-            HStack(spacing: 14) {
-                socialButton(systemImage: "g.circle.fill") {
-                    authService.signInWithGoogle()
-                }
-                socialButton(systemImage: "apple.logo") {
-                    authService.signInWithApple()
+            GlassEffectContainer(spacing: 14) {
+                HStack(spacing: 14) {
+                    socialButton(systemImage: "g.circle.fill") {
+                        authService.signInWithGoogle()
+                    }
+                    socialButton(systemImage: "apple.logo") {
+                        authService.signInWithApple()
+                    }
                 }
             }
 
@@ -97,12 +99,7 @@ struct AuthWelcomeView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .environment(\.colorScheme, .dark)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
     }
 
     private func fieldRow<Content: View>(icon: String, @ViewBuilder content: () -> Content) -> some View {
@@ -117,8 +114,7 @@ struct AuthWelcomeView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
-        .background(Color.white.opacity(0.08))
-        .clipShape(Capsule())
+        .glassEffect(.regular, in: Capsule())
     }
 
     private func socialButton(systemImage: String, action: @escaping () -> Void) -> some View {
@@ -128,10 +124,9 @@ struct AuthWelcomeView: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(Color.white.opacity(0.1))
-                .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .glassEffect(.regular.interactive(), in: Capsule())
     }
 }
 

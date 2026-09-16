@@ -53,8 +53,9 @@ struct StatTile: View {
     }
 }
 
-/// Filled, full-width call-to-action button used across screens ("Capture",
-/// "Confirm check-in", "Subscribe" ...).
+/// Full-width call-to-action button used across screens ("Capture",
+/// "Confirm check-in", "Subscribe" ...) — real Liquid Glass via the
+/// system's `.glassProminent` button style, tinted per call site.
 struct PrimaryButton: View {
     let title: String
     var isEnabled: Bool = true
@@ -65,14 +66,13 @@ struct PrimaryButton: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(isEnabled ? color : color.opacity(0.4))
-                .clipShape(Capsule())
         }
+        .buttonStyle(.glassProminent)
+        .tint(color)
         .disabled(!isEnabled)
-        .buttonStyle(.plain)
+        .opacity(isEnabled ? 1 : 0.4)
     }
 }
 
@@ -162,10 +162,10 @@ struct FavoriteButton: View {
         Button { isFavorite.toggle() } label: {
             Image(systemName: isFavorite ? "heart.fill" : "heart")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(isFavorite ? Color.appAccent : .white)
                 .frame(width: 30, height: 30)
-                .background(.ultraThinMaterial, in: Circle())
         }
         .buttonStyle(.plain)
+        .glassCircleButton()
     }
 }

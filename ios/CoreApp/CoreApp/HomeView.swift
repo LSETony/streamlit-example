@@ -57,8 +57,12 @@ struct HomeView: View {
                     .foregroundStyle(.white)
                     .shadow(radius: 6)
                 Spacer()
-                heroIconButton("magnifyingglass") {}
-                heroIconButton("bag.fill") { activeSheet = .store }
+                GlassEffectContainer(spacing: 10) {
+                    HStack(spacing: 10) {
+                        heroIconButton("magnifyingglass") {}
+                        heroIconButton("bag.fill") { activeSheet = .store }
+                    }
+                }
             }
             .padding(.horizontal, AppMetrics.screenPadding)
             .padding(.top, 56)
@@ -72,9 +76,9 @@ struct HomeView: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(width: 38, height: 38)
-                .background(.ultraThinMaterial, in: Circle())
         }
         .buttonStyle(.plain)
+        .glassCircleButton()
     }
 
     private var occupancyGlassCard: some View {
@@ -89,8 +93,7 @@ struct HomeView: View {
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.white)
                         .frame(width: 32, height: 32)
-                        .background(Color.appAccent)
-                        .clipShape(Circle())
+                        .glassEffect(.regular.tint(.appAccent), in: Circle())
                 }
                 HStack(alignment: .bottom, spacing: 10) {
                     Text("\(appState.occupancyPercent)")
@@ -151,13 +154,15 @@ struct HomeView: View {
     // MARK: Icon grid (circular buttons)
 
     private var iconGrid: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 18) {
-            circleTile(icon: "calendar", title: "Book", highlighted: true) { activeSheet = .booking }
-            circleTile(icon: "person.2.fill", title: "Trainers") { activeSheet = .trainers }
-            circleTile(icon: "leaf.fill", title: "Food") { activeSheet = .nutrition }
-            circleTile(icon: "cart.fill", title: "Store") { activeSheet = .store }
-            circleTile(icon: "qrcode.viewfinder", title: "Scan") { activeSheet = .scanner }
-            circleTile(icon: "gearshape.fill", title: "Core AI") { activeSheet = .ai }
+        GlassEffectContainer(spacing: 18) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 18) {
+                circleTile(icon: "calendar", title: "Book", highlighted: true) { activeSheet = .booking }
+                circleTile(icon: "person.2.fill", title: "Trainers") { activeSheet = .trainers }
+                circleTile(icon: "leaf.fill", title: "Food") { activeSheet = .nutrition }
+                circleTile(icon: "cart.fill", title: "Store") { activeSheet = .store }
+                circleTile(icon: "qrcode.viewfinder", title: "Scan") { activeSheet = .scanner }
+                circleTile(icon: "gearshape.fill", title: "Core AI") { activeSheet = .ai }
+            }
         }
     }
 
@@ -168,9 +173,10 @@ struct HomeView: View {
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 54, height: 54)
-                    .background(highlighted ? Color.appAccent : Color.clear)
-                    .overlay(Circle().stroke(highlighted ? .clear : Color.appDivider, lineWidth: 1))
-                    .clipShape(Circle())
+                    .glassEffect(
+                        highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
+                        in: Circle()
+                    )
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(.white)
