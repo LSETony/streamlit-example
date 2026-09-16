@@ -1,0 +1,27 @@
+name: CoreApp
+options:
+  bundleIdPrefix: com.example.coreapp
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  CoreApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: CoreApp
+        excludes:
+          - "Info.plist"
+    info:
+      path: CoreApp/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.coreapp
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
