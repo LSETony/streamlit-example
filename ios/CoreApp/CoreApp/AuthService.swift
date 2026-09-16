@@ -52,39 +52,43 @@ final class AuthService: NSObject, ObservableObject {
         }
         isAuthenticating = true
         GIDSignIn.sharedInstance.signIn(withPresenting: presenter) { [weak self] result, error in
-            guard let self else { return }
-            self.isAuthenticating = false
-            if let error {
-                // Cancellation is a normal outcome, not an error to surface.
-                if (error as NSError).code != GIDSignInError.canceled.rawValue {
-                    self.authError = error.localizedDescription
+            Task { @MainActor in
+                guard let self else { return }
+                self.isAuthenticating = false
+                if let error {
+                    // Cancellation is a normal outcome, not an error to surface.
+                    if (error as NSError).code != GIDSignInError.canceled.rawValue {
+                        self.authError = error.localizedDescription
+                    }
+                    return
                 }
-                return
+                guard let googleUser = result?.user else { return }
+                let profile = googleUser.profile
+                self.currentUser = AuthUser(
+                    id: googleUser.userID ?? UUID().uuidString,
+                    name: profile?.name ?? "Google member",
+                    email: profile?.email,
+                    provider: .google
+                )
+                self.isAuthenticated = true
             }
-            guard let googleUser = result?.user else { return }
-            let profile = googleUser.profile
-            self.currentUser = AuthUser(
-                id: googleUser.userID ?? UUID().uuidString,
-                name: profile?.name ?? "Google member",
-                email: profile?.email,
-                provider: .google
-            )
-            self.isAuthenticated = true
         }
     }
 
     /// Call from `.onAppear` on launch to silently resume a Google session.
     func restorePreviousGoogleSignIn() {
         GIDSignIn.sharedInstance.restorePreviousSignIn { [weak self] user, _ in
-            guard let self, let user else { return }
-            let profile = user.profile
-            self.currentUser = AuthUser(
-                id: user.userID ?? UUID().uuidString,
-                name: profile?.name ?? "Google member",
-                email: profile?.email,
-                provider: .google
-            )
-            self.isAuthenticated = true
+            Task { @MainActor in
+                guard let self, let user else { return }
+                let profile = user.profile
+                self.currentUser = AuthUser(
+                    id: user.userID ?? UUID().uuidString,
+                    name: profile?.name ?? "Google member",
+                    email: profile?.email,
+                    provider: .google
+                )
+                self.isAuthenticated = true
+            }
         }
     }
 

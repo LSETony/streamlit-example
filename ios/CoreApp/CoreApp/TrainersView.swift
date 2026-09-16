@@ -21,7 +21,9 @@ struct TrainersView: View {
                             trainer: trainer,
                             isFavorite: Binding(
                                 get: { favorites.contains(trainer.id) },
-                                set: { on in on ? favorites.insert(trainer.id) : favorites.remove(trainer.id) }
+                                set: { on in
+                                    if on { favorites.insert(trainer.id) } else { favorites.remove(trainer.id) }
+                                }
                             )
                         ) {
                             selectedTrainer = trainer
