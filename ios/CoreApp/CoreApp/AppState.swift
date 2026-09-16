@@ -42,8 +42,8 @@ final class AppState: ObservableObject {
         WorkoutCard(title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Strength", photoStyle: .gym),
     ]
     @Published var topWorkoutCards: [WorkoutCard] = [
-        WorkoutCard(title: "Sam's Prenatal Flow", level: "Beginner", duration: "22 mins", category: "Strength", photoStyle: .trainer),
-        WorkoutCard(title: "Chest and Triceps", level: "Inter", duration: "62 mins", category: "Strength", photoStyle: .gym),
+        WorkoutCard(title: "Sam's Prental Flow", level: "Beginner", duration: "22 mins", category: "Strength", photoStyle: .trainer),
+        WorkoutCard(title: "Chest and Triceps", level: "Inter", duration: "22 mins", category: "Strength", photoStyle: .gym),
     ]
     @Published var importantCards: [ImportantCard] = [
         ImportantCard(title: "Gym Safety"),
