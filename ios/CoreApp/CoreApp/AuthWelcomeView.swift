@@ -37,16 +37,16 @@ struct AuthWelcomeView: View {
     private var card: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Welcome back")
+                Text("Добро пожаловать")
                     .font(.system(size: 28, weight: .bold))
                     .foregroundStyle(.white)
-                Text("Create your account")
+                Text("Создать аккаунт")
                     .font(.system(size: 15))
-                    .foregroundStyle(.white.opacity(0.6))
+                    .foregroundStyle(Color.appAccent)
             }
 
             fieldRow(icon: "person.fill") {
-                TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(.white.opacity(0.45)))
+                TextField("", text: $fullName, prompt: Text("ФИО").foregroundStyle(.white.opacity(0.45)))
                     .foregroundStyle(.white)
                     .textInputAutocapitalization(.words)
             }
@@ -69,12 +69,12 @@ struct AuthWelcomeView: View {
             }
 
             if canContinue {
-                PrimaryButton(title: "Continue", color: .appAccent) { goToVerify = true }
+                PrimaryButton(title: "Continue", color: .appAccentPurple) { goToVerify = true }
             }
 
             HStack(spacing: 12) {
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
-                Text("OR").font(.system(size: 12, weight: .semibold)).foregroundStyle(.white.opacity(0.5))
+                Text("или").font(.system(size: 12, weight: .semibold)).foregroundStyle(.white.opacity(0.5))
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
             }
 

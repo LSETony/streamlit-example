@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var authService: AuthService
     @State private var showManageSheet = false
     @State private var showQR = false
     @State private var showDiagnostics = false
@@ -17,6 +18,7 @@ struct ProfileView: View {
                     statsRow
                     healthCard
                     settingsSection
+                    logoutButton
                 }
                 .screenPadding()
                 .padding(.top, 12)
@@ -35,30 +37,30 @@ struct ProfileView: View {
 
     private var header: some View {
         HStack(spacing: 16) {
-            Text(appState.initials)
-                .font(.system(size: 19, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 64, height: 64)
-                .background(Color.appSurfaceElevated)
+            PhotoPlaceholder(style: .trainer, icon: "person.fill")
+                .frame(width: 56, height: 56)
                 .clipShape(Circle())
                 .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
-            VStack(alignment: .leading, spacing: 5) {
-                Text(appState.fullName).font(.system(size: 24, weight: .bold)).foregroundStyle(.white)
-                Text("Member since \(appState.memberSince) · \(appState.totalVisits) visits")
+            VStack(alignment: .leading, spacing: 3) {
+                Text(appState.fullName).font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                Text("Member since \(appState.memberSince)")
                     .font(.system(size: 12))
                     .foregroundStyle(Color.appTextSecondary)
             }
+            Spacer()
+            Text("\(appState.totalVisits) visits")
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(Color.appAccent)
+                .clipShape(Capsule())
         }
     }
 
     private var qrPassRow: some View {
         Button { showQR = true } label: {
-            HStack(spacing: 16) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.appAccentDim)
-                    Image(systemName: "qrcode").font(.system(size: 22)).foregroundStyle(Color.appAccent)
-                }
-                .frame(width: 46, height: 46)
+            HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("QR access pass").font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
                     Text(appState.isCheckedIn ? "Checked in · tap to check out" : "Turnstile and reception check-in")
@@ -69,51 +71,52 @@ struct ProfileView: View {
                 Image(systemName: "chevron.right").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
             }
             .padding(18)
-            .background(Color.appSurface)
             .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
         .buttonStyle(.plain)
     }
 
     private var membershipCard: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text("MEMBERSHIP")
-                .font(.system(size: 11, weight: .semibold))
-                .tracking(0.5)
-                .foregroundStyle(.white.opacity(0.8))
-            Text(appState.membershipPlanName)
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(.white)
-            HStack(alignment: .bottom) {
-                Text("Renews \(appState.membershipRenewDate) · ₽\(appState.membershipMonthlyPrice)/mo")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.white.opacity(0.9))
-                Spacer()
-                Button { showManageSheet = true } label: {
-                    Text("MANAGE")
-                        .font(.system(size: 11, weight: .bold))
-                        .tracking(0.4)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .overlay(Capsule().stroke(.white.opacity(0.5), lineWidth: 1))
+        Button { showManageSheet = true } label: {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .top) {
+                    Text("Membership")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.85))
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(.white.opacity(0.7))
                 }
-                .buttonStyle(.plain)
+                Text(appState.membershipPlanName)
+                    .font(.digitalTimer(26))
+                    .foregroundStyle(.white)
+                Text("renews \(appState.membershipRenewDate.lowercased())")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.white.opacity(0.85))
             }
-            .padding(.top, 10)
+            .padding(20)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.appAccentPurple)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
-        .padding(20)
-        .background(Color.appAccent)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .buttonStyle(.plain)
     }
 
     private var statsRow: some View {
         HStack(spacing: 10) {
-            StatTile(value: "\(appState.septemberVisits)", label: "Sep visits")
-            StatTile(value: "\(appState.scansThisMonth)", label: "Scans")
-            StatTile(value: "\(appState.ptSessionsLeft)", label: "PT left")
+            plainStat(value: "\(appState.septemberVisits)", label: "visits")
+            plainStat(value: "\(appState.scansThisMonth)", label: "scans")
+            plainStat(value: "\(appState.ptSessionsLeft)", label: "pt left")
         }
+    }
+
+    private func plainStat(value: String, label: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(value).font(.digitalTimer(24)).foregroundStyle(.white)
+            Text(label).font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
     }
 
     private var healthCard: some View {
@@ -128,7 +131,14 @@ struct ProfileView: View {
                 .labelsHidden()
                 .tint(.appAccent)
         }
-        .appCard(padding: 18)
+        .padding(.vertical, 6)
+    }
+
+    private var logoutButton: some View {
+        PrimaryButton(title: "Logout", color: .appAccentPurple) {
+            authService.signOut()
+        }
+        .padding(.top, 20)
     }
 
     private var settingsSection: some View {
@@ -192,4 +202,5 @@ private struct ManageMembershipSheet: View {
 #Preview {
     ProfileView()
         .environmentObject(AppState())
+        .environmentObject(AuthService())
 }

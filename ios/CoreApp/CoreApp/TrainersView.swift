@@ -4,20 +4,29 @@ struct TrainersView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
     @State private var selectedTrainer: Trainer?
-    @State private var selectedFilter = "All"
-
-    private let filters = ["All", "Strength", "Rehab", "Nutrition"]
+    @State private var search = ""
+    @State private var favorites: Set<UUID> = []
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                header
-                filterRow
-                ForEach(appState.trainers) { trainer in
-                    Button { selectedTrainer = trainer } label: {
-                        TrainerRow(trainer: trainer)
+                Text("Personal Trainers")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.white)
+                SearchToolRow(search: $search)
+
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
+                    ForEach(appState.trainers) { trainer in
+                        TrainerTile(
+                            trainer: trainer,
+                            isFavorite: Binding(
+                                get: { favorites.contains(trainer.id) },
+                                set: { on in on ? favorites.insert(trainer.id) : favorites.remove(trainer.id) }
+                            )
+                        ) {
+                            selectedTrainer = trainer
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
             }
             .screenPadding()
@@ -35,72 +44,66 @@ struct TrainersView: View {
             NavigationStack { TrainerDetailView(trainer: trainer) }
         }
     }
+}
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            EyebrowLabel(text: "14 specialists")
-            Text("Trainers")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundStyle(.white)
+/// Shared search field + sort/filter icon row used by Trainers, Supplements
+/// and Food recipes in the latest Figma pass.
+struct SearchToolRow: View {
+    @Binding var search: String
+
+    var body: some View {
+        HStack(spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
+                TextField("", text: $search, prompt: Text("search").foregroundStyle(Color.appTextSecondary))
+                    .foregroundStyle(.white)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 13)
+            .background(Color.appSurface)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
+
+            toolIcon("arrow.up.arrow.down")
+            toolIcon("slider.horizontal.3")
         }
     }
 
-    private var filterRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(filters, id: \.self) { filter in
-                    let on = selectedFilter == filter
-                    Text(filter)
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(on ? .white : Color.appTextPrimary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(on ? Color.appAccent : Color.appSurface)
-                        .overlay(Capsule().stroke(on ? .clear : Color.appDivider, lineWidth: 1))
-                        .clipShape(Capsule())
-                        .onTapGesture { selectedFilter = filter }
-                }
-            }
-        }
+    private func toolIcon(_ name: String) -> some View {
+        Image(systemName: name)
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundStyle(.white)
+            .frame(width: 42, height: 42)
+            .background(Color.appSurface)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
     }
 }
 
-private struct TrainerRow: View {
+private struct TrainerTile: View {
     let trainer: Trainer
+    @Binding var isFavorite: Bool
+    var onOpen: () -> Void
 
     var body: some View {
-        HStack(spacing: 14) {
-            InitialsAvatar(initials: trainer.initials, color: .appTextPrimary, size: 52)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(trainer.name)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
-                Text(trainer.specialty)
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color.appTextSecondary)
-                HStack(spacing: 10) {
-                    Text(trainer.rating)
-                        .font(.digitalTimer(14))
-                        .foregroundStyle(Color.appAccent)
-                    Text("\(trainer.reviews) reviews")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color.appTextSecondary)
-                    Text(trainer.priceLabel)
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color.appTextSecondary)
+        VStack(alignment: .leading, spacing: 8) {
+            Button(action: onOpen) {
+                ZStack(alignment: .topTrailing) {
+                    PhotoPlaceholder(style: .trainer, icon: "person.fill")
+                    FavoriteButton(isFavorite: $isFavorite).padding(8)
                 }
-                .padding(.top, 3)
+                .frame(height: 150)
+                .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
             }
-            Spacer()
-            Text(trainer.nextAvailable.uppercased())
-                .font(.system(size: 11, weight: .bold))
-                .tracking(0.4)
-                .foregroundStyle(trainer.availabilityColor)
-                .frame(width: 60, alignment: .trailing)
+            .buttonStyle(.plain)
+            Text(trainer.name)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.white)
+            Text("Personal trainer")
+                .font(.system(size: 12))
+                .foregroundStyle(Color.appTextSecondary)
         }
-        .padding(16)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 }
 

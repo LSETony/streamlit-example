@@ -34,6 +34,9 @@ struct RootView: View {
             if showSplash {
                 SplashView()
                     .transition(.opacity)
+            } else if !appState.hasCompletedOnboarding {
+                OnboardingView()
+                    .transition(.opacity)
             } else if !requiresSignIn || authService.isAuthenticated {
                 ContentView()
                     .transition(.opacity)
@@ -43,6 +46,7 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut, value: showSplash)
+        .animation(.easeInOut, value: appState.hasCompletedOnboarding)
         .animation(.easeInOut, value: authService.isAuthenticated)
         .onAppear {
             authService.restorePreviousGoogleSignIn()

@@ -36,10 +36,10 @@ struct OTPVerificationView: View {
     private var card: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Verify your number")
+                Text("Верификация")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(.white)
-                Text("We sent a 4-digit code to \(phoneDisplay)")
+                (Text("Отправили код на ") + Text(phoneDisplay).foregroundStyle(Color.appAccent))
                     .font(.system(size: 14))
                     .foregroundStyle(.white.opacity(0.6))
             }
@@ -51,20 +51,25 @@ struct OTPVerificationView: View {
             }
             .frame(maxWidth: .infinity)
 
-            HStack {
-                Spacer()
-                Text(secondsRemaining > 0 ? "Didn't receive? Resend in \(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))" : "Didn't receive?")
+            HStack(spacing: 4) {
+                Text("Не пришел код?")
                     .font(.system(size: 13))
                     .foregroundStyle(.white.opacity(0.6))
-                if secondsRemaining == 0 {
-                    Button("Resend") { secondsRemaining = 48 }
+                if secondsRemaining > 0 {
+                    Text("Отправить через ")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.white.opacity(0.6))
+                    + Text(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Color.appAccent)
+                } else {
+                    Button("Отправить") { secondsRemaining = 48 }
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(Color.appAccent)
                 }
-                Spacer()
             }
 
-            PrimaryButton(title: "Continue", isEnabled: isCodeComplete, color: .appAccent) {
+            PrimaryButton(title: "Continue", isEnabled: isCodeComplete, color: .appAccentPurple) {
                 verify()
             }
         }
@@ -95,14 +100,13 @@ struct OTPVerificationView: View {
         ))
         .keyboardType(.numberPad)
         .multilineTextAlignment(.center)
-        .font(.system(size: 24, weight: .bold))
+        .font(.system(size: 22, weight: .bold))
         .foregroundStyle(.white)
-        .frame(width: 56, height: 64)
-        .background(Color.white.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .frame(width: 60, height: 60)
+        .background(focusedIndex == index ? Color.appAccentPurple : Color.white.opacity(0.08))
+        .clipShape(Circle())
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(focusedIndex == index ? Color.appAccent : .clear, lineWidth: 2)
+            Circle().stroke(focusedIndex == index ? .clear : Color.white.opacity(0.16), lineWidth: 1)
         )
         .focused($focusedIndex, equals: index)
     }

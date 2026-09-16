@@ -236,3 +236,24 @@ struct SettingsRowItem: Identifiable {
     let subtitle: String
     var destination: SettingsDestination = .none
 }
+
+// MARK: - Workout library / Food recipes
+
+struct WorkoutCard: Identifiable {
+    let id = UUID()
+    let title: String
+    let level: String
+    let duration: String
+    let category: String
+    let photoStyle: PhotoPlaceholder.Style
+}
+
+struct ImportantCard: Identifiable {
+    let id = UUID()
+    let title: String
+}
+
+struct FoodRecipe: Identifiable {
+    let id = UUID()
+    let name: String
+}

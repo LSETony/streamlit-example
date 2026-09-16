@@ -13,21 +13,171 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                header
-                readinessCard
-                inProgressCard
-                occupancyCard
-                upcomingSection
-                grid
+                hero
+                    .padding(.bottom, 34) // room for the occupancy card overlap
+                    .overlay(alignment: .bottom) {
+                        occupancyGlassCard
+                            .screenPadding()
+                            .offset(y: 34)
+                    }
+
+                progressCard
+                    .screenPadding()
+                iconGrid
+                    .screenPadding()
+
+                Divider().overlay(Color.appDivider).screenPadding().padding(.top, 6)
+
+                VStack(alignment: .leading, spacing: 18) {
+                    readinessCard
+                    inProgressCard
+                    upcomingSection
+                }
+                .screenPadding()
             }
-            .screenPadding()
-            .padding(.top, 8)
             .padding(.bottom, 24)
         }
         .background(Color.appBackground.ignoresSafeArea())
+        .ignoresSafeArea(edges: .top)
         .sheet(item: $activeSheet) { sheet in
             sheetView(for: sheet)
         }
+    }
+
+    // MARK: Hero (photo header + search/store icons)
+
+    private var hero: some View {
+        ZStack(alignment: .topLeading) {
+            PhotoPlaceholder(style: .gym, icon: "figure.strengthtraining.traditional")
+                .frame(height: 250)
+
+            HStack {
+                Text(appState.clubName)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(.white)
+                    .shadow(radius: 6)
+                Spacer()
+                heroIconButton("magnifyingglass") {}
+                heroIconButton("bag.fill") { activeSheet = .store }
+            }
+            .padding(.horizontal, AppMetrics.screenPadding)
+            .padding(.top, 56)
+        }
+        .clipped()
+    }
+
+    private func heroIconButton(_ icon: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 38, height: 38)
+                .background(.ultraThinMaterial, in: Circle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var occupancyGlassCard: some View {
+        Button { activeSheet = .booking } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Club Occupancy")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(Color.appAccent)
+                        .clipShape(Circle())
+                }
+                HStack(alignment: .bottom, spacing: 10) {
+                    Text("\(appState.occupancyPercent)")
+                        .font(.digitalTimer(38))
+                        .foregroundStyle(.white)
+                    Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .padding(.bottom, 6)
+                }
+                HStack(alignment: .bottom, spacing: 6) {
+                    ForEach(appState.occupancyBars.prefix(6).indices, id: \.self) { i in
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .fill(i == 3 ? Color.appAccent : .white.opacity(0.7))
+                            .frame(height: max(4, appState.occupancyBars[i] * 40))
+                    }
+                }
+                .frame(height: 40, alignment: .bottom)
+                .padding(.top, 4)
+                HStack {
+                    ForEach(["06", "10", "14", "22"], id: \.self) { hour in
+                        Text(hour).font(.system(size: 10)).foregroundStyle(.white.opacity(0.6))
+                        if hour != "22" { Spacer() }
+                    }
+                }
+            }
+            .glassCard(padding: 18)
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: Progress card
+
+    private var progressCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Your Progress")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.white)
+                Spacer()
+                Image(systemName: "chart.bar.fill")
+                    .font(.system(size: 15))
+                    .foregroundStyle(Color.appAccent)
+            }
+            Text("\(appState.trainingProgressPercent)%")
+                .font(.digitalTimer(34))
+                .foregroundStyle(.white)
+            ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 8)
+            HStack {
+                Text("day \(appState.trainingDay)").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                Spacer()
+                Text("\(appState.trainingMinutesToday) mins training").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+            }
+        }
+        .appCard(padding: 20)
+    }
+
+    // MARK: Icon grid (circular buttons)
+
+    private var iconGrid: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 18) {
+            circleTile(icon: "calendar", title: "Book", highlighted: true) { activeSheet = .booking }
+            circleTile(icon: "person.2.fill", title: "Trainers") { activeSheet = .trainers }
+            circleTile(icon: "leaf.fill", title: "Food") { activeSheet = .nutrition }
+            circleTile(icon: "cart.fill", title: "Store") { activeSheet = .store }
+            circleTile(icon: "qrcode.viewfinder", title: "Scan") { activeSheet = .scanner }
+            circleTile(icon: "gearshape.fill", title: "Core AI") { activeSheet = .ai }
+        }
+    }
+
+    private func circleTile(icon: String, title: String, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 10) {
+                Image(systemName: icon)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 54, height: 54)
+                    .background(highlighted ? Color.appAccent : Color.clear)
+                    .overlay(Circle().stroke(highlighted ? .clear : Color.appDivider, lineWidth: 1))
+                    .clipShape(Circle())
+                Text(title)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.white)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
@@ -35,48 +185,11 @@ struct HomeView: View {
         switch sheet {
         case .booking: NavigationStack { BookingView() }
         case .trainers: NavigationStack { TrainersView() }
-        case .nutrition: NavigationStack { NutritionView() }
+        case .nutrition: NavigationStack { FoodRecipesView() }
         case .store: NavigationStack { StoreView() }
         case .scanner: NavigationStack { ScannerView() }
         case .ai: NavigationStack { AIAssistantView() }
         case .workout: NavigationStack { WorkoutSessionView() }
-        }
-    }
-
-    private var header: some View {
-        HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: 4) {
-                EyebrowLabel(text: "Sunday 13 Sep")
-                Text("Hey, \(appState.userName)")
-                    .font(.system(size: 27, weight: .bold))
-                    .foregroundStyle(.white)
-            }
-            Spacer()
-            HStack(spacing: 10) {
-                HStack(spacing: 6) {
-                    Text("\(appState.streakDays)")
-                        .font(.digitalTimer(15))
-                        .foregroundStyle(Color.appAccent)
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.appAccent)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 7)
-                .background(Color.appAccentDim)
-                .clipShape(Capsule())
-
-                Button { selectedTab = .me } label: {
-                    Text(appState.initials)
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.white)
-                        .frame(width: 40, height: 40)
-                        .background(Color.appSurfaceElevated)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
-                }
-                .buttonStyle(.plain)
-            }
         }
     }
 
@@ -141,41 +254,6 @@ struct HomeView: View {
         .onAppear { if appState.isWorkoutInProgress { appState.startTimer() } }
     }
 
-    private var occupancyCard: some View {
-        Button { activeSheet = .booking } label: {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .firstTextBaseline) {
-                    EyebrowLabel(text: "Club occupancy")
-                    Spacer()
-                    Text("QUIET")
-                        .font(.system(size: 11, weight: .bold))
-                        .tracking(0.4)
-                        .foregroundStyle(Color.appSuccess)
-                }
-                HStack(alignment: .bottom, spacing: 10) {
-                    Text("\(appState.occupancyPercent)%")
-                        .font(.digitalTimer(42))
-                        .foregroundStyle(.white)
-                    Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.appTextSecondary)
-                        .padding(.bottom, 6)
-                }
-                HStack(alignment: .bottom, spacing: 4) {
-                    ForEach(appState.occupancyBars.indices, id: \.self) { i in
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .fill(i == 3 ? Color.appAccent : Color.appSurfaceElevated)
-                            .frame(height: max(4, appState.occupancyBars[i] * 44))
-                    }
-                }
-                .frame(height: 44, alignment: .bottom)
-                .padding(.top, 8)
-            }
-            .appCard(padding: 20)
-        }
-        .buttonStyle(.plain)
-    }
-
     private var upcomingSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeaderRow(title: "Upcoming", trailing: "Calendar") {
@@ -187,38 +265,6 @@ struct HomeView: View {
         }
     }
 
-    private var grid: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-            gridTile(icon: "calendar.badge.plus", title: "Book", highlighted: false) { activeSheet = .booking }
-            gridTile(icon: "person.2.fill", title: "Trainers", highlighted: false) { activeSheet = .trainers }
-            gridTile(icon: "leaf.fill", title: "Food", highlighted: false) { activeSheet = .nutrition }
-            gridTile(icon: "pills.fill", title: "Store", highlighted: false) { activeSheet = .store }
-            gridTile(icon: "viewfinder", title: "Scan", highlighted: false) { activeSheet = .scanner }
-            gridTile(icon: "sparkles", title: "core AI", highlighted: true) { activeSheet = .ai }
-        }
-    }
-
-    private func gridTile(icon: String, title: String, highlighted: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 10) {
-                Image(systemName: icon)
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(Color.appAccent)
-                Text(title)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(highlighted ? Color.appAccentDim : Color.appSurface)
-            .overlay(
-                RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                    .stroke(highlighted ? Color.appAccent : Color.appDivider, lineWidth: 1)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
-        }
-        .buttonStyle(.plain)
-    }
 }
 
 private struct UpcomingRow: View {

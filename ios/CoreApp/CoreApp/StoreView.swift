@@ -5,13 +5,18 @@ struct StoreView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedProduct: Product?
     @State private var ordered = false
+    @State private var search = ""
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                header
-                bundleCard
+                Text("Supplements")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.white)
+                SearchToolRow(search: $search)
                 productGrid
+                if appState.cartCount > 0 { checkoutBar }
+                bundleCard
                 cartCard
             }
             .screenPadding()
@@ -30,13 +35,36 @@ struct StoreView: View {
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            EyebrowLabel(text: "Pickup at the club · free")
-            Text("Store")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundStyle(.white)
+    private var checkoutBar: some View {
+        Button { ordered = true } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle().fill(Color.appWarning).frame(width: 26, height: 26)
+                    Circle().fill(Color.appAccent).frame(width: 26, height: 26).offset(x: 14)
+                }
+                .frame(width: 40, alignment: .leading)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(ordered ? "Ready" : "Check")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text("\(appState.cartTotal)$")
+                        .font(.digitalTimer(15))
+                        .foregroundStyle(.white)
+                }
+                Spacer()
+                Image(systemName: "arrow.right")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(Color.appAccent)
+                    .clipShape(Circle())
+            }
+            .padding(10)
+            .background(Color.appSurface)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
         }
+        .buttonStyle(.plain)
     }
 
     private var bundleCard: some View {
@@ -50,8 +78,8 @@ struct StoreView: View {
                 .foregroundStyle(.white)
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("₽4 180").font(.digitalTimer(22)).foregroundStyle(.white)
-                    Text("₽3 550 monthly · cancel anytime").font(.system(size: 11)).foregroundStyle(Color.appTextSecondary)
+                    Text("$139").font(.digitalTimer(22)).foregroundStyle(.white)
+                    Text("$118 monthly · cancel anytime").font(.system(size: 11)).foregroundStyle(Color.appTextSecondary)
                 }
                 Spacer()
                 Button { appState.addBundle() } label: {
@@ -101,7 +129,7 @@ struct StoreView: View {
                     HStack {
                         Text(line.name).font(.system(size: 14)).foregroundStyle(.white)
                         Spacer()
-                        Text("₽\(line.price)").font(.digitalTimer(14)).foregroundStyle(Color.appTextSecondary)
+                        Text("\(line.price)$").font(.digitalTimer(14)).foregroundStyle(Color.appTextSecondary)
                         Button { appState.removeFromCart(line) } label: {
                             Text("×").font(.system(size: 16)).foregroundStyle(Color.appTextSecondary)
                         }
@@ -114,7 +142,7 @@ struct StoreView: View {
             HStack(alignment: .lastTextBaseline) {
                 Text("Total · pick up at reception").font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
                 Spacer()
-                Text("₽\(appState.cartTotal)").font(.digitalTimer(24)).foregroundStyle(.white)
+                Text("\(appState.cartTotal)$").font(.digitalTimer(24)).foregroundStyle(.white)
             }
             PrimaryButton(title: checkoutLabel, isEnabled: appState.cartCount > 0) {
                 ordered = true
@@ -135,46 +163,34 @@ private struct ProductTile: View {
     var onAdd: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Button(action: onOpen) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.appSurfaceElevated)
-                    Text(product.abbr).font(.digitalTimer(16)).foregroundStyle(Color.appTextSecondary)
-                }
-                .frame(height: 60)
-            }
-            .buttonStyle(.plain)
-
-            Text(product.name)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
-                .lineLimit(2)
-                .frame(minHeight: 34, alignment: .top)
-
-            Text(product.tag.uppercased())
-                .font(.system(size: 9, weight: .bold))
-                .tracking(0.3)
-                .foregroundStyle(product.tagColor)
-
-            HStack {
-                Text("₽\(product.price)")
-                    .font(.digitalTimer(15))
+        Button(action: onOpen) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(product.name)
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
-                Spacer()
-                Button(action: onAdd) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 13, weight: .bold))
+                    .lineLimit(2)
+                Spacer(minLength: 20)
+                HStack {
+                    Text("\(product.price)$")
+                        .font(.digitalTimer(16))
                         .foregroundStyle(.white)
-                        .frame(width: 28, height: 28)
-                        .background(Color.appAccent)
-                        .clipShape(Circle())
+                    Spacer()
+                    Button(action: onAdd) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 30, height: 30)
+                            .background(.ultraThinMaterial, in: Circle())
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
+            .padding(16)
+            .frame(height: 130, alignment: .top)
+            .frame(maxWidth: .infinity)
+            .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
         }
-        .padding(14)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .buttonStyle(.plain)
     }
 }
 
@@ -199,8 +215,8 @@ private struct ProductDetailView: View {
                 }
 
                 HStack(spacing: 10) {
-                    Text("₽\(product.price)").font(.digitalTimer(28)).foregroundStyle(.white)
-                    Text("or ₽\(product.subscriptionPrice) on subscription").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    Text("\(product.price)$").font(.digitalTimer(28)).foregroundStyle(.white)
+                    Text("or \(product.subscriptionPrice)$ on subscription").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
                 }
 
                 Text(product.desc).font(.system(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)

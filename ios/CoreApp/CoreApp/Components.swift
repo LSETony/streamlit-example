@@ -123,3 +123,49 @@ struct AppDivider: View {
         Rectangle().fill(Color.appDivider).frame(height: 1)
     }
 }
+
+/// A themed gradient stand-in for photography (gym floor, trainer portrait,
+/// a dish) — there's no licensed photo asset to embed, so this keeps the
+/// exact card shapes/proportions from the design while staying honest that
+/// it isn't a real photo. Swap in `Image(...)` here once real shots exist.
+struct PhotoPlaceholder: View {
+    enum Style { case gym, trainer, food, event }
+    var style: Style = .gym
+    var icon: String? = nil
+
+    private var colors: [Color] {
+        switch style {
+        case .gym: return [Color(red: 0.11, green: 0.11, blue: 0.13), Color(red: 0.03, green: 0.03, blue: 0.04)]
+        case .trainer: return [Color(red: 0.15, green: 0.13, blue: 0.17), Color(red: 0.04, green: 0.035, blue: 0.05)]
+        case .food: return [Color(red: 0.24, green: 0.14, blue: 0.06), Color(red: 0.06, green: 0.035, blue: 0.02)]
+        case .event: return [Color(red: 0.14, green: 0.10, blue: 0.20), Color(red: 0.04, green: 0.03, blue: 0.07)]
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
+            if let icon {
+                Image(systemName: icon)
+                    .font(.system(size: 26, weight: .light))
+                    .foregroundStyle(.white.opacity(0.22))
+            }
+        }
+    }
+}
+
+/// Small circular favorite/heart toggle used on trainer and product cards.
+struct FavoriteButton: View {
+    @Binding var isFavorite: Bool
+
+    var body: some View {
+        Button { isFavorite.toggle() } label: {
+            Image(systemName: isFavorite ? "heart.fill" : "heart")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 30, height: 30)
+                .background(.ultraThinMaterial, in: Circle())
+        }
+        .buttonStyle(.plain)
+    }
+}

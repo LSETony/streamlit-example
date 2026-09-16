@@ -15,6 +15,11 @@ extension Color {
     static let appSuccess = Color(red: 0x4A / 255, green: 0xDE / 255, blue: 0x80 / 255)          // --good
     static let appWarning = Color(red: 0xFA / 255, green: 0xCC / 255, blue: 0x15 / 255)          // --warn
     static let appDivider = Color(red: 0x27 / 255, green: 0x27 / 255, blue: 0x30 / 255)          // --line
+
+    /// Secondary "liquid glass" CTA accent — the indigo/violet used for the
+    /// onboarding wizard, sign-in/verification buttons, the membership card
+    /// and the profile's Logout button in the latest Figma pass.
+    static let appAccentPurple = Color(red: 0x5B / 255, green: 0x2C / 255, blue: 0xF0 / 255)
 }
 
 enum AppMetrics {
@@ -35,6 +40,26 @@ extension View {
     /// Standard horizontal screen padding used by every screen's content.
     func screenPadding() -> some View {
         self.padding(.horizontal, AppMetrics.screenPadding)
+    }
+
+    /// "Liquid glass" card treatment — frosted translucent material with a
+    /// soft top highlight and hairline border, used wherever the design puts
+    /// a panel over a photo (auth cards, the Home hero, onboarding chrome).
+    /// Falls back to plain `.ultraThinMaterial` blur (works from iOS 15) so
+    /// it doesn't require the newer `glassEffect` API/SDK.
+    func glassCard(padding: CGFloat = 16, corner: CGFloat = AppMetrics.cardCorner) -> some View {
+        self
+            .padding(padding)
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: corner, style: .continuous).fill(.ultraThinMaterial)
+                    RoundedRectangle(cornerRadius: corner, style: .continuous)
+                        .fill(LinearGradient(colors: [.white.opacity(0.10), .clear], startPoint: .top, endPoint: .bottom))
+                }
+                .environment(\.colorScheme, .dark)
+            )
+            .overlay(RoundedRectangle(cornerRadius: corner, style: .continuous).stroke(.white.opacity(0.16), lineWidth: 1))
+            .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
     }
 }
 

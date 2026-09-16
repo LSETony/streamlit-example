@@ -11,13 +11,53 @@ final class AppState: ObservableObject {
 
     // MARK: Profile / Home
 
-    @Published var userName: String = "Artem"
-    @Published var fullName: String = "Artem Koval"
+    @Published var userName: String = "Jarvis"
+    @Published var fullName: String = "Jarvis Kitsune Jr"
     var initials: String {
         fullName.split(separator: " ").compactMap(\.first).map(String.init).joined().uppercased()
     }
     @Published var readiness: Int = 72
     @Published var streakDays: Int = 12
+
+    // MARK: Onboarding wizard (4 steps: gender, goal, contradictions, level)
+
+    @Published var hasCompletedOnboarding: Bool = false
+    @Published var selectedGender: String?
+    @Published var selectedGoal: String?
+    @Published var selectedContradictions: Set<String> = []
+    @Published var contradictionsNote: String = ""
+    @Published var selectedLevel: String?
+
+    // MARK: Home hero + progress card (latest Figma pass)
+
+    @Published var clubName: String = "RC Rezindtsii Arhitektorov"
+    @Published var trainingProgressPercent: Int = 67
+    @Published var trainingDay: Int = 1
+    @Published var trainingMinutesToday: Int = 38
+
+    // MARK: Workout library (Beginner's Plan / Top 10 / Important)
+
+    @Published var beginnerPlanCards: [WorkoutCard] = [
+        WorkoutCard(title: "Beginner Female Aesthetics", level: "Beginner", duration: "7 day", category: "Strength", photoStyle: .trainer),
+        WorkoutCard(title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Strength", photoStyle: .gym),
+    ]
+    @Published var topWorkoutCards: [WorkoutCard] = [
+        WorkoutCard(title: "Sam's Prenatal Flow", level: "Beginner", duration: "22 mins", category: "Strength", photoStyle: .trainer),
+        WorkoutCard(title: "Chest and Triceps", level: "Inter", duration: "62 mins", category: "Strength", photoStyle: .gym),
+    ]
+    @Published var importantCards: [ImportantCard] = [
+        ImportantCard(title: "Gym Safety"),
+        ImportantCard(title: "Events"),
+    ]
+
+    // MARK: Food recipes
+
+    @Published var foodRecipes: [FoodRecipe] = [
+        FoodRecipe(name: "Chicken Cajun"),
+        FoodRecipe(name: "Protein pancakes"),
+        FoodRecipe(name: "Beef Jerky"),
+        FoodRecipe(name: "Carnivore Soup"),
+    ]
 
     // MARK: Workout session (elapsed time, counts up like the source)
 
@@ -256,42 +296,48 @@ final class AppState: ObservableObject {
     // MARK: Store / Vitamins catalog
 
     @Published var products: [Product] = [
-        Product(abbr: "D3K2", name: "Vitamin D3 4000 + K2", form: "Softgel", dose: "4 000 IU", count: "120 softgels", price: 1290, subscriptionPrice: 1090, tag: "In protocol", tagColor: .appAccent,
-                desc: "The club's baseline for the dark half of the year. D3 with MK-7 so calcium is directed to bone rather than soft tissue.",
-                ingredients: [Ingredient(name: "Vitamin D3 (cholecalciferol)", amount: "4 000 IU"), Ingredient(name: "Vitamin K2 (MK-7)", amount: "100 mcg"), Ingredient(name: "MCT oil", amount: "250 mg")],
-                benefits: "Supports bone density, immune response and testosterone in deficient men. Your 02 Sep level was 31 ng/ml, at the bottom of range.",
-                risks: "Do not exceed 10 000 IU daily without a blood test. Excess builds up and raises blood calcium.",
-                interactions: "K2 interferes with warfarin and other vitamin-K antagonists. Thiazide diuretics increase calcium retention."),
-        Product(abbr: "Fe", name: "Iron bisglycinate 25", form: "Capsule", dose: "25 mg", count: "90 capsules", price: 980, subscriptionPrice: 830, tag: "In protocol", tagColor: .appAccent,
-                desc: "Chelated iron, chosen because it is gentler on the stomach than sulphate at the same absorbed dose.",
-                ingredients: [Ingredient(name: "Iron (bisglycinate chelate)", amount: "25 mg"), Ingredient(name: "Vitamin C", amount: "80 mg"), Ingredient(name: "Folate", amount: "200 mcg")],
-                benefits: "Rebuilds ferritin, which sat at 28 ng/ml on your last panel. Low ferritin shows up as flat endurance and poor recovery.",
-                risks: "Iron is the most common cause of supplement poisoning in children — keep it locked away. May darken stools.",
-                interactions: "Take four hours apart from zinc, calcium, coffee and black tea. Reduces absorption of levothyroxine and some antibiotics."),
-        Product(abbr: "Mg", name: "Magnesium glycinate", form: "Capsule", dose: "400 mg", count: "120 capsules", price: 1150, subscriptionPrice: 970, tag: "In protocol", tagColor: .appAccent,
-                desc: "The sleep-and-recovery magnesium. Glycinate is well absorbed and does not act as a laxative at this dose.",
-                ingredients: [Ingredient(name: "Magnesium (glycinate)", amount: "400 mg"), Ingredient(name: "Glycine", amount: "1 200 mg")],
-                benefits: "Shortens time to sleep and reduces cramping in heavy training weeks.",
-                risks: "Loose stools above 600 mg. Anyone with reduced kidney function should ask a doctor first.",
-                interactions: "Blunts absorption of tetracycline and quinolone antibiotics, and of bisphosphonates. Separate by two hours."),
-        Product(abbr: "w3", name: "Omega-3 EPA/DHA 2g", form: "Softgel", dose: "2 g", count: "180 softgels", price: 1760, subscriptionPrice: 1490, tag: "Popular", tagColor: .appTextSecondary,
-                desc: "Triglyceride-form fish oil, IFOS tested for oxidation. Kept in the club fridge, not on a shelf.",
-                ingredients: [Ingredient(name: "EPA", amount: "1 200 mg"), Ingredient(name: "DHA", amount: "800 mg"), Ingredient(name: "Vitamin E", amount: "10 mg")],
-                benefits: "Lowers triglycerides and helps joint comfort through heavy blocks.",
-                risks: "Mild reflux or a fishy aftertaste. Stop two weeks before surgery.",
-                interactions: "Adds to the effect of anticoagulants such as warfarin, apixaban or aspirin — tell your doctor."),
-        Product(abbr: "Cr", name: "Creatine monohydrate", form: "Powder", dose: "5 g", count: "500 g", price: 1420, subscriptionPrice: 1200, tag: "Recommended", tagColor: .appSuccess,
+        Product(abbr: "B", name: "B-Complex", form: "Capsule", dose: "50 mg", count: "90 capsules", price: 54, subscriptionPrice: 46, tag: "In protocol", tagColor: .appAccent,
+                desc: "A full spread of B vitamins for energy metabolism and nervous-system support through heavy training blocks.",
+                ingredients: [Ingredient(name: "Vitamin B6", amount: "10 mg"), Ingredient(name: "Vitamin B12", amount: "500 mcg"), Ingredient(name: "Folate", amount: "400 mcg")],
+                benefits: "Supports energy release from food and reduces fatigue during high training volume.",
+                risks: "Generally well tolerated. High-dose B6 over long periods can cause nerve tingling — stay within label dose.",
+                interactions: "Can interfere with some Parkinson's and epilepsy medications — check with a doctor if you take either."),
+        Product(abbr: "Cr", name: "Creatine monohydrate", form: "Powder", dose: "5 g", count: "500 g", price: 150, subscriptionPrice: 128, tag: "Recommended", tagColor: .appSuccess,
                 desc: "Creapure monohydrate. The most studied performance supplement there is; no loading phase needed.",
                 ingredients: [Ingredient(name: "Creatine monohydrate", amount: "5 000 mg")],
                 benefits: "Adds a few reps at a given load and roughly 1–2 kg of water inside the muscle. Elena flagged it for your next block.",
                 risks: "Safe in healthy adults at 3–5 g. Drink enough water; kidney disease is the one contraindication.",
                 interactions: "No meaningful drug interactions. Caffeine does not cancel it, despite the old claim."),
-        Product(abbr: "Zn", name: "Zinc picolinate 15", form: "Capsule", dose: "15 mg", count: "100 capsules", price: 740, subscriptionPrice: 630, tag: "Watch dose", tagColor: .appWarning,
+        Product(abbr: "Zn", name: "Zinc picolinate", form: "Capsule", dose: "15 mg", count: "100 capsules", price: 35, subscriptionPrice: 30, tag: "Watch dose", tagColor: .appWarning,
                 desc: "A 15 mg dose, deliberately lower than the 50 mg tubs sold elsewhere.",
                 ingredients: [Ingredient(name: "Zinc (picolinate)", amount: "15 mg"), Ingredient(name: "Copper (gluconate)", amount: "1 mg")],
                 benefits: "Covers a genuine gap in low-meat diets and supports immune function.",
                 risks: "Above 40 mg daily for months depletes copper and can cause anaemia.",
                 interactions: "Competes with your iron — four hours apart. Also reduces absorption of some antibiotics."),
+        Product(abbr: "Mg", name: "Magnesium", form: "Capsule", dose: "400 mg", count: "120 capsules", price: 85, subscriptionPrice: 72, tag: "In protocol", tagColor: .appAccent,
+                desc: "The sleep-and-recovery magnesium. Glycinate is well absorbed and does not act as a laxative at this dose.",
+                ingredients: [Ingredient(name: "Magnesium (glycinate)", amount: "400 mg"), Ingredient(name: "Glycine", amount: "1 200 mg")],
+                benefits: "Shortens time to sleep and reduces cramping in heavy training weeks.",
+                risks: "Loose stools above 600 mg. Anyone with reduced kidney function should ask a doctor first.",
+                interactions: "Blunts absorption of tetracycline and quinolone antibiotics, and of bisphosphonates. Separate by two hours."),
+        Product(abbr: "D3K2", name: "Vitamin D3 4000 + K2", form: "Softgel", dose: "4 000 IU", count: "120 softgels", price: 42, subscriptionPrice: 36, tag: "In protocol", tagColor: .appAccent,
+                desc: "The club's baseline for the dark half of the year. D3 with MK-7 so calcium is directed to bone rather than soft tissue.",
+                ingredients: [Ingredient(name: "Vitamin D3 (cholecalciferol)", amount: "4 000 IU"), Ingredient(name: "Vitamin K2 (MK-7)", amount: "100 mcg"), Ingredient(name: "MCT oil", amount: "250 mg")],
+                benefits: "Supports bone density, immune response and testosterone in deficient men. Your 02 Sep level was 31 ng/ml, at the bottom of range.",
+                risks: "Do not exceed 10 000 IU daily without a blood test. Excess builds up and raises blood calcium.",
+                interactions: "K2 interferes with warfarin and other vitamin-K antagonists. Thiazide diuretics increase calcium retention."),
+        Product(abbr: "Fe", name: "Iron bisglycinate 25", form: "Capsule", dose: "25 mg", count: "90 capsules", price: 39, subscriptionPrice: 33, tag: "In protocol", tagColor: .appAccent,
+                desc: "Chelated iron, chosen because it is gentler on the stomach than sulphate at the same absorbed dose.",
+                ingredients: [Ingredient(name: "Iron (bisglycinate chelate)", amount: "25 mg"), Ingredient(name: "Vitamin C", amount: "80 mg"), Ingredient(name: "Folate", amount: "200 mcg")],
+                benefits: "Rebuilds ferritin, which sat at 28 ng/ml on your last panel. Low ferritin shows up as flat endurance and poor recovery.",
+                risks: "Iron is the most common cause of supplement poisoning in children — keep it locked away. May darken stools.",
+                interactions: "Take four hours apart from zinc, calcium, coffee and black tea. Reduces absorption of levothyroxine and some antibiotics."),
+        Product(abbr: "w3", name: "Omega-3 EPA/DHA 2g", form: "Softgel", dose: "2 g", count: "180 softgels", price: 58, subscriptionPrice: 49, tag: "Popular", tagColor: .appTextSecondary,
+                desc: "Triglyceride-form fish oil, IFOS tested for oxidation. Kept in the club fridge, not on a shelf.",
+                ingredients: [Ingredient(name: "EPA", amount: "1 200 mg"), Ingredient(name: "DHA", amount: "800 mg"), Ingredient(name: "Vitamin E", amount: "10 mg")],
+                benefits: "Lowers triglycerides and helps joint comfort through heavy blocks.",
+                risks: "Mild reflux or a fishy aftertaste. Stop two weeks before surgery.",
+                interactions: "Adds to the effect of anticoagulants such as warfarin, apixaban or aspirin — tell your doctor."),
     ]
     @Published var isSubscribed: Bool = false
     @Published var cart: [CartLine] = []
@@ -304,9 +350,9 @@ final class AppState: ObservableObject {
     }
     func addBundle() {
         cart.append(contentsOf: [
-            CartLine(name: "Iron bisglycinate 25", price: 980),
-            CartLine(name: "Vitamin D3 4000 + K2", price: 1290),
-            CartLine(name: "Magnesium glycinate", price: 1150),
+            CartLine(name: "Iron bisglycinate 25", price: 39),
+            CartLine(name: "Vitamin D3 4000 + K2", price: 42),
+            CartLine(name: "Magnesium", price: 85),
         ])
     }
     func removeFromCart(_ line: CartLine) {
