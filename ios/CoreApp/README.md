@@ -138,7 +138,7 @@ CoreApp/
   QRPassView.swift
   ProfileView.swift
   Assets.xcassets/          app icon, accent color, auth background
-  Fonts/                    Francy-Regular.ttf, DotGothic16-Regular.ttf
+  Fonts/                    Francy-Regular.ttf, Doto-VariableFont.ttf
   Info.plist
   CoreApp.entitlements      Sign in with Apple capability
 ```
@@ -165,9 +165,13 @@ CoreApp/
 - **Fonts**: bundled in `CoreApp/Fonts/` and registered via `UIAppFonts` in
   Info.plist. `Francy-Regular.ttf` is the display font used for the splash
   wordmark and every big stat number (`Font.brand(_:)` in `Theme.swift`);
-  `DotGothic16-Regular.ttf` is the pixel/LED font used everywhere the source
-  used `font-family: DotGothic16` — timers, dates, prices, codes
-  (`Font.digitalTimer(_:)`). Make sure you have the right to embed and
-  redistribute Francy in a shipped app before submitting to the App Store —
-  DotGothic16 is an open-source Google Font (SIL Open Font License) and is
-  fine to ship.
+  `Doto-VariableFont.ttf` is the dot-matrix/LED font used everywhere the
+  design calls for a digital-display look — timers, dates, prices, codes
+  (`Font.digitalTimer(_:)`). Doto ships as a single variable-weight file;
+  `Font.digitalTimer(_:)` pins it to the PostScript name `Doto-Black`
+  (its heaviest, most legible instance at small sizes) rather than the
+  default Regular weight — swap that string for another named instance
+  (Thin…ExtraBold) if you want a lighter feel. Make sure you have the
+  right to embed and redistribute Francy in a shipped app before
+  submitting to the App Store — Doto is an open-source Google Font (SIL
+  Open Font License) and is fine to ship.

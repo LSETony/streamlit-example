@@ -12,7 +12,6 @@
 		13665979218917FFC4BCE58C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2360973C0FF59F76A261826 /* OnboardingView.swift */; };
 		22CB65E17C3C4F9FA2E84F63 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFCFF1C6A1D454E80B7C92A /* AppState.swift */; };
 		29C465C7919C462EA2F0EE80 /* TrainersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */; };
-		2EBA069E22A0EA94E94F5421 /* DotGothic16-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01B95A7E7A83FB01DEFF099E /* DotGothic16-Regular.ttf */; };
 		33A9D5C4CE0C99DA5A53849C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38601E21E85A9A5EAC317C27 /* CalendarView.swift */; };
 		392881F6855843ACB49B7B46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */; };
 		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
@@ -30,6 +29,7 @@
 		94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CDD914A646D49A055E8D /* CoreAppApp.swift */; };
 		9C350ECC7CEB4669899F60A7 /* AIAssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CDC43201E4F5C8C3C2C5D /* AIAssistantView.swift */; };
 		A2E860860761333E4C376664 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B3511191EF0FD2AE5A30D /* SplashView.swift */; };
+		A52425A03ABDED55A30EA3BD /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
 		BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67286F4868E97187636094AA /* WorkoutsView.swift */; };
 		BCF07185D67071AB4B1B5720 /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB271F79F230C1CD92411C6 /* Francy-Regular.ttf */; };
 		C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */; };
@@ -42,13 +42,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		01B95A7E7A83FB01DEFF099E /* DotGothic16-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = "DotGothic16-Regular.ttf"; sourceTree = "<group>"; };
 		0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0DFCFF1C6A1D454E80B7C92A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		151CDC43201E4F5C8C3C2C5D /* AIAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantView.swift; sourceTree = "<group>"; };
 		187D5C91EAAA4F0DB404FA79 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
 		268EC85AB04D48C9B451AAB4 /* BookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingView.swift; sourceTree = "<group>"; };
 		2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodRecipesView.swift; sourceTree = "<group>"; };
+		2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Doto-VariableFont.ttf"; sourceTree = "<group>"; };
 		3400C5EA574C43B3B4039970 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		38601E21E85A9A5EAC317C27 /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				9EB271F79F230C1CD92411C6 /* Francy-Regular.ttf */,
-				01B95A7E7A83FB01DEFF099E /* DotGothic16-Regular.ttf */,
+				2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */,
 			);
 			name = Fonts;
 			path = Fonts;
@@ -229,7 +229,7 @@
 			files = (
 				C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */,
 				BCF07185D67071AB4B1B5720 /* Francy-Regular.ttf in Resources */,
-				2EBA069E22A0EA94E94F5421 /* DotGothic16-Regular.ttf in Resources */,
+				A52425A03ABDED55A30EA3BD /* Doto-VariableFont.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
