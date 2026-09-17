@@ -4,7 +4,7 @@ import SwiftUI
 
 struct Trainer: Identifiable {
     let id = UUID()
-    let initials: String
+    let imageName: String
     let name: String
     let specialty: String
     let rating: String
@@ -50,11 +50,11 @@ struct Product: Identifiable {
 
 struct WorkoutCard: Identifiable {
     let id = UUID()
+    let imageName: String
     let title: String
     let level: String
     let duration: String
     let category: String
-    let photoStyle: PhotoPlaceholder.Style
 }
 
 struct ImportantCard: Identifiable {

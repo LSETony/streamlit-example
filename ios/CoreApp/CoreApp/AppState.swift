@@ -43,12 +43,12 @@ final class AppState: ObservableObject {
     // MARK: Workout library (Beginner's Plan / Top 10 / Important)
 
     @Published var beginnerPlanCards: [WorkoutCard] = [
-        WorkoutCard(title: "Beginner Female Aesthetics", level: "Beginner", duration: "7 day", category: "Strength", photoStyle: .trainer),
-        WorkoutCard(title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Strength", photoStyle: .gym),
+        WorkoutCard(imageName: "WorkoutBeginnerFemale", title: "Beginner Female Aesthetics", level: "Beginner", duration: "7 day", category: "Strength"),
+        WorkoutCard(imageName: "WorkoutBodyWeight", title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Strength"),
     ]
     @Published var topWorkoutCards: [WorkoutCard] = [
-        WorkoutCard(title: "Sam's Prental Flow", level: "Beginner", duration: "22 mins", category: "Strength", photoStyle: .trainer),
-        WorkoutCard(title: "Chest and Triceps", level: "Inter", duration: "22 mins", category: "Strength", photoStyle: .gym),
+        WorkoutCard(imageName: "WorkoutPrentalFlow", title: "Sam's Prental Flow", level: "Beginner", duration: "22 mins", category: "Strength"),
+        WorkoutCard(imageName: "WorkoutChestTriceps", title: "Chest and Triceps", level: "Inter", duration: "22 mins", category: "Strength"),
     ]
     @Published var importantCards: [ImportantCard] = [
         ImportantCard(title: "Gym Safety"),
@@ -67,8 +67,8 @@ final class AppState: ObservableObject {
     // MARK: Trainers
 
     @Published var trainers: [Trainer] = [
-        Trainer(initials: "AI", name: "Arina Ivolga", specialty: "Personal trainer", rating: "4.9", reviews: 212, priceLabel: "$45/h", priceCompact: "45", nextAvailable: "Today", availabilityColor: .appSuccess, yearsExperience: "9 years", clients: 48, sessions: 1840, tags: ["Squat mechanics", "Peaking blocks", "Return to lifting"], bio: "Coaches the strength floor and writes the club's barbell progressions. Works with lifters coming back from long breaks and with members chasing a first 2× bodyweight squat."),
-        Trainer(initials: "MM", name: "Mercede Moini", specialty: "Personal trainer", rating: "5.0", reviews: 168, priceLabel: "$52/h", priceCompact: "52", nextAvailable: "Tue", availabilityColor: .appAccent, yearsExperience: "12 years", clients: 62, sessions: 2210, tags: ["Body composition", "Conditioning", "Mobility"], bio: "Runs conditioning and mobility work for members coming back from injury or a long break from training."),
+        Trainer(imageName: "Trainer1", name: "Arina Ivolga", specialty: "Personal trainer", rating: "4.9", reviews: 212, priceLabel: "$45/h", priceCompact: "45", nextAvailable: "Today", availabilityColor: .appSuccess, yearsExperience: "9 years", clients: 48, sessions: 1840, tags: ["Squat mechanics", "Peaking blocks", "Return to lifting"], bio: "Coaches the strength floor and writes the club's barbell progressions. Works with lifters coming back from long breaks and with members chasing a first 2× bodyweight squat."),
+        Trainer(imageName: "Trainer2", name: "Mercede Moini", specialty: "Personal trainer", rating: "5.0", reviews: 168, priceLabel: "$52/h", priceCompact: "52", nextAvailable: "Tue", availabilityColor: .appAccent, yearsExperience: "12 years", clients: 62, sessions: 2210, tags: ["Body composition", "Conditioning", "Mobility"], bio: "Runs conditioning and mobility work for members coming back from injury or a long break from training."),
     ]
     @Published var trainerSlots: [String] = ["07:30", "11:00", "17:00", "19:30"]
 

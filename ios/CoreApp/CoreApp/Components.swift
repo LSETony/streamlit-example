@@ -41,23 +41,6 @@ struct PrimaryButton: View {
     }
 }
 
-/// Rounded avatar with initials, used by the trainer detail screen.
-struct InitialsAvatar: View {
-    let initials: String
-    var color: Color = .appAccent
-    var size: CGFloat = 44
-
-    var body: some View {
-        ZStack {
-            Circle().fill(color.opacity(0.18))
-            Text(initials)
-                .font(.system(size: size * 0.34, weight: .bold))
-                .foregroundStyle(color)
-        }
-        .frame(width: size, height: size)
-    }
-}
-
 /// Divider matching the app's subtle line color.
 struct AppDivider: View {
     var body: some View {
@@ -65,22 +48,14 @@ struct AppDivider: View {
     }
 }
 
-/// A themed gradient stand-in for photography (gym floor, trainer portrait,
-/// a dish) — there's no licensed photo asset to embed, so this keeps the
-/// exact card shapes/proportions from the design while staying honest that
-/// it isn't a real photo. Swap in `Image(...)` here once real shots exist.
+/// A themed gradient stand-in for a dish photo — there's no licensed food
+/// photography to embed yet, so this keeps Food recipes' exact card shapes
+/// while staying honest that it isn't a real photo. Swap in `Image(...)`
+/// here once real shots exist.
 struct PhotoPlaceholder: View {
-    enum Style { case gym, trainer, food }
-    var style: Style = .gym
     var icon: String? = nil
 
-    private var colors: [Color] {
-        switch style {
-        case .gym: return [Color(red: 0.11, green: 0.11, blue: 0.13), Color(red: 0.03, green: 0.03, blue: 0.04)]
-        case .trainer: return [Color(red: 0.15, green: 0.13, blue: 0.17), Color(red: 0.04, green: 0.035, blue: 0.05)]
-        case .food: return [Color(red: 0.24, green: 0.14, blue: 0.06), Color(red: 0.06, green: 0.035, blue: 0.02)]
-        }
-    }
+    private let colors = [Color(red: 0.24, green: 0.14, blue: 0.06), Color(red: 0.06, green: 0.035, blue: 0.02)]
 
     var body: some View {
         ZStack {

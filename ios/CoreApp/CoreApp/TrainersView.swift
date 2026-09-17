@@ -89,7 +89,9 @@ private struct TrainerTile: View {
         VStack(alignment: .leading, spacing: 8) {
             Button(action: onOpen) {
                 ZStack(alignment: .topTrailing) {
-                    PhotoPlaceholder(style: .trainer, icon: "person.fill")
+                    Image(trainer.imageName)
+                        .resizable()
+                        .scaledToFill()
                     FavoriteButton(isFavorite: $isFavorite).padding(8)
                 }
                 .aspectRatio(186.0 / 250.0, contentMode: .fit)
@@ -118,7 +120,11 @@ struct TrainerDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 HStack(spacing: 16) {
-                    InitialsAvatar(initials: trainer.initials, color: .appTextPrimary, size: 76)
+                    Image(trainer.imageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 76, height: 76)
+                        .clipShape(Circle())
                     VStack(alignment: .leading, spacing: 5) {
                         Text(trainer.name)
                             .font(.system(size: 24, weight: .bold))

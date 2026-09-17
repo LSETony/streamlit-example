@@ -42,8 +42,11 @@ struct HomeView: View {
 
     private var hero: some View {
         ZStack(alignment: .topLeading) {
-            PhotoPlaceholder(style: .gym, icon: "figure.strengthtraining.traditional")
+            Image("HomeHero")
+                .resizable()
+                .scaledToFill()
                 .frame(height: 250)
+                .clipped()
 
             HStack {
                 Text(appState.clubName)

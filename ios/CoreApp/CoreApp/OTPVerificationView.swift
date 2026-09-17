@@ -19,7 +19,7 @@ struct OTPVerificationView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Image("AuthBackground")
+            Image("OTPBackground")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()

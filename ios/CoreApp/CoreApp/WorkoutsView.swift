@@ -83,7 +83,9 @@ private struct WorkoutCardTile: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            PhotoPlaceholder(style: card.photoStyle, icon: "figure.run")
+            Image(card.imageName)
+                .resizable()
+                .scaledToFill()
             LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
             VStack(alignment: .leading, spacing: 2) {
                 Text(card.title)

@@ -40,7 +40,7 @@ private struct RecipeTile: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            PhotoPlaceholder(style: .food, icon: "fork.knife")
+            PhotoPlaceholder(icon: "fork.knife")
             LinearGradient(colors: [.black.opacity(0.55), .clear], startPoint: .bottom, endPoint: .center)
             Text(recipe.name)
                 .font(.system(size: 15, weight: .semibold))

@@ -32,7 +32,9 @@ struct ProfileView: View {
 
     private var header: some View {
         HStack(spacing: 16) {
-            PhotoPlaceholder(style: .trainer, icon: "person.fill")
+            Image("ProfileAvatar")
+                .resizable()
+                .scaledToFill()
                 .frame(width: 56, height: 56)
                 .clipShape(Circle())
                 .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
