@@ -22,9 +22,9 @@ struct WorkoutsView: View {
                             Text(filter)
                                 .font(.brand(16))
                                 .foregroundStyle(on ? .white : Color.appTextPrimary)
+                                .frame(minWidth: 89, minHeight: 50)
                                 .padding(.horizontal, 16)
-                                .padding(.vertical, 9)
-                                .background(on ? Color.appAccent : Color.black.opacity(0.2))
+                                .background(on ? Color.appAccent : Color.appBackground.opacity(0.2))
                                 .clipShape(Capsule())
                                 .onTapGesture { libraryFilter = filter }
                         }
@@ -84,22 +84,26 @@ private struct WorkoutCardTile: View {
     let card: WorkoutCard
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            Image(card.imageName)
-                .resizable()
-                .scaledToFill()
-            LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(card.title)
-                    .font(.brand(16))
-                    .foregroundStyle(.white)
-                    .lineLimit(2)
-                HStack(spacing: 6) {
-                    Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
-                    Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.75))
+        GeometryReader { geo in
+            ZStack(alignment: .bottomLeading) {
+                Image(card.imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+                LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(card.title)
+                        .font(.brand(16))
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                    HStack(spacing: 6) {
+                        Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
+                        Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.75))
+                    }
                 }
+                .padding(12)
             }
-            .padding(12)
         }
         .frame(height: 180)
         .frame(maxWidth: .infinity)

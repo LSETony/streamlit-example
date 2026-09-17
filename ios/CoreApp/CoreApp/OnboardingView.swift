@@ -185,10 +185,16 @@ struct OnboardingView: View {
         return Button { appState.selectedLevel = title } label: {
             ZStack(alignment: .topLeading) {
                 if isSelected, title == "Beginner" {
-                    Image("WorkoutBeginnerFemale")
-                        .resizable()
-                        .scaledToFill()
-                    LinearGradient(colors: [.black.opacity(0.1), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                    GeometryReader { geo in
+                        ZStack {
+                            Image("WorkoutBeginnerFemale")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: geo.size.width, height: geo.size.height)
+                                .clipped()
+                            LinearGradient(colors: [.black.opacity(0.1), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                        }
+                    }
                 } else if isSelected {
                     Color.appAccentPurple
                 }
