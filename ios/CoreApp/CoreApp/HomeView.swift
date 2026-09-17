@@ -50,6 +50,7 @@ struct HomeView: View {
                 Image("HomeHero")
                     .resizable()
                     .scaledToFill()
+                    .frame(maxWidth: .infinity)
                     .frame(height: 500)
                     .clipped()
             }
