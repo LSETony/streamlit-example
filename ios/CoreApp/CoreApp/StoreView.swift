@@ -113,7 +113,7 @@ private struct ProductTile: View {
     }
 }
 
-private struct ProductDetailView: View {
+struct ProductDetailView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
     let product: Product

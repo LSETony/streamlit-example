@@ -8,6 +8,7 @@ import Charts
 struct ProgressDetailView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedProduct: Product?
 
     var body: some View {
         NavigationStack {
@@ -15,6 +16,7 @@ struct ProgressDetailView: View {
                 VStack(alignment: .leading, spacing: 22) {
                     muscleMassCard
                     bodyCompositionSection
+                    vitaminRecommendationsSection
                     todayStatsSection
                     historySection
                 }
@@ -29,6 +31,9 @@ struct ProgressDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
                 }
+            }
+            .sheet(item: $selectedProduct) { product in
+                NavigationStack { ProductDetailView(product: product) }
             }
         }
     }
@@ -95,6 +100,49 @@ struct ProgressDetailView: View {
                 statTile(value: "\(appState.basalMetabolicRate)", label: "Basal Metabolic Rate")
             }
         }
+    }
+
+    // MARK: Vitamin recommendations
+
+    private var vitaminRecommendationsSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            EyebrowLabel(text: "Vitamin Recommendations")
+            VStack(spacing: 10) {
+                ForEach(appState.products) { product in
+                    vitaminRow(product)
+                }
+            }
+        }
+    }
+
+    private func vitaminRow(_ product: Product) -> some View {
+        Button {
+            selectedProduct = product
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle().fill(Color.appSurfaceElevated)
+                    Text(product.abbr).font(.digitalTimer(15)).foregroundStyle(Color.appTextSecondary)
+                }
+                .frame(width: 42, height: 42)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(product.name)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text(product.tag)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(product.tagColor)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Color.appTextSecondary)
+            }
+            .padding(14)
+            .background(Color.appSurface)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: Today / week totals
