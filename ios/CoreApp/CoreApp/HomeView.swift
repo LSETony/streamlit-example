@@ -21,7 +21,7 @@ struct HomeView: View {
 
                 occupancyGlassCard
                     .screenPadding()
-                    .padding(.top, -50) // overlaps the bottom of the photo
+                    .padding(.top, -210) // nests the card inside the photo, matching the source proportions
 
                 progressCard
                     .screenPadding()
