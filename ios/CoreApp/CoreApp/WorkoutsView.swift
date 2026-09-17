@@ -95,20 +95,23 @@ private struct WorkoutCardTile: View {
                 .scaledToFill()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .clipped()
-            LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
-            VStack(alignment: .leading, spacing: 2) {
+            LinearGradient(colors: [.black.opacity(0.85), .black.opacity(0.35), .clear], startPoint: .bottom, endPoint: .top)
+                .frame(height: 110)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+            VStack(alignment: .leading, spacing: 4) {
                 Text(card.title)
-                    .font(.brand(16))
+                    .font(.brand(15))
                     .foregroundStyle(.white)
                     .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 6) {
                     Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
-                    Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.75))
+                    Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.85))
                 }
             }
             .padding(12)
         }
-        .frame(height: 180)
+        .frame(height: 200)
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
