@@ -139,7 +139,7 @@ private struct NativeCalendarView: UIViewRepresentable {
         view.backgroundColor = .clear
 
         let selection = UICalendarSelectionSingleDate(delegate: context.coordinator)
-        selection.setSelected(selectedDate, animateSelection: false)
+        selection.setSelected(selectedDate, animated: false)
         view.selectionBehavior = selection
         return view
     }
