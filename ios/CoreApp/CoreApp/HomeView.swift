@@ -98,7 +98,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Club Occupancy")
-                    .font(.brand(16))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
                 Spacer()
                 Image(systemName: "arrow.up.right")
@@ -109,10 +109,10 @@ struct HomeView: View {
             }
             HStack(alignment: .bottom, spacing: 10) {
                 Text("\(appState.occupancyPercent)")
-                    .font(.digitalTimer(38))
+                    .font(.digitalTimer(48))
                     .foregroundStyle(.white)
                 Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
-                    .font(.brand(12))
+                    .font(.brand(16))
                     .foregroundStyle(.white.opacity(0.75))
                     .padding(.bottom, 6)
             }
@@ -143,20 +143,20 @@ struct HomeView: View {
         } label: {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Your Progress")
-                    .font(.brand(16))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
                 HStack(alignment: .bottom) {
                     Text("\(appState.trainingProgressPercent)%")
-                        .font(.digitalTimer(34))
+                        .font(.digitalTimer(48))
                         .foregroundStyle(.white)
                     Spacer()
                     progressSparkline
                 }
-                ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 8)
+                ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 20)
                 HStack {
-                    Text("day \(appState.trainingDay)").font(.brand(12)).foregroundStyle(Color.appTextSecondary)
+                    Text("day \(appState.trainingDay)").font(.brand(16)).foregroundStyle(Color.appTextSecondary)
                     Spacer()
-                    Text("\(appState.trainingMinutesToday) mins training").font(.brand(12)).foregroundStyle(Color.appTextSecondary)
+                    Text("\(appState.trainingMinutesToday) mins training").font(.brand(16)).foregroundStyle(Color.appTextSecondary)
                 }
             }
             .appCard(padding: 20)
@@ -173,10 +173,10 @@ struct HomeView: View {
                 let bar = appState.progressSparkline[i]
                 Capsule()
                     .fill(bar.highlighted ? Color.appAccent : .white.opacity(0.7))
-                    .frame(width: 6, height: max(4, bar.value * 34))
+                    .frame(width: 6, height: max(4, bar.value * 40))
             }
         }
-        .frame(height: 34, alignment: .bottom)
+        .frame(height: 40, alignment: .bottom)
     }
 
     // MARK: Icon grid (rounded-rect glass tiles)
