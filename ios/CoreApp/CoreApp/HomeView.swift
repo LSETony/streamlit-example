@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store, location, progress
+    case trainers, nutrition, store, location, progress, occupancy
     var id: String { rawValue }
 }
 
@@ -16,7 +16,7 @@ struct HomeView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 10) {
                 hero
 
                 occupancyGlassCard
@@ -98,44 +98,49 @@ struct HomeView: View {
     }
 
     private var occupancyGlassCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Club Occupancy")
-                    .font(.brand(24))
-                    .foregroundStyle(.white)
-                Spacer()
-                Image(systemName: "arrow.up.right")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 32, height: 32)
-                    .glassEffect(.regular.tint(.appAccent), in: Circle())
-            }
-            HStack(alignment: .bottom, spacing: 10) {
-                Text("\(appState.occupancyPercent)")
-                    .font(.digitalTimer(48))
-                    .foregroundStyle(.white)
-                Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
-                    .font(.brand(16))
-                    .foregroundStyle(.white.opacity(0.75))
-                    .padding(.bottom, 6)
-            }
-            HStack(alignment: .bottom, spacing: 6) {
-                ForEach(appState.occupancyBars.indices, id: \.self) { i in
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .fill(i == 2 ? Color.appAccent : .white.opacity(0.7))
-                        .frame(height: max(4, appState.occupancyBars[i] * 40))
+        Button {
+            activeSheet = .occupancy
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Club Occupancy")
+                        .font(.brand(24))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .glassEffect(.regular.tint(.appAccent), in: Circle())
+                }
+                HStack(alignment: .bottom, spacing: 10) {
+                    Text("\(appState.occupancyPercent)")
+                        .font(.digitalTimer(48))
+                        .foregroundStyle(.white)
+                    Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
+                        .font(.brand(16))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .padding(.bottom, 6)
+                }
+                HStack(alignment: .bottom, spacing: 6) {
+                    ForEach(appState.occupancyBars.indices, id: \.self) { i in
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .fill(i == 2 ? Color.appAccent : .white.opacity(0.7))
+                            .frame(height: max(4, appState.occupancyBars[i] * 40))
+                    }
+                }
+                .frame(height: 40, alignment: .bottom)
+                .padding(.top, 4)
+                HStack {
+                    ForEach(["06", "10", "14", "22"], id: \.self) { hour in
+                        Text(hour).font(.brand(10)).foregroundStyle(.white.opacity(0.6))
+                        if hour != "22" { Spacer() }
+                    }
                 }
             }
-            .frame(height: 40, alignment: .bottom)
-            .padding(.top, 4)
-            HStack {
-                ForEach(["06", "10", "14", "22"], id: \.self) { hour in
-                    Text(hour).font(.brand(10)).foregroundStyle(.white.opacity(0.6))
-                    if hour != "22" { Spacer() }
-                }
-            }
+            .glassCard(padding: 18)
         }
-        .glassCard(padding: 18)
+        .buttonStyle(.plain)
     }
 
     // MARK: Progress card
@@ -230,6 +235,7 @@ struct HomeView: View {
         case .store: NavigationStack { StoreView() }
         case .location: LocationPickerView()
         case .progress: ProgressDetailView()
+        case .occupancy: OccupancyDetailView()
         }
     }
 }

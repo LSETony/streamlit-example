@@ -92,6 +92,13 @@ final class AppState: ObservableObject {
     /// Bar heights 0...1 across the day (5 bars, matching the Figma source's
     /// exact geometry); index 2 is "now" and always accented.
     @Published var occupancyBars: [Double] = [0.145, 0.355, 0.79, 1.0, 0.355]
+    /// Fuller hour-by-hour breakdown behind the occupancy detail screen.
+    @Published var occupancyHourly: [(hour: String, value: Double)] = [
+        ("06", 0.10), ("08", 0.22), ("10", 0.355), ("12", 0.5), ("14", 0.79),
+        ("16", 0.9), ("18", 1.0), ("20", 0.6), ("22", 0.355),
+    ]
+    /// The hour matching "now" on the compact Home card's accented bar.
+    @Published var occupancyNowHour: String = "14"
 
     // MARK: Workout library (Beginner's Plan / Top 10 / Important)
 
