@@ -12,11 +12,7 @@ import SwiftUI
 struct WorkoutsView: View {
     @EnvironmentObject var appState: AppState
     @State private var libraryFilter = "All"
-    private let libraryFilters: [(name: String, icon: String)] = [
-        ("All", "square.grid.2x2.fill"),
-        ("Strength", "dumbbell.fill"),
-        ("Cardio", "figure.run"),
-    ]
+    private let libraryFilters = ["All", "Strength", "Cardio"]
 
     var body: some View {
         NavigationStack {
@@ -31,30 +27,24 @@ struct WorkoutsView: View {
                             .foregroundStyle(.white)
 
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(libraryFilters, id: \.name) { filter in
-                                    let on = libraryFilter == filter.name
-                                    VStack(spacing: 10) {
-                                        Image(systemName: filter.icon)
-                                            .font(.system(size: 22, weight: .semibold))
-                                            .foregroundStyle(.white)
-                                        Text(filter.name)
-                                            .font(.brand(14))
-                                            .foregroundStyle(.white)
-                                    }
-                                    .frame(width: 110, height: 100)
-                                    .background(on ? Color.appAccent : Color.appBackground.opacity(0.2))
-                                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
-                                    .scrollTransition { content, phase in
-                                        content
-                                            .scaleEffect(phase.isIdentity ? 1 : 0.92)
-                                            .opacity(phase.isIdentity ? 1 : 0.6)
-                                    }
-                                    .onTapGesture {
-                                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                                            libraryFilter = filter.name
+                            HStack(spacing: 8) {
+                                ForEach(libraryFilters, id: \.self) { filter in
+                                    let on = libraryFilter == filter
+                                    Text(filter)
+                                        .font(.brand(16))
+                                        .foregroundStyle(on ? .white : Color.appTextPrimary)
+                                        .padding(.horizontal, 16)
+                                        .frame(minWidth: 89, minHeight: 50)
+                                        .background(on ? Color.appAccent : Color.appBackground.opacity(0.2))
+                                        .clipShape(Capsule())
+                                        .scrollTransition { content, phase in
+                                            content.opacity(phase.isIdentity ? 1 : 0.6)
                                         }
-                                    }
+                                        .onTapGesture {
+                                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                                libraryFilter = filter
+                                            }
+                                        }
                                 }
                             }
                             .scrollTargetLayout()
