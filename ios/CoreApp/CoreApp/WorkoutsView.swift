@@ -24,8 +24,7 @@ struct WorkoutsView: View {
                                 .foregroundStyle(on ? .white : Color.appTextPrimary)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 9)
-                                .background(on ? Color.appAccent : Color.clear)
-                                .overlay(Capsule().stroke(on ? .clear : Color.appDivider, lineWidth: 1))
+                                .background(on ? Color.appAccent : Color.black.opacity(0.2))
                                 .clipShape(Capsule())
                                 .onTapGesture { libraryFilter = filter }
                         }
@@ -104,8 +103,7 @@ private struct WorkoutCardTile: View {
         }
         .frame(height: 180)
         .frame(maxWidth: .infinity)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 }
 
