@@ -21,6 +21,10 @@ final class AppState: ObservableObject {
     @Published var selectedGender: String?
     @Published var selectedGoal: String?
     @Published var selectedContradictions: Set<String> = []
+    /// Contraindication chip options. Starts with the default set from the
+    /// design; anything the member types and sends in the "type here" field
+    /// is appended here too, so it shows up as a normal chip from then on.
+    @Published var contradictionOptions: [String] = ["Allergic", "Diabetes", "Astma"]
     @Published var contradictionsNote: String = ""
     @Published var selectedLevel: String?
 

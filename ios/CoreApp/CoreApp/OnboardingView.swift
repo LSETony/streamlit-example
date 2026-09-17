@@ -121,19 +121,15 @@ struct OnboardingView: View {
 
     // MARK: Step 3 — contraindications
 
-    private let contradictionOptions = ["Allergic", "Diabetes", "Astma"]
-
     private var contradictionsStep: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 24) {
             Text("Do you have any\ncontradictions?")
                 .multilineTextAlignment(.center)
                 .font(.system(size: 19, weight: .bold))
                 .foregroundStyle(.white)
                 .padding(.top, 18)
 
-            FlowChips(items: contradictionOptions, selected: $appState.selectedContradictions)
-
-            Spacer(minLength: 40)
+            FlowChips(items: appState.contradictionOptions, selected: $appState.selectedContradictions)
 
             GlassEffectContainer(spacing: 10) {
                 HStack(spacing: 10) {
@@ -142,7 +138,8 @@ struct OnboardingView: View {
                         .padding(.horizontal, 18)
                         .padding(.vertical, 14)
                         .glassEffect(.regular, in: Capsule())
-                    Button {} label: {
+                        .onSubmit(submitContradictionNote)
+                    Button(action: submitContradictionNote) {
                         Image("IconSend").customIcon(size: 18)
                             .foregroundStyle(.white)
                             .frame(width: 48, height: 48)
@@ -157,6 +154,19 @@ struct OnboardingView: View {
         .background(Color.appSurface.opacity(0.5))
         .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+    }
+
+    /// Turns whatever the member typed into its own chip (added to the
+    /// options list so it's there automatically next time) and selects it.
+    /// The free text itself is kept on `appState` for later processing.
+    private func submitContradictionNote() {
+        let note = appState.contradictionsNote.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !note.isEmpty else { return }
+        if !appState.contradictionOptions.contains(note) {
+            appState.contradictionOptions.append(note)
+        }
+        appState.selectedContradictions.insert(note)
+        appState.contradictionsNote = ""
     }
 
     // MARK: Step 4 — level
@@ -229,21 +239,16 @@ struct OnboardingView: View {
     }
 }
 
-/// Simple two-row wrap of pill chips, matching the fixed 2-then-1 layout in
-/// the design (three short chip labels never need real flow-layout math).
+/// Wraps pill chips onto as many rows as needed — the option list grows as
+/// the member types custom contraindications, so a fixed 2-then-1 layout
+/// no longer fits every case.
 private struct FlowChips: View {
     let items: [String]
     @Binding var selected: Set<String>
 
     var body: some View {
-        VStack(spacing: 10) {
-            HStack(spacing: 10) {
-                ForEach(items.prefix(2), id: \.self) { chip(for: $0) }
-            }
-            HStack(spacing: 10) {
-                ForEach(items.dropFirst(2), id: \.self) { chip(for: $0) }
-                Spacer()
-            }
+        FlowLayout(spacing: 10) {
+            ForEach(items, id: \.self) { chip(for: $0) }
         }
     }
 
@@ -260,6 +265,53 @@ private struct FlowChips: View {
             .onTapGesture {
                 if isOn { selected.remove(item) } else { selected.insert(item) }
             }
+    }
+}
+
+/// A minimal left-to-right, top-to-bottom wrapping layout for same-height
+/// chip rows.
+private struct FlowLayout: Layout {
+    var spacing: CGFloat = 10
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let maxWidth = proposal.width ?? .infinity
+        var rowWidth: CGFloat = 0
+        var rowHeight: CGFloat = 0
+        var totalWidth: CGFloat = 0
+        var totalHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if rowWidth > 0, rowWidth + spacing + size.width > maxWidth {
+                totalHeight += rowHeight + spacing
+                totalWidth = max(totalWidth, rowWidth)
+                rowWidth = 0
+                rowHeight = 0
+            }
+            rowWidth += (rowWidth > 0 ? spacing : 0) + size.width
+            rowHeight = max(rowHeight, size.height)
+        }
+        totalWidth = max(totalWidth, rowWidth)
+        totalHeight += rowHeight
+        return CGSize(width: totalWidth, height: totalHeight)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var x = bounds.minX
+        var y = bounds.minY
+        var rowHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x > bounds.minX, x + size.width > bounds.maxX {
+                x = bounds.minX
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            subview.place(at: CGPoint(x: x, y: y), anchor: .topLeading, proposal: ProposedViewSize(size))
+            x += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+        }
     }
 }
 
