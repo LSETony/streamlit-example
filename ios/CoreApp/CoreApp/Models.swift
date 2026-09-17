@@ -84,3 +84,14 @@ struct MuscleMassEntry: Identifiable {
     let label: String
     let kg: Double
 }
+
+// MARK: - Club subscriptions (behind Home's wallet icon)
+
+struct SubscriptionPlan: Identifiable {
+    let id = UUID()
+    let name: String
+    let price: Int
+    let period: String
+    let perks: [String]
+    let recommended: Bool
+}

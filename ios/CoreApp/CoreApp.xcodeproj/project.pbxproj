@@ -24,6 +24,7 @@
 		827A626C864C99A017D8DBCA /* GymPhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */; };
 		85B05F926201A88F7E64D6EB /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */; };
 		883CEF1AA585402E8C0803EB /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EEC3E4AC434CCDB1F33D3B /* Theme.swift */; };
+		929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55950DFCC22D525533532A31 /* SubscriptionsView.swift */; };
 		94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CDD914A646D49A055E8D /* CoreAppApp.swift */; };
 		A2E860860761333E4C376664 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B3511191EF0FD2AE5A30D /* SplashView.swift */; };
 		A52425A03ABDED55A30EA3BD /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
@@ -47,6 +48,7 @@
 		3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationPickerView.swift; sourceTree = "<group>"; };
 		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthWelcomeView.swift; sourceTree = "<group>"; };
+		55950DFCC22D525533532A31 /* SubscriptionsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
 		5A3B3511191EF0FD2AE5A30D /* SplashView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreApp.entitlements; sourceTree = "<group>"; };
 		67286F4868E97187636094AA /* WorkoutsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */,
 				E07A661384232071008EA8E3 /* ProgressDetailView.swift */,
 				8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */,
+				55950DFCC22D525533532A31 /* SubscriptionsView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */,
 				F05383C3B4AB44D838E5F814 /* ProgressDetailView.swift in Sources */,
 				B125C469AA78A39EC0FD0ED8 /* OccupancyDetailView.swift in Sources */,
+				929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

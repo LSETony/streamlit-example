@@ -173,6 +173,14 @@ final class AppState: ObservableObject {
     }
     func clearCart() { cart.removeAll() }
 
+    // MARK: Club subscriptions (behind Home's wallet icon)
+
+    @Published var subscriptionPlans: [SubscriptionPlan] = [
+        SubscriptionPlan(name: "Basic", price: 39, period: "mo", perks: ["Gym floor access", "Locker room", "1 club location"], recommended: false),
+        SubscriptionPlan(name: "Unlimited 24/7", price: 79, period: "mo", perks: ["24/7 access, every club", "Group classes included", "Guest passes ×2/mo"], recommended: true),
+        SubscriptionPlan(name: "Premium + PT", price: 129, period: "mo", perks: ["Everything in Unlimited", "4 PT sessions/mo", "Priority booking"], recommended: false),
+    ]
+
     // MARK: Profile
 
     @Published var memberSince: String = "March 2023"

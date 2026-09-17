@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store, location, progress, occupancy
+    case trainers, nutrition, store, location, progress, occupancy, subscriptions
     var id: String { rawValue }
 }
 
@@ -73,7 +73,7 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                     Spacer()
-                    heroIconButton("IconWallet") { activeSheet = .store }
+                    heroIconButton("IconWallet") { activeSheet = .subscriptions }
                 }
                 .padding(.horizontal, AppMetrics.screenPadding)
                 .padding(.top, 56)
@@ -235,6 +235,7 @@ struct HomeView: View {
         case .location: LocationPickerView()
         case .progress: ProgressDetailView()
         case .occupancy: OccupancyDetailView()
+        case .subscriptions: SubscriptionsView()
         }
     }
 }
