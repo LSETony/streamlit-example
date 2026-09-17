@@ -32,46 +32,52 @@ struct CalendarView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                Text("Calendar")
-                    .font(.brand(32))
-                    .foregroundStyle(.white)
+        GeometryReader { geo in
+            let contentWidth = geo.size.width - AppMetrics.screenPadding * 2
 
-                NativeCalendarView(selectedDate: $selectedDateComponents, decoratedDates: decoratedDates)
-                    .frame(height: 360)
-                    .appCard(padding: 8)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    Text("Calendar")
+                        .font(.brand(32))
+                        .foregroundStyle(.white)
 
-                VStack(alignment: .leading, spacing: 10) {
-                    EyebrowLabel(text: dayHeaderText)
-                    if sessionsOnSelectedDay.isEmpty {
-                        Text("No bookings on this day")
-                            .font(.system(size: 14))
-                            .foregroundStyle(Color.appTextSecondary)
-                            .padding(.vertical, 8)
-                    } else {
-                        VStack(spacing: 10) {
-                            ForEach(sessionsOnSelectedDay) { session in
-                                bookingRow(session)
-                            }
-                        }
-                    }
-                }
+                    NativeCalendarView(selectedDate: $selectedDateComponents, decoratedDates: decoratedDates)
+                        .frame(width: contentWidth - 16, height: 420)
+                        .appCard(padding: 8)
 
-                if !upcomingSessions.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
-                        EyebrowLabel(text: "Upcoming reminders")
-                        VStack(spacing: 10) {
-                            ForEach(upcomingSessions) { session in
-                                bookingRow(session)
+                        EyebrowLabel(text: dayHeaderText)
+                        if sessionsOnSelectedDay.isEmpty {
+                            Text("No bookings on this day")
+                                .font(.system(size: 14))
+                                .foregroundStyle(Color.appTextSecondary)
+                                .padding(.vertical, 8)
+                        } else {
+                            VStack(spacing: 10) {
+                                ForEach(sessionsOnSelectedDay) { session in
+                                    bookingRow(session)
+                                }
                             }
                         }
                     }
+                    .frame(width: contentWidth, alignment: .leading)
+
+                    if !upcomingSessions.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            EyebrowLabel(text: "Upcoming reminders")
+                            VStack(spacing: 10) {
+                                ForEach(upcomingSessions) { session in
+                                    bookingRow(session)
+                                }
+                            }
+                        }
+                        .frame(width: contentWidth, alignment: .leading)
+                    }
                 }
+                .padding(.horizontal, AppMetrics.screenPadding)
+                .padding(.top, 12)
+                .padding(.bottom, 24)
             }
-            .screenPadding()
-            .padding(.top, 12)
-            .padding(.bottom, 24)
         }
         .background(Color.appBackground.ignoresSafeArea())
         .sheet(item: $sessionToReschedule) { session in
