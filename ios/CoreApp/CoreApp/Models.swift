@@ -78,6 +78,8 @@ struct ImportantCard: Identifiable {
 struct FoodRecipe: Identifiable {
     let id = UUID()
     let name: String
+    let price: Int
+    let ingredients: [String]
 }
 
 // MARK: - Workout progress history (behind Home's "Your Progress" card)

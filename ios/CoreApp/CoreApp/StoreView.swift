@@ -4,8 +4,8 @@ struct StoreView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
     @State private var selectedProduct: Product?
-    @State private var ordered = false
     @State private var search = ""
+    @State private var isShowingCart = false
 
     var body: some View {
         ScrollView {
@@ -15,7 +15,6 @@ struct StoreView: View {
                     .foregroundStyle(.white)
                 SearchToolRow(search: $search)
                 productGrid
-                if appState.cartCount > 0 { checkoutBar }
             }
             .screenPadding()
             .padding(.top, 12)
@@ -24,42 +23,32 @@ struct StoreView: View {
         .background(Color.appBackground.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button { isShowingCart = true } label: {
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "cart.fill").foregroundStyle(Color.appAccent)
+                        if appState.cartCount > 0 {
+                            Text("\(appState.cartCount)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.white)
+                                .frame(minWidth: 15, minHeight: 15)
+                                .background(Color.appAccent)
+                                .clipShape(Circle())
+                                .offset(x: 10, y: -8)
+                        }
+                    }
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
+        .navigationDestination(isPresented: $isShowingCart) {
+            CartView()
+        }
         .sheet(item: $selectedProduct) { product in
             NavigationStack { ProductDetailView(product: product) }
         }
-    }
-
-    private var checkoutBar: some View {
-        Button { ordered = true } label: {
-            HStack(spacing: 14) {
-                ZStack {
-                    Circle().fill(Color.appWarning).frame(width: 26, height: 26)
-                    Circle().fill(Color.appAccent).frame(width: 26, height: 26).offset(x: 14)
-                }
-                .frame(width: 40, alignment: .leading)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(ordered ? "Ready" : "Check")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
-                    Text("\(appState.cartTotal)$")
-                        .font(.digitalTimer(15))
-                        .foregroundStyle(.white)
-                }
-                Spacer()
-                Image(systemName: "arrow.right")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .glassEffect(.regular.tint(.appAccent), in: Circle())
-            }
-            .padding(10)
-        }
-        .buttonStyle(.plain)
-        .glassEffect(.regular.interactive(), in: Capsule())
     }
 
     private var productGrid: some View {
@@ -69,11 +58,11 @@ struct StoreView: View {
                     selectedProduct = product
                 } onAdd: {
                     appState.addToCart(product)
+                    isShowingCart = true
                 }
             }
         }
     }
-
 }
 
 private struct ProductTile: View {
@@ -117,6 +106,7 @@ struct ProductDetailView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
     let product: Product
+    @State private var isShowingCart = false
 
     var body: some View {
         ScrollView {
@@ -168,19 +158,9 @@ struct ProductDetailView: View {
                 }
                 .appCard(padding: 20)
 
-                HStack(spacing: 10) {
-                    PrimaryButton(title: "Add to cart") {
-                        appState.addToCart(product)
-                    }
-                    Button { dismiss() } label: {
-                        Text("Cart \(appState.cartCount)")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
-                            .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
-                    }
-                    .buttonStyle(.plain)
+                PrimaryButton(title: "Add to cart") {
+                    appState.addToCart(product)
+                    isShowingCart = true
                 }
             }
             .screenPadding()
@@ -193,6 +173,9 @@ struct ProductDetailView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
+        }
+        .navigationDestination(isPresented: $isShowingCart) {
+            CartView()
         }
     }
 }
