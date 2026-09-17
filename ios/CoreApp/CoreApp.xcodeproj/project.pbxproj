@@ -20,6 +20,7 @@
 		549E57A664D84DD0B20D5053 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48104F66160A4418A81BD9E8 /* Models.swift */; };
 		55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */; };
 		5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
+		5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */; };
 		6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */; };
 		6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */; };
 		72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */; };
@@ -46,6 +47,7 @@
 		0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0DFCFF1C6A1D454E80B7C92A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		187D5C91EAAA4F0DB404FA79 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
+		18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BookZoneView.swift; sourceTree = "<group>"; };
 		2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodRecipesView.swift; sourceTree = "<group>"; };
 		2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Doto-VariableFont.ttf"; sourceTree = "<group>"; };
 		3400C5EA574C43B3B4039970 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */,
 				CC7E1851BD66A6F385905E9F /* CartView.swift */,
 				EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */,
+				18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				52A35E68968F65202D122832 /* QRPassView.swift in Sources */,
 				43554B5640BA55F311A51850 /* CartView.swift in Sources */,
 				55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */,
+				5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

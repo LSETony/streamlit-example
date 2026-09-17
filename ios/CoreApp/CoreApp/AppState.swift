@@ -197,6 +197,29 @@ final class AppState: ObservableObject {
         bookedSessions.removeAll { $0.id == session.id }
     }
 
+    // MARK: Zone booking (behind Home's "Book" tile)
+
+    @Published var gymZones: [GymZone] = [
+        GymZone(icon: "figure.pilates", name: "Pilates Studio", subtitle: "Reformer & mat sessions", capacity: 8),
+        GymZone(icon: "figure.run", name: "Running Track", subtitle: "Indoor treadmill lane", capacity: 12),
+        GymZone(icon: "dumbbell.fill", name: "Free Weights Floor", subtitle: "Barbells, racks & benches", capacity: 20),
+        GymZone(icon: "flame.fill", name: "Sauna & Recovery", subtitle: "Steam room & sauna", capacity: 6),
+    ]
+
+    /// Books the next occurrence of `time` ("HH:mm") for `zone`, adding it
+    /// to bookedSessions so it shows up in the Calendar tab too.
+    func bookZone(_ zone: GymZone, at time: String) {
+        let parts = time.split(separator: ":").compactMap { Int($0) }
+        guard parts.count == 2 else { return }
+        let calendar = Calendar.current
+        let now = Date()
+        var date = calendar.date(bySettingHour: parts[0], minute: parts[1], second: 0, of: now) ?? now
+        if date < now {
+            date = calendar.date(byAdding: .day, value: 1, to: date) ?? date
+        }
+        bookedSessions.append(BookedSession(date: date, title: zone.name, trainerName: zone.subtitle))
+    }
+
     // MARK: Store / Supplements
 
     @Published var products: [Product] = [

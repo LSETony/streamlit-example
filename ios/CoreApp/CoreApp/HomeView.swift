@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store, location, progress, occupancy, subscriptions
+    case trainers, nutrition, store, location, progress, occupancy, subscriptions, book
     var id: String { rawValue }
 }
 
@@ -187,7 +187,7 @@ struct HomeView: View {
     private var iconGrid: some View {
         GlassEffectContainer(spacing: 14) {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-                rectTile(icon: "IconCalendar", title: "Book", highlighted: true) {}
+                rectTile(icon: "IconCalendar", title: "Book", highlighted: true) { activeSheet = .book }
                 rectTile(icon: "person.2.fill", isSystemIcon: true, title: "Trainers") { activeSheet = .trainers }
                 rectTile(icon: "leaf.fill", isSystemIcon: true, title: "Food") { activeSheet = .nutrition }
                 rectTile(icon: "IconWallet", title: "Store") { activeSheet = .store }
@@ -236,6 +236,7 @@ struct HomeView: View {
         case .progress: ProgressDetailView()
         case .occupancy: OccupancyDetailView()
         case .subscriptions: SubscriptionsView()
+        case .book: BookZoneView()
         }
     }
 }

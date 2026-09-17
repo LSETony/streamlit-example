@@ -119,3 +119,16 @@ struct BookedSession: Identifiable {
     let title: String
     let trainerName: String
 }
+
+// MARK: - Zone booking (behind Home's "Book" tile)
+
+/// A bookable area of the club floor — Pilates studio, running track,
+/// free weights, etc. Booking a slot adds a BookedSession, so it shows
+/// up alongside trainer sessions in the Calendar tab.
+struct GymZone: Identifiable {
+    let id = UUID()
+    let icon: String
+    let name: String
+    let subtitle: String
+    let capacity: Int
+}
