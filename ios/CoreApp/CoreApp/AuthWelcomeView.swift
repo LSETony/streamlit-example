@@ -38,7 +38,7 @@ struct AuthWelcomeView: View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Добро пожаловать")
-                    .font(.brand(28))
+                    .font(.system(size: 28, weight: .bold))
                     .foregroundStyle(.white)
                 Text("Создать аккаунт")
                     .font(.system(size: 15))
@@ -58,12 +58,13 @@ struct AuthWelcomeView: View {
                     }
                 } label: {
                     HStack(spacing: 4) {
-                        Text(countryCode).foregroundStyle(.white)
+                        Text(countryCode).font(.brand(16)).foregroundStyle(.white)
                         Image(systemName: "chevron.down").font(.system(size: 10)).foregroundStyle(.white.opacity(0.6))
                     }
                 }
                 Divider().frame(height: 20).overlay(Color.white.opacity(0.2))
                 TextField("", text: $phone, prompt: Text("485 478 00 56").foregroundStyle(.white.opacity(0.45)))
+                    .font(.brand(16))
                     .foregroundStyle(.white)
                     .keyboardType(.phonePad)
             }
@@ -74,7 +75,7 @@ struct AuthWelcomeView: View {
 
             HStack(spacing: 12) {
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
-                Text("или").font(.system(size: 12, weight: .semibold)).foregroundStyle(.white.opacity(0.5))
+                Text("ИЛИ").font(.system(size: 12, weight: .semibold)).foregroundStyle(Color.appAccent)
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
             }
 

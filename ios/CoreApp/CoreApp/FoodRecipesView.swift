@@ -11,7 +11,7 @@ struct FoodRecipesView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Food recipes")
-                    .font(.brand(24))
+                    .font(.brand(32))
                     .foregroundStyle(.white)
                 SearchToolRow(search: $search)
 
@@ -43,7 +43,7 @@ private struct RecipeTile: View {
             PhotoPlaceholder(icon: "fork.knife")
             LinearGradient(colors: [.black.opacity(0.55), .clear], startPoint: .bottom, endPoint: .center)
             Text(recipe.name)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.brand(16))
                 .foregroundStyle(.white)
                 .padding(14)
         }

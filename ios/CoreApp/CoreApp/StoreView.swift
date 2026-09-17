@@ -11,7 +11,7 @@ struct StoreView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Supplements")
-                    .font(.brand(24))
+                    .font(.brand(32))
                     .foregroundStyle(.white)
                 SearchToolRow(search: $search)
                 productGrid
@@ -86,12 +86,12 @@ private struct ProductTile: View {
             VStack(alignment: .leading, spacing: 10) {
                 Spacer(minLength: 60)
                 Text(product.name)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.brand(16))
                     .foregroundStyle(.white)
                     .lineLimit(2)
                 HStack {
                     Text("\(product.price)$")
-                        .font(.digitalTimer(16))
+                        .font(.digitalTimer(20))
                         .foregroundStyle(.white)
                     Spacer()
                     Button(action: onAdd) {

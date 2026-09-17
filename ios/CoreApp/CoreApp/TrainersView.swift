@@ -11,7 +11,7 @@ struct TrainersView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Personal Trainers")
-                    .font(.brand(24))
+                    .font(.brand(32))
                     .foregroundStyle(.white)
                 SearchToolRow(search: $search)
 
@@ -59,6 +59,7 @@ struct SearchToolRow: View {
                 HStack(spacing: 8) {
                     Image("IconSearch").customIcon(size: 14).foregroundStyle(Color.appTextSecondary)
                     TextField("", text: $search, prompt: Text("search").foregroundStyle(Color.appTextSecondary))
+                        .font(.brand(16))
                         .foregroundStyle(.white)
                 }
                 .padding(.horizontal, 16)
@@ -99,10 +100,10 @@ private struct TrainerTile: View {
             }
             .buttonStyle(.plain)
             Text(trainer.name)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.brand(16))
                 .foregroundStyle(.white)
             Text("Personal trainer")
-                .font(.system(size: 12))
+                .font(.brand(12))
                 .foregroundStyle(Color.appTextSecondary)
         }
     }

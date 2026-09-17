@@ -98,7 +98,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Club Occupancy")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.brand(16))
                     .foregroundStyle(.white)
                 Spacer()
                 Image(systemName: "arrow.up.right")
@@ -112,7 +112,7 @@ struct HomeView: View {
                     .font(.digitalTimer(38))
                     .foregroundStyle(.white)
                 Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
-                    .font(.system(size: 12))
+                    .font(.brand(12))
                     .foregroundStyle(.white.opacity(0.75))
                     .padding(.bottom, 6)
             }
@@ -127,7 +127,7 @@ struct HomeView: View {
             .padding(.top, 4)
             HStack {
                 ForEach(["06", "10", "14", "22"], id: \.self) { hour in
-                    Text(hour).font(.system(size: 10)).foregroundStyle(.white.opacity(0.6))
+                    Text(hour).font(.brand(10)).foregroundStyle(.white.opacity(0.6))
                     if hour != "22" { Spacer() }
                 }
             }
@@ -144,7 +144,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .firstTextBaseline) {
                     Text("Your Progress")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.brand(16))
                         .foregroundStyle(.white)
                     Spacer()
                     Image("IconTrending").customIcon(size: 16)
@@ -155,9 +155,9 @@ struct HomeView: View {
                     .foregroundStyle(.white)
                 ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 8)
                 HStack {
-                    Text("day \(appState.trainingDay)").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    Text("day \(appState.trainingDay)").font(.brand(12)).foregroundStyle(Color.appTextSecondary)
                     Spacer()
-                    Text("\(appState.trainingMinutesToday) mins training").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    Text("\(appState.trainingMinutesToday) mins training").font(.brand(12)).foregroundStyle(Color.appTextSecondary)
                 }
             }
             .appCard(padding: 20)
@@ -192,7 +192,7 @@ struct HomeView: View {
                 }
                 .foregroundStyle(.white)
                 Text(title)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.brand(12))
                     .foregroundStyle(.white)
             }
             .frame(maxWidth: .infinity)

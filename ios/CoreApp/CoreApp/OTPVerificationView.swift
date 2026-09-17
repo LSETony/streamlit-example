@@ -37,11 +37,10 @@ struct OTPVerificationView: View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Верификация")
-                    .font(.brand(26))
+                    .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(.white)
-                (Text("Отправили код на ") + Text(phoneDisplay).foregroundStyle(Color.appAccent))
+                (Text("Отправили код на ").foregroundStyle(Color.appAccent) + Text(phoneDisplay).foregroundStyle(.white))
                     .font(.system(size: 14))
-                    .foregroundStyle(.white.opacity(0.6))
             }
 
             GlassEffectContainer(spacing: 16) {
@@ -58,7 +57,10 @@ struct OTPVerificationView: View {
                     .font(.system(size: 13))
                     .foregroundStyle(.white.opacity(0.6))
                 if secondsRemaining > 0 {
-                    Text("Отправить через ")
+                    Text("Отправить ")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Color.appAccent)
+                    + Text("через ")
                         .font(.system(size: 13))
                         .foregroundStyle(.white.opacity(0.6))
                     + Text(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))
@@ -97,7 +99,7 @@ struct OTPVerificationView: View {
         ))
         .keyboardType(.numberPad)
         .multilineTextAlignment(.center)
-        .font(.system(size: 22, weight: .bold))
+        .font(.brand(28))
         .foregroundStyle(.white)
         .frame(width: 60, height: 60)
         .glassEffect(

@@ -12,11 +12,15 @@ struct WorkoutsView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
+                    Text("Workouts")
+                        .font(.brand(32))
+                        .foregroundStyle(.white)
+
                     HStack(spacing: 8) {
                         ForEach(libraryFilters, id: \.self) { filter in
                             let on = libraryFilter == filter
                             Text(filter)
-                                .font(.system(size: 13, weight: .semibold))
+                                .font(.brand(16))
                                 .foregroundStyle(on ? .white : Color.appTextPrimary)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 9)
@@ -51,7 +55,7 @@ struct WorkoutsView: View {
                         HStack(spacing: 10) {
                             ForEach(appState.importantCards) { card in
                                 Text(card.title)
-                                    .font(.system(size: 16, weight: .semibold))
+                                    .font(.brand(16))
                                     .foregroundStyle(.white)
                                     .frame(maxWidth: .infinity, minHeight: 180, alignment: .bottomLeading)
                                     .padding(16)
@@ -71,9 +75,9 @@ struct WorkoutsView: View {
     }
 
     private func sectionLabel(_ text: String) -> some View {
-        Text(text.uppercased())
-            .font(.system(size: 13))
-            .foregroundStyle(Color.appTextSecondary)
+        Text(text)
+            .font(.brand(20))
+            .foregroundStyle(.white)
     }
 }
 
@@ -88,12 +92,12 @@ private struct WorkoutCardTile: View {
             LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
             VStack(alignment: .leading, spacing: 2) {
                 Text(card.title)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.brand(16))
                     .foregroundStyle(.white)
                     .lineLimit(2)
                 HStack(spacing: 6) {
-                    Text(card.duration).font(.system(size: 10)).foregroundStyle(Color.appAccent)
-                    Text(card.level).font(.system(size: 10)).foregroundStyle(.white.opacity(0.75))
+                    Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
+                    Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.75))
                 }
             }
             .padding(12)

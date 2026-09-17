@@ -13,6 +13,9 @@ struct ProfileView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
+                    Text("Profile")
+                        .font(.brand(32))
+                        .foregroundStyle(.white)
                     header
                     qrPassRow
                     membershipCard
@@ -41,12 +44,12 @@ struct ProfileView: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(appState.fullName).font(.brand(18)).foregroundStyle(.white)
                 Text("Member since \(appState.memberSince)")
-                    .font(.system(size: 12))
+                    .font(.brand(12))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             Text("\(appState.totalVisits) visits")
-                .font(.system(size: 13, weight: .bold))
+                .font(.brand(13))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
@@ -58,9 +61,9 @@ struct ProfileView: View {
     private var qrPassRow: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("QR access pass").font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
+                Text("QR access pass").font(.brand(16)).foregroundStyle(.white)
                 Text("Turnstile and reception check-in")
-                    .font(.system(size: 12))
+                    .font(.brand(12))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
@@ -74,7 +77,7 @@ struct ProfileView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .top) {
                 Text("Membership")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.brand(13))
                     .foregroundStyle(.white.opacity(0.85))
                 Spacer()
                 Image("IconChevronRight").customIcon(size: 13).foregroundStyle(.white.opacity(0.7))
@@ -83,7 +86,7 @@ struct ProfileView: View {
                 .font(.digitalTimer(26))
                 .foregroundStyle(.white)
             Text("renews \(appState.membershipRenewDate.lowercased())")
-                .font(.system(size: 12))
+                .font(.brand(12))
                 .foregroundStyle(.white.opacity(0.85))
         }
         .padding(20)
@@ -102,8 +105,8 @@ struct ProfileView: View {
 
     private func plainStat(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(value).font(.digitalTimer(24)).foregroundStyle(.white)
-            Text(label).font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+            Text(value).font(.digitalTimer(28)).foregroundStyle(.white)
+            Text(label).font(.brand(16)).foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
@@ -113,9 +116,9 @@ struct ProfileView: View {
     private var healthCard: some View {
         HStack {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Apple Health").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                Text("Apple Health").font(.brand(18)).foregroundStyle(.white)
                 Text(appState.appleHealthSyncEnabled ? "Steps, sleep, heart rate syncing" : "Disconnected")
-                    .font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    .font(.brand(13)).foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             Toggle("", isOn: $appState.appleHealthSyncEnabled)

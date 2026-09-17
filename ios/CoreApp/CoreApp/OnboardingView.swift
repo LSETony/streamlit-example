@@ -36,10 +36,10 @@ struct OnboardingView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(step == 2 ? "Tell us about yourself" : stepTitle)
-                .font(.brand(26))
+                .font(.brand(32))
                 .foregroundStyle(.white)
             Text("This tailor plans and your experience")
-                .font(.system(size: 13))
+                .font(.brand(13))
                 .foregroundStyle(Color.appTextSecondary)
         }
     }
@@ -65,7 +65,7 @@ struct OnboardingView: View {
                     }
                 }
             Text("\(step + 1)/\(totalSteps)")
-                .font(.system(size: 12, weight: .semibold))
+                .font(.brand(12))
                 .foregroundStyle(Color.appTextSecondary)
         }
     }
@@ -125,7 +125,7 @@ struct OnboardingView: View {
         VStack(spacing: 24) {
             Text("Do you have any\ncontradictions?")
                 .multilineTextAlignment(.center)
-                .font(.system(size: 19, weight: .bold))
+                .font(.brand(22))
                 .foregroundStyle(.white)
                 .padding(.top, 18)
 
@@ -183,20 +183,31 @@ struct OnboardingView: View {
     private func levelCard(title: String, subtitle: String) -> some View {
         let isSelected = appState.selectedLevel == title
         return Button { appState.selectedLevel = title } label: {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(title)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
-                Spacer()
-                Text(subtitle)
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color.appTextSecondary)
+            ZStack(alignment: .topLeading) {
+                if isSelected, title == "Beginner" {
+                    Image("WorkoutBeginnerFemale")
+                        .resizable()
+                        .scaledToFill()
+                    LinearGradient(colors: [.black.opacity(0.1), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                } else if isSelected {
+                    Color.appAccentPurple
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(title)
+                        .font(.brand(16))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    Text(subtitle)
+                        .font(.brand(12))
+                        .foregroundStyle(isSelected ? .white.opacity(0.9) : Color.appTextSecondary)
+                }
+                .padding(16)
             }
             .frame(maxWidth: .infinity, minHeight: 193, alignment: .topLeading)
-            .padding(16)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                    .stroke(isSelected ? Color.appAccent : Color.appDivider, lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? Color.clear : Color.appDivider, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -219,7 +230,7 @@ struct OnboardingView: View {
                     .frame(width: 20)
                 }
                 Text(title)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.brand(16))
                     .foregroundStyle(.white)
                 Spacer()
                 if isSelected {
@@ -255,7 +266,7 @@ private struct FlowChips: View {
     private func chip(for item: String) -> some View {
         let isOn = selected.contains(item)
         return Text(item)
-            .font(.system(size: 14, weight: .semibold))
+            .font(.brand(14))
             .foregroundStyle(.white)
             .padding(.horizontal, 18)
             .padding(.vertical, 12)
