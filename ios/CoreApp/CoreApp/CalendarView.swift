@@ -1,15 +1,14 @@
 import SwiftUI
 
-/// The Calendar tab: a custom SwiftUI month calendar in the iOS Calendar
-/// app's visual language (month header with prev/next, weekday row, day
-/// grid with a dot under days that have a booking) — built natively in
-/// SwiftUI rather than wrapping UICalendarView, whose internal layout
-/// didn't reliably respect the width it was given. Below it: the selected
-/// day's bookings and a running list of upcoming reminders, each
-/// reschedulable or cancelable.
+/// The Calendar tab: Apple's own graphical month calendar (SwiftUI's
+/// built-in `DatePicker(.graphical)` — the exact widget the system
+/// Calendar/Reminders apps use to pick a date) rather than a hand-rolled
+/// grid or a UICalendarView wrapper. Both of those fought SwiftUI's width
+/// negotiation; DatePicker is native SwiftUI, so it always sizes correctly.
+/// Below it: the selected day's bookings and a running list of upcoming
+/// reminders, each reschedulable or cancelable.
 struct CalendarView: View {
     @EnvironmentObject var appState: AppState
-    @State private var displayedMonth: Date = Date()
     @State private var selectedDate: Date = Date()
     @State private var sessionToReschedule: BookedSession?
     @State private var sessionToCancel: BookedSession?
@@ -35,20 +34,15 @@ struct CalendarView: View {
                     .font(.brand(32))
                     .foregroundStyle(.white)
 
-                VStack(spacing: 16) {
-                    monthHeader
-                    weekdayHeader
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 6) {
-                        ForEach(Array(monthDates.enumerated()), id: \.offset) { _, date in
-                            if let date {
-                                dayCell(date)
-                            } else {
-                                Color.clear.frame(height: 46)
-                            }
-                        }
-                    }
-                }
-                .appCard(padding: 20)
+                DatePicker(
+                    "Selected date",
+                    selection: $selectedDate,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.graphical)
+                .tint(Color.appAccent)
+                .colorScheme(.dark)
+                .appCard(padding: 8)
 
                 VStack(alignment: .leading, spacing: 10) {
                     EyebrowLabel(text: dayHeaderText)
@@ -100,98 +94,6 @@ struct CalendarView: View {
                 Text("\(session.title) on \(session.date.formatted(date: .abbreviated, time: .shortened))")
             }
         }
-    }
-
-    // MARK: Month grid
-
-    private var monthHeader: some View {
-        HStack {
-            Button {
-                changeMonth(by: -1)
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Color.appAccent)
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            Spacer()
-            Text(monthTitle)
-                .font(.brand(18))
-                .foregroundStyle(.white)
-            Spacer()
-            Button {
-                changeMonth(by: 1)
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Color.appAccent)
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-        }
-    }
-
-    private var weekdayHeader: some View {
-        HStack {
-            ForEach(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"], id: \.self) { day in
-                Text(day)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Color.appTextSecondary)
-                    .frame(maxWidth: .infinity)
-            }
-        }
-    }
-
-    private var monthTitle: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "LLLL yyyy"
-        return formatter.string(from: displayedMonth).capitalized
-    }
-
-    private var monthDates: [Date?] {
-        guard let interval = calendar.dateInterval(of: .month, for: displayedMonth),
-              let daysInMonth = calendar.range(of: .day, in: .month, for: displayedMonth)?.count
-        else { return [] }
-        let firstWeekday = calendar.component(.weekday, from: interval.start)
-        let leadingBlanks = (firstWeekday + 5) % 7 // Monday-first offset
-        let days: [Date?] = (0..<daysInMonth).map { calendar.date(byAdding: .day, value: $0, to: interval.start) }
-        return Array(repeating: nil, count: leadingBlanks) + days
-    }
-
-    private func changeMonth(by value: Int) {
-        guard let newMonth = calendar.date(byAdding: .month, value: value, to: displayedMonth) else { return }
-        displayedMonth = newMonth
-    }
-
-    private func dayCell(_ date: Date) -> some View {
-        let isToday = calendar.isDateInToday(date)
-        let isSelected = calendar.isDate(date, inSameDayAs: selectedDate)
-        let hasBooking = appState.bookedSessions.contains { calendar.isDate($0.date, inSameDayAs: date) }
-
-        return Button {
-            selectedDate = date
-        } label: {
-            VStack(spacing: 4) {
-                ZStack {
-                    if isSelected {
-                        Circle().fill(Color.appAccent)
-                    } else if isToday {
-                        Circle().stroke(Color.appAccent, lineWidth: 1.5)
-                    }
-                    Text("\(calendar.component(.day, from: date))")
-                        .font(.system(size: 15, weight: isSelected || isToday ? .bold : .regular))
-                        .foregroundStyle(.white)
-                }
-                .frame(width: 34, height: 34)
-
-                Circle()
-                    .fill(hasBooking ? Color.appAccent : .clear)
-                    .frame(width: 4, height: 4)
-            }
-            .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.plain)
     }
 
     // MARK: Bookings
