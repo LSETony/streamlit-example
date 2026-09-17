@@ -74,7 +74,7 @@ struct CoreTabBar: View {
 
     private func tabButton(_ tab: MainTab) -> some View {
         let isSelected = selectedTab == tab
-        return Button {
+        let button = Button {
             selectedTab = tab
         } label: {
             VStack(spacing: 6) {
@@ -92,7 +92,14 @@ struct CoreTabBar: View {
             .padding(.horizontal, 4)
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular.tint(.black.opacity(0.35)), in: RoundedRectangle(cornerRadius: 18, style: .continuous), isEnabled: isSelected)
+
+        return Group {
+            if isSelected {
+                button.glassEffect(.regular.tint(.black.opacity(0.35)), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            } else {
+                button
+            }
+        }
     }
 }
 
