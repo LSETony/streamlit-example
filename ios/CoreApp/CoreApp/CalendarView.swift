@@ -42,8 +42,9 @@ struct CalendarView: View {
                         .foregroundStyle(.white)
 
                     NativeCalendarView(selectedDate: $selectedDateComponents, decoratedDates: decoratedDates)
-                        .frame(width: contentWidth - 16, height: 420)
-                        .appCard(padding: 8)
+                        .frame(width: contentWidth, height: 420)
+                        .background(Color.appSurface)
+                        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
 
                     VStack(alignment: .leading, spacing: 10) {
                         EyebrowLabel(text: dayHeaderText)
