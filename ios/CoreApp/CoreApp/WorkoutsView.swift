@@ -37,21 +37,21 @@ struct WorkoutsView: View {
 
                     VStack(alignment: .leading, spacing: 10) {
                         sectionLabel("Beginner's Plan")
-                        HStack(spacing: 10) {
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                             ForEach(appState.beginnerPlanCards) { card in WorkoutCardTile(card: card) }
                         }
                     }
 
                     VStack(alignment: .leading, spacing: 10) {
                         sectionLabel("Top 10 workouts")
-                        HStack(spacing: 10) {
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                             ForEach(appState.topWorkoutCards) { card in WorkoutCardTile(card: card) }
                         }
                     }
 
                     VStack(alignment: .leading, spacing: 10) {
                         sectionLabel("Important")
-                        HStack(spacing: 10) {
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                             ForEach(appState.importantCards) { card in
                                 Text(card.title)
                                     .font(.brand(16))
@@ -64,6 +64,7 @@ struct WorkoutsView: View {
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .screenPadding()
                 .padding(.top, 12)
                 .padding(.bottom, 24)
@@ -84,26 +85,24 @@ private struct WorkoutCardTile: View {
     let card: WorkoutCard
 
     var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .bottomLeading) {
-                Image(card.imageName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .clipped()
-                LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(card.title)
-                        .font(.brand(16))
-                        .foregroundStyle(.white)
-                        .lineLimit(2)
-                    HStack(spacing: 6) {
-                        Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
-                        Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.75))
-                    }
+        ZStack(alignment: .bottomLeading) {
+            Image(card.imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
+            LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(card.title)
+                    .font(.brand(16))
+                    .foregroundStyle(.white)
+                    .lineLimit(2)
+                HStack(spacing: 6) {
+                    Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
+                    Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.75))
                 }
-                .padding(12)
             }
+            .padding(12)
         }
         .frame(height: 180)
         .frame(maxWidth: .infinity)
