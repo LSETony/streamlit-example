@@ -67,6 +67,7 @@ final class AppState: ObservableObject {
     var totalSetsThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.sets } }
     var totalMinutesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.minutes } }
     var totalCaloriesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.calories } }
+    var todayCalories: Int { workoutHistory.first(where: { $0.date == "Today" })?.calories ?? 0 }
 
     /// Muscle mass growth chart (Progress screen).
     @Published var muscleMassHistory: [MuscleMassEntry] = [
