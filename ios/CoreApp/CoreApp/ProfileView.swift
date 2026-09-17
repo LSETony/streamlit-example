@@ -44,7 +44,7 @@ struct ProfileView: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(appState.fullName).font(.brand(18)).foregroundStyle(.white)
                 Text("Member since \(appState.memberSince)")
-                    .font(.brand(12))
+                    .font(.brand(10))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
@@ -56,37 +56,41 @@ struct ProfileView: View {
                 .background(Color.appAccent)
                 .clipShape(Capsule())
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .overlay(Capsule().stroke(.white.opacity(0.5), lineWidth: 0.5))
     }
 
     private var qrPassRow: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("QR access pass").font(.brand(16)).foregroundStyle(.white)
+                Text("QR access pass").font(.brand(24)).foregroundStyle(.white)
                 Text("Turnstile and reception check-in")
-                    .font(.brand(12))
+                    .font(.brand(16))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             Image("IconChevronRight").customIcon(size: 14).foregroundStyle(Color.appTextSecondary)
         }
         .padding(18)
-        .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+        .background(Color.black.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 
     private var membershipCard: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .top) {
                 Text("Membership")
-                    .font(.brand(13))
+                    .font(.brand(20))
                     .foregroundStyle(.white.opacity(0.85))
                 Spacer()
                 Image("IconChevronRight").customIcon(size: 13).foregroundStyle(.white.opacity(0.7))
             }
             Text(appState.membershipPlanName)
-                .font(.digitalTimer(26))
+                .font(.digitalTimer(32))
                 .foregroundStyle(.white)
             Text("renews \(appState.membershipRenewDate.lowercased())")
-                .font(.brand(12))
+                .font(.brand(16))
                 .foregroundStyle(.white.opacity(0.85))
         }
         .padding(20)
@@ -105,27 +109,29 @@ struct ProfileView: View {
 
     private func plainStat(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(value).font(.digitalTimer(28)).foregroundStyle(.white)
-            Text(label).font(.brand(16)).foregroundStyle(.white)
+            Text(value).font(.digitalTimer(32)).foregroundStyle(.white)
+            Text(label).font(.brand(24)).foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .overlay(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(.white.opacity(0.5), lineWidth: 0.5))
     }
 
     private var healthCard: some View {
         HStack {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Apple Health").font(.brand(18)).foregroundStyle(.white)
+                Text("Apple Health").font(.brand(24)).foregroundStyle(.white)
                 Text(appState.appleHealthSyncEnabled ? "Steps, sleep, heart rate syncing" : "Disconnected")
-                    .font(.brand(13)).foregroundStyle(Color.appTextSecondary)
+                    .font(.brand(16)).foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             Toggle("", isOn: $appState.appleHealthSyncEnabled)
                 .labelsHidden()
                 .tint(.appAccent)
         }
-        .padding(.vertical, 6)
+        .padding(18)
+        .background(Color.black.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 
     private var logoutButton: some View {
