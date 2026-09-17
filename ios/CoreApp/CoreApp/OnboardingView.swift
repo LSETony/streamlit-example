@@ -104,7 +104,7 @@ struct OnboardingView: View {
 
     private var goalStep: some View {
         VStack(spacing: 12) {
-            optionRow(icon: "flag.fill", title: "Muscle Built", isSelected: appState.selectedGoal == "Muscle Built") {
+            optionRow(icon: "IconFlag", isSystemIcon: false, title: "Muscle Built", isSelected: appState.selectedGoal == "Muscle Built") {
                 appState.selectedGoal = "Muscle Built"
             }
             optionRow(icon: "lock.fill", title: "Lose Weight", isSelected: appState.selectedGoal == "Lose Weight") {
@@ -143,8 +143,7 @@ struct OnboardingView: View {
                         .padding(.vertical, 14)
                         .glassEffect(.regular, in: Capsule())
                     Button {} label: {
-                        Image(systemName: "paperplane.fill")
-                            .font(.system(size: 15))
+                        Image("IconSend").customIcon(size: 18)
                             .foregroundStyle(.white)
                             .frame(width: 48, height: 48)
                     }
@@ -195,14 +194,19 @@ struct OnboardingView: View {
 
     // MARK: Shared row style (steps 1 & 2)
 
-    private func optionRow(icon: String? = nil, title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+    private func optionRow(icon: String? = nil, isSystemIcon: Bool = true, title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 12) {
                 if let icon {
-                    Image(systemName: icon)
-                        .font(.system(size: 15))
-                        .foregroundStyle(.white)
-                        .frame(width: 20)
+                    Group {
+                        if isSystemIcon {
+                            Image(systemName: icon).font(.system(size: 15))
+                        } else {
+                            Image(icon).customIcon(size: 17)
+                        }
+                    }
+                    .foregroundStyle(.white)
+                    .frame(width: 20)
                 }
                 Text(title)
                     .font(.system(size: 16, weight: .semibold))

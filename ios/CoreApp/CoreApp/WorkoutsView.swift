@@ -26,8 +26,7 @@ struct WorkoutsView: View {
                                 .onTapGesture { libraryFilter = filter }
                         }
                         Spacer()
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 14, weight: .semibold))
+                        Image("IconSearch").customIcon(size: 14)
                             .foregroundStyle(.white)
                             .frame(width: 40, height: 40)
                             .glassCircleButton()

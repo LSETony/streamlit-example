@@ -57,7 +57,7 @@ struct SearchToolRow: View {
         GlassEffectContainer(spacing: 10) {
             HStack(spacing: 10) {
                 HStack(spacing: 8) {
-                    Image(systemName: "magnifyingglass").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
+                    Image("IconSearch").customIcon(size: 14).foregroundStyle(Color.appTextSecondary)
                     TextField("", text: $search, prompt: Text("search").foregroundStyle(Color.appTextSecondary))
                         .foregroundStyle(.white)
                 }
@@ -65,15 +65,14 @@ struct SearchToolRow: View {
                 .padding(.vertical, 13)
                 .glassEffect(.regular, in: Capsule())
 
-                toolIcon("arrow.up.arrow.down")
-                toolIcon("slider.horizontal.3")
+                toolIcon("IconSort")
+                toolIcon("IconFilter")
             }
         }
     }
 
     private func toolIcon(_ name: String) -> some View {
-        Image(systemName: name)
-            .font(.system(size: 14, weight: .semibold))
+        Image(name).customIcon(size: 16)
             .foregroundStyle(.white)
             .frame(width: 42, height: 42)
             .glassCircleButton()

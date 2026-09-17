@@ -1,7 +1,28 @@
 import SwiftUI
 
-enum MainTab: CaseIterable {
-    case home, workouts, me
+enum MainTab: CaseIterable, Hashable {
+    case home, calendar, workouts, progress, me
+}
+
+private extension MainTab {
+    var label: String {
+        switch self {
+        case .home: return "Home"
+        case .calendar: return "Calendar"
+        case .workouts: return "Workouts"
+        case .progress: return "Progress"
+        case .me: return "Profile"
+        }
+    }
+    var icon: String {
+        switch self {
+        case .home: return "IconHouse"
+        case .calendar: return "IconCalendar"
+        case .workouts: return "IconTrophy"
+        case .progress: return "IconTrending"
+        case .me: return "IconPerson"
+        }
+    }
 }
 
 struct ContentView: View {
@@ -14,7 +35,9 @@ struct ContentView: View {
             Group {
                 switch selectedTab {
                 case .home: HomeView()
+                case .calendar: CalendarView()
                 case .workouts: WorkoutsView()
+                case .progress: ProgressTabView()
                 case .me: ProfileView()
                 }
             }
@@ -26,54 +49,50 @@ struct ContentView: View {
     }
 }
 
-/// The bottom pill tab bar: Home, a raised orange "Workouts" button in the
-/// center, and Me.
+/// The bottom pill tab bar — matches the source's "Component 36" exactly:
+/// Home / Calendar / Workouts / Progress / Profile as five equal flat tabs
+/// in one glass capsule, with a darker glass "chip" behind whichever tab is
+/// selected (real Liquid Glass throughout, no plain-material approximation).
 struct CoreTabBar: View {
     @Binding var selectedTab: MainTab
 
     var body: some View {
-        GlassEffectContainer(spacing: 20) {
+        GlassEffectContainer(spacing: 8) {
             HStack(spacing: 0) {
-                tabButton(.home, icon: "house.fill")
-                centerButton
-                tabButton(.me, icon: "person.fill")
+                ForEach(MainTab.allCases, id: \.self) { tab in
+                    tabButton(tab)
+                }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 10)
             .padding(.vertical, 10)
             .glassEffect(.regular, in: Capsule())
             .shadow(color: .black.opacity(0.4), radius: 34, y: 14)
         }
-        .padding(.horizontal, 18)
+        .padding(.horizontal, 14)
         .padding(.bottom, 14)
     }
 
-    private func tabButton(_ tab: MainTab, icon: String) -> some View {
-        Button {
+    private func tabButton(_ tab: MainTab) -> some View {
+        let isSelected = selectedTab == tab
+        return Button {
             selectedTab = tab
         } label: {
-            Image(systemName: icon)
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(selectedTab == tab ? Color.appAccent : Color.appTextSecondary)
-                .frame(maxWidth: .infinity)
+            VStack(spacing: 6) {
+                Image(tab.icon)
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
+                Text(tab.label)
+                    .font(.system(size: 11, weight: .bold))
+            }
+            .foregroundStyle(isSelected ? Color.appAccent : .white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 4)
         }
         .buttonStyle(.plain)
-    }
-
-    private var centerButton: some View {
-        Button {
-            selectedTab = .workouts
-        } label: {
-            Image(systemName: "dumbbell.fill")
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 54, height: 54)
-        }
-        .buttonStyle(.plain)
-        .glassEffect(.regular.tint(.appAccent).interactive(), in: Circle())
-        .shadow(color: Color.appAccent.opacity(0.4), radius: 12, y: 6)
-        .offset(y: -20)
-        .frame(width: 66)
-        .padding(.horizontal, 6)
+        .glassEffect(.regular.tint(.black.opacity(0.35)), in: RoundedRectangle(cornerRadius: 18, style: .continuous), isEnabled: isSelected)
     }
 }
 

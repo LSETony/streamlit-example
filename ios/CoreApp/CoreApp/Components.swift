@@ -1,5 +1,16 @@
 import SwiftUI
 
+extension Image {
+    /// A custom vector icon from the design's SVG export, sized and tinted
+    /// like a system symbol would be via `.font(size:)` + `.foregroundStyle`.
+    func customIcon(size: CGFloat) -> some View {
+        self.renderingMode(.template)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size, height: size)
+    }
+}
+
 /// Horizontal progress bar used by the Home "Your Progress" card.
 struct ProgressBarView: View {
     let value: Double // 0...1

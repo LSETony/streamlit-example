@@ -64,7 +64,7 @@ struct ProfileView: View {
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
-            Image(systemName: "chevron.right").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
+            Image("IconChevronRight").customIcon(size: 14).foregroundStyle(Color.appTextSecondary)
         }
         .padding(18)
         .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
@@ -77,7 +77,7 @@ struct ProfileView: View {
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.85))
                 Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(.white.opacity(0.7))
+                Image("IconChevronRight").customIcon(size: 13).foregroundStyle(.white.opacity(0.7))
             }
             Text(appState.membershipPlanName)
                 .font(.digitalTimer(26))

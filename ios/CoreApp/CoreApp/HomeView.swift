@@ -56,8 +56,8 @@ struct HomeView: View {
                 Spacer()
                 GlassEffectContainer(spacing: 10) {
                     HStack(spacing: 10) {
-                        heroIconButton("magnifyingglass") {}
-                        heroIconButton("bag.fill") { activeSheet = .store }
+                        heroIconButton("IconSearch") {}
+                        heroIconButton("IconCart") { activeSheet = .store }
                     }
                 }
             }
@@ -69,8 +69,7 @@ struct HomeView: View {
 
     private func heroIconButton(_ icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .semibold))
+            Image(icon).customIcon(size: 14)
                 .foregroundStyle(.white)
                 .frame(width: 38, height: 38)
         }
@@ -128,8 +127,7 @@ struct HomeView: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.white)
                 Spacer()
-                Image(systemName: "chart.bar.fill")
-                    .font(.system(size: 15))
+                Image("IconTrending").customIcon(size: 16)
                     .foregroundStyle(Color.appAccent)
             }
             Text("\(appState.trainingProgressPercent)%")
@@ -150,27 +148,32 @@ struct HomeView: View {
     private var iconGrid: some View {
         GlassEffectContainer(spacing: 18) {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 18) {
-                circleTile(icon: "calendar", title: "Book", highlighted: true) {}
-                circleTile(icon: "person.2.fill", title: "Trainers") { activeSheet = .trainers }
-                circleTile(icon: "leaf.fill", title: "Food") { activeSheet = .nutrition }
-                circleTile(icon: "cart.fill", title: "Store") { activeSheet = .store }
-                circleTile(icon: "qrcode.viewfinder", title: "Scan") {}
-                circleTile(icon: "gearshape.fill", title: "Core AI") {}
+                circleTile(icon: "IconCalendar", title: "Book", highlighted: true) {}
+                circleTile(icon: "person.2.fill", isSystemIcon: true, title: "Trainers") { activeSheet = .trainers }
+                circleTile(icon: "leaf.fill", isSystemIcon: true, title: "Food") { activeSheet = .nutrition }
+                circleTile(icon: "IconCart", title: "Store") { activeSheet = .store }
+                circleTile(icon: "IconFaceScan", title: "Scan") {}
+                circleTile(icon: "IconAISparkle", title: "Core AI") {}
             }
         }
     }
 
-    private func circleTile(icon: String, title: String, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
+    private func circleTile(icon: String, isSystemIcon: Bool = false, title: String, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: 10) {
-                Image(systemName: icon)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 54, height: 54)
-                    .glassEffect(
-                        highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
-                        in: Circle()
-                    )
+                Group {
+                    if isSystemIcon {
+                        Image(systemName: icon).font(.system(size: 18, weight: .semibold))
+                    } else {
+                        Image(icon).customIcon(size: 20)
+                    }
+                }
+                .foregroundStyle(.white)
+                .frame(width: 54, height: 54)
+                .glassEffect(
+                    highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
+                    in: Circle()
+                )
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(.white)
