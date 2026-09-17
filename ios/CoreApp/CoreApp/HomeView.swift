@@ -88,10 +88,10 @@ struct HomeView: View {
         Button(action: action) {
             Image(icon).customIcon(size: 20)
                 .foregroundStyle(.white)
-                .frame(width: 56, height: 56)
+                .frame(width: 72, height: 52)
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .glassEffect(.regular.interactive(), in: Capsule())
     }
 
     private var occupancyGlassCard: some View {
