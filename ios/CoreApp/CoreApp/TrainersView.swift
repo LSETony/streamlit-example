@@ -6,6 +6,29 @@ struct TrainersView: View {
     @State private var selectedTrainer: Trainer?
     @State private var search = ""
     @State private var favorites: Set<UUID> = []
+    @State private var isShowingFilters = false
+    @State private var maxPrice: Double = 500
+    @State private var selectedTags: Set<String> = []
+
+    private var priceBound: Double {
+        Double(appState.trainers.compactMap { Int($0.priceCompact) }.max() ?? 100)
+    }
+
+    private var allTags: [String] {
+        Array(Set(appState.trainers.flatMap(\.tags))).sorted()
+    }
+
+    private var filteredTrainers: [Trainer] {
+        appState.trainers.filter { trainer in
+            let matchesSearch = search.isEmpty
+                || trainer.name.localizedCaseInsensitiveContains(search)
+                || trainer.specialty.localizedCaseInsensitiveContains(search)
+                || trainer.tags.contains { $0.localizedCaseInsensitiveContains(search) }
+            let matchesPrice = Double(Int(trainer.priceCompact) ?? 0) <= maxPrice
+            let matchesTags = selectedTags.isEmpty || !Set(trainer.tags).isDisjoint(with: selectedTags)
+            return matchesSearch && matchesPrice && matchesTags
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -13,10 +36,10 @@ struct TrainersView: View {
                 Text("Personal Trainers")
                     .font(.brand(32))
                     .foregroundStyle(.white)
-                SearchToolRow(search: $search)
+                SearchToolRow(search: $search) { isShowingFilters = true }
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-                    ForEach(appState.trainers) { trainer in
+                    ForEach(filteredTrainers) { trainer in
                         TrainerTile(
                             trainer: trainer,
                             isFavorite: Binding(
@@ -45,6 +68,100 @@ struct TrainersView: View {
         .sheet(item: $selectedTrainer) { trainer in
             NavigationStack { TrainerDetailView(trainer: trainer) }
         }
+        .sheet(isPresented: $isShowingFilters) {
+            PriceTagFilterSheet(
+                title: "Filter trainers",
+                maxPrice: $maxPrice,
+                priceBound: priceBound,
+                sectionLabel: "Specialty",
+                allOptions: allTags,
+                selectedOptions: $selectedTags
+            )
+        }
+    }
+}
+
+/// Shared price + tag/ingredient filter sheet used by Trainers, Store and
+/// Food recipes — "max price" slider plus a checklist of the domain's
+/// content options (specialty tags, ingredients).
+struct PriceTagFilterSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let title: String
+    @Binding var maxPrice: Double
+    let priceBound: Double
+    let sectionLabel: String
+    let allOptions: [String]
+    @Binding var selectedOptions: Set<String>
+
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 10) {
+                    EyebrowLabel(text: "Max price")
+                    Text("$\(Int(maxPrice))")
+                        .font(.digitalTimer(28))
+                        .foregroundStyle(.white)
+                    Slider(value: $maxPrice, in: 0...max(priceBound, 1))
+                        .tint(Color.appAccent)
+                }
+
+                if !allOptions.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        EyebrowLabel(text: sectionLabel)
+                        ScrollView {
+                            VStack(spacing: 8) {
+                                ForEach(allOptions, id: \.self) { option in
+                                    optionRow(option)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(minLength: 0)
+            }
+            .screenPadding()
+            .padding(.top, 12)
+            .padding(.bottom, 24)
+            .background(Color.appBackground.ignoresSafeArea())
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Reset") {
+                        maxPrice = priceBound
+                        selectedOptions.removeAll()
+                    }
+                    .foregroundStyle(Color.appTextSecondary)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
+                }
+            }
+        }
+    }
+
+    private func optionRow(_ option: String) -> some View {
+        let isOn = selectedOptions.contains(option)
+        return Button {
+            if isOn { selectedOptions.remove(option) } else { selectedOptions.insert(option) }
+        } label: {
+            HStack {
+                Text(option)
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white)
+                Spacer()
+                if isOn {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Color.appAccent)
+                }
+            }
+            .padding(14)
+            .background(Color.appSurface)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -52,6 +169,7 @@ struct TrainersView: View {
 /// and Food recipes in the latest Figma pass.
 struct SearchToolRow: View {
     @Binding var search: String
+    var onFilterTap: () -> Void = {}
 
     var body: some View {
         GlassEffectContainer(spacing: 10) {
@@ -67,7 +185,13 @@ struct SearchToolRow: View {
                 .glassEffect(.regular, in: Capsule())
 
                 toolIcon("IconSort")
-                toolIcon("IconFilter")
+                Button(action: onFilterTap) {
+                    Image("IconFilter").customIcon(size: 16)
+                        .foregroundStyle(.white)
+                        .frame(width: 42, height: 42)
+                }
+                .buttonStyle(.plain)
+                .glassCircleButton()
             }
         }
     }

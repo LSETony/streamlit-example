@@ -157,10 +157,10 @@ final class AppState: ObservableObject {
     // MARK: Food recipes
 
     @Published var foodRecipes: [FoodRecipe] = [
-        FoodRecipe(name: "Chicken Cajun"),
-        FoodRecipe(name: "Protein pancakes"),
-        FoodRecipe(name: "Beef Jerky"),
-        FoodRecipe(name: "Carnivore Soup"),
+        FoodRecipe(name: "Chicken Cajun", price: 9, ingredients: ["Chicken breast", "Cajun spice", "Olive oil", "Bell pepper"]),
+        FoodRecipe(name: "Protein pancakes", price: 6, ingredients: ["Whey protein", "Egg", "Banana", "Oats"]),
+        FoodRecipe(name: "Beef Jerky", price: 12, ingredients: ["Beef", "Soy sauce", "Black pepper", "Garlic powder"]),
+        FoodRecipe(name: "Carnivore Soup", price: 10, ingredients: ["Beef bone broth", "Beef chunks", "Salt", "Egg"]),
     ]
 
     // MARK: Trainers

@@ -6,6 +6,29 @@ struct StoreView: View {
     @State private var selectedProduct: Product?
     @State private var search = ""
     @State private var isShowingCart = false
+    @State private var isShowingFilters = false
+    @State private var maxPrice: Double = 500
+    @State private var selectedIngredients: Set<String> = []
+
+    private var priceBound: Double {
+        Double(appState.products.map(\.price).max() ?? 200)
+    }
+
+    private var allIngredients: [String] {
+        Array(Set(appState.products.flatMap { $0.ingredients.map(\.name) })).sorted()
+    }
+
+    private var filteredProducts: [Product] {
+        appState.products.filter { product in
+            let matchesSearch = search.isEmpty
+                || product.name.localizedCaseInsensitiveContains(search)
+                || product.ingredients.contains { $0.name.localizedCaseInsensitiveContains(search) }
+            let matchesPrice = Double(product.price) <= maxPrice
+            let productIngredientNames = Set(product.ingredients.map(\.name))
+            let matchesIngredients = selectedIngredients.isEmpty || !productIngredientNames.isDisjoint(with: selectedIngredients)
+            return matchesSearch && matchesPrice && matchesIngredients
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -13,7 +36,7 @@ struct StoreView: View {
                 Text("Supplements")
                     .font(.brand(32))
                     .foregroundStyle(.white)
-                SearchToolRow(search: $search)
+                SearchToolRow(search: $search) { isShowingFilters = true }
                 productGrid
             }
             .screenPadding()
@@ -49,11 +72,21 @@ struct StoreView: View {
         .sheet(item: $selectedProduct) { product in
             NavigationStack { ProductDetailView(product: product) }
         }
+        .sheet(isPresented: $isShowingFilters) {
+            PriceTagFilterSheet(
+                title: "Filter supplements",
+                maxPrice: $maxPrice,
+                priceBound: priceBound,
+                sectionLabel: "Ingredients",
+                allOptions: allIngredients,
+                selectedOptions: $selectedIngredients
+            )
+        }
     }
 
     private var productGrid: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-            ForEach(appState.products) { product in
+            ForEach(filteredProducts) { product in
                 ProductTile(product: product) {
                     selectedProduct = product
                 } onAdd: {
