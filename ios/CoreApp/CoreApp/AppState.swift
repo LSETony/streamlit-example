@@ -103,12 +103,51 @@ final class AppState: ObservableObject {
     // MARK: Workout library (Beginner's Plan / Top 10 / Important)
 
     @Published var beginnerPlanCards: [WorkoutCard] = [
-        WorkoutCard(imageName: "WorkoutBeginnerFemale", title: "Beginner Female Aesthetics", level: "Beginner", duration: "7 day", category: "Strength"),
-        WorkoutCard(imageName: "WorkoutBodyWeight", title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Strength"),
+        WorkoutCard(
+            imageName: "WorkoutBeginnerFemale", title: "Beginner Female Aesthetics", level: "Beginner", duration: "7 day", category: "Strength",
+            exercises: [
+                Exercise(name: "Bodyweight Squats", icon: "figure.strengthtraining.functional", sets: 3, reps: "15"),
+                Exercise(name: "Glute Bridges", icon: "figure.core.training", sets: 3, reps: "15"),
+                Exercise(name: "Knee Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
+                Exercise(name: "Plank", icon: "figure.core.training", sets: 3, reps: "30 sec"),
+                Exercise(name: "Lunges", icon: "figure.walk", sets: 3, reps: "12"),
+                Exercise(name: "Bicycle Crunches", icon: "figure.core.training", sets: 3, reps: "20"),
+            ]
+        ),
+        WorkoutCard(
+            imageName: "WorkoutBodyWeight", title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Strength",
+            exercises: [
+                Exercise(name: "Jumping Jacks", icon: "figure.jumprope", sets: 3, reps: "30 sec"),
+                Exercise(name: "Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
+                Exercise(name: "Squats", icon: "figure.strengthtraining.functional", sets: 3, reps: "15"),
+                Exercise(name: "Mountain Climbers", icon: "figure.highintensity.intervaltraining", sets: 3, reps: "20"),
+                Exercise(name: "Plank", icon: "figure.core.training", sets: 3, reps: "30 sec"),
+            ]
+        ),
     ]
     @Published var topWorkoutCards: [WorkoutCard] = [
-        WorkoutCard(imageName: "WorkoutPrentalFlow", title: "Sam's Prental Flow", level: "Beginner", duration: "22 mins", category: "Strength"),
-        WorkoutCard(imageName: "WorkoutChestTriceps", title: "Chest and Triceps", level: "Inter", duration: "22 mins", category: "Strength"),
+        WorkoutCard(
+            imageName: "WorkoutPrentalFlow", title: "Sam's Prental Flow", level: "Beginner", duration: "22 mins", category: "Strength",
+            exercises: [
+                Exercise(name: "Cat-Cow Stretch", icon: "figure.flexibility", sets: 3, reps: "10"),
+                Exercise(name: "Pelvic Tilts", icon: "figure.flexibility", sets: 3, reps: "12"),
+                Exercise(name: "Wall Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
+                Exercise(name: "Side-Lying Leg Lifts", icon: "figure.core.training", sets: 3, reps: "12"),
+                Exercise(name: "Seated Marching", icon: "figure.walk", sets: 3, reps: "15"),
+                Exercise(name: "Deep Breathing", icon: "figure.mind.and.body", sets: 3, reps: "1 min"),
+            ]
+        ),
+        WorkoutCard(
+            imageName: "WorkoutChestTriceps", title: "Chest and Triceps", level: "Inter", duration: "22 mins", category: "Strength",
+            exercises: [
+                Exercise(name: "Push-ups", icon: "figure.strengthtraining.traditional", sets: 4, reps: "12"),
+                Exercise(name: "Dumbbell Bench Press", icon: "dumbbell.fill", sets: 4, reps: "10"),
+                Exercise(name: "Tricep Dips", icon: "figure.strengthtraining.traditional", sets: 3, reps: "12"),
+                Exercise(name: "Overhead Tricep Extension", icon: "dumbbell.fill", sets: 3, reps: "12"),
+                Exercise(name: "Chest Fly", icon: "dumbbell.fill", sets: 3, reps: "12"),
+                Exercise(name: "Close-Grip Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
+            ]
+        ),
     ]
     @Published var importantCards: [ImportantCard] = [
         ImportantCard(icon: "shield.fill", title: "Gym Safety", subtitle: "Rules & equipment guide"),

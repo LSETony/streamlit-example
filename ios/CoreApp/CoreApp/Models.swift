@@ -55,6 +55,17 @@ struct WorkoutCard: Identifiable {
     let level: String
     let duration: String
     let category: String
+    let exercises: [Exercise]
+}
+
+/// One movement inside a WorkoutCard's plan, shown in its detail screen and
+/// stepped through during an active session.
+struct Exercise: Identifiable, Hashable {
+    let id = UUID()
+    let name: String
+    let icon: String
+    let sets: Int
+    let reps: String
 }
 
 struct ImportantCard: Identifiable {

@@ -12,6 +12,7 @@ import SwiftUI
 struct WorkoutsView: View {
     @EnvironmentObject var appState: AppState
     @State private var libraryFilter = "All"
+    @State private var selectedCard: WorkoutCard?
     private let libraryFilters = ["All", "Strength", "Cardio"]
 
     var body: some View {
@@ -55,7 +56,7 @@ struct WorkoutsView: View {
                             sectionLabel("Beginner's Plan")
                             HStack(spacing: 10) {
                                 ForEach(appState.beginnerPlanCards) { card in
-                                    WorkoutCardTile(card: card, width: cardWidth)
+                                    WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
                                 }
                             }
                         }
@@ -64,7 +65,7 @@ struct WorkoutsView: View {
                             sectionLabel("Top 10 workouts")
                             HStack(spacing: 10) {
                                 ForEach(appState.topWorkoutCards) { card in
-                                    WorkoutCardTile(card: card, width: cardWidth)
+                                    WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
                                 }
                             }
                         }
@@ -85,6 +86,9 @@ struct WorkoutsView: View {
             }
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(item: $selectedCard) { card in
+                NavigationStack { WorkoutDetailView(card: card) }
+            }
         }
     }
 
@@ -98,33 +102,37 @@ struct WorkoutsView: View {
 private struct WorkoutCardTile: View {
     let card: WorkoutCard
     let width: CGFloat
+    var onOpen: () -> Void
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            Image(card.imageName)
-                .resizable()
-                .scaledToFill()
-                .frame(width: width, height: 200)
-                .clipped()
-            LinearGradient(colors: [.black.opacity(0.85), .black.opacity(0.35), .clear], startPoint: .bottom, endPoint: .top)
-                .frame(width: width, height: 110)
-                .frame(maxHeight: .infinity, alignment: .bottom)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(card.title)
-                    .font(.brand(15))
-                    .foregroundStyle(.white)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                HStack(spacing: 6) {
-                    Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
-                    Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.85))
+        Button(action: onOpen) {
+            ZStack(alignment: .bottomLeading) {
+                Image(card.imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: width, height: 200)
+                    .clipped()
+                LinearGradient(colors: [.black.opacity(0.85), .black.opacity(0.35), .clear], startPoint: .bottom, endPoint: .top)
+                    .frame(width: width, height: 110)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(card.title)
+                        .font(.brand(15))
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 6) {
+                        Text(card.duration).font(.brand(10)).foregroundStyle(Color.appAccent)
+                        Text(card.level).font(.brand(10)).foregroundStyle(.white.opacity(0.85))
+                    }
                 }
+                .padding(12)
+                .frame(width: width, alignment: .leading)
             }
-            .padding(12)
-            .frame(width: width, alignment: .leading)
+            .frame(width: width, height: 200)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
-        .frame(width: width, height: 200)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .buttonStyle(.plain)
     }
 }
 
