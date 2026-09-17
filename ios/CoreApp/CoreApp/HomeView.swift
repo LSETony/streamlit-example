@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store
+    case trainers, nutrition, store, location
     var id: String { rawValue }
 }
 
@@ -12,17 +12,16 @@ private enum HomeSheet: String, Identifiable {
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
     @State private var activeSheet: HomeSheet?
+    @State private var showGymPhoto = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 hero
-                    .padding(.bottom, 34) // room for the occupancy card overlap
-                    .overlay(alignment: .bottom) {
-                        occupancyGlassCard
-                            .screenPadding()
-                            .offset(y: 34)
-                    }
+
+                occupancyGlassCard
+                    .screenPadding()
+                    .padding(.top, -50) // overlaps the bottom of the photo
 
                 progressCard
                     .screenPadding()
@@ -36,28 +35,46 @@ struct HomeView: View {
         .sheet(item: $activeSheet) { sheet in
             sheetView(for: sheet)
         }
+        .fullScreenCover(isPresented: $showGymPhoto) {
+            GymPhotoViewer()
+        }
     }
 
     // MARK: Hero (photo header + search/store icons)
 
     private var hero: some View {
         ZStack(alignment: .topLeading) {
-            Image("HomeHero")
-                .resizable()
-                .scaledToFill()
-                .frame(height: 250)
-                .clipped()
+            Button {
+                showGymPhoto = true
+            } label: {
+                Image("HomeHero")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 250)
+                    .clipped()
+            }
+            .buttonStyle(.plain)
 
             HStack {
-                Text(appState.clubName)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(.white)
-                    .shadow(radius: 6)
+                Button {
+                    activeSheet = .location
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(appState.clubName)
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundStyle(.white)
+                            .shadow(radius: 6)
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                .buttonStyle(.plain)
                 Spacer()
-                GlassEffectContainer(spacing: 10) {
-                    HStack(spacing: 10) {
+                GlassEffectContainer(spacing: 14) {
+                    HStack(spacing: 14) {
                         heroIconButton("IconSearch") {}
-                        heroIconButton("IconCart") { activeSheet = .store }
+                        heroIconButton("IconWallet") { activeSheet = .store }
                     }
                 }
             }
@@ -69,12 +86,12 @@ struct HomeView: View {
 
     private func heroIconButton(_ icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(icon).customIcon(size: 14)
+            Image(icon).customIcon(size: 20)
                 .foregroundStyle(.white)
-                .frame(width: 38, height: 38)
+                .frame(width: 56, height: 56)
         }
         .buttonStyle(.plain)
-        .glassCircleButton()
+        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     private var occupancyGlassCard: some View {
@@ -143,22 +160,22 @@ struct HomeView: View {
         .appCard(padding: 20)
     }
 
-    // MARK: Icon grid (circular buttons)
+    // MARK: Icon grid (rounded-rect glass tiles)
 
     private var iconGrid: some View {
-        GlassEffectContainer(spacing: 18) {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 18) {
-                circleTile(icon: "IconCalendar", title: "Book", highlighted: true) {}
-                circleTile(icon: "person.2.fill", isSystemIcon: true, title: "Trainers") { activeSheet = .trainers }
-                circleTile(icon: "leaf.fill", isSystemIcon: true, title: "Food") { activeSheet = .nutrition }
-                circleTile(icon: "IconCart", title: "Store") { activeSheet = .store }
-                circleTile(icon: "IconFaceScan", title: "Scan") {}
-                circleTile(icon: "IconAISparkle", title: "Core AI") {}
+        GlassEffectContainer(spacing: 14) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
+                rectTile(icon: "IconCalendar", title: "Book", highlighted: true) {}
+                rectTile(icon: "person.2.fill", isSystemIcon: true, title: "Trainers") { activeSheet = .trainers }
+                rectTile(icon: "leaf.fill", isSystemIcon: true, title: "Food") { activeSheet = .nutrition }
+                rectTile(icon: "IconWallet", title: "Store") { activeSheet = .store }
+                rectTile(icon: "IconFaceScan", title: "Scan") {}
+                rectTile(icon: "IconAISparkle", title: "Core AI") {}
             }
         }
     }
 
-    private func circleTile(icon: String, isSystemIcon: Bool = false, title: String, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
+    private func rectTile(icon: String, isSystemIcon: Bool = false, title: String, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: 10) {
                 Group {
@@ -169,16 +186,16 @@ struct HomeView: View {
                     }
                 }
                 .foregroundStyle(.white)
-                .frame(width: 54, height: 54)
-                .glassEffect(
-                    highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
-                    in: Circle()
-                )
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(.white)
             }
             .frame(maxWidth: .infinity)
+            .frame(height: 92)
+            .glassEffect(
+                highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
+                in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+            )
         }
         .buttonStyle(.plain)
     }
@@ -189,6 +206,7 @@ struct HomeView: View {
         case .trainers: NavigationStack { TrainersView() }
         case .nutrition: NavigationStack { FoodRecipesView() }
         case .store: NavigationStack { StoreView() }
+        case .location: LocationPickerView()
         }
     }
 }

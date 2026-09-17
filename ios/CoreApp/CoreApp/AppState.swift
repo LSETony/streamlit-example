@@ -27,6 +27,14 @@ final class AppState: ObservableObject {
     // MARK: Home hero + progress card
 
     @Published var clubName: String = "RC Rezindtsii Arhitektorov"
+    /// Other club locations the member can switch to. Only the current one
+    /// has real data in this build — picking another just renames the
+    /// header, since no per-location content exists in the source yet.
+    @Published var clubLocations: [String] = [
+        "RC Rezindtsii Arhitektorov",
+        "RC Nagatino i-Land",
+        "RC Символ",
+    ]
     @Published var trainingProgressPercent: Int = 67
     @Published var trainingDay: Int = 1
     @Published var trainingMinutesToday: Int = 38
