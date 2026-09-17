@@ -18,6 +18,7 @@
 		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
 		52A35E68968F65202D122832 /* QRPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */; };
 		549E57A664D84DD0B20D5053 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48104F66160A4418A81BD9E8 /* Models.swift */; };
+		55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */; };
 		5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
 		6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */; };
 		6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */; };
@@ -70,6 +71,7 @@
 		E07A661384232071008EA8E3 /* ProgressDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressDetailView.swift; sourceTree = "<group>"; };
 		E2360973C0FF59F76A261826 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
+		EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GymSafetyView.swift; sourceTree = "<group>"; };
 		EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainersView.swift; sourceTree = "<group>"; };
 		F19E3997796F4D24A679D9FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F67907A314E1428CADEF220C /* CoreApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,6 +160,7 @@
 				E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */,
 				3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */,
 				CC7E1851BD66A6F385905E9F /* CartView.swift */,
+				EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				DF0A25D15B132EA1F55DD11E /* WorkoutDetailView.swift in Sources */,
 				52A35E68968F65202D122832 /* QRPassView.swift in Sources */,
 				43554B5640BA55F311A51850 /* CartView.swift in Sources */,
+				55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

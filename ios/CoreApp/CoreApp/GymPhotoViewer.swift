@@ -5,8 +5,9 @@ import UIKit
 /// mechanism as Trainers (a draggable sheet, not a full-screen cover).
 /// Layout matches the reference: a photo strip up top, then title/address,
 /// quick-action chips, a description card, and a primary action button.
-/// Only one real gym-interior photo exists in the source assets, so the
-/// strip shows that single photo rather than faking a multi-photo gallery.
+/// Only one real gym-interior photo exists in the source assets — the rest
+/// of the strip uses PhotoPlaceholder (same stand-in Food recipes uses for
+/// missing photography) until real additional shots are added as assets.
 struct GymPhotoViewer: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
@@ -21,6 +22,11 @@ struct GymPhotoViewer: View {
                             .scaledToFill()
                             .frame(width: 220, height: 160)
                             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+                        ForEach(["dumbbell.fill", "figure.strengthtraining.traditional"], id: \.self) { icon in
+                            PhotoPlaceholder(icon: icon)
+                                .frame(width: 220, height: 160)
+                                .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+                        }
                     }
                 }
 

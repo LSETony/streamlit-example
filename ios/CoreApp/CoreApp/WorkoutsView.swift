@@ -13,6 +13,7 @@ struct WorkoutsView: View {
     @EnvironmentObject var appState: AppState
     @State private var libraryFilter = "All"
     @State private var selectedCard: WorkoutCard?
+    @State private var isShowingGymSafety = false
     private let libraryFilters = ["All", "Strength", "Cardio"]
 
     var body: some View {
@@ -74,7 +75,9 @@ struct WorkoutsView: View {
                             sectionLabel("Important")
                             HStack(spacing: 10) {
                                 ForEach(appState.importantCards) { card in
-                                    ImportantCardTile(card: card, width: cardWidth)
+                                    ImportantCardTile(card: card, width: cardWidth) {
+                                        if card.title == "Gym Safety" { isShowingGymSafety = true }
+                                    }
                                 }
                             }
                         }
@@ -88,6 +91,9 @@ struct WorkoutsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $selectedCard) { card in
                 NavigationStack { WorkoutDetailView(card: card) }
+            }
+            .sheet(isPresented: $isShowingGymSafety) {
+                GymSafetyView()
             }
         }
     }
@@ -139,31 +145,35 @@ private struct WorkoutCardTile: View {
 private struct ImportantCardTile: View {
     let card: ImportantCard
     let width: CGFloat
+    var onOpen: () -> Void = {}
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Image(systemName: card.icon)
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 44, height: 44)
-                .background(.white.opacity(0.16))
-                .clipShape(Circle())
-            Spacer(minLength: 0)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(card.title)
-                    .font(.brand(16))
+        Button(action: onOpen) {
+            VStack(alignment: .leading, spacing: 0) {
+                Image(systemName: card.icon)
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundStyle(.white)
-                Text(card.subtitle)
-                    .font(.brand(11))
-                    .foregroundStyle(.white.opacity(0.75))
+                    .frame(width: 44, height: 44)
+                    .background(.white.opacity(0.16))
+                    .clipShape(Circle())
+                Spacer(minLength: 0)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(card.title)
+                        .font(.brand(16))
+                        .foregroundStyle(.white)
+                    Text(card.subtitle)
+                        .font(.brand(11))
+                        .foregroundStyle(.white.opacity(0.75))
+                }
             }
+            .padding(16)
+            .frame(width: width, height: 200, alignment: .topLeading)
+            .background(
+                LinearGradient(colors: [Color.appAccentPurple.opacity(0.85), Color.appAccentPurple], startPoint: .topLeading, endPoint: .bottomTrailing)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
-        .padding(16)
-        .frame(width: width, height: 200, alignment: .topLeading)
-        .background(
-            LinearGradient(colors: [Color.appAccentPurple.opacity(0.85), Color.appAccentPurple], startPoint: .topLeading, endPoint: .bottomTrailing)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .buttonStyle(.plain)
     }
 }
 
