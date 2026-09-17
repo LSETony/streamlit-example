@@ -39,6 +39,10 @@ final class AppState: ObservableObject {
         "RC Nagatino i-Land",
         "RC Символ",
     ]
+    /// Backs the gym photo sheet opened from Home.
+    @Published var clubAddress: String = "1-ya Tverskaya-Yamskaya, 2/1"
+    @Published var clubHoursLabel: String = "until 22:00"
+    @Published var clubDescription: String = "A full strength floor, free weights, cardio and a group class studio — steps from the metro, open daily."
     @Published var trainingProgressPercent: Int = 67
     @Published var trainingDay: Int = 1
     @Published var trainingMinutesToday: Int = 38

@@ -35,7 +35,7 @@ struct HomeView: View {
         .sheet(item: $activeSheet) { sheet in
             sheetView(for: sheet)
         }
-        .fullScreenCover(isPresented: $showGymPhoto) {
+        .sheet(isPresented: $showGymPhoto) {
             GymPhotoViewer()
         }
     }
@@ -50,7 +50,7 @@ struct HomeView: View {
                 Image("HomeHero")
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 250)
+                    .frame(height: 400)
                     .clipped()
             }
             .buttonStyle(.plain)
