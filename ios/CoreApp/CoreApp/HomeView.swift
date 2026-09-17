@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store, location
+    case trainers, nutrition, store, location, progress
     var id: String { rawValue }
 }
 
@@ -138,26 +138,31 @@ struct HomeView: View {
     // MARK: Progress card
 
     private var progressCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Your Progress")
-                    .font(.system(size: 16, weight: .semibold))
+        Button {
+            activeSheet = .progress
+        } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Your Progress")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    Image("IconTrending").customIcon(size: 16)
+                        .foregroundStyle(Color.appAccent)
+                }
+                Text("\(appState.trainingProgressPercent)%")
+                    .font(.digitalTimer(34))
                     .foregroundStyle(.white)
-                Spacer()
-                Image("IconTrending").customIcon(size: 16)
-                    .foregroundStyle(Color.appAccent)
+                ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 8)
+                HStack {
+                    Text("day \(appState.trainingDay)").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    Spacer()
+                    Text("\(appState.trainingMinutesToday) mins training").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                }
             }
-            Text("\(appState.trainingProgressPercent)%")
-                .font(.digitalTimer(34))
-                .foregroundStyle(.white)
-            ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 8)
-            HStack {
-                Text("day \(appState.trainingDay)").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
-                Spacer()
-                Text("\(appState.trainingMinutesToday) mins training").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
-            }
+            .appCard(padding: 20)
         }
-        .appCard(padding: 20)
+        .buttonStyle(.plain)
     }
 
     // MARK: Icon grid (rounded-rect glass tiles)
@@ -207,6 +212,7 @@ struct HomeView: View {
         case .nutrition: NavigationStack { FoodRecipesView() }
         case .store: NavigationStack { StoreView() }
         case .location: LocationPickerView()
+        case .progress: ProgressDetailView()
         }
     }
 }

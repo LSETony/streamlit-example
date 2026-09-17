@@ -38,6 +38,20 @@ final class AppState: ObservableObject {
     @Published var trainingProgressPercent: Int = 67
     @Published var trainingDay: Int = 1
     @Published var trainingMinutesToday: Int = 38
+    @Published var trainingSetsToday: Int = 14
+    @Published var trainingCaloriesToday: Int = 312
+
+    /// Behind the Home "Your Progress" card — total sets/time/calories and
+    /// a session-by-session history.
+    @Published var workoutHistory: [WorkoutHistoryEntry] = [
+        WorkoutHistoryEntry(date: "Today", title: "Chest and Triceps", sets: 14, minutes: 38, calories: 312),
+        WorkoutHistoryEntry(date: "Yesterday", title: "Beginner Body Weight Plan", sets: 10, minutes: 27, calories: 205),
+        WorkoutHistoryEntry(date: "Mon", title: "Sam's Prental Flow", sets: 12, minutes: 22, calories: 168),
+        WorkoutHistoryEntry(date: "Sat", title: "Beginner Female Aesthetics", sets: 16, minutes: 41, calories: 289),
+    ]
+    var totalSetsThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.sets } }
+    var totalMinutesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.minutes } }
+    var totalCaloriesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.calories } }
 
     // MARK: Club occupancy
 
