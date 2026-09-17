@@ -28,6 +28,7 @@ struct HomeView: View {
                 iconGrid
                     .screenPadding()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.bottom, 24)
         }
         .background(Color.appBackground.ignoresSafeArea())
@@ -43,46 +44,47 @@ struct HomeView: View {
     // MARK: Hero (photo header + search/store icons)
 
     private var hero: some View {
-        ZStack(alignment: .topLeading) {
-            Button {
-                showGymPhoto = true
-            } label: {
-                Image("HomeHero")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 500)
-                    .clipped()
-            }
-            .buttonStyle(.plain)
-
-            HStack {
+        GeometryReader { geo in
+            ZStack(alignment: .topLeading) {
                 Button {
-                    activeSheet = .location
+                    showGymPhoto = true
                 } label: {
-                    HStack(spacing: 6) {
-                        Text(appState.clubName)
-                            .font(.brand(20))
-                            .foregroundStyle(.white)
-                            .shadow(radius: 6)
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
+                    Image("HomeHero")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .clipped()
                 }
                 .buttonStyle(.plain)
-                Spacer()
-                GlassEffectContainer(spacing: 14) {
-                    HStack(spacing: 14) {
-                        heroIconButton("IconSearch") {}
-                        heroIconButton("IconWallet") { activeSheet = .store }
+
+                HStack {
+                    Button {
+                        activeSheet = .location
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text(appState.clubName)
+                                .font(.brand(20))
+                                .foregroundStyle(.white)
+                                .shadow(radius: 6)
+                            Image(systemName: "chevron.down")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    Spacer()
+                    GlassEffectContainer(spacing: 14) {
+                        HStack(spacing: 14) {
+                            heroIconButton("IconSearch") {}
+                            heroIconButton("IconWallet") { activeSheet = .store }
+                        }
                     }
                 }
+                .padding(.horizontal, AppMetrics.screenPadding)
+                .padding(.top, 56)
             }
-            .padding(.horizontal, AppMetrics.screenPadding)
-            .padding(.top, 56)
         }
-        .clipped()
+        .frame(height: 500)
     }
 
     private func heroIconButton(_ icon: String, action: @escaping () -> Void) -> some View {
