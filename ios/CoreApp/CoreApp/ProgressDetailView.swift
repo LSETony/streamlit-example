@@ -1,8 +1,10 @@
 import SwiftUI
+import Charts
 
-/// Opened by tapping the "Your Progress" card on Home. Shows the current
-/// streak plus totals for sets/time/calories and a session-by-session
-/// workout history.
+/// Opened by tapping the "Your Progress" card on Home. Leads with the
+/// muscle-mass growth chart, then an InBody-style body composition
+/// readout (body fat, total body water, visceral fat, BMR), then the
+/// today/week totals and workout history.
 struct ProgressDetailView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
@@ -11,45 +13,10 @@ struct ProgressDetailView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack(alignment: .firstTextBaseline) {
-                            Text("Your Progress")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundStyle(.white)
-                            Spacer()
-                            Image("IconTrending").customIcon(size: 16)
-                                .foregroundStyle(Color.appAccent)
-                        }
-                        Text("\(appState.trainingProgressPercent)%")
-                            .font(.digitalTimer(34))
-                            .foregroundStyle(.white)
-                        ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 8)
-                        Text("day \(appState.trainingDay)")
-                            .font(.system(size: 12))
-                            .foregroundStyle(Color.appTextSecondary)
-                    }
-                    .appCard(padding: 20)
-
-                    HStack(spacing: 10) {
-                        statTile(value: "\(appState.trainingSetsToday)", label: "Sets today")
-                        statTile(value: "\(appState.trainingMinutesToday)", label: "Mins today")
-                        statTile(value: "\(appState.trainingCaloriesToday)", label: "Kcal today")
-                    }
-
-                    HStack(spacing: 10) {
-                        statTile(value: "\(appState.totalSetsThisWeek)", label: "Sets · week")
-                        statTile(value: "\(appState.totalMinutesThisWeek)", label: "Mins · week")
-                        statTile(value: "\(appState.totalCaloriesThisWeek)", label: "Kcal · week")
-                    }
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        EyebrowLabel(text: "Workout history")
-                        VStack(spacing: 10) {
-                            ForEach(appState.workoutHistory) { entry in
-                                historyRow(entry)
-                            }
-                        }
-                    }
+                    muscleMassCard
+                    bodyCompositionSection
+                    todayStatsSection
+                    historySection
                 }
                 .screenPadding()
                 .padding(.top, 12)
@@ -61,6 +28,96 @@ struct ProgressDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
+                }
+            }
+        }
+    }
+
+    // MARK: Muscle mass chart
+
+    private var muscleMassCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Muscle Mass")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.white)
+                Spacer()
+                if let first = appState.muscleMassHistory.first, let last = appState.muscleMassHistory.last {
+                    let delta = last.kg - first.kg
+                    Text(String(format: "%+.1f kg", delta))
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(delta >= 0 ? Color.appSuccess : Color.appAccent)
+                }
+            }
+            if let last = appState.muscleMassHistory.last {
+                Text(String(format: "%.1f kg", last.kg))
+                    .font(.digitalTimer(34))
+                    .foregroundStyle(.white)
+            }
+            Chart(appState.muscleMassHistory) { entry in
+                AreaMark(x: .value("Week", entry.label), y: .value("Muscle Mass", entry.kg))
+                    .interpolationMethod(.catmullRom)
+                    .foregroundStyle(
+                        LinearGradient(colors: [Color.appAccent.opacity(0.35), Color.appAccent.opacity(0)], startPoint: .top, endPoint: .bottom)
+                    )
+                LineMark(x: .value("Week", entry.label), y: .value("Muscle Mass", entry.kg))
+                    .interpolationMethod(.catmullRom)
+                    .foregroundStyle(Color.appAccent)
+                    .lineStyle(StrokeStyle(lineWidth: 2.5))
+                PointMark(x: .value("Week", entry.label), y: .value("Muscle Mass", entry.kg))
+                    .foregroundStyle(Color.appAccent)
+            }
+            .frame(height: 160)
+            .chartYAxis {
+                AxisMarks(position: .trailing) { _ in
+                    AxisGridLine().foregroundStyle(Color.appDivider)
+                    AxisValueLabel().foregroundStyle(Color.appTextSecondary)
+                }
+            }
+            .chartXAxis {
+                AxisMarks { _ in
+                    AxisValueLabel().foregroundStyle(Color.appTextSecondary)
+                }
+            }
+        }
+        .appCard(padding: 20)
+    }
+
+    // MARK: Body composition (InBody)
+
+    private var bodyCompositionSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            EyebrowLabel(text: "Body Composition")
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                statTile(value: String(format: "%.1f%%", appState.bodyFatPercent), label: "Body Fat")
+                statTile(value: String(format: "%.1f%%", appState.totalBodyWaterPercent), label: "Total Body Water")
+                statTile(value: "\(appState.visceralFatIndex)", label: "Visceral Fat Index")
+                statTile(value: "\(appState.basalMetabolicRate)", label: "Basal Metabolic Rate")
+            }
+        }
+    }
+
+    // MARK: Today / week totals
+
+    private var todayStatsSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            EyebrowLabel(text: "This week")
+            HStack(spacing: 10) {
+                statTile(value: "\(appState.totalSetsThisWeek)", label: "Sets")
+                statTile(value: "\(appState.totalMinutesThisWeek)", label: "Mins")
+                statTile(value: "\(appState.totalCaloriesThisWeek)", label: "Kcal")
+            }
+        }
+    }
+
+    // MARK: Workout history
+
+    private var historySection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            EyebrowLabel(text: "Workout history")
+            VStack(spacing: 10) {
+                ForEach(appState.workoutHistory) { entry in
+                    historyRow(entry)
                 }
             }
         }

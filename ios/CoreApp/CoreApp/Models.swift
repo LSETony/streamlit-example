@@ -77,3 +77,10 @@ struct WorkoutHistoryEntry: Identifiable {
     let minutes: Int
     let calories: Int
 }
+
+/// One point on the Progress screen's muscle-mass growth chart.
+struct MuscleMassEntry: Identifiable {
+    let id = UUID()
+    let label: String
+    let kg: Double
+}

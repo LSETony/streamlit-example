@@ -57,6 +57,22 @@ final class AppState: ObservableObject {
     var totalMinutesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.minutes } }
     var totalCaloriesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.calories } }
 
+    /// Muscle mass growth chart (Progress screen).
+    @Published var muscleMassHistory: [MuscleMassEntry] = [
+        MuscleMassEntry(label: "W1", kg: 32.4),
+        MuscleMassEntry(label: "W2", kg: 32.9),
+        MuscleMassEntry(label: "W3", kg: 33.1),
+        MuscleMassEntry(label: "W4", kg: 33.6),
+        MuscleMassEntry(label: "W5", kg: 34.0),
+        MuscleMassEntry(label: "W6", kg: 34.5),
+    ]
+
+    /// Body composition (InBody-style scan readout, Progress screen).
+    @Published var bodyFatPercent: Double = 16.2
+    @Published var totalBodyWaterPercent: Double = 58.4
+    @Published var visceralFatIndex: Int = 7
+    @Published var basalMetabolicRate: Int = 1720
+
     // MARK: Club occupancy
 
     @Published var occupancyPercent: Int = 84
