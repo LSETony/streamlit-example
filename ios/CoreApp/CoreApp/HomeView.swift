@@ -6,7 +6,7 @@ private enum HomeSheet: String, Identifiable {
 }
 
 /// Matches the Home frame in the Figma source exactly: photo hero with the
-/// club name and search/store icons, an occupancy glass card overlapping
+/// club name and store icon, an occupancy glass card overlapping
 /// the photo, a progress card, and the 6-icon grid. Nothing else — there is
 /// no readiness ring, in-progress banner, or upcoming list in the source.
 struct HomeView: View {
@@ -41,7 +41,7 @@ struct HomeView: View {
         }
     }
 
-    // MARK: Hero (photo header + search/store icons)
+    // MARK: Hero (photo header + store icon)
 
     private var hero: some View {
         GeometryReader { geo in
@@ -73,12 +73,7 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                     Spacer()
-                    GlassEffectContainer(spacing: 14) {
-                        HStack(spacing: 14) {
-                            heroIconButton("IconSearch") {}
-                            heroIconButton("IconWallet") { activeSheet = .store }
-                        }
-                    }
+                    heroIconButton("IconWallet") { activeSheet = .store }
                 }
                 .padding(.horizontal, AppMetrics.screenPadding)
                 .padding(.top, 56)
