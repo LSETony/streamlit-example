@@ -204,24 +204,28 @@ struct HomeView: View {
 
     private func rectTile(icon: String, isSystemIcon: Bool = false, title: String, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
                 Group {
                     if isSystemIcon {
-                        Image(systemName: icon).font(.system(size: 18, weight: .semibold))
+                        Image(systemName: icon).font(.system(size: 26, weight: .semibold))
                     } else {
-                        Image(icon).customIcon(size: 20)
+                        Image(icon).customIcon(size: 28)
                     }
                 }
                 .foregroundStyle(.white)
                 Text(title)
-                    .font(.brand(12))
+                    .font(.brand(14))
                     .foregroundStyle(.white)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 105)
+            .frame(height: 130)
             .glassEffect(
                 highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
                 in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    .stroke(highlighted ? .clear : .white.opacity(0.5), lineWidth: 0.5)
             )
         }
         .buttonStyle(.plain)
