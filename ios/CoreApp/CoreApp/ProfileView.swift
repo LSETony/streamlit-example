@@ -3,14 +3,14 @@ import SwiftUI
 /// Matches the Profile frame in the Figma source: header with avatar +
 /// visit badge, QR access pass row, membership card, stats row, Apple
 /// Health toggle, and a Logout button. Two additions beyond the static
-/// frame: the QR row opens a real camera QR scanner, and the membership
-/// card opens a sheet showing exactly when the plan is valid until.
+/// frame: the QR row shows the member's own QR pass to be scanned at the
+/// turnstile, and the membership card opens a sheet showing exactly when
+/// the plan is valid until.
 struct ProfileView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var authService: AuthService
-    @State private var isScanningQR = false
+    @State private var isShowingQRPass = false
     @State private var isShowingMembership = false
-    @State private var scannedCode: String?
 
     var body: some View {
         NavigationStack {
@@ -20,7 +20,7 @@ struct ProfileView: View {
                         .font(.brand(32))
                         .foregroundStyle(.white)
                     header
-                    Button { isScanningQR = true } label: { qrPassRow }
+                    Button { isShowingQRPass = true } label: { qrPassRow }
                         .buttonStyle(.plain)
                     Button { isShowingMembership = true } label: { membershipCard }
                         .buttonStyle(.plain)
@@ -35,21 +35,11 @@ struct ProfileView: View {
             }
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
-            .fullScreenCover(isPresented: $isScanningQR) {
-                QRScannerView { code in
-                    scannedCode = code
-                }
+            .sheet(isPresented: $isShowingQRPass) {
+                QRPassView()
             }
             .sheet(isPresented: $isShowingMembership) {
                 MembershipDetailView()
-            }
-            .alert(
-                "QR code scanned",
-                isPresented: Binding(get: { scannedCode != nil }, set: { if !$0 { scannedCode = nil } })
-            ) {
-                Button("OK") {}
-            } message: {
-                Text(scannedCode ?? "")
             }
         }
     }

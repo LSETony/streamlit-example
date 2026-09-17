@@ -15,12 +15,12 @@
 		392881F6855843ACB49B7B46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */; };
 		3D72EF131AA6CEA6CAE3B712 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97814377FFBA6C26D2370416 /* CalendarView.swift */; };
 		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
+		52A35E68968F65202D122832 /* QRPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */; };
 		549E57A664D84DD0B20D5053 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48104F66160A4418A81BD9E8 /* Models.swift */; };
 		5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
 		6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */; };
 		6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */; };
 		72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */; };
-		72D1387EA2C6F9DB5E70A37E /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5524860687205606DDB5A41C /* QRScannerView.swift */; };
 		73F652550548443DB32F62B9 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D5C91EAAA4F0DB404FA79 /* StoreView.swift */; };
 		827A626C864C99A017D8DBCA /* GymPhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */; };
 		85B05F926201A88F7E64D6EB /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */; };
@@ -48,9 +48,9 @@
 		2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Doto-VariableFont.ttf"; sourceTree = "<group>"; };
 		3400C5EA574C43B3B4039970 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationPickerView.swift; sourceTree = "<group>"; };
+		3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QRPassView.swift; sourceTree = "<group>"; };
 		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthWelcomeView.swift; sourceTree = "<group>"; };
-		5524860687205606DDB5A41C /* QRScannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
 		55950DFCC22D525533532A31 /* SubscriptionsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
 		5A3B3511191EF0FD2AE5A30D /* SplashView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreApp.entitlements; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 				8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */,
 				55950DFCC22D525533532A31 /* SubscriptionsView.swift */,
 				E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */,
-				5524860687205606DDB5A41C /* QRScannerView.swift */,
+				3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -262,7 +262,7 @@
 				B125C469AA78A39EC0FD0ED8 /* OccupancyDetailView.swift in Sources */,
 				929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */,
 				DF0A25D15B132EA1F55DD11E /* WorkoutDetailView.swift in Sources */,
-				72D1387EA2C6F9DB5E70A37E /* QRScannerView.swift in Sources */,
+				52A35E68968F65202D122832 /* QRPassView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
