@@ -48,6 +48,13 @@ final class AppState: ObservableObject {
     @Published var trainingMinutesToday: Int = 38
     @Published var trainingSetsToday: Int = 14
     @Published var trainingCaloriesToday: Int = 312
+    /// The mini bar-chart sparkline next to "Your Progress" (9 bars, height
+    /// 0...1, matching the Figma source's exact geometry); highlighted bars
+    /// mark days with a completed workout.
+    @Published var progressSparkline: [(value: Double, highlighted: Bool)] = [
+        (0.33, true), (0.68, true), (0.47, false), (1.0, false), (0.75, true),
+        (0.56, false), (0.22, true), (0.68, false), (0.87, true),
+    ]
 
     /// Behind the Home "Your Progress" card — total sets/time/calories and
     /// a session-by-session history.
@@ -82,9 +89,9 @@ final class AppState: ObservableObject {
     @Published var occupancyPercent: Int = 84
     @Published var occupancyInClub: Int = 38
     @Published var occupancyCapacity: Int = 90
-    /// Bar heights 0...1 across the day (6 bars, matching the Figma source's
-    /// exact geometry); index 3 is "now" and always accented.
-    @Published var occupancyBars: [Double] = [0.27, 0.15, 0.35, 0.79, 1.0, 0.35]
+    /// Bar heights 0...1 across the day (5 bars, matching the Figma source's
+    /// exact geometry); index 2 is "now" and always accented.
+    @Published var occupancyBars: [Double] = [0.145, 0.355, 0.79, 1.0, 0.355]
 
     // MARK: Workout library (Beginner's Plan / Top 10 / Important)
 

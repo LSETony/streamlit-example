@@ -5,7 +5,7 @@ import SwiftUI
 /// "core App.dc.html"): --bg, --surf, --surf2, --line, --ink, --muted,
 /// --accent, --good, --warn, --r, --r-s.
 extension Color {
-    static let appBackground = Color(red: 0x0A / 255, green: 0x0A / 255, blue: 0x0B / 255)       // --bg
+    static let appBackground = Color(red: 0x1E / 255, green: 0x1E / 255, blue: 0x1E / 255)       // --bg
     static let appSurface = Color(red: 0x14 / 255, green: 0x14 / 255, blue: 0x17 / 255)          // --surf
     static let appSurfaceElevated = Color(red: 0x1D / 255, green: 0x1D / 255, blue: 0x22 / 255)  // --surf2
     static let appAccent = Color(red: 0xFF / 255, green: 0x5A / 255, blue: 0x1F / 255)           // --accent
@@ -23,7 +23,7 @@ extension Color {
 }
 
 enum AppMetrics {
-    static let cardCorner: CGFloat = 24   // --r
+    static let cardCorner: CGFloat = 30   // --r
     static let smallCorner: CGFloat = 16  // --r-s
     static let screenPadding: CGFloat = 20
 }

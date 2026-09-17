@@ -21,7 +21,7 @@ struct HomeView: View {
 
                 occupancyGlassCard
                     .screenPadding()
-                    .padding(.top, -210) // nests the card inside the photo, matching the source proportions
+                    .padding(.top, -224) // nests the card inside the photo, matching the source proportions
 
                 progressCard
                     .screenPadding()
@@ -50,7 +50,7 @@ struct HomeView: View {
                 Image("HomeHero")
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 400)
+                    .frame(height: 500)
                     .clipped()
             }
             .buttonStyle(.plain)
@@ -119,7 +119,7 @@ struct HomeView: View {
             HStack(alignment: .bottom, spacing: 6) {
                 ForEach(appState.occupancyBars.indices, id: \.self) { i in
                     RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .fill(i == 3 ? Color.appAccent : .white.opacity(0.7))
+                        .fill(i == 2 ? Color.appAccent : .white.opacity(0.7))
                         .frame(height: max(4, appState.occupancyBars[i] * 40))
                 }
             }
@@ -142,17 +142,16 @@ struct HomeView: View {
             activeSheet = .progress
         } label: {
             VStack(alignment: .leading, spacing: 12) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Your Progress")
-                        .font(.brand(16))
+                Text("Your Progress")
+                    .font(.brand(16))
+                    .foregroundStyle(.white)
+                HStack(alignment: .bottom) {
+                    Text("\(appState.trainingProgressPercent)%")
+                        .font(.digitalTimer(34))
                         .foregroundStyle(.white)
                     Spacer()
-                    Image("IconTrending").customIcon(size: 16)
-                        .foregroundStyle(Color.appAccent)
+                    progressSparkline
                 }
-                Text("\(appState.trainingProgressPercent)%")
-                    .font(.digitalTimer(34))
-                    .foregroundStyle(.white)
                 ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 8)
                 HStack {
                     Text("day \(appState.trainingDay)").font(.brand(12)).foregroundStyle(Color.appTextSecondary)
@@ -163,6 +162,21 @@ struct HomeView: View {
             .appCard(padding: 20)
         }
         .buttonStyle(.plain)
+    }
+
+    /// The mini bar-chart sparkline next to the progress percentage —
+    /// matches the source's exact 9-bar geometry (accent bars mark days
+    /// with a completed workout).
+    private var progressSparkline: some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            ForEach(appState.progressSparkline.indices, id: \.self) { i in
+                let bar = appState.progressSparkline[i]
+                Capsule()
+                    .fill(bar.highlighted ? Color.appAccent : .white.opacity(0.7))
+                    .frame(width: 6, height: max(4, bar.value * 34))
+            }
+        }
+        .frame(height: 34, alignment: .bottom)
     }
 
     // MARK: Icon grid (rounded-rect glass tiles)
@@ -196,7 +210,7 @@ struct HomeView: View {
                     .foregroundStyle(.white)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 92)
+            .frame(height: 105)
             .glassEffect(
                 highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
                 in: RoundedRectangle(cornerRadius: 30, style: .continuous)
