@@ -1,7 +1,7 @@
 import SwiftUI
 
 enum MainTab: CaseIterable {
-    case home, calendar, workouts, diagnostics, me
+    case home, workouts, me
 }
 
 struct ContentView: View {
@@ -13,10 +13,8 @@ struct ContentView: View {
 
             Group {
                 switch selectedTab {
-                case .home: HomeView(selectedTab: $selectedTab)
-                case .calendar: CalendarView()
+                case .home: HomeView()
                 case .workouts: WorkoutsView()
-                case .diagnostics: DiagnosticsView()
                 case .me: ProfileView()
                 }
             }
@@ -28,8 +26,8 @@ struct ContentView: View {
     }
 }
 
-/// The bottom pill tab bar: Home, Calendar, a raised orange "Workouts"
-/// button in the center, Diagnostics, and Me.
+/// The bottom pill tab bar: Home, a raised orange "Workouts" button in the
+/// center, and Me.
 struct CoreTabBar: View {
     @Binding var selectedTab: MainTab
 
@@ -37,9 +35,7 @@ struct CoreTabBar: View {
         GlassEffectContainer(spacing: 20) {
             HStack(spacing: 0) {
                 tabButton(.home, icon: "house.fill")
-                tabButton(.calendar, icon: "calendar")
                 centerButton
-                tabButton(.diagnostics, icon: "waveform.path.ecg")
                 tabButton(.me, icon: "person.fill")
             }
             .padding(.horizontal, 12)

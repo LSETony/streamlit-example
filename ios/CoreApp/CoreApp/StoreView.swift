@@ -16,8 +16,6 @@ struct StoreView: View {
                 SearchToolRow(search: $search)
                 productGrid
                 if appState.cartCount > 0 { checkoutBar }
-                bundleCard
-                cartCard
             }
             .screenPadding()
             .padding(.top, 12)
@@ -64,41 +62,6 @@ struct StoreView: View {
         .glassEffect(.regular.interactive(), in: Capsule())
     }
 
-    private var bundleCard: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("YOUR BUNDLE · BUILT FROM THE \(appState.lastScanDate) PANEL")
-                .font(.system(size: 11, weight: .bold))
-                .tracking(0.4)
-                .foregroundStyle(Color.appAccent)
-            Text("Iron + D3/K2 + Magnesium")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(.white)
-            HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("$139").font(.digitalTimer(22)).foregroundStyle(.white)
-                    Text("$118 monthly · cancel anytime").font(.system(size: 11)).foregroundStyle(Color.appTextSecondary)
-                }
-                Spacer()
-                Button { appState.addBundle() } label: {
-                    Text("SUBSCRIBE")
-                        .font(.system(size: 12, weight: .bold))
-                        .tracking(0.4)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 18)
-                        .padding(.vertical, 12)
-                        .background(Color.appAccent)
-                        .clipShape(Capsule())
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.top, 4)
-        }
-        .padding(18)
-        .background(Color.appSurface)
-        .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appAccent, lineWidth: 1))
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
-    }
-
     private var productGrid: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
             ForEach(appState.products) { product in
@@ -111,47 +74,6 @@ struct StoreView: View {
         }
     }
 
-    private var cartCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                EyebrowLabel(text: "Cart · \(appState.cartCount) items")
-                Spacer()
-                Button("CLEAR") { appState.clearCart() }
-                    .font(.system(size: 11, weight: .semibold))
-                    .tracking(0.3)
-                    .foregroundStyle(Color.appTextSecondary)
-            }
-            VStack(spacing: 10) {
-                ForEach(appState.cart) { line in
-                    HStack {
-                        Text(line.name).font(.system(size: 14)).foregroundStyle(.white)
-                        Spacer()
-                        Text("\(line.price)$").font(.digitalTimer(14)).foregroundStyle(Color.appTextSecondary)
-                        Button { appState.removeFromCart(line) } label: {
-                            Text("×").font(.system(size: 16)).foregroundStyle(Color.appTextSecondary)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(.bottom, 10)
-                    AppDivider()
-                }
-            }
-            HStack(alignment: .lastTextBaseline) {
-                Text("Total · pick up at reception").font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
-                Spacer()
-                Text("\(appState.cartTotal)$").font(.digitalTimer(24)).foregroundStyle(.white)
-            }
-            PrimaryButton(title: checkoutLabel, isEnabled: appState.cartCount > 0) {
-                ordered = true
-            }
-        }
-        .appCard(padding: 20)
-    }
-
-    private var checkoutLabel: String {
-        if ordered { return "✓ Ready for pickup today" }
-        return appState.cartCount > 0 ? "Reserve for club pickup" : "Cart is empty"
-    }
 }
 
 private struct ProductTile: View {

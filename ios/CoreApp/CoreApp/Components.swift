@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Horizontal capacity/occupancy bar used in Booking and Nutrition.
+/// Horizontal progress bar used by the Home "Your Progress" card.
 struct ProgressBarView: View {
     let value: Double // 0...1
     var color: Color = .appAccent
@@ -18,44 +18,9 @@ struct ProgressBarView: View {
     }
 }
 
-/// Small colored uppercase status badge, e.g. "BOOKED", "TAKEN", "DUE".
-struct StatusBadge: View {
-    let text: String
-    let color: Color
-
-    var body: some View {
-        Text(text)
-            .font(.system(size: 12, weight: .bold))
-            .tracking(0.4)
-            .foregroundStyle(color)
-    }
-}
-
-/// Compact stat tile used in the Home quick-stats row and Profile.
-struct StatTile: View {
-    let value: String
-    let label: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(value)
-                .font(.brand(24))
-                .foregroundStyle(.white)
-            Text(label.uppercased())
-                .font(.system(size: 11, weight: .semibold))
-                .tracking(0.4)
-                .foregroundStyle(Color.appTextSecondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
-    }
-}
-
-/// Full-width call-to-action button used across screens ("Capture",
-/// "Confirm check-in", "Subscribe" ...) — real Liquid Glass via the
-/// system's `.glassProminent` button style, tinted per call site.
+/// Full-width call-to-action button used across screens ("Continue",
+/// "Logout", "Add to cart" ...) — real Liquid Glass via the system's
+/// `.glassProminent` button style, tinted per call site.
 struct PrimaryButton: View {
     let title: String
     var isEnabled: Bool = true
@@ -76,31 +41,7 @@ struct PrimaryButton: View {
     }
 }
 
-/// Row header pairing an eyebrow label on the left with a trailing accent
-/// action/link label, e.g. "UPCOMING" ... "CALENDAR".
-struct SectionHeaderRow: View {
-    let title: String
-    var trailing: String? = nil
-    var trailingAction: () -> Void = {}
-
-    var body: some View {
-        HStack {
-            EyebrowLabel(text: title)
-            Spacer()
-            if let trailing {
-                Button(action: trailingAction) {
-                    Text(trailing.uppercased())
-                        .font(.system(size: 12, weight: .bold))
-                        .tracking(0.4)
-                        .foregroundStyle(Color.appAccent)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-}
-
-/// Rounded avatar with initials, used by Trainers.
+/// Rounded avatar with initials, used by the trainer detail screen.
 struct InitialsAvatar: View {
     let initials: String
     var color: Color = .appAccent
@@ -129,7 +70,7 @@ struct AppDivider: View {
 /// exact card shapes/proportions from the design while staying honest that
 /// it isn't a real photo. Swap in `Image(...)` here once real shots exist.
 struct PhotoPlaceholder: View {
-    enum Style { case gym, trainer, food, event }
+    enum Style { case gym, trainer, food }
     var style: Style = .gym
     var icon: String? = nil
 
@@ -138,7 +79,6 @@ struct PhotoPlaceholder: View {
         case .gym: return [Color(red: 0.11, green: 0.11, blue: 0.13), Color(red: 0.03, green: 0.03, blue: 0.04)]
         case .trainer: return [Color(red: 0.15, green: 0.13, blue: 0.17), Color(red: 0.04, green: 0.035, blue: 0.05)]
         case .food: return [Color(red: 0.24, green: 0.14, blue: 0.06), Color(red: 0.06, green: 0.035, blue: 0.02)]
-        case .event: return [Color(red: 0.14, green: 0.10, blue: 0.20), Color(red: 0.04, green: 0.03, blue: 0.07)]
         }
     }
 
@@ -154,7 +94,7 @@ struct PhotoPlaceholder: View {
     }
 }
 
-/// Small circular favorite/heart toggle used on trainer and product cards.
+/// Small circular favorite/heart toggle used on trainer cards.
 struct FavoriteButton: View {
     @Binding var isFavorite: Bool
 

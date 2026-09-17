@@ -1,27 +1,18 @@
 import SwiftUI
 
-/// The recipe browser from the latest Figma pass — search + sort/filter +
-/// a photo-card grid of recipes. The existing macro/meal tracker
-/// (`NutritionView`) is still reachable from here so that real feature
-/// isn't lost, via the "My nutrition" link at the top.
+/// The recipe browser — matches the Figma source exactly: title, search +
+/// sort/filter row, and a photo-card grid of recipes.
 struct FoodRecipesView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
     @State private var search = ""
-    @State private var showNutrition = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Text("Food recipes")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(.white)
-                    Spacer()
-                    Button("My nutrition") { showNutrition = true }
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color.appAccent)
-                }
+                Text("Food recipes")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.white)
                 SearchToolRow(search: $search)
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
@@ -41,7 +32,6 @@ struct FoodRecipesView: View {
                 Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
             }
         }
-        .sheet(isPresented: $showNutrition) { NavigationStack { NutritionView() } }
     }
 }
 

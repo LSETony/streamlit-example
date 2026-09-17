@@ -56,7 +56,7 @@ struct RootView: View {
         }
         .onChange(of: authService.currentUser?.name) { _, newName in
             if let newName, !newName.isEmpty {
-                appState.userName = newName
+                appState.fullName = newName
             }
         }
     }

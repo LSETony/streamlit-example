@@ -1,14 +1,11 @@
 # core. — iOS app
 
-A native SwiftUI rebuild of the "core." fitness-club prototype, ported 1:1
-from the design source ("core App.dc.html" + "Onboarding.dc.html") — same
-copy, same colors, same layout. Covers a splash screen, sign-in (Google /
-Apple / phone), home, booking, calendar, trainers + trainer detail, a
-training plan, workouts (personal / group classes / solo), an active
-workout session, nutrition, diagnostics (body / blood / vitamins), a label
-scanner, a supplements store with product detail, an AI assistant, a QR
-membership pass and profile — all wired to working local state (no backend
-required except where noted below).
+A native SwiftUI build matching the Figma source exactly — nothing added,
+nothing carried over from an earlier design pass. It covers precisely the
+13 screens in that file: a splash screen, sign-in (Google / Apple / phone)
+and OTP verification, a 4-step onboarding wizard (gender, goal,
+contraindications, level), Home, the Workouts Library, Profile, Personal
+Trainers, Supplements, and Food recipes.
 
 ## Requirements
 
@@ -29,9 +26,9 @@ required except where noted below).
 4. Press **Run** (⌘R).
 
 Sign-in is built (Apple works immediately; Google needs the one-time setup
-below) but **disabled by default** — the app opens straight to Home after
-the splash. Flip `requiresSignIn` to `true` at the top of `CoreAppApp.swift`
-to re-gate the app behind the sign-in screen.
+below) but **disabled by default** — the app goes splash → onboarding →
+straight to Home. Flip `requiresSignIn` to `true` at the top of
+`CoreAppApp.swift` to re-gate the app behind the sign-in screen.
 
 ## Setting up Google Sign-In (one-time, in your own Google Cloud project)
 
@@ -60,11 +57,16 @@ Nobody can complete this step for you — it requires *your* Google account:
 
 ## Navigation
 
-Bottom tab bar: **Home** · **Calendar** · a raised orange **Workouts**
-button in the center · **Diagnostics** · **Me**. Workouts has three tabs
-(Personal / Group / Solo); its header list icon and a couple of its rows
-open **Plan** (week compliance, exercise library, history) — Plan isn't a
-tab itself, it's reached from there or from ending an active workout.
+Bottom tab bar: **Home** · a raised orange **Workouts** button in the
+center · **Me**. That's the whole tab bar — there is no Calendar or
+Diagnostics tab, because the source has no screens for them.
+
+Home's icon grid (Book / Trainers / Food / Store / Scan / Core AI) matches
+the source exactly, but only **Trainers**, **Food**, and **Store** open
+anything — **Book**, **Scan**, and **Core AI** have no destination screen
+in the Figma file, so they render as in the design but don't navigate.
+Same story for Profile's **QR access pass** row and **Membership** card:
+present exactly as designed, not wired to a screen that doesn't exist.
 
 ## What's actually functional
 
@@ -73,72 +75,47 @@ tab itself, it's reached from there or from ending an active workout.
 - **Sign in with Google** — fully working once you complete the Google
   Cloud setup above (`AuthService.swift`, using the real `GoogleSignIn` SDK).
 - **Phone entry + OTP screen** — the UI (name/phone form, 4-digit code
-  boxes with auto-advance, resend cooldown) is fully interactive and any
+  circles with auto-advance, resend cooldown) is fully interactive and any
   4-digit code completes sign-in. Actually *sending* an SMS code needs a
   backend such as Firebase Phone Auth or Twilio Verify.
-- **Workout session** — a real elapsed-time timer, a set-tracking table
-  (weight/reps/done), a rest timer, live volume/set/heart-rate stats, and a
-  next-lift action, matching the source's "Train" screen exactly.
-- **Booking** — date/zone/time/duration pickers with a live forecast-load
-  summary and a real reserve action.
-- **Nutrition** — a 2 600 kcal target, macro bars, a water counter, and an
-  add/remove meal flow, all computed from `AppState.meals`.
-- **Vitamins** — tap any protocol item to toggle taken/due; a supply card
-  links to Store and Scanner.
-- **Diagnostics** — Body (weight trend, body composition) / Blood (flagged
-  vs. in-range labs) / Vitamins tabs, reachable from the tab bar or from
-  Profile → "Diagnostics history".
-- **Store** — a subscription bundle, a 6-product grid with full product
-  detail pages (ingredients, benefits, risks, interactions), and a cart with
-  checkout.
-- **Scanner** — uses the real camera (`AVFoundation`) and on-device text
-  recognition (`Vision`) to read a supplement label and flag a matching
-  interaction note. Falls back to the source's own demo scenario (a
-  flagged 50 mg zinc label) in the simulator, where there's no camera.
-- **QR pass** — a real, scannable QR code generated on-device with
-  `CoreImage`, rotating every 30 seconds, plus a check-in/out action that
-  logs a new visit. Reachable from Profile → "QR access pass".
-- **AI assistant** — a scripted local chat (keyword-matched replies, same
-  copy as the source) so the screen is fully interactive without wiring up
-  a real LLM API key. Swap the logic in `AppState.sendChatMessage` for a
-  real API call if you want live answers.
-- **Apple Health toggle** on Profile is a local switch — enabling real
-  HealthKit sync means adding the HealthKit capability/entitlement in
-  Signing & Capabilities and replacing the toggle's handler with
-  `HKHealthStore` authorization calls.
+- **Onboarding wizard** — gender, goal, contraindications (chips + free
+  text), and experience level, all persisted to `AppState` for a future
+  personalization pass to read.
+- **Trainers** — search field UI, a two-up grid with a working
+  favorite/heart toggle per card, and a detail sheet (bio, tags, stats,
+  slot picker, book action) for each trainer.
+- **Supplements** — a product grid with add-to-cart, and a running
+  checkout bar; tapping a product opens a detail sheet with full
+  ingredients/benefits/risks/interactions and its own add-to-cart.
+- **Food recipes** — a browsable photo-card grid, matching the source's
+  four recipes.
+- **Profile** — Apple Health sync toggle (local switch only — see below)
+  and a working Logout button (`AuthService.signOut()`).
 
 ## Project layout
 
 ```
 CoreApp.xcodeproj/
 CoreApp/
-  CoreAppApp.swift          entry point + splash/sign-in/app routing
+  CoreAppApp.swift          entry point + splash/onboarding/sign-in/app routing
   AuthService.swift         Apple / Google / phone sign-in logic
   SplashView.swift          launch splash
   AuthWelcomeView.swift     sign-in screen (name/phone + Google/Apple)
   OTPVerificationView.swift phone code entry
-  ContentView.swift         root tab bar (Home / Calendar / Workouts / Diagnostics / Me)
-  Theme.swift               colors, fonts, shared modifiers
-  Components.swift          reusable UI (bars, cards, buttons)
+  OnboardingView.swift      4-step wizard (gender/goal/contraindications/level)
+  ContentView.swift         root tab bar (Home / Workouts / Me)
+  Theme.swift               colors, font, Liquid Glass modifiers
+  Components.swift          reusable UI (progress bar, buttons, photo placeholder)
   Models.swift              data types
   AppState.swift            single observable store + all app logic
-  HomeView.swift
-  BookingView.swift
-  CalendarView.swift
-  TrainersView.swift        list + trainer detail
-  PlanView.swift
-  WorkoutsView.swift        Personal / Group / Solo
-  WorkoutSessionView.swift  active workout
-  NutritionView.swift
-  DiagnosticsView.swift     Body / Blood / Vitamins tabs
-  VitaminsView.swift        vitamins protocol list (used inside Diagnostics)
-  ScannerView.swift
-  StoreView.swift           grid + cart + product detail
-  AIAssistantView.swift
-  QRPassView.swift
+  HomeView.swift            hero + occupancy + progress + icon grid
+  WorkoutsView.swift        Workouts Library (filters + curated sections)
+  TrainersView.swift        grid + trainer detail
+  StoreView.swift           Supplements grid + cart + product detail
+  FoodRecipesView.swift     recipe grid
   ProfileView.swift
   Assets.xcassets/          app icon, accent color, auth background
-  Fonts/                    Francy-Regular.ttf, Doto-VariableFont.ttf
+  Fonts/                    Doto-VariableFont.ttf
   Info.plist
   CoreApp.entitlements      Sign in with Apple capability
 ```
@@ -149,19 +126,22 @@ CoreApp/
   real system `glassEffect`/`GlassEffectContainer` API and the
   `.glassProminent` button style — not an `.ultraThinMaterial` approximation.
   It's used throughout: the tab bar, every floating icon button (search,
-  favorite, add-to-cart, send), the sign-in/verification cards and OTP
-  digit circles, and every primary CTA button (`PrimaryButton`, via
+  favorite, add-to-cart), the sign-in/verification cards and OTP digit
+  circles, and every primary CTA button (`PrimaryButton`, via
   `Theme.swift`'s `glassCard`/`glassCircleButton` helpers). This is a real
   compatibility trade-off — the app no longer runs on iOS 17–25 — so lower
   the deployment target and fall back to `.ultraThinMaterial` if you need
   to support older devices.
+- **No stock photography**: the source design uses real photos (gym
+  interiors, trainer portraits, dishes) that aren't available here, so
+  `PhotoPlaceholder` (`Components.swift`) renders a themed gradient in
+  their place. Swap in real `Image(...)` calls once you have licensed
+  assets.
 - The bundle identifier and display name are placeholders — update
   `Info.plist`'s `CFBundleDisplayName` and the target's
   `PRODUCT_BUNDLE_IDENTIFIER` with your own before shipping. The app icon
   and splash (`Assets.xcassets/AppIcon.appiconset`,
-  `Assets.xcassets/CoreLogo.imageset`) are generated from the actual "core."
-  logo file supplied with the design export, composited onto the app's
-  `--bg` color (`#0A0A0B`) with its own background keyed out to transparent.
+  `Assets.xcassets/CoreLogo.imageset`) are generated from the "core." logo.
 - The sign-in screen's background (`Assets.xcassets/AuthBackground`) is a
   generated abstract dark gradient, not a licensed photo — swap it for your
   own gym photography before shipping.
@@ -170,18 +150,18 @@ CoreApp/
   light mode too.
 - **Colors and corner radii** in `Theme.swift` are ported 1:1 from the
   design's CSS custom properties (`--bg`, `--surf`, `--surf2`, `--line`,
-  `--ink`, `--muted`, `--accent`, `--good`, `--warn`, `--r`, `--r-s`) rather
-  than approximated, so they match the source exactly.
-- **Fonts**: bundled in `CoreApp/Fonts/` and registered via `UIAppFonts` in
-  Info.plist. `Francy-Regular.ttf` is the display font used for the splash
-  wordmark and every big stat number (`Font.brand(_:)` in `Theme.swift`);
-  `Doto-VariableFont.ttf` is the dot-matrix/LED font used everywhere the
-  design calls for a digital-display look — timers, dates, prices, codes
-  (`Font.digitalTimer(_:)`). Doto ships as a single variable-weight file;
-  `Font.digitalTimer(_:)` pins it to the PostScript name `Doto-Black`
-  (its heaviest, most legible instance at small sizes) rather than the
-  default Regular weight — swap that string for another named instance
-  (Thin…ExtraBold) if you want a lighter feel. Make sure you have the
-  right to embed and redistribute Francy in a shipped app before
-  submitting to the App Store — Doto is an open-source Google Font (SIL
-  Open Font License) and is fine to ship.
+  `--ink`, `--muted`, `--accent`, `--good`, `--warn`, `--r`, `--r-s`), plus
+  a secondary indigo/violet CTA accent used for onboarding, sign-in, and
+  the membership card.
+- **Font**: `Fonts/Doto-VariableFont.ttf`, registered via `UIAppFonts` in
+  Info.plist, is the dot-matrix/LED font used everywhere the design calls
+  for a digital-display look — occupancy, progress, prices
+  (`Font.digitalTimer(_:)`). It ships as a single variable-weight file;
+  `Font.digitalTimer(_:)` pins it to the PostScript name `Doto-Black` (its
+  heaviest, most legible instance at small sizes) — swap that string for
+  another named instance (Thin…ExtraBold) if you want a lighter feel. Doto
+  is an open-source Google Font (SIL Open Font License) and is fine to ship.
+- **Apple Health toggle** on Profile is a local switch — enabling real
+  HealthKit sync means adding the HealthKit capability/entitlement in
+  Signing & Capabilities and replacing the toggle's handler with
+  `HKHealthStore` authorization calls.

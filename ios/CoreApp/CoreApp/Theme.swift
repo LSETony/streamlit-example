@@ -60,15 +60,9 @@ extension View {
     }
 }
 
-/// The two bundled display fonts from the mockups: "Francy" for the
-/// wordmark and big stat numbers, and "Doto" (a dot-matrix/LED look, used
-/// at its Black weight) for anything meant to read like a digital display —
-/// the workout timer, prices and the QR pass member code.
+/// "Doto" (a dot-matrix/LED look, used at its Black weight) for anything
+/// meant to read like a digital display — occupancy, progress, prices.
 extension Font {
-    static func brand(_ size: CGFloat) -> Font {
-        .custom("Francy-Regular", size: size)
-    }
-
     static func digitalTimer(_ size: CGFloat) -> Font {
         .custom("Doto-Black", size: size)
     }

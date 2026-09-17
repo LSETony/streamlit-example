@@ -1,10 +1,13 @@
 import SwiftUI
 
+/// Matches the Profile frame in the Figma source exactly: header with
+/// avatar + visit badge, QR access pass row, membership card, stats row,
+/// Apple Health toggle, and a Logout button. No settings list, no QR
+/// scanner screen, no membership-management sheet — none of that exists in
+/// the source, so none of it is here.
 struct ProfileView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var authService: AuthService
-    @State private var showManageSheet = false
-    @State private var showQR = false
 
     var body: some View {
         NavigationStack {
@@ -24,10 +27,6 @@ struct ProfileView: View {
             }
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showQR) { QRPassView() }
-        }
-        .sheet(isPresented: $showManageSheet) {
-            ManageMembershipSheet()
         }
     }
 
@@ -55,46 +54,40 @@ struct ProfileView: View {
     }
 
     private var qrPassRow: some View {
-        Button { showQR = true } label: {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("QR access pass").font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
-                    Text(appState.isCheckedIn ? "Checked in · tap to check out" : "Turnstile and reception check-in")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.appTextSecondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("QR access pass").font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
+                Text("Turnstile and reception check-in")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.appTextSecondary)
             }
-            .padding(18)
-            .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+            Spacer()
+            Image(systemName: "chevron.right").font(.system(size: 14)).foregroundStyle(Color.appTextSecondary)
         }
-        .buttonStyle(.plain)
+        .padding(18)
+        .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
     }
 
     private var membershipCard: some View {
-        Button { showManageSheet = true } label: {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(alignment: .top) {
-                    Text("Membership")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.85))
-                    Spacer()
-                    Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(.white.opacity(0.7))
-                }
-                Text(appState.membershipPlanName)
-                    .font(.digitalTimer(26))
-                    .foregroundStyle(.white)
-                Text("renews \(appState.membershipRenewDate.lowercased())")
-                    .font(.system(size: 12))
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .top) {
+                Text("Membership")
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.85))
+                Spacer()
+                Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(.white.opacity(0.7))
             }
-            .padding(20)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.appAccentPurple)
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+            Text(appState.membershipPlanName)
+                .font(.digitalTimer(26))
+                .foregroundStyle(.white)
+            Text("renews \(appState.membershipRenewDate.lowercased())")
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.85))
         }
-        .buttonStyle(.plain)
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.appAccentPurple)
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 
     private var statsRow: some View {
@@ -135,26 +128,6 @@ struct ProfileView: View {
             authService.signOut()
         }
         .padding(.top, 20)
-    }
-
-}
-
-private struct ManageMembershipSheet: View {
-    @EnvironmentObject var appState: AppState
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Membership").font(.system(size: 20, weight: .bold)).foregroundStyle(.white)
-            Text("Renews \(appState.membershipRenewDate) at ₽\(appState.membershipMonthlyPrice)/month. Cancel anytime from here — you'll keep access until the renewal date.")
-                .font(.system(size: 14))
-                .foregroundStyle(Color.appTextSecondary)
-            Spacer()
-            PrimaryButton(title: "Close") { dismiss() }
-        }
-        .padding(24)
-        .background(Color.appBackground.ignoresSafeArea())
-        .presentationDetents([.medium])
     }
 }
 
