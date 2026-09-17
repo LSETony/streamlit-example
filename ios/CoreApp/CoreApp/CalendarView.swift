@@ -1,84 +1,85 @@
 import SwiftUI
-import UIKit
 
-/// The Calendar tab: a real native `UICalendarView` — the same system
-/// component Apple's own Calendar/Reminders apps use — with a dot on every
-/// day that has a booked session. Below it: that day's bookings, and a
-/// running list of upcoming reminders, each reschedulable or cancelable.
+/// The Calendar tab: a custom SwiftUI month calendar in the iOS Calendar
+/// app's visual language (month header with prev/next, weekday row, day
+/// grid with a dot under days that have a booking) — built natively in
+/// SwiftUI rather than wrapping UICalendarView, whose internal layout
+/// didn't reliably respect the width it was given. Below it: the selected
+/// day's bookings and a running list of upcoming reminders, each
+/// reschedulable or cancelable.
 struct CalendarView: View {
     @EnvironmentObject var appState: AppState
-    @State private var selectedDateComponents: DateComponents? = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+    @State private var displayedMonth: Date = Date()
+    @State private var selectedDate: Date = Date()
     @State private var sessionToReschedule: BookedSession?
     @State private var sessionToCancel: BookedSession?
 
-    private var selectedDate: Date {
-        selectedDateComponents.flatMap { Calendar.current.date(from: $0) } ?? Date()
-    }
-
-    private var decoratedDates: Set<DateComponents> {
-        Set(appState.bookedSessions.map { Calendar.current.dateComponents([.year, .month, .day], from: $0.date) })
-    }
+    private let calendar = Calendar.current
 
     private var sessionsOnSelectedDay: [BookedSession] {
         appState.bookedSessions
-            .filter { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }
+            .filter { calendar.isDate($0.date, inSameDayAs: selectedDate) }
             .sorted { $0.date < $1.date }
     }
 
     private var upcomingSessions: [BookedSession] {
         appState.bookedSessions
-            .filter { $0.date > Date() && !Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }
+            .filter { $0.date > Date() && !calendar.isDate($0.date, inSameDayAs: selectedDate) }
             .sorted { $0.date < $1.date }
     }
 
     var body: some View {
-        GeometryReader { geo in
-            let contentWidth = geo.size.width - AppMetrics.screenPadding * 2
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                Text("Calendar")
+                    .font(.brand(32))
+                    .foregroundStyle(.white)
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    Text("Calendar")
-                        .font(.brand(32))
-                        .foregroundStyle(.white)
-
-                    NativeCalendarView(selectedDate: $selectedDateComponents, decoratedDates: decoratedDates)
-                        .frame(width: contentWidth, height: 420)
-                        .background(Color.appSurface)
-                        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        EyebrowLabel(text: dayHeaderText)
-                        if sessionsOnSelectedDay.isEmpty {
-                            Text("No bookings on this day")
-                                .font(.system(size: 14))
-                                .foregroundStyle(Color.appTextSecondary)
-                                .padding(.vertical, 8)
-                        } else {
-                            VStack(spacing: 10) {
-                                ForEach(sessionsOnSelectedDay) { session in
-                                    bookingRow(session)
-                                }
+                VStack(spacing: 16) {
+                    monthHeader
+                    weekdayHeader
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 6) {
+                        ForEach(Array(monthDates.enumerated()), id: \.offset) { _, date in
+                            if let date {
+                                dayCell(date)
+                            } else {
+                                Color.clear.frame(height: 46)
                             }
                         }
-                    }
-                    .frame(width: contentWidth, alignment: .leading)
-
-                    if !upcomingSessions.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            EyebrowLabel(text: "Upcoming reminders")
-                            VStack(spacing: 10) {
-                                ForEach(upcomingSessions) { session in
-                                    bookingRow(session)
-                                }
-                            }
-                        }
-                        .frame(width: contentWidth, alignment: .leading)
                     }
                 }
-                .padding(.horizontal, AppMetrics.screenPadding)
-                .padding(.top, 12)
-                .padding(.bottom, 24)
+                .appCard(padding: 20)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    EyebrowLabel(text: dayHeaderText)
+                    if sessionsOnSelectedDay.isEmpty {
+                        Text("No bookings on this day")
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.appTextSecondary)
+                            .padding(.vertical, 8)
+                    } else {
+                        VStack(spacing: 10) {
+                            ForEach(sessionsOnSelectedDay) { session in
+                                bookingRow(session)
+                            }
+                        }
+                    }
+                }
+
+                if !upcomingSessions.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        EyebrowLabel(text: "Upcoming reminders")
+                        VStack(spacing: 10) {
+                            ForEach(upcomingSessions) { session in
+                                bookingRow(session)
+                            }
+                        }
+                    }
+                }
             }
+            .screenPadding()
+            .padding(.top, 12)
+            .padding(.bottom, 24)
         }
         .background(Color.appBackground.ignoresSafeArea())
         .sheet(item: $sessionToReschedule) { session in
@@ -101,8 +102,102 @@ struct CalendarView: View {
         }
     }
 
+    // MARK: Month grid
+
+    private var monthHeader: some View {
+        HStack {
+            Button {
+                changeMonth(by: -1)
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Color.appAccent)
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+            Spacer()
+            Text(monthTitle)
+                .font(.brand(18))
+                .foregroundStyle(.white)
+            Spacer()
+            Button {
+                changeMonth(by: 1)
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Color.appAccent)
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var weekdayHeader: some View {
+        HStack {
+            ForEach(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"], id: \.self) { day in
+                Text(day)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(Color.appTextSecondary)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    private var monthTitle: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "LLLL yyyy"
+        return formatter.string(from: displayedMonth).capitalized
+    }
+
+    private var monthDates: [Date?] {
+        guard let interval = calendar.dateInterval(of: .month, for: displayedMonth),
+              let daysInMonth = calendar.range(of: .day, in: .month, for: displayedMonth)?.count
+        else { return [] }
+        let firstWeekday = calendar.component(.weekday, from: interval.start)
+        let leadingBlanks = (firstWeekday + 5) % 7 // Monday-first offset
+        let days: [Date?] = (0..<daysInMonth).map { calendar.date(byAdding: .day, value: $0, to: interval.start) }
+        return Array(repeating: nil, count: leadingBlanks) + days
+    }
+
+    private func changeMonth(by value: Int) {
+        guard let newMonth = calendar.date(byAdding: .month, value: value, to: displayedMonth) else { return }
+        displayedMonth = newMonth
+    }
+
+    private func dayCell(_ date: Date) -> some View {
+        let isToday = calendar.isDateInToday(date)
+        let isSelected = calendar.isDate(date, inSameDayAs: selectedDate)
+        let hasBooking = appState.bookedSessions.contains { calendar.isDate($0.date, inSameDayAs: date) }
+
+        return Button {
+            selectedDate = date
+        } label: {
+            VStack(spacing: 4) {
+                ZStack {
+                    if isSelected {
+                        Circle().fill(Color.appAccent)
+                    } else if isToday {
+                        Circle().stroke(Color.appAccent, lineWidth: 1.5)
+                    }
+                    Text("\(calendar.component(.day, from: date))")
+                        .font(.system(size: 15, weight: isSelected || isToday ? .bold : .regular))
+                        .foregroundStyle(.white)
+                }
+                .frame(width: 34, height: 34)
+
+                Circle()
+                    .fill(hasBooking ? Color.appAccent : .clear)
+                    .frame(width: 4, height: 4)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: Bookings
+
     private var dayHeaderText: String {
-        Calendar.current.isDateInToday(selectedDate) ? "Today" : selectedDate.formatted(date: .abbreviated, time: .omitted)
+        calendar.isDateInToday(selectedDate) ? "Today" : selectedDate.formatted(date: .abbreviated, time: .omitted)
     }
 
     private func bookingRow(_ session: BookedSession) -> some View {
@@ -126,51 +221,6 @@ struct CalendarView: View {
         .padding(14)
         .background(Color.appSurface)
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
-    }
-}
-
-/// Wraps `UICalendarView` — Apple's real system calendar component, not an
-/// approximation — with a small dot decoration on every date in
-/// `decoratedDates` and single-date tap selection.
-private struct NativeCalendarView: UIViewRepresentable {
-    @Binding var selectedDate: DateComponents?
-    let decoratedDates: Set<DateComponents>
-
-    func makeUIView(context: Context) -> UICalendarView {
-        let view = UICalendarView()
-        view.calendar = Calendar.current
-        view.locale = Locale.current
-        view.fontDesign = .rounded
-        view.delegate = context.coordinator
-        view.tintColor = UIColor(Color.appAccent)
-        view.backgroundColor = .clear
-
-        let selection = UICalendarSelectionSingleDate(delegate: context.coordinator)
-        selection.setSelected(selectedDate, animated: false)
-        view.selectionBehavior = selection
-        return view
-    }
-
-    func updateUIView(_ uiView: UICalendarView, context: Context) {
-        uiView.reloadDecorations(forDateComponents: Array(decoratedDates), animated: true)
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    final class Coordinator: NSObject, UICalendarViewDelegate, UICalendarSelectionSingleDateDelegate {
-        var parent: NativeCalendarView
-        init(_ parent: NativeCalendarView) { self.parent = parent }
-
-        func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
-            guard parent.decoratedDates.contains(dateComponents) else { return nil }
-            return .default(color: UIColor(Color.appAccent), size: .small)
-        }
-
-        func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-            parent.selectedDate = dateComponents
-        }
     }
 }
 
