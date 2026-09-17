@@ -111,8 +111,8 @@ final class AppState: ObservableObject {
         WorkoutCard(imageName: "WorkoutChestTriceps", title: "Chest and Triceps", level: "Inter", duration: "22 mins", category: "Strength"),
     ]
     @Published var importantCards: [ImportantCard] = [
-        ImportantCard(title: "Gym Safety"),
-        ImportantCard(title: "Events"),
+        ImportantCard(icon: "shield.fill", title: "Gym Safety", subtitle: "Rules & equipment guide"),
+        ImportantCard(icon: "party.popper.fill", title: "Events", subtitle: "What's on this month"),
     ]
 
     // MARK: Food recipes

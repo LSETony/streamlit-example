@@ -59,7 +59,9 @@ struct WorkoutCard: Identifiable {
 
 struct ImportantCard: Identifiable {
     let id = UUID()
+    let icon: String
     let title: String
+    let subtitle: String
 }
 
 struct FoodRecipe: Identifiable {

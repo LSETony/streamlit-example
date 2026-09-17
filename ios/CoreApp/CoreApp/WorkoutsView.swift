@@ -72,13 +72,7 @@ struct WorkoutsView: View {
                             sectionLabel("Important")
                             HStack(spacing: 10) {
                                 ForEach(appState.importantCards) { card in
-                                    Text(card.title)
-                                        .font(.brand(16))
-                                        .foregroundStyle(.white)
-                                        .frame(width: cardWidth, height: 180, alignment: .bottomLeading)
-                                        .padding(16)
-                                        .background(Color.appAccentPurple)
-                                        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+                                    ImportantCardTile(card: card, width: cardWidth)
                                 }
                             }
                         }
@@ -129,6 +123,37 @@ private struct WorkoutCardTile: View {
             .frame(width: width, alignment: .leading)
         }
         .frame(width: width, height: 200)
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+    }
+}
+
+private struct ImportantCardTile: View {
+    let card: ImportantCard
+    let width: CGFloat
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Image(systemName: card.icon)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .background(.white.opacity(0.16))
+                .clipShape(Circle())
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(card.title)
+                    .font(.brand(16))
+                    .foregroundStyle(.white)
+                Text(card.subtitle)
+                    .font(.brand(11))
+                    .foregroundStyle(.white.opacity(0.75))
+            }
+        }
+        .padding(16)
+        .frame(width: width, height: 200, alignment: .topLeading)
+        .background(
+            LinearGradient(colors: [Color.appAccentPurple.opacity(0.85), Color.appAccentPurple], startPoint: .topLeading, endPoint: .bottomTrailing)
+        )
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 }
