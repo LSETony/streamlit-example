@@ -189,7 +189,7 @@ struct HomeView: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                 rectTile(icon: "IconCalendar", title: "Book", highlighted: true) { activeSheet = .book }
                 rectTile(icon: "person.2.fill", isSystemIcon: true, title: "Trainers") { activeSheet = .trainers }
-                rectTile(icon: "leaf.fill", isSystemIcon: true, title: "Food") { activeSheet = .nutrition }
+                rectTile(icon: "IconFood", title: "Food") { activeSheet = .nutrition }
                 rectTile(icon: "IconWallet", title: "Store") { activeSheet = .store }
                 rectTile(icon: "IconFaceScan", title: "Scan") {}
                 rectTile(icon: "IconAISparkle", title: "Core AI") {}
