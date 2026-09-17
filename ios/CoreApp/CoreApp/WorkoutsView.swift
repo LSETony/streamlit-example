@@ -17,18 +17,22 @@ struct WorkoutsView: View {
                         .foregroundStyle(.white)
 
                     HStack(spacing: 8) {
-                        ForEach(libraryFilters, id: \.self) { filter in
-                            let on = libraryFilter == filter
-                            Text(filter)
-                                .font(.brand(16))
-                                .foregroundStyle(on ? .white : Color.appTextPrimary)
-                                .frame(minWidth: 89, minHeight: 50)
-                                .padding(.horizontal, 16)
-                                .background(on ? Color.appAccent : Color.appBackground.opacity(0.2))
-                                .clipShape(Capsule())
-                                .onTapGesture { libraryFilter = filter }
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(libraryFilters, id: \.self) { filter in
+                                    let on = libraryFilter == filter
+                                    Text(filter)
+                                        .font(.brand(16))
+                                        .foregroundStyle(on ? .white : Color.appTextPrimary)
+                                        .padding(.horizontal, 16)
+                                        .frame(minWidth: 89, minHeight: 50)
+                                        .background(on ? Color.appAccent : Color.appBackground.opacity(0.2))
+                                        .clipShape(Capsule())
+                                        .onTapGesture { libraryFilter = filter }
+                                }
+                            }
                         }
-                        Spacer()
+                        Spacer(minLength: 0)
                         Image("IconSearch").customIcon(size: 14)
                             .foregroundStyle(.white)
                             .frame(width: 40, height: 40)
