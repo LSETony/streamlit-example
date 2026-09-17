@@ -66,6 +66,12 @@ extension Font {
     static func digitalTimer(_ size: CGFloat) -> Font {
         .custom("Doto-Black", size: size)
     }
+
+    /// "Francy" — the brand display face used for each screen's main
+    /// headline (page titles, the Home club name, names on detail cards).
+    static func brand(_ size: CGFloat) -> Font {
+        .custom("Francy-Regular", size: size)
+    }
 }
 
 /// A small uppercase, letter-spaced label used above sections ("UPCOMING", "CLUB OCCUPANCY", ...).

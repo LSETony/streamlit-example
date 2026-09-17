@@ -12,7 +12,7 @@ struct CalendarView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 Text("Calendar")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
 
                 VStack(alignment: .leading, spacing: 14) {

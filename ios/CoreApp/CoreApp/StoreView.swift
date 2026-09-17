@@ -11,7 +11,7 @@ struct StoreView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Supplements")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
                 SearchToolRow(search: $search)
                 productGrid
@@ -129,7 +129,7 @@ struct ProductDetailView: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     Text(product.tag.uppercased()).font(.system(size: 11, weight: .semibold)).tracking(0.4).foregroundStyle(product.tagColor)
-                    Text(product.name).font(.system(size: 26, weight: .bold)).foregroundStyle(.white)
+                    Text(product.name).font(.brand(26)).foregroundStyle(.white)
                     Text("\(product.form) · \(product.dose) · \(product.count)").font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
                 }
 

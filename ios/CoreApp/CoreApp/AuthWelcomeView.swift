@@ -38,7 +38,7 @@ struct AuthWelcomeView: View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Добро пожаловать")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.brand(28))
                     .foregroundStyle(.white)
                 Text("Создать аккаунт")
                     .font(.system(size: 15))

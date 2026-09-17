@@ -37,7 +37,7 @@ struct OTPVerificationView: View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Верификация")
-                    .font(.system(size: 26, weight: .bold))
+                    .font(.brand(26))
                     .foregroundStyle(.white)
                 (Text("Отправили код на ") + Text(phoneDisplay).foregroundStyle(Color.appAccent))
                     .font(.system(size: 14))

@@ -36,7 +36,7 @@ struct OnboardingView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(step == 2 ? "Tell us about yourself" : stepTitle)
-                .font(.system(size: 26, weight: .bold))
+                .font(.brand(26))
                 .foregroundStyle(.white)
             Text("This tailor plans and your experience")
                 .font(.system(size: 13))

@@ -11,7 +11,7 @@ struct FoodRecipesView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Food recipes")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
                 SearchToolRow(search: $search)
 

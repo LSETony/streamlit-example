@@ -39,7 +39,7 @@ struct ProfileView: View {
                 .clipShape(Circle())
                 .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
             VStack(alignment: .leading, spacing: 3) {
-                Text(appState.fullName).font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                Text(appState.fullName).font(.brand(18)).foregroundStyle(.white)
                 Text("Member since \(appState.memberSince)")
                     .font(.system(size: 12))
                     .foregroundStyle(Color.appTextSecondary)

@@ -11,7 +11,7 @@ struct ProgressTabView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 Text("Progress")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
 
                 VStack(alignment: .leading, spacing: 12) {

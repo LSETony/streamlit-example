@@ -61,7 +61,7 @@ struct HomeView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Text(appState.clubName)
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.brand(20))
                             .foregroundStyle(.white)
                             .shadow(radius: 6)
                         Image(systemName: "chevron.down")

@@ -42,6 +42,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Doto-VariableFont.ttf</string>
+		<string>Francy-Regular.ttf</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>

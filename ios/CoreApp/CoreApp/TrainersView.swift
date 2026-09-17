@@ -11,7 +11,7 @@ struct TrainersView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Personal Trainers")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.brand(24))
                     .foregroundStyle(.white)
                 SearchToolRow(search: $search)
 
@@ -126,7 +126,7 @@ struct TrainerDetailView: View {
                         .clipShape(Circle())
                     VStack(alignment: .leading, spacing: 5) {
                         Text(trainer.name)
-                            .font(.system(size: 24, weight: .bold))
+                            .font(.brand(24))
                             .foregroundStyle(.white)
                         Text(trainer.specialty)
                             .font(.system(size: 13))
