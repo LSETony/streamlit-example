@@ -1,13 +1,16 @@
 import SwiftUI
 
-/// Matches the Profile frame in the Figma source exactly: header with
-/// avatar + visit badge, QR access pass row, membership card, stats row,
-/// Apple Health toggle, and a Logout button. No settings list, no QR
-/// scanner screen, no membership-management sheet — none of that exists in
-/// the source, so none of it is here.
+/// Matches the Profile frame in the Figma source: header with avatar +
+/// visit badge, QR access pass row, membership card, stats row, Apple
+/// Health toggle, and a Logout button. Two additions beyond the static
+/// frame: the QR row opens a real camera QR scanner, and the membership
+/// card opens a sheet showing exactly when the plan is valid until.
 struct ProfileView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var authService: AuthService
+    @State private var isScanningQR = false
+    @State private var isShowingMembership = false
+    @State private var scannedCode: String?
 
     var body: some View {
         NavigationStack {
@@ -17,8 +20,10 @@ struct ProfileView: View {
                         .font(.brand(32))
                         .foregroundStyle(.white)
                     header
-                    qrPassRow
-                    membershipCard
+                    Button { isScanningQR = true } label: { qrPassRow }
+                        .buttonStyle(.plain)
+                    Button { isShowingMembership = true } label: { membershipCard }
+                        .buttonStyle(.plain)
                     statsRow
                     healthCard
                     Spacer(minLength: 40)
@@ -30,6 +35,22 @@ struct ProfileView: View {
             }
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .fullScreenCover(isPresented: $isScanningQR) {
+                QRScannerView { code in
+                    scannedCode = code
+                }
+            }
+            .sheet(isPresented: $isShowingMembership) {
+                MembershipDetailView()
+            }
+            .alert(
+                "QR code scanned",
+                isPresented: Binding(get: { scannedCode != nil }, set: { if !$0 { scannedCode = nil } })
+            ) {
+                Button("OK") {}
+            } message: {
+                Text(scannedCode ?? "")
+            }
         }
     }
 
@@ -139,6 +160,81 @@ struct ProfileView: View {
             authService.signOut()
         }
         .padding(.top, 20)
+    }
+}
+
+/// Opened by tapping the Profile membership card — surfaces exactly when
+/// the current plan is valid until, plus what it includes.
+private struct MembershipDetailView: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+
+    private var matchingPlan: SubscriptionPlan? {
+        appState.subscriptionPlans.first { $0.name == appState.membershipPlanName }
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Membership")
+                            .font(.brand(20))
+                            .foregroundStyle(.white.opacity(0.85))
+                        Text(appState.membershipPlanName)
+                            .font(.digitalTimer(32))
+                            .foregroundStyle(.white)
+                        if let plan = matchingPlan {
+                            Text("$\(plan.price)/\(plan.period)")
+                                .font(.brand(16))
+                                .foregroundStyle(.white.opacity(0.85))
+                        }
+                    }
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.appAccentPurple)
+                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        EyebrowLabel(text: "Active until")
+                        Text(appState.membershipRenewDate)
+                            .font(.digitalTimer(28))
+                            .foregroundStyle(.white)
+                        Text("Your membership auto-renews on this date unless cancelled.")
+                            .font(.system(size: 13))
+                            .foregroundStyle(Color.appTextSecondary)
+                    }
+                    .padding(18)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.appSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+
+                    if let plan = matchingPlan {
+                        VStack(alignment: .leading, spacing: 10) {
+                            EyebrowLabel(text: "Included")
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(plan.perks, id: \.self) { perk in
+                                    HStack(spacing: 8) {
+                                        Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.appAccent)
+                                        Text(perk).font(.brand(14)).foregroundStyle(Color.appTextSecondary)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .screenPadding()
+                .padding(.top, 12)
+                .padding(.bottom, 24)
+            }
+            .background(Color.appBackground.ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
+                }
+            }
+        }
     }
 }
 
