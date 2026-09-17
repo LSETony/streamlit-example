@@ -132,6 +132,31 @@ final class AppState: ObservableObject {
     ]
     @Published var trainerSlots: [String] = ["07:30", "11:00", "17:00", "19:30"]
 
+    // MARK: Calendar bookings
+
+    @Published var bookedSessions: [BookedSession] = {
+        let calendar = Calendar.current
+        let now = Date()
+        func at(dayOffset: Int, hour: Int) -> Date {
+            let day = calendar.date(byAdding: .day, value: dayOffset, to: now) ?? now
+            return calendar.date(bySettingHour: hour, minute: 0, second: 0, of: day) ?? day
+        }
+        return [
+            BookedSession(date: at(dayOffset: 0, hour: 18), title: "Personal Training", trainerName: "Arina Ivolga"),
+            BookedSession(date: at(dayOffset: 2, hour: 9), title: "Group Class · HIIT", trainerName: "Mercede Moini"),
+            BookedSession(date: at(dayOffset: 5, hour: 17), title: "Personal Training", trainerName: "Arina Ivolga"),
+        ]
+    }()
+
+    func rescheduleSession(_ session: BookedSession, to newDate: Date) {
+        guard let index = bookedSessions.firstIndex(where: { $0.id == session.id }) else { return }
+        bookedSessions[index].date = newDate
+    }
+
+    func cancelSession(_ session: BookedSession) {
+        bookedSessions.removeAll { $0.id == session.id }
+    }
+
     // MARK: Store / Supplements
 
     @Published var products: [Product] = [

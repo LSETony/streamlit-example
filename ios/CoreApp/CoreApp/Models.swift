@@ -97,3 +97,12 @@ struct SubscriptionPlan: Identifiable {
     let perks: [String]
     let recommended: Bool
 }
+
+// MARK: - Calendar tab bookings
+
+struct BookedSession: Identifiable {
+    let id = UUID()
+    var date: Date
+    let title: String
+    let trainerName: String
+}
