@@ -3,6 +3,12 @@ import SwiftUI
 /// The Workouts Library screen — matches the Figma frame exactly: category
 /// filter pills, "Beginner's Plan", "Top 10 workouts" and "Important"
 /// sections. This is what the center tab-bar dumbbell button opens.
+///
+/// Card widths are computed once from a single GeometryReader and passed
+/// down as explicit CGFloat values instead of relying on flexible layout
+/// (HStack/LazyVGrid .flexible() columns) — those repeatedly let an
+/// oversized child report its own width back up and widen the whole
+/// screen, so every card here gets a concrete, non-negotiable size.
 struct WorkoutsView: View {
     @EnvironmentObject var appState: AppState
     @State private var libraryFilter = "All"
@@ -10,68 +16,77 @@ struct WorkoutsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 22) {
-                    Text("Workouts")
-                        .font(.brand(32))
-                        .foregroundStyle(.white)
+            GeometryReader { geo in
+                let contentWidth = geo.size.width - AppMetrics.screenPadding * 2
+                let cardWidth = (contentWidth - 10) / 2
 
-                    HStack(spacing: 8) {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(libraryFilters, id: \.self) { filter in
-                                    let on = libraryFilter == filter
-                                    Text(filter)
-                                        .font(.brand(16))
-                                        .foregroundStyle(on ? .white : Color.appTextPrimary)
-                                        .padding(.horizontal, 16)
-                                        .frame(minWidth: 89, minHeight: 50)
-                                        .background(on ? Color.appAccent : Color.appBackground.opacity(0.2))
-                                        .clipShape(Capsule())
-                                        .onTapGesture { libraryFilter = filter }
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 22) {
+                        Text("Workouts")
+                            .font(.brand(32))
+                            .foregroundStyle(.white)
+
+                        HStack(spacing: 8) {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(libraryFilters, id: \.self) { filter in
+                                        let on = libraryFilter == filter
+                                        Text(filter)
+                                            .font(.brand(16))
+                                            .foregroundStyle(on ? .white : Color.appTextPrimary)
+                                            .padding(.horizontal, 16)
+                                            .frame(minWidth: 89, minHeight: 50)
+                                            .background(on ? Color.appAccent : Color.appBackground.opacity(0.2))
+                                            .clipShape(Capsule())
+                                            .onTapGesture { libraryFilter = filter }
+                                    }
+                                }
+                            }
+                            .frame(maxWidth: contentWidth - 48)
+                            Spacer(minLength: 0)
+                            Image("IconSearch").customIcon(size: 14)
+                                .foregroundStyle(.white)
+                                .frame(width: 40, height: 40)
+                                .glassCircleButton()
+                        }
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            sectionLabel("Beginner's Plan")
+                            HStack(spacing: 10) {
+                                ForEach(appState.beginnerPlanCards) { card in
+                                    WorkoutCardTile(card: card, width: cardWidth)
                                 }
                             }
                         }
-                        Spacer(minLength: 0)
-                        Image("IconSearch").customIcon(size: 14)
-                            .foregroundStyle(.white)
-                            .frame(width: 40, height: 40)
-                            .glassCircleButton()
-                    }
 
-                    VStack(alignment: .leading, spacing: 10) {
-                        sectionLabel("Beginner's Plan")
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                            ForEach(appState.beginnerPlanCards) { card in WorkoutCardTile(card: card) }
+                        VStack(alignment: .leading, spacing: 10) {
+                            sectionLabel("Top 10 workouts")
+                            HStack(spacing: 10) {
+                                ForEach(appState.topWorkoutCards) { card in
+                                    WorkoutCardTile(card: card, width: cardWidth)
+                                }
+                            }
                         }
-                    }
 
-                    VStack(alignment: .leading, spacing: 10) {
-                        sectionLabel("Top 10 workouts")
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                            ForEach(appState.topWorkoutCards) { card in WorkoutCardTile(card: card) }
-                        }
-                    }
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        sectionLabel("Important")
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                            ForEach(appState.importantCards) { card in
-                                Text(card.title)
-                                    .font(.brand(16))
-                                    .foregroundStyle(.white)
-                                    .frame(maxWidth: .infinity, minHeight: 180, alignment: .bottomLeading)
-                                    .padding(16)
-                                    .background(Color.appAccentPurple)
-                                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+                        VStack(alignment: .leading, spacing: 10) {
+                            sectionLabel("Important")
+                            HStack(spacing: 10) {
+                                ForEach(appState.importantCards) { card in
+                                    Text(card.title)
+                                        .font(.brand(16))
+                                        .foregroundStyle(.white)
+                                        .frame(width: cardWidth, height: 180, alignment: .bottomLeading)
+                                        .padding(16)
+                                        .background(Color.appAccentPurple)
+                                        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+                                }
                             }
                         }
                     }
+                    .padding(.horizontal, AppMetrics.screenPadding)
+                    .padding(.top, 12)
+                    .padding(.bottom, 24)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .screenPadding()
-                .padding(.top, 12)
-                .padding(.bottom, 24)
             }
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
@@ -87,16 +102,17 @@ struct WorkoutsView: View {
 
 private struct WorkoutCardTile: View {
     let card: WorkoutCard
+    let width: CGFloat
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             Image(card.imageName)
                 .resizable()
                 .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(width: width, height: 200)
                 .clipped()
             LinearGradient(colors: [.black.opacity(0.85), .black.opacity(0.35), .clear], startPoint: .bottom, endPoint: .top)
-                .frame(height: 110)
+                .frame(width: width, height: 110)
                 .frame(maxHeight: .infinity, alignment: .bottom)
             VStack(alignment: .leading, spacing: 4) {
                 Text(card.title)
@@ -110,9 +126,9 @@ private struct WorkoutCardTile: View {
                 }
             }
             .padding(12)
+            .frame(width: width, alignment: .leading)
         }
-        .frame(height: 200)
-        .frame(maxWidth: .infinity)
+        .frame(width: width, height: 200)
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 }
