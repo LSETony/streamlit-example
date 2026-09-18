@@ -1,10 +1,12 @@
 import SwiftUI
+import FoundationModels
 
-/// Opened from Home's "Core AI" tile — a real chat backed by a free, open
-/// model through Pollinations' OpenAI-compatible endpoint (no API key,
-/// same request/response shape as OpenAI's Chat Completions API, so any
-/// OpenAI-compatible open-source backend can be swapped in by changing
-/// `endpoint`/`model` below).
+/// Opened from Home's "Core AI" tile — a real chat powered by Apple's
+/// Foundation Models framework, running fully on-device (iOS 26). No
+/// network call and no API key: the earlier version called a free
+/// third-party HTTP endpoint and that kept failing to connect, so this
+/// switches to the on-device model instead, which has nothing to be
+/// unreachable from.
 struct CoreAIChatView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var messages: [ChatMessage] = [
@@ -13,15 +15,26 @@ struct CoreAIChatView: View {
     @State private var draft = ""
     @State private var isSending = false
     @State private var errorText: String?
+    @State private var session = LanguageModelSession(
+        instructions: "You are Core AI, the assistant inside the core. fitness club app. Answer briefly and helpfully about training, recovery, nutrition and using the app."
+    )
     @FocusState private var inputFocused: Bool
 
-    private let endpoint = URL(string: "https://text.pollinations.ai/openai")!
-    private let model = "openai"
-    private let systemPrompt = "You are Core AI, the assistant inside the core. fitness club app. Answer briefly and helpfully about training, recovery, nutrition and using the app."
+    private var availability: SystemLanguageModel.Availability {
+        SystemLanguageModel.default.availability
+    }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                if case .unavailable(let reason) = availability {
+                    Text(unavailableMessage(reason))
+                        .font(.system(size: 12))
+                        .foregroundStyle(Color.appWarning)
+                        .padding(.horizontal, AppMetrics.screenPadding)
+                        .padding(.top, 10)
+                }
+
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
@@ -60,6 +73,19 @@ struct CoreAIChatView: View {
                     Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
                 }
             }
+        }
+    }
+
+    private func unavailableMessage(_ reason: SystemLanguageModel.Availability.UnavailableReason) -> String {
+        switch reason {
+        case .deviceNotEligible:
+            return "This device doesn't support Apple Intelligence, so Core AI can't run here."
+        case .appleIntelligenceNotEnabled:
+            return "Turn on Apple Intelligence in Settings to use Core AI."
+        case .modelNotReady:
+            return "Core AI's on-device model is still downloading — try again shortly."
+        @unknown default:
+            return "Core AI isn't available right now."
         }
     }
 
@@ -125,38 +151,18 @@ struct CoreAIChatView: View {
 
         Task {
             do {
-                let reply = try await requestReply()
+                let response = try await session.respond(to: text)
                 await MainActor.run {
-                    messages.append(ChatMessage(role: .assistant, content: reply))
+                    messages.append(ChatMessage(role: .assistant, content: response.content))
                     isSending = false
                 }
             } catch {
                 await MainActor.run {
-                    errorText = "Couldn't reach Core AI — check your connection and try again."
+                    errorText = "Core AI couldn't answer that — try rephrasing or ask again."
                     isSending = false
                 }
             }
         }
-    }
-
-    private func requestReply() async throws -> String {
-        var apiMessages = [APIMessage(role: "system", content: systemPrompt)]
-        apiMessages += messages.map { APIMessage(role: $0.role == .user ? "user" : "assistant", content: $0.content) }
-
-        var request = URLRequest(url: endpoint)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(ChatCompletionRequest(model: model, messages: apiMessages))
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw URLError(.badServerResponse)
-        }
-        let decoded = try JSONDecoder().decode(ChatCompletionResponse.self, from: data)
-        guard let content = decoded.choices.first?.message.content, !content.isEmpty else {
-            throw URLError(.cannotParseResponse)
-        }
-        return content.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -165,24 +171,6 @@ private struct ChatMessage: Identifiable {
     let role: Role
     let content: String
     enum Role { case user, assistant }
-}
-
-private struct APIMessage: Codable {
-    let role: String
-    let content: String
-}
-
-private struct ChatCompletionRequest: Encodable {
-    let model: String
-    let messages: [APIMessage]
-}
-
-private struct ChatCompletionResponse: Decodable {
-    struct Choice: Decodable {
-        struct Msg: Decodable { let content: String }
-        let message: Msg
-    }
-    let choices: [Choice]
 }
 
 #Preview {
