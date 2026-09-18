@@ -8,7 +8,7 @@ extension Color {
     static let appBackground = Color(red: 0x1E / 255, green: 0x1E / 255, blue: 0x1E / 255)       // --bg
     static let appSurface = Color(red: 0x14 / 255, green: 0x14 / 255, blue: 0x17 / 255)          // --surf
     static let appSurfaceElevated = Color(red: 0x1D / 255, green: 0x1D / 255, blue: 0x22 / 255)  // --surf2
-    static let appAccent = Color(red: 0xFF / 255, green: 0x5A / 255, blue: 0x1F / 255)           // --accent
+    static let appAccent = Color(red: 0xF9 / 255, green: 0x2C / 255, blue: 0x00 / 255)           // --accent
     static let appAccentDim = Color.appAccent.opacity(0.14)                                       // --soft
     static let appTextPrimary = Color(red: 0xF6 / 255, green: 0xF6 / 255, blue: 0xF5 / 255)      // --ink
     static let appTextSecondary = Color(red: 0x8A / 255, green: 0x8A / 255, blue: 0x93 / 255)    // --muted

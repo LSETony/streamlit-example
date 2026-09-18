@@ -188,9 +188,9 @@ struct HomeView: View {
         GlassEffectContainer(spacing: 14) {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                 rectTile(icon: "IconCalendar", title: "Book", highlighted: true) { activeSheet = .book }
-                rectTile(icon: "person.2.fill", isSystemIcon: true, title: "Trainers") { activeSheet = .trainers }
+                rectTile(icon: "IconPerson", title: "Trainers") { activeSheet = .trainers }
                 rectTile(icon: "IconFood", title: "Food") { activeSheet = .nutrition }
-                rectTile(icon: "IconWallet", title: "Store") { activeSheet = .store }
+                rectTile(icon: "IconCart", title: "Store") { activeSheet = .store }
                 rectTile(icon: "IconFaceScan", title: "Scan") {}
                 rectTile(icon: "IconAISparkle", title: "Core AI") {}
             }
@@ -199,7 +199,7 @@ struct HomeView: View {
 
     private func rectTile(icon: String, isSystemIcon: Bool = false, title: String, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 0) {
                 Group {
                     if isSystemIcon {
                         Image(systemName: icon).font(.system(size: 26, weight: .semibold))
@@ -208,11 +208,13 @@ struct HomeView: View {
                     }
                 }
                 .foregroundStyle(.white)
+                Spacer(minLength: 0)
                 Text(title)
                     .font(.brand(14))
                     .foregroundStyle(.white)
             }
-            .frame(maxWidth: .infinity)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .frame(height: 130)
             .glassEffect(
                 highlighted ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
