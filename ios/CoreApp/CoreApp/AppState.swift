@@ -116,7 +116,7 @@ final class AppState: ObservableObject {
             ]
         ),
         WorkoutCard(
-            imageName: "WorkoutBodyWeight", title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Strength",
+            imageName: "WorkoutBodyWeight", title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Cardio",
             exercises: [
                 Exercise(name: "Jumping Jacks", icon: "figure.jumprope", sets: 3, reps: "30 sec"),
                 Exercise(name: "Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),

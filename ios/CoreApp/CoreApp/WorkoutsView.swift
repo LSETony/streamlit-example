@@ -16,6 +16,14 @@ struct WorkoutsView: View {
     @State private var isShowingGymSafety = false
     private let libraryFilters = ["All", "Strength", "Cardio"]
 
+    private var filteredBeginnerPlanCards: [WorkoutCard] {
+        libraryFilter == "All" ? appState.beginnerPlanCards : appState.beginnerPlanCards.filter { $0.category == libraryFilter }
+    }
+
+    private var filteredTopWorkoutCards: [WorkoutCard] {
+        libraryFilter == "All" ? appState.topWorkoutCards : appState.topWorkoutCards.filter { $0.category == libraryFilter }
+    }
+
     var body: some View {
         NavigationStack {
             GeometryReader { geo in
@@ -53,22 +61,32 @@ struct WorkoutsView: View {
                         }
                         .scrollTargetBehavior(.viewAligned)
 
-                        VStack(alignment: .leading, spacing: 10) {
-                            sectionLabel("Beginner's Plan")
-                            HStack(spacing: 10) {
-                                ForEach(appState.beginnerPlanCards) { card in
-                                    WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
+                        if !filteredBeginnerPlanCards.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                sectionLabel("Beginner's Plan")
+                                HStack(spacing: 10) {
+                                    ForEach(filteredBeginnerPlanCards) { card in
+                                        WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
+                                    }
                                 }
                             }
                         }
 
-                        VStack(alignment: .leading, spacing: 10) {
-                            sectionLabel("Top 10 workouts")
-                            HStack(spacing: 10) {
-                                ForEach(appState.topWorkoutCards) { card in
-                                    WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
+                        if !filteredTopWorkoutCards.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                sectionLabel("Top 10 workouts")
+                                HStack(spacing: 10) {
+                                    ForEach(filteredTopWorkoutCards) { card in
+                                        WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
+                                    }
                                 }
                             }
+                        }
+
+                        if filteredBeginnerPlanCards.isEmpty && filteredTopWorkoutCards.isEmpty {
+                            Text("No \(libraryFilter.lowercased()) workouts yet.")
+                                .font(.system(size: 14))
+                                .foregroundStyle(Color.appTextSecondary)
                         }
 
                         VStack(alignment: .leading, spacing: 10) {
