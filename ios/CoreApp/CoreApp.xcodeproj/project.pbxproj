@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		018878DA21ABEBB04B9D2F5F /* CoreAIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E493C65B6E18E3804875719D /* CoreAIChatView.swift */; };
 		09F5DB40DAE9A527BC3E2532 /* AuthWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */; };
 		0A684AEED47A45E7811403F0 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F0FD454D2243F9954D55DC /* HomeView.swift */; };
 		13665979218917FFC4BCE58C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2360973C0FF59F76A261826 /* OnboardingView.swift */; };
@@ -72,6 +73,7 @@
 		CC7E1851BD66A6F385905E9F /* CartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		E07A661384232071008EA8E3 /* ProgressDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressDetailView.swift; sourceTree = "<group>"; };
 		E2360973C0FF59F76A261826 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		E493C65B6E18E3804875719D /* CoreAIChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreAIChatView.swift; sourceTree = "<group>"; };
 		E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
 		EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GymSafetyView.swift; sourceTree = "<group>"; };
 		EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainersView.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				CC7E1851BD66A6F385905E9F /* CartView.swift */,
 				EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */,
 				18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */,
+				E493C65B6E18E3804875719D /* CoreAIChatView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				43554B5640BA55F311A51850 /* CartView.swift in Sources */,
 				55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */,
 				5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */,
+				018878DA21ABEBB04B9D2F5F /* CoreAIChatView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

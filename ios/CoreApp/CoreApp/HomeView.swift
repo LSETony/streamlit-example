@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store, location, progress, occupancy, subscriptions, book
+    case trainers, nutrition, store, location, progress, occupancy, subscriptions, book, coreAI
     var id: String { rawValue }
 }
 
@@ -192,7 +192,7 @@ struct HomeView: View {
                 rectTile(icon: "IconFood", title: "Food") { activeSheet = .nutrition }
                 rectTile(icon: "IconCart", title: "Store") { activeSheet = .store }
                 rectTile(icon: "IconFaceScan", title: "Scan") {}
-                rectTile(icon: "IconAISparkle", title: "Core AI") {}
+                rectTile(icon: "IconAISparkle", title: "Core AI") { activeSheet = .coreAI }
             }
         }
     }
@@ -239,6 +239,7 @@ struct HomeView: View {
         case .occupancy: OccupancyDetailView()
         case .subscriptions: SubscriptionsView()
         case .book: BookZoneView()
+        case .coreAI: CoreAIChatView()
         }
     }
 }
