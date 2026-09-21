@@ -51,20 +51,24 @@ struct AuthWelcomeView: View {
             }
             .padding(.leading, width * 0.34)
 
-            fieldRow(icon: "person.fill") {
-                TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(.white.opacity(0.45)))
-                    .font(.brand(16))
-                    .foregroundStyle(.white)
-                    .textInputAutocapitalization(.words)
-            }
+            GlassEffectContainer(spacing: 18) {
+                VStack(spacing: 18) {
+                    fieldRow(icon: "person.fill") {
+                        TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(.white.opacity(0.45)))
+                            .font(.brand(16))
+                            .foregroundStyle(.white)
+                            .textInputAutocapitalization(.words)
+                    }
 
-            fieldRow(icon: "envelope.fill") {
-                TextField("", text: $email, prompt: Text("you@example.com").foregroundStyle(.white.opacity(0.45)))
-                    .font(.brand(16))
-                    .foregroundStyle(.white)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
+                    fieldRow(icon: "envelope.fill") {
+                        TextField("", text: $email, prompt: Text("you@example.com").foregroundStyle(.white.opacity(0.45)))
+                            .font(.brand(16))
+                            .foregroundStyle(.white)
+                            .keyboardType(.emailAddress)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                    }
+                }
             }
 
             if canContinue {
@@ -105,7 +109,8 @@ struct AuthWelcomeView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
+        .background(.black.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
     private func fieldRow<Content: View>(icon: String, @ViewBuilder content: () -> Content) -> some View {

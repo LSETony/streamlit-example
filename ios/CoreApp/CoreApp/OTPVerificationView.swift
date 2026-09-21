@@ -92,7 +92,8 @@ struct OTPVerificationView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
+        .background(.black.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
     private var isCodeComplete: Bool { digits.allSatisfy { $0.count == 1 } }
