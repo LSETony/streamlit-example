@@ -41,7 +41,7 @@ struct AuthWelcomeView: View {
 
     private func card(width: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .center, spacing: 4) {
                 Text("Welcome")
                     .font(.brand(32))
                     .foregroundStyle(.white)
@@ -49,18 +49,18 @@ struct AuthWelcomeView: View {
                     .font(.brand(16))
                     .foregroundStyle(Color.appAccent)
             }
-            .padding(.leading, width * 0.34)
+            .frame(maxWidth: .infinity)
 
             fieldRow(icon: "person.fill") {
                 TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(.white.opacity(0.45)))
-                    .font(.brand(16))
+                    .font(.brand(18))
                     .foregroundStyle(.white)
                     .textInputAutocapitalization(.words)
             }
 
             fieldRow(icon: "envelope.fill") {
                 TextField("", text: $email, prompt: Text("you@example.com").foregroundStyle(.white.opacity(0.45)))
-                    .font(.brand(16))
+                    .font(.brand(18))
                     .foregroundStyle(.white)
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
@@ -105,22 +105,23 @@ struct AuthWelcomeView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .background(.black.opacity(0.45))
+        .background(.black.opacity(0.3))
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
     private func fieldRow<Content: View>(icon: String, @ViewBuilder content: () -> Content) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 14) {
             ZStack {
                 Circle().fill(Color.white.opacity(0.12))
-                Image(systemName: icon).font(.system(size: 14)).foregroundStyle(.white)
+                Image(systemName: icon).font(.system(size: 16)).foregroundStyle(.white)
             }
-            .frame(width: 36, height: 36)
+            .frame(width: 44, height: 44)
             content()
             Spacer(minLength: 0)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 14)
+        .frame(height: 72)
         .glassEffect(.regular, in: Capsule())
     }
 
