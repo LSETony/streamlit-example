@@ -10,8 +10,8 @@ struct OTPVerificationView: View {
     let fullName: String
     let email: String
 
-    @State private var digits: [String] = Array(repeating: "", count: 6)
-    @FocusState private var focusedIndex: Int?
+    @State private var code = ""
+    @FocusState private var isCodeFieldFocused: Bool
     @State private var secondsRemaining = 48
     @State private var didComplete = false
     @State private var isVerifying = false
@@ -35,7 +35,7 @@ struct OTPVerificationView: View {
                 card(width: geo.size.width)
             }
         }
-        .onAppear { focusedIndex = 0 }
+        .onAppear { isCodeFieldFocused = true }
         .onReceive(timer) { _ in
             if secondsRemaining > 0 { secondsRemaining -= 1 }
         }
@@ -55,14 +55,33 @@ struct OTPVerificationView: View {
             }
             .padding(.leading, width * 0.34)
 
-            GlassEffectContainer(spacing: 8) {
-                HStack(spacing: 8) {
-                    ForEach(0..<6, id: \.self) { i in
-                        digitBox(i)
+            ZStack {
+                GlassEffectContainer(spacing: 8) {
+                    HStack(spacing: 8) {
+                        ForEach(0..<6, id: \.self) { i in
+                            digitBox(i)
+                        }
                     }
                 }
+
+                // Invisible field capturing all input — a single field (rather
+                // than 6 fields cycling focus) is what lets iOS's one-time-code
+                // AutoFill actually fill the whole code in one tap; the earlier
+                // per-box-TextField version could show the AutoFill suggestion
+                // bar but never accept typed input.
+                TextField("", text: $code)
+                    .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .focused($isCodeFieldFocused)
+                    .foregroundStyle(.clear)
+                    .tint(.clear)
+                    .onChange(of: code) { _, newValue in
+                        code = String(newValue.filter(\.isNumber).prefix(6))
+                    }
             }
             .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+            .onTapGesture { isCodeFieldFocused = true }
 
             HStack(spacing: 4) {
                 Text("Haven't received the code?")
@@ -96,32 +115,20 @@ struct OTPVerificationView: View {
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
-    private var isCodeComplete: Bool { digits.allSatisfy { $0.count == 1 } }
-    private var code: String { digits.joined() }
+    private var isCodeComplete: Bool { code.count == 6 }
 
     private func digitBox(_ index: Int) -> some View {
-        TextField("", text: Binding(
-            get: { digits[index] },
-            set: { newValue in
-                let filtered = newValue.filter(\.isNumber)
-                digits[index] = String(filtered.suffix(1))
-                if !digits[index].isEmpty, index < 5 {
-                    focusedIndex = index + 1
-                } else if digits[index].isEmpty, index > 0 {
-                    focusedIndex = index - 1
-                }
-            }
-        ))
-        .keyboardType(.numberPad)
-        .multilineTextAlignment(.center)
-        .font(.brand(22))
-        .foregroundStyle(.white)
-        .frame(width: 42, height: 52)
-        .glassEffect(
-            focusedIndex == index ? .regular.tint(.appAccentPurple).interactive() : .regular.interactive(),
-            in: Circle()
-        )
-        .focused($focusedIndex, equals: index)
+        let digit = index < code.count ? String(Array(code)[index]) : ""
+        let isActive = isCodeFieldFocused && index == code.count
+        return Text(digit)
+            .multilineTextAlignment(.center)
+            .font(.brand(22))
+            .foregroundStyle(.white)
+            .frame(width: 42, height: 52)
+            .glassEffect(
+                isActive ? .regular.tint(.appAccentPurple).interactive() : .regular.interactive(),
+                in: Circle()
+            )
     }
 
     private func verify() {
