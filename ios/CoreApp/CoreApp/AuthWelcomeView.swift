@@ -11,13 +11,17 @@ struct AuthWelcomeView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
-                Image("AuthBackground")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
+            GeometryReader { geo in
+                ZStack(alignment: .bottom) {
+                    Image("AuthBackground")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .clipped()
+                        .ignoresSafeArea()
 
-                card
+                    card
+                }
             }
             .navigationDestination(isPresented: $goToVerify) {
                 OTPVerificationView(fullName: fullName, email: email)
@@ -33,16 +37,16 @@ struct AuthWelcomeView: View {
     private var card: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Добро пожаловать")
+                Text("Welcome")
                     .font(.system(size: 28, weight: .bold))
                     .foregroundStyle(.white)
-                Text("Создать аккаунт")
+                Text("Sign in or create account")
                     .font(.system(size: 15))
                     .foregroundStyle(Color.appAccent)
             }
 
             fieldRow(icon: "person.fill") {
-                TextField("", text: $fullName, prompt: Text("ФИО").foregroundStyle(.white.opacity(0.45)))
+                TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(.white.opacity(0.45)))
                     .foregroundStyle(.white)
                     .textInputAutocapitalization(.words)
             }
@@ -69,7 +73,7 @@ struct AuthWelcomeView: View {
 
             HStack(spacing: 12) {
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
-                Text("ИЛИ").font(.system(size: 12, weight: .semibold)).foregroundStyle(Color.appAccent)
+                Text("OR").font(.system(size: 12, weight: .semibold)).foregroundStyle(Color.appAccent)
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
             }
 

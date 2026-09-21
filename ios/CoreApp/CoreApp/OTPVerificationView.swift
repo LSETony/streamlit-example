@@ -19,13 +19,17 @@ struct OTPVerificationView: View {
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Image("OTPBackground")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
+        GeometryReader { geo in
+            ZStack(alignment: .bottom) {
+                Image("OTPBackground")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+                    .ignoresSafeArea()
 
-            card
+                card
+            }
         }
         .onAppear { focusedIndex = 0 }
         .onReceive(timer) { _ in
@@ -37,15 +41,16 @@ struct OTPVerificationView: View {
     private var card: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Верификация")
+                Text("Verification")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(.white)
-                (Text("Отправили код на ").foregroundStyle(Color.appAccent) + Text(email).foregroundStyle(.white))
+                (Text("We've sent a code to ").foregroundStyle(Color.appAccent) + Text(email).foregroundStyle(.white))
                     .font(.system(size: 14))
+                    .lineLimit(2)
             }
 
-            GlassEffectContainer(spacing: 10) {
-                HStack(spacing: 10) {
+            GlassEffectContainer(spacing: 8) {
+                HStack(spacing: 8) {
                     ForEach(0..<6, id: \.self) { i in
                         digitBox(i)
                     }
@@ -54,21 +59,21 @@ struct OTPVerificationView: View {
             .frame(maxWidth: .infinity)
 
             HStack(spacing: 4) {
-                Text("Не пришел код?")
+                Text("Haven't received the code?")
                     .font(.system(size: 13))
                     .foregroundStyle(.white.opacity(0.6))
                 if secondsRemaining > 0 {
-                    Text("Отправить ")
+                    Text("Resend ")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(Color.appAccent)
-                    + Text("через ")
+                    + Text("in ")
                         .font(.system(size: 13))
                         .foregroundStyle(.white.opacity(0.6))
                     + Text(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(Color.appAccent)
                 } else {
-                    Button("Отправить") {
+                    Button("Resend") {
                         secondsRemaining = 48
                         Task { _ = await authService.startEmailRegistration(email: email) }
                     }
@@ -76,8 +81,9 @@ struct OTPVerificationView: View {
                     .foregroundStyle(Color.appAccent)
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
 
-            PrimaryButton(title: isVerifying ? "Проверяем…" : "Continue", isEnabled: isCodeComplete && !isVerifying, color: .appAccentPurple) {
+            PrimaryButton(title: isVerifying ? "Verifying…" : "Continue", isEnabled: isCodeComplete && !isVerifying, color: .appAccentPurple) {
                 verify()
             }
         }
@@ -104,9 +110,9 @@ struct OTPVerificationView: View {
         ))
         .keyboardType(.numberPad)
         .multilineTextAlignment(.center)
-        .font(.brand(24))
+        .font(.brand(22))
         .foregroundStyle(.white)
-        .frame(width: 46, height: 56)
+        .frame(width: 42, height: 52)
         .glassEffect(
             focusedIndex == index ? .regular.tint(.appAccentPurple).interactive() : .regular.interactive(),
             in: Circle()
