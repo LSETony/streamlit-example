@@ -113,10 +113,10 @@ final class AuthService: NSObject, ObservableObject {
         isAuthenticating = true
         defer { isAuthenticating = false }
         do {
-            try await supabase.auth.signInWithOTP(email: email)
+            try await Self.withHostRetry { try await supabase.auth.signInWithOTP(email: email) }
             return true
         } catch {
-            authError = error.localizedDescription
+            authError = Self.friendlyMessage(for: error)
             return false
         }
     }
@@ -128,7 +128,7 @@ final class AuthService: NSObject, ObservableObject {
         isAuthenticating = true
         defer { isAuthenticating = false }
         do {
-            try await supabase.auth.verifyOTP(email: email, token: code, type: .email)
+            try await Self.withHostRetry { try await supabase.auth.verifyOTP(email: email, token: code, type: .email) }
             currentUser = AuthUser(
                 id: email,
                 name: name.trimmingCharacters(in: .whitespaces).isEmpty ? "Member" : name,
@@ -138,9 +138,35 @@ final class AuthService: NSObject, ObservableObject {
             isAuthenticated = true
             return true
         } catch {
-            authError = error.localizedDescription
+            authError = Self.friendlyMessage(for: error)
             return false
         }
+    }
+
+    /// DNS lookups for a fresh hostname occasionally fail transiently
+    /// (flaky Wi-Fi, a VPN that just connected/disconnected) and succeed a
+    /// moment later — retry once after a short delay before surfacing an
+    /// error, instead of making the member manually tap Continue again.
+    private static func withHostRetry<T>(_ operation: () async throws -> T) async throws -> T {
+        do {
+            return try await operation()
+        } catch {
+            guard isHostNotFoundError(error) else { throw error }
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            return try await operation()
+        }
+    }
+
+    private static func isHostNotFoundError(_ error: Error) -> Bool {
+        let nsError = error as NSError
+        return nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCannotFindHost
+    }
+
+    private static func friendlyMessage(for error: Error) -> String {
+        if isHostNotFoundError(error) {
+            return "Can't reach the server. Check your internet connection — if you're on a VPN, try turning it off — then tap Continue again."
+        }
+        return error.localizedDescription
     }
 
     func signOut() {
