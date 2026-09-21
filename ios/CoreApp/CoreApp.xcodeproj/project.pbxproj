@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00654D9E24395A0E12716AEB /* AppState+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F2AB7862A2EA4586A53B5A /* AppState+Supabase.swift */; };
 		018878DA21ABEBB04B9D2F5F /* CoreAIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E493C65B6E18E3804875719D /* CoreAIChatView.swift */; };
 		09F5DB40DAE9A527BC3E2532 /* AuthWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */; };
 		0A684AEED47A45E7811403F0 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F0FD454D2243F9954D55DC /* HomeView.swift */; };
@@ -21,6 +22,7 @@
 		549E57A664D84DD0B20D5053 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48104F66160A4418A81BD9E8 /* Models.swift */; };
 		55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */; };
 		5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
+		5B109E9053C7AB7139E42BA6 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */; };
 		5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */; };
 		6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */; };
 		6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */; };
@@ -29,6 +31,7 @@
 		827A626C864C99A017D8DBCA /* GymPhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */; };
 		85B05F926201A88F7E64D6EB /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */; };
 		883CEF1AA585402E8C0803EB /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EEC3E4AC434CCDB1F33D3B /* Theme.swift */; };
+		8A72D0FDB7609D115EBD9467 /* SupabaseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */; };
 		929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55950DFCC22D525533532A31 /* SubscriptionsView.swift */; };
 		94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CDD914A646D49A055E8D /* CoreAppApp.swift */; };
 		A2E860860761333E4C376664 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B3511191EF0FD2AE5A30D /* SplashView.swift */; };
@@ -51,10 +54,13 @@
 		18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BookZoneView.swift; sourceTree = "<group>"; };
 		2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodRecipesView.swift; sourceTree = "<group>"; };
 		2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Doto-VariableFont.ttf"; sourceTree = "<group>"; };
+		2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
+		31F2AB7862A2EA4586A53B5A /* AppState+Supabase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Supabase.swift"; sourceTree = "<group>"; };
 		3400C5EA574C43B3B4039970 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationPickerView.swift; sourceTree = "<group>"; };
 		3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QRPassView.swift; sourceTree = "<group>"; };
 		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseModels.swift; sourceTree = "<group>"; };
 		522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthWelcomeView.swift; sourceTree = "<group>"; };
 		55950DFCC22D525533532A31 /* SubscriptionsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
 		5A3B3511191EF0FD2AE5A30D /* SplashView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
@@ -167,6 +173,9 @@
 				EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */,
 				18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */,
 				E493C65B6E18E3804875719D /* CoreAIChatView.swift */,
+				2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */,
+				4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */,
+				31F2AB7862A2EA4586A53B5A /* AppState+Supabase.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -190,6 +199,7 @@
 			packageProductDependencies = (
 				A6395C7AB467517757FDA0C9 /* GoogleSignIn */,
 				54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */,
+				F969DB2DA1F774B9846AC477 /* Supabase */,
 			);
 			productName = CoreApp;
 			productReference = F67907A314E1428CADEF220C /* CoreApp.app */;
@@ -221,6 +231,7 @@
 			mainGroup = 7603BAC60131412AAEF8FD7D;
 			packageReferences = (
 				CEAC1B87AD7D9BD3E6B9C73B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				AEB0C59DA284E11D1F0AB018 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			productRefGroup = 362612CA95AC4D62A8827A1B /* Products */;
 			projectDirPath = "";
@@ -279,6 +290,9 @@
 				55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */,
 				5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */,
 				018878DA21ABEBB04B9D2F5F /* CoreAIChatView.swift in Sources */,
+				5B109E9053C7AB7139E42BA6 /* SupabaseService.swift in Sources */,
+				8A72D0FDB7609D115EBD9467 /* SupabaseModels.swift in Sources */,
+				00654D9E24395A0E12716AEB /* AppState+Supabase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,6 +496,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AEB0C59DA284E11D1F0AB018 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		CEAC1B87AD7D9BD3E6B9C73B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -502,6 +524,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CEAC1B87AD7D9BD3E6B9C73B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		F969DB2DA1F774B9846AC477 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEB0C59DA284E11D1F0AB018 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

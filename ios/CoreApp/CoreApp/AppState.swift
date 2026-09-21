@@ -102,112 +102,45 @@ final class AppState: ObservableObject {
     @Published var occupancyNowHour: String = "14"
 
     // MARK: Workout library (Beginner's Plan / Top 10 / Important)
+    // Catalog data below is loaded from Supabase — see loadFromSupabase()
+    // in AppState+Supabase.swift. Starts empty; supabase/schema.sql seeds
+    // the actual rows.
 
-    @Published var beginnerPlanCards: [WorkoutCard] = [
-        WorkoutCard(
-            imageName: "WorkoutBeginnerFemale", title: "Beginner Female Aesthetics", level: "Beginner", duration: "7 day", category: "Strength",
-            exercises: [
-                Exercise(name: "Bodyweight Squats", icon: "figure.strengthtraining.functional", sets: 3, reps: "15"),
-                Exercise(name: "Glute Bridges", icon: "figure.core.training", sets: 3, reps: "15"),
-                Exercise(name: "Knee Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
-                Exercise(name: "Plank", icon: "figure.core.training", sets: 3, reps: "30 sec"),
-                Exercise(name: "Lunges", icon: "figure.walk", sets: 3, reps: "12"),
-                Exercise(name: "Bicycle Crunches", icon: "figure.core.training", sets: 3, reps: "20"),
-            ]
-        ),
-        WorkoutCard(
-            imageName: "WorkoutBodyWeight", title: "Beginner Body Weight Plan", level: "Beginner", duration: "7 day", category: "Cardio",
-            exercises: [
-                Exercise(name: "Jumping Jacks", icon: "figure.jumprope", sets: 3, reps: "30 sec"),
-                Exercise(name: "Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
-                Exercise(name: "Squats", icon: "figure.strengthtraining.functional", sets: 3, reps: "15"),
-                Exercise(name: "Mountain Climbers", icon: "figure.highintensity.intervaltraining", sets: 3, reps: "20"),
-                Exercise(name: "Plank", icon: "figure.core.training", sets: 3, reps: "30 sec"),
-            ]
-        ),
-    ]
-    @Published var topWorkoutCards: [WorkoutCard] = [
-        WorkoutCard(
-            imageName: "WorkoutPrentalFlow", title: "Sam's Prental Flow", level: "Beginner", duration: "22 mins", category: "Strength",
-            exercises: [
-                Exercise(name: "Cat-Cow Stretch", icon: "figure.flexibility", sets: 3, reps: "10"),
-                Exercise(name: "Pelvic Tilts", icon: "figure.flexibility", sets: 3, reps: "12"),
-                Exercise(name: "Wall Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
-                Exercise(name: "Side-Lying Leg Lifts", icon: "figure.core.training", sets: 3, reps: "12"),
-                Exercise(name: "Seated Marching", icon: "figure.walk", sets: 3, reps: "15"),
-                Exercise(name: "Deep Breathing", icon: "figure.mind.and.body", sets: 3, reps: "1 min"),
-            ]
-        ),
-        WorkoutCard(
-            imageName: "WorkoutChestTriceps", title: "Chest and Triceps", level: "Inter", duration: "22 mins", category: "Strength",
-            exercises: [
-                Exercise(name: "Push-ups", icon: "figure.strengthtraining.traditional", sets: 4, reps: "12"),
-                Exercise(name: "Dumbbell Bench Press", icon: "dumbbell.fill", sets: 4, reps: "10"),
-                Exercise(name: "Tricep Dips", icon: "figure.strengthtraining.traditional", sets: 3, reps: "12"),
-                Exercise(name: "Overhead Tricep Extension", icon: "dumbbell.fill", sets: 3, reps: "12"),
-                Exercise(name: "Chest Fly", icon: "dumbbell.fill", sets: 3, reps: "12"),
-                Exercise(name: "Close-Grip Push-ups", icon: "figure.strengthtraining.traditional", sets: 3, reps: "10"),
-            ]
-        ),
-    ]
-    @Published var importantCards: [ImportantCard] = [
-        ImportantCard(icon: "shield.fill", title: "Gym Safety", subtitle: "Rules & equipment guide"),
-        ImportantCard(icon: "party.popper.fill", title: "Events", subtitle: "What's on this month"),
-    ]
+    @Published var beginnerPlanCards: [WorkoutCard] = []
+    @Published var topWorkoutCards: [WorkoutCard] = []
+    @Published var importantCards: [ImportantCard] = []
 
     // MARK: Food recipes
 
-    @Published var foodRecipes: [FoodRecipe] = [
-        FoodRecipe(name: "Chicken Cajun", price: 9, ingredients: ["Chicken breast", "Cajun spice", "Olive oil", "Bell pepper"]),
-        FoodRecipe(name: "Protein pancakes", price: 6, ingredients: ["Whey protein", "Egg", "Banana", "Oats"]),
-        FoodRecipe(name: "Beef Jerky", price: 12, ingredients: ["Beef", "Soy sauce", "Black pepper", "Garlic powder"]),
-        FoodRecipe(name: "Carnivore Soup", price: 10, ingredients: ["Beef bone broth", "Beef chunks", "Salt", "Egg"]),
-    ]
+    @Published var foodRecipes: [FoodRecipe] = []
 
     // MARK: Trainers
 
-    @Published var trainers: [Trainer] = [
-        Trainer(imageName: "Trainer1", name: "Arina Ivolga", specialty: "Personal trainer", rating: "4.9", reviews: 212, priceLabel: "$45/h", priceCompact: "45", nextAvailable: "Today", availabilityColor: .appSuccess, yearsExperience: "9 years", clients: 48, sessions: 1840, tags: ["Squat mechanics", "Peaking blocks", "Return to lifting"], bio: "Coaches the strength floor and writes the club's barbell progressions. Works with lifters coming back from long breaks and with members chasing a first 2× bodyweight squat."),
-        Trainer(imageName: "Trainer2", name: "Mercede Moini", specialty: "Personal trainer", rating: "5.0", reviews: 168, priceLabel: "$52/h", priceCompact: "52", nextAvailable: "Tue", availabilityColor: .appAccent, yearsExperience: "12 years", clients: 62, sessions: 2210, tags: ["Body composition", "Conditioning", "Mobility"], bio: "Runs conditioning and mobility work for members coming back from injury or a long break from training."),
-    ]
+    @Published var trainers: [Trainer] = []
     @Published var trainerSlots: [String] = ["07:30", "11:00", "17:00", "19:30"]
 
-    // MARK: Calendar bookings
+    // MARK: Calendar bookings (Supabase-backed, scoped to DeviceUser.id)
 
-    @Published var bookedSessions: [BookedSession] = {
-        let calendar = Calendar.current
-        let now = Date()
-        func at(dayOffset: Int, hour: Int) -> Date {
-            let day = calendar.date(byAdding: .day, value: dayOffset, to: now) ?? now
-            return calendar.date(bySettingHour: hour, minute: 0, second: 0, of: day) ?? day
-        }
-        return [
-            BookedSession(date: at(dayOffset: 0, hour: 18), title: "Personal Training", trainerName: "Arina Ivolga"),
-            BookedSession(date: at(dayOffset: 2, hour: 9), title: "Group Class · HIIT", trainerName: "Mercede Moini"),
-            BookedSession(date: at(dayOffset: 5, hour: 17), title: "Personal Training", trainerName: "Arina Ivolga"),
-        ]
-    }()
+    @Published var bookedSessions: [BookedSession] = []
 
     func rescheduleSession(_ session: BookedSession, to newDate: Date) {
         guard let index = bookedSessions.firstIndex(where: { $0.id == session.id }) else { return }
         bookedSessions[index].date = newDate
+        Task { await self.updateSessionDate(session.id, to: newDate) }
     }
 
     func cancelSession(_ session: BookedSession) {
         bookedSessions.removeAll { $0.id == session.id }
+        Task { await self.deleteSession(session.id) }
     }
 
     // MARK: Zone booking (behind Home's "Book" tile)
 
-    @Published var gymZones: [GymZone] = [
-        GymZone(icon: "figure.pilates", name: "Pilates Studio", subtitle: "Reformer & mat sessions", capacity: 8),
-        GymZone(icon: "figure.run", name: "Running Track", subtitle: "Indoor treadmill lane", capacity: 12),
-        GymZone(icon: "dumbbell.fill", name: "Free Weights Floor", subtitle: "Barbells, racks & benches", capacity: 20),
-        GymZone(icon: "flame.fill", name: "Sauna & Recovery", subtitle: "Steam room & sauna", capacity: 6),
-    ]
+    @Published var gymZones: [GymZone] = []
 
     /// Books the next occurrence of `time` ("HH:mm") for `zone`, adding it
-    /// to bookedSessions so it shows up in the Calendar tab too.
+    /// to bookedSessions (and Supabase) so it shows up in the Calendar tab
+    /// too.
     func bookZone(_ zone: GymZone, at time: String) {
         let parts = time.split(separator: ":").compactMap { Int($0) }
         guard parts.count == 2 else { return }
@@ -217,57 +150,36 @@ final class AppState: ObservableObject {
         if date < now {
             date = calendar.date(byAdding: .day, value: 1, to: date) ?? date
         }
-        bookedSessions.append(BookedSession(date: date, title: zone.name, trainerName: zone.subtitle))
+        let session = BookedSession(date: date, title: zone.name, trainerName: zone.subtitle)
+        bookedSessions.append(session)
+        Task { await self.insertSession(session) }
     }
 
     // MARK: Store / Supplements
 
-    @Published var products: [Product] = [
-        Product(abbr: "B", name: "B-Complex", form: "Capsule", dose: "50 mg", count: "90 capsules", price: 54, subscriptionPrice: 46, tag: "In protocol", tagColor: .appAccent,
-                desc: "A full spread of B vitamins for energy metabolism and nervous-system support through heavy training blocks.",
-                ingredients: [Ingredient(name: "Vitamin B6", amount: "10 mg"), Ingredient(name: "Vitamin B12", amount: "500 mcg"), Ingredient(name: "Folate", amount: "400 mcg")],
-                benefits: "Supports energy release from food and reduces fatigue during high training volume.",
-                risks: "Generally well tolerated. High-dose B6 over long periods can cause nerve tingling — stay within label dose.",
-                interactions: "Can interfere with some Parkinson's and epilepsy medications — check with a doctor if you take either."),
-        Product(abbr: "Cr", name: "Creatine monohydrate", form: "Powder", dose: "5 g", count: "500 g", price: 150, subscriptionPrice: 128, tag: "Recommended", tagColor: .appSuccess,
-                desc: "Creapure monohydrate. The most studied performance supplement there is; no loading phase needed.",
-                ingredients: [Ingredient(name: "Creatine monohydrate", amount: "5 000 mg")],
-                benefits: "Adds a few reps at a given load and roughly 1–2 kg of water inside the muscle.",
-                risks: "Safe in healthy adults at 3–5 g. Drink enough water; kidney disease is the one contraindication.",
-                interactions: "No meaningful drug interactions. Caffeine does not cancel it, despite the old claim."),
-        Product(abbr: "Zn", name: "Zinc picolinate", form: "Capsule", dose: "15 mg", count: "100 capsules", price: 35, subscriptionPrice: 30, tag: "Watch dose", tagColor: .appWarning,
-                desc: "A 15 mg dose, deliberately lower than the 50 mg tubs sold elsewhere.",
-                ingredients: [Ingredient(name: "Zinc (picolinate)", amount: "15 mg"), Ingredient(name: "Copper (gluconate)", amount: "1 mg")],
-                benefits: "Covers a genuine gap in low-meat diets and supports immune function.",
-                risks: "Above 40 mg daily for months depletes copper and can cause anaemia.",
-                interactions: "Competes with iron — four hours apart. Also reduces absorption of some antibiotics."),
-        Product(abbr: "Mg", name: "Magnesium", form: "Capsule", dose: "400 mg", count: "120 capsules", price: 85, subscriptionPrice: 72, tag: "In protocol", tagColor: .appAccent,
-                desc: "The sleep-and-recovery magnesium. Glycinate is well absorbed and does not act as a laxative at this dose.",
-                ingredients: [Ingredient(name: "Magnesium (glycinate)", amount: "400 mg"), Ingredient(name: "Glycine", amount: "1 200 mg")],
-                benefits: "Shortens time to sleep and reduces cramping in heavy training weeks.",
-                risks: "Loose stools above 600 mg. Anyone with reduced kidney function should ask a doctor first.",
-                interactions: "Blunts absorption of tetracycline and quinolone antibiotics, and of bisphosphonates. Separate by two hours."),
-    ]
+    @Published var products: [Product] = []
     @Published var cart: [CartLine] = []
 
     var cartCount: Int { cart.count }
     var cartTotal: Int { cart.reduce(0) { $0 + $1.price } }
 
     func addToCart(_ product: Product) {
-        cart.append(CartLine(name: product.name, price: product.price))
+        let line = CartLine(name: product.name, price: product.price)
+        cart.append(line)
+        Task { await self.insertCartLine(line) }
     }
     func removeFromCart(_ line: CartLine) {
         cart.removeAll { $0.id == line.id }
+        Task { await self.deleteCartLine(line.id) }
     }
-    func clearCart() { cart.removeAll() }
+    func clearCart() {
+        cart.removeAll()
+        Task { await self.deleteAllCartLines() }
+    }
 
     // MARK: Club subscriptions (behind Home's wallet icon)
 
-    @Published var subscriptionPlans: [SubscriptionPlan] = [
-        SubscriptionPlan(name: "Basic", price: 39, period: "mo", perks: ["Gym floor access", "Locker room", "1 club location"], recommended: false),
-        SubscriptionPlan(name: "Unlimited 24/7", price: 79, period: "mo", perks: ["24/7 access, every club", "Group classes included", "Guest passes ×2/mo"], recommended: true),
-        SubscriptionPlan(name: "Premium + PT", price: 129, period: "mo", perks: ["Everything in Unlimited", "4 PT sessions/mo", "Priority booking"], recommended: false),
-    ]
+    @Published var subscriptionPlans: [SubscriptionPlan] = []
 
     // MARK: Profile
 

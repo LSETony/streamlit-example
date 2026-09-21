@@ -9,6 +9,7 @@ enum MainTab: CaseIterable, Hashable {
 /// Liquid Glass tab bar Apple's own apps use, automatically, with no
 /// approximation.
 struct ContentView: View {
+    @EnvironmentObject var appState: AppState
     @State private var selectedTab: MainTab = .home
 
     var body: some View {
@@ -65,6 +66,9 @@ struct ContentView: View {
         }
         .tint(Color.appAccent)
         .background(Color.appBackground)
+        .task {
+            await appState.loadFromSupabase()
+        }
     }
 }
 

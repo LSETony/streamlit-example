@@ -213,6 +213,9 @@ struct ActiveWorkoutView: View {
 
 #Preview {
     NavigationStack {
-        WorkoutDetailView(card: AppState().beginnerPlanCards[0])
+        WorkoutDetailView(card: WorkoutCard(
+            imageName: "WorkoutBeginnerFemale", title: "Beginner Female Aesthetics", level: "Beginner", duration: "7 day", category: "Strength",
+            exercises: [Exercise(name: "Bodyweight Squats", icon: "figure.strengthtraining.functional", sets: 3, reps: "15")]
+        ))
     }
 }
