@@ -92,7 +92,7 @@ struct OTPVerificationView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .background(.black.opacity(0.2))
+        .background(.black.opacity(0.45))
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
