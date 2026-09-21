@@ -114,10 +114,20 @@ struct SubscriptionPlan: Identifiable {
 // MARK: - Calendar tab bookings
 
 struct BookedSession: Identifiable {
-    let id = UUID()
+    let id: UUID
     var date: Date
     let title: String
     let trainerName: String
+
+    /// `id` defaults to a fresh UUID for locally-created bookings, but can
+    /// be passed explicitly when reconstructing a row already stored in
+    /// Supabase (see BookedSessionRow.toModel() in SupabaseModels.swift).
+    init(id: UUID = UUID(), date: Date, title: String, trainerName: String) {
+        self.id = id
+        self.date = date
+        self.title = title
+        self.trainerName = trainerName
+    }
 }
 
 // MARK: - Zone booking (behind Home's "Book" tile)

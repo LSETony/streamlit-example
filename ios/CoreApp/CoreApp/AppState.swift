@@ -194,7 +194,16 @@ final class AppState: ObservableObject {
 }
 
 struct CartLine: Identifiable {
-    let id = UUID()
+    let id: UUID
     let name: String
     let price: Int
+
+    /// `id` defaults to a fresh UUID for locally-added lines, but can be
+    /// passed explicitly when reconstructing a row already stored in
+    /// Supabase (see CartLineRow.toModel() in SupabaseModels.swift).
+    init(id: UUID = UUID(), name: String, price: Int) {
+        self.id = id
+        self.name = name
+        self.price = price
+    }
 }
