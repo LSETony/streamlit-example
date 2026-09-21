@@ -40,11 +40,16 @@ struct OTPVerificationView: View {
             if secondsRemaining > 0 { secondsRemaining -= 1 }
         }
         .navigationBarBackButtonHidden(didComplete)
+        .alert("Verification error", isPresented: Binding(get: { authService.authError != nil }, set: { if !$0 { authService.authError = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(authService.authError ?? "")
+        }
     }
 
     private func card(width: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 24) {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .center, spacing: 6) {
                 Text("Verification")
                     .font(.brand(32))
                     .foregroundStyle(.white)
@@ -52,8 +57,9 @@ struct OTPVerificationView: View {
                     .foregroundStyle(Color.appAccent)
                     .font(.brand(16))
                     .lineLimit(2)
+                    .multilineTextAlignment(.center)
             }
-            .padding(.leading, width * 0.34)
+            .frame(maxWidth: .infinity)
 
             ZStack {
                 GlassEffectContainer(spacing: 8) {
@@ -111,7 +117,7 @@ struct OTPVerificationView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .background(.black.opacity(0.45))
+        .background(.black.opacity(0.3))
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
