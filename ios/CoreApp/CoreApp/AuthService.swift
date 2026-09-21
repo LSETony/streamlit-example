@@ -166,7 +166,11 @@ final class AuthService: NSObject, ObservableObject {
         if isHostNotFoundError(error) {
             return "Can't reach the server. Check your internet connection — if you're on a VPN, try turning it off — then tap Continue again."
         }
-        return error.localizedDescription
+        let description = error.localizedDescription
+        if description.localizedCaseInsensitiveContains("rate limit") {
+            return "Too many sign-in emails sent recently. Supabase's built-in test mailer only allows a couple of emails per hour per project — wait a few minutes and try again, or set up a custom SMTP provider in the Supabase dashboard (Authentication → Settings → SMTP Settings) to remove this limit."
+        }
+        return description
     }
 
     func signOut() {

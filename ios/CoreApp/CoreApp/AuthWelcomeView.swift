@@ -1,5 +1,10 @@
 import SwiftUI
 
+/// Sign-up entry screen, styled after Apple's own native account-creation
+/// forms (Apple ID setup, App Store sign-in): plain system background,
+/// a grouped list-style field group, and HIG-correct Apple/Google buttons —
+/// rather than a photo backdrop with glass panels, which was fragile (ghost
+/// bars where glass shapes merged, uneven refraction over busy photo areas).
 struct AuthWelcomeView: View {
     @EnvironmentObject var authService: AuthService
     @State private var fullName: String = ""
@@ -11,18 +16,71 @@ struct AuthWelcomeView: View {
 
     var body: some View {
         NavigationStack {
-            GeometryReader { geo in
-                ZStack(alignment: .bottom) {
-                    Image("AuthBackground")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: geo.size.width, height: geo.size.height)
-                        .clipped()
-                        .ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 28) {
+                    VStack(spacing: 6) {
+                        Text("Welcome")
+                            .font(.brand(34))
+                            .foregroundStyle(.white)
+                        Text("Create your core. account")
+                            .font(.system(size: 15))
+                            .foregroundStyle(Color.appTextSecondary)
+                    }
+                    .padding(.top, 56)
 
-                    card(width: geo.size.width)
+                    VStack(spacing: 0) {
+                        TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(Color.appTextSecondary))
+                            .font(.system(size: 17))
+                            .foregroundStyle(.white)
+                            .textInputAutocapitalization(.words)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+
+                        AppDivider().padding(.leading, 16)
+
+                        TextField("", text: $email, prompt: Text("Email").foregroundStyle(Color.appTextSecondary))
+                            .font(.system(size: 17))
+                            .foregroundStyle(.white)
+                            .keyboardType(.emailAddress)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                    }
+                    .background(Color.appSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+
+                    if canContinue {
+                        PrimaryButton(title: isSendingCode ? "Sending…" : "Continue", isEnabled: !isSendingCode, color: .appAccentPurple) {
+                            Task {
+                                isSendingCode = true
+                                let sent = await authService.startEmailRegistration(email: email)
+                                isSendingCode = false
+                                if sent { goToVerify = true }
+                            }
+                        }
+                    }
+
+                    HStack(spacing: 12) {
+                        Rectangle().fill(Color.appDivider).frame(height: 1)
+                        Text("or").font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
+                        Rectangle().fill(Color.appDivider).frame(height: 1)
+                    }
+
+                    VStack(spacing: 12) {
+                        appleButton { authService.signInWithApple() }
+                        googleButton { authService.signInWithGoogle() }
+                    }
+
+                    if authService.isAuthenticating {
+                        ProgressView().tint(.white)
+                    }
+
+                    Spacer(minLength: 24)
                 }
+                .screenPadding()
             }
+            .background(Color.appBackground.ignoresSafeArea())
             .navigationDestination(isPresented: $goToVerify) {
                 OTPVerificationView(fullName: fullName, email: email)
             }
@@ -34,107 +92,38 @@ struct AuthWelcomeView: View {
         }
     }
 
-    /// Card corner radius from the Figma source (82:73) — 45pt, distinct
-    /// from AppMetrics.cardCorner (30) used elsewhere in the app; this
-    /// sign-in card is intentionally softer/rounder.
-    private let cardCorner: CGFloat = 45
-
-    private func card(width: CGFloat) -> some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .center, spacing: 4) {
-                Text("Welcome")
-                    .font(.brand(32))
-                    .foregroundStyle(.white)
-                Text("Create an account")
-                    .font(.brand(16))
-                    .foregroundStyle(Color.appAccent)
-            }
-            .frame(maxWidth: .infinity)
-
-            fieldRow(icon: "person.fill") {
-                TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(.white.opacity(0.45)))
-                    .font(.brand(18))
-                    .foregroundStyle(.white)
-                    .textInputAutocapitalization(.words)
-            }
-
-            fieldRow(icon: "envelope.fill") {
-                TextField("", text: $email, prompt: Text("you@example.com").foregroundStyle(.white.opacity(0.45)))
-                    .font(.brand(18))
-                    .foregroundStyle(.white)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-            }
-
-            if canContinue {
-                PrimaryButton(title: isSendingCode ? "Sending…" : "Continue", isEnabled: !isSendingCode, color: .appAccentPurple) {
-                    Task {
-                        isSendingCode = true
-                        let sent = await authService.startEmailRegistration(email: email)
-                        isSendingCode = false
-                        if sent { goToVerify = true }
-                    }
-                }
-            }
-
-            HStack(spacing: 12) {
-                Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
-                Text("or").font(.brand(16)).foregroundStyle(Color.appAccent)
-                Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
-            }
-
-            GlassEffectContainer(spacing: 14) {
-                HStack(spacing: 14) {
-                    socialButton(systemImage: "g.circle.fill") {
-                        authService.signInWithGoogle()
-                    }
-                    socialButton(systemImage: "apple.logo") {
-                        authService.signInWithApple()
-                    }
-                }
-            }
-
-            if authService.isAuthenticating {
-                HStack {
-                    Spacer()
-                    ProgressView().tint(.white)
-                    Spacer()
-                }
-            }
-        }
-        .padding(24)
-        .padding(.bottom, 12)
-        .background(.black.opacity(0.3))
-        .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
-    }
-
-    private func fieldRow<Content: View>(icon: String, @ViewBuilder content: () -> Content) -> some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle().fill(Color.white.opacity(0.12))
-                Image(systemName: icon).font(.system(size: 16)).foregroundStyle(.white)
-            }
-            .frame(width: 44, height: 44)
-            content()
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 14)
-        .frame(height: 72)
-        .glassEffect(.regular, in: Capsule())
-    }
-
-    private func socialButton(systemImage: String, action: @escaping () -> Void) -> some View {
+    /// Apple's own Sign in with Apple button spec: white fill, black text/logo.
+    private func appleButton(action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(systemName: systemImage)
-                .font(.system(size: 22, weight: .medium))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
+            HStack(spacing: 8) {
+                Image(systemName: "apple.logo").font(.system(size: 18, weight: .medium))
+                Text("Sign in with Apple").font(.system(size: 17, weight: .semibold))
+            }
+            .foregroundStyle(.black)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular.interactive(), in: Capsule())
+    }
+
+    private func googleButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Text("G").font(.system(size: 18, weight: .bold)).foregroundStyle(Color.appAccent)
+                Text("Sign in with Google").font(.system(size: 17, weight: .semibold)).foregroundStyle(.white)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(Color.appSurface)
+            .overlay(
+                RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                    .stroke(Color.appDivider, lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 }
 
