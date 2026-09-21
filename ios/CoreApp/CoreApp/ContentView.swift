@@ -69,6 +69,17 @@ struct ContentView: View {
         .task {
             await appState.loadFromSupabase()
         }
+        .alert(
+            "Supabase error",
+            isPresented: Binding(
+                get: { appState.supabaseDebugMessage != nil },
+                set: { if !$0 { appState.supabaseDebugMessage = nil } }
+            )
+        ) {
+            Button("OK") {}
+        } message: {
+            Text(appState.supabaseDebugMessage ?? "")
+        }
     }
 }
 

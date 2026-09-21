@@ -11,15 +11,15 @@ extension AppState {
     /// Call once on launch (see ContentView) to replace the empty catalog
     /// arrays and load this device's bookings/cart from Supabase.
     func loadFromSupabase() async {
-        async let trainersRows: [TrainerRow] = Self.fetch("trainers")
-        async let productRows: [ProductRow] = Self.fetch("products", select: "*, product_ingredients(*)")
-        async let workoutCardRows: [WorkoutCardRow] = Self.fetch("workout_cards", select: "*, exercises(*)")
-        async let importantCardRows: [ImportantCardRow] = Self.fetch("important_cards")
-        async let foodRecipeRows: [FoodRecipeRow] = Self.fetch("food_recipes")
-        async let gymZoneRows: [GymZoneRow] = Self.fetch("gym_zones")
-        async let subscriptionPlanRows: [SubscriptionPlanRow] = Self.fetch("subscription_plans")
-        async let bookedSessionRows: [BookedSessionRow] = Self.fetchOwn("booked_sessions")
-        async let cartLineRows: [CartLineRow] = Self.fetchOwn("cart_items")
+        async let trainersRows: [TrainerRow] = fetch("trainers")
+        async let productRows: [ProductRow] = fetch("products", select: "*, product_ingredients(*)")
+        async let workoutCardRows: [WorkoutCardRow] = fetch("workout_cards", select: "*, exercises(*)")
+        async let importantCardRows: [ImportantCardRow] = fetch("important_cards")
+        async let foodRecipeRows: [FoodRecipeRow] = fetch("food_recipes")
+        async let gymZoneRows: [GymZoneRow] = fetch("gym_zones")
+        async let subscriptionPlanRows: [SubscriptionPlanRow] = fetch("subscription_plans")
+        async let bookedSessionRows: [BookedSessionRow] = fetchOwn("booked_sessions")
+        async let cartLineRows: [CartLineRow] = fetchOwn("cart_items")
 
         let (trainerRows, productRowsValue, workoutRows, importantRows, foodRows, zoneRows, planRows, sessionRows, cartRows) = await (
             trainersRows, productRows, workoutCardRows, importantCardRows, foodRecipeRows, gymZoneRows, subscriptionPlanRows, bookedSessionRows, cartLineRows
@@ -99,16 +99,22 @@ extension AppState {
 
     // MARK: Fetch helpers
 
-    private static func fetch<T: Decodable>(_ table: String, select: String = "*") async -> [T] {
+    /// Errors are both printed to the console AND collected into
+    /// `supabaseDebugMessage` so they're visible on-screen (see the alert
+    /// wired up in ContentView) — the console alone is easy to miss when
+    /// testing on a phone or in the Simulator without Xcode's window open.
+    func fetch<T: Decodable>(_ table: String, select: String = "*") async -> [T] {
         do {
             return try await supabase.from(table).select(select).execute().value
         } catch {
-            print("Supabase fetch(\(table)) failed: \(error)")
+            let message = "fetch(\(table)): \(error)"
+            print("Supabase \(message)")
+            recordSupabaseError(message)
             return []
         }
     }
 
-    private static func fetchOwn<T: Decodable>(_ table: String, select: String = "*") async -> [T] {
+    func fetchOwn<T: Decodable>(_ table: String, select: String = "*") async -> [T] {
         do {
             return try await supabase.from(table)
                 .select(select)
@@ -116,8 +122,16 @@ extension AppState {
                 .execute()
                 .value
         } catch {
-            print("Supabase fetchOwn(\(table)) failed: \(error)")
+            let message = "fetchOwn(\(table)): \(error)"
+            print("Supabase \(message)")
+            recordSupabaseError(message)
             return []
+        }
+    }
+
+    private func recordSupabaseError(_ message: String) {
+        if supabaseDebugMessage == nil {
+            supabaseDebugMessage = message
         }
     }
 }
