@@ -24,7 +24,7 @@ struct CoreAppApp: App {
 /// skip straight to the app again.
 let requiresSignIn = true
 
-/// Launch flow: splash, then (optionally) sign-in, then the app.
+/// Launch flow: splash, then sign-in, then onboarding, then the app.
 struct RootView: View {
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var appState: AppState
@@ -35,14 +35,14 @@ struct RootView: View {
             if showSplash {
                 SplashView()
                     .transition(.opacity)
+            } else if requiresSignIn && !authService.isAuthenticated {
+                AuthWelcomeView()
+                    .transition(.opacity)
             } else if !appState.hasCompletedOnboarding {
                 OnboardingView()
                     .transition(.opacity)
-            } else if !requiresSignIn || authService.isAuthenticated {
-                ContentView()
-                    .transition(.opacity)
             } else {
-                AuthWelcomeView()
+                ContentView()
                     .transition(.opacity)
             }
         }
