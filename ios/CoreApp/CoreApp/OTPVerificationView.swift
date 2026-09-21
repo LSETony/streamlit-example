@@ -1,19 +1,20 @@
 import SwiftUI
 
-/// Phone verification screen. The UI (code boxes, resend cooldown) is fully
-/// interactive; actually delivering an SMS needs a backend such as Firebase
-/// Phone Auth or Twilio Verify — wire that into `verify()` below. Any 4-digit
-/// code is accepted here so the flow can be demoed end-to-end.
+/// Email verification screen — step 2 of registration. The 6-digit code is
+/// a real one-time code sent by Supabase Auth (AuthWelcomeView's Continue
+/// button calls authService.startEmailRegistration(email:), which triggers
+/// the email); `verify()` below checks it against Supabase for real.
 struct OTPVerificationView: View {
     @EnvironmentObject var authService: AuthService
     @Environment(\.dismiss) private var dismiss
     let fullName: String
-    let phoneDisplay: String
+    let email: String
 
-    @State private var digits: [String] = ["", "", "", ""]
+    @State private var digits: [String] = Array(repeating: "", count: 6)
     @FocusState private var focusedIndex: Int?
     @State private var secondsRemaining = 48
     @State private var didComplete = false
+    @State private var isVerifying = false
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -39,13 +40,13 @@ struct OTPVerificationView: View {
                 Text("Верификация")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(.white)
-                (Text("Отправили код на ").foregroundStyle(Color.appAccent) + Text(phoneDisplay).foregroundStyle(.white))
+                (Text("Отправили код на ").foregroundStyle(Color.appAccent) + Text(email).foregroundStyle(.white))
                     .font(.system(size: 14))
             }
 
-            GlassEffectContainer(spacing: 16) {
-                HStack(spacing: 16) {
-                    ForEach(0..<4, id: \.self) { i in
+            GlassEffectContainer(spacing: 10) {
+                HStack(spacing: 10) {
+                    ForEach(0..<6, id: \.self) { i in
                         digitBox(i)
                     }
                 }
@@ -67,13 +68,16 @@ struct OTPVerificationView: View {
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(Color.appAccent)
                 } else {
-                    Button("Отправить") { secondsRemaining = 48 }
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(Color.appAccent)
+                    Button("Отправить") {
+                        secondsRemaining = 48
+                        Task { _ = await authService.startEmailRegistration(email: email) }
+                    }
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Color.appAccent)
                 }
             }
 
-            PrimaryButton(title: "Continue", isEnabled: isCodeComplete, color: .appAccentPurple) {
+            PrimaryButton(title: isVerifying ? "Проверяем…" : "Continue", isEnabled: isCodeComplete && !isVerifying, color: .appAccentPurple) {
                 verify()
             }
         }
@@ -83,6 +87,7 @@ struct OTPVerificationView: View {
     }
 
     private var isCodeComplete: Bool { digits.allSatisfy { $0.count == 1 } }
+    private var code: String { digits.joined() }
 
     private func digitBox(_ index: Int) -> some View {
         TextField("", text: Binding(
@@ -90,7 +95,7 @@ struct OTPVerificationView: View {
             set: { newValue in
                 let filtered = newValue.filter(\.isNumber)
                 digits[index] = String(filtered.suffix(1))
-                if !digits[index].isEmpty, index < 3 {
+                if !digits[index].isEmpty, index < 5 {
                     focusedIndex = index + 1
                 } else if digits[index].isEmpty, index > 0 {
                     focusedIndex = index - 1
@@ -99,9 +104,9 @@ struct OTPVerificationView: View {
         ))
         .keyboardType(.numberPad)
         .multilineTextAlignment(.center)
-        .font(.brand(28))
+        .font(.brand(24))
         .foregroundStyle(.white)
-        .frame(width: 60, height: 60)
+        .frame(width: 46, height: 56)
         .glassEffect(
             focusedIndex == index ? .regular.tint(.appAccentPurple).interactive() : .regular.interactive(),
             in: Circle()
@@ -110,14 +115,18 @@ struct OTPVerificationView: View {
     }
 
     private func verify() {
-        didComplete = true
-        authService.completePhoneSignIn(name: fullName, phone: phoneDisplay)
+        isVerifying = true
+        Task {
+            let success = await authService.verifyEmailCode(name: fullName, email: email, code: code)
+            isVerifying = false
+            if success { didComplete = true }
+        }
     }
 }
 
 #Preview {
     NavigationStack {
-        OTPVerificationView(fullName: "Artem", phoneDisplay: "+7 485 478 00 56")
+        OTPVerificationView(fullName: "Artem", email: "artem@example.com")
     }
     .environmentObject(AuthService())
 }

@@ -18,10 +18,11 @@ struct CoreAppApp: App {
     }
 }
 
-/// Sign-in is built (Apple/Google fully working, see AuthWelcomeView +
-/// AuthService) but disabled for now at the user's request — flip this back
-/// to `true` to re-gate the app behind it.
-let requiresSignIn = false
+/// Gates the app behind sign-in: Apple, Google, or email (two-step
+/// registration — AuthWelcomeView collects name + email and sends a code
+/// via Supabase Auth, OTPVerificationView checks it). Flip to `false` to
+/// skip straight to the app again.
+let requiresSignIn = true
 
 /// Launch flow: splash, then (optionally) sign-in, then the app.
 struct RootView: View {

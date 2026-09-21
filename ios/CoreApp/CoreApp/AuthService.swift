@@ -3,9 +3,10 @@ import SwiftUI
 import UIKit
 import AuthenticationServices
 import GoogleSignIn
+import Supabase
 
 enum AuthProvider: String {
-    case apple, google, phone
+    case apple, google, phone, email
 }
 
 struct AuthUser {
@@ -19,9 +20,10 @@ struct AuthUser {
 /// and needs only the "Sign in with Apple" capability enabled on the target.
 /// Google Sign-In is wired to the real GoogleSignIn SDK, but — like any OAuth
 /// provider — needs a client ID issued by *your own* Google Cloud project;
-/// see README.md for the one-time setup. Phone entry is a UI-complete demo:
-/// wire `completePhoneSignIn` to a real OTP backend (e.g. Firebase Phone Auth)
-/// to send actual SMS codes.
+/// see README.md for the one-time setup. Email registration (AuthWelcomeView
+/// + OTPVerificationView) is real Supabase Auth: startEmailRegistration
+/// sends a one-time code, verifyEmailCode checks it — no separate SMS
+/// provider needed, unlike phone-based OTP.
 @MainActor
 final class AuthService: NSObject, ObservableObject {
     @Published var isAuthenticated = false
@@ -96,20 +98,49 @@ final class AuthService: NSObject, ObservableObject {
         GIDSignIn.sharedInstance.handle(url)
     }
 
-    // MARK: - Phone (demo — see note above)
+    // MARK: - Email registration (real Supabase Auth, two-step: request code, verify)
 
-    func completePhoneSignIn(name: String, phone: String) {
-        currentUser = AuthUser(
-            id: phone,
-            name: name.trimmingCharacters(in: .whitespaces).isEmpty ? "Member" : name,
-            email: nil,
-            provider: .phone
-        )
-        isAuthenticated = true
+    /// Step 1: sends a one-time code to `email` via Supabase Auth. Works
+    /// with no extra provider setup (unlike phone/SMS, which needs a paid
+    /// SMS provider configured in the Supabase dashboard).
+    func startEmailRegistration(email: String) async -> Bool {
+        authError = nil
+        isAuthenticating = true
+        defer { isAuthenticating = false }
+        do {
+            try await supabase.auth.signInWithOTP(email: email)
+            return true
+        } catch {
+            authError = error.localizedDescription
+            return false
+        }
+    }
+
+    /// Step 2: verifies the code the member typed in. On success this is a
+    /// real, signed-in Supabase Auth session (not a local-only demo).
+    func verifyEmailCode(name: String, email: String, code: String) async -> Bool {
+        authError = nil
+        isAuthenticating = true
+        defer { isAuthenticating = false }
+        do {
+            try await supabase.auth.verifyOTP(email: email, token: code, type: .email)
+            currentUser = AuthUser(
+                id: email,
+                name: name.trimmingCharacters(in: .whitespaces).isEmpty ? "Member" : name,
+                email: email,
+                provider: .email
+            )
+            isAuthenticated = true
+            return true
+        } catch {
+            authError = error.localizedDescription
+            return false
+        }
     }
 
     func signOut() {
         GIDSignIn.sharedInstance.signOut()
+        Task { try? await supabase.auth.signOut() }
         currentUser = nil
         isAuthenticated = false
     }

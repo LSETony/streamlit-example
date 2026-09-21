@@ -1,17 +1,13 @@
 import SwiftUI
 
-private let countryCodes: [(flag: String, code: String)] = [
-    ("🇷🇺", "+7"), ("🇺🇸", "+1"), ("🇬🇧", "+44"), ("🇩🇪", "+49"), ("🇦🇪", "+971"),
-]
-
 struct AuthWelcomeView: View {
     @EnvironmentObject var authService: AuthService
     @State private var fullName: String = ""
-    @State private var phone: String = ""
-    @State private var countryCode: String = "+7"
+    @State private var email: String = ""
     @State private var goToVerify = false
+    @State private var isSendingCode = false
 
-    private var canContinue: Bool { phone.filter(\.isNumber).count >= 7 }
+    private var canContinue: Bool { email.contains("@") && email.contains(".") }
 
     var body: some View {
         NavigationStack {
@@ -24,7 +20,7 @@ struct AuthWelcomeView: View {
                 card
             }
             .navigationDestination(isPresented: $goToVerify) {
-                OTPVerificationView(fullName: fullName, phoneDisplay: "\(countryCode) \(phone)")
+                OTPVerificationView(fullName: fullName, email: email)
             }
             .alert("Sign-in error", isPresented: Binding(get: { authService.authError != nil }, set: { if !$0 { authService.authError = nil } })) {
                 Button("OK", role: .cancel) {}
@@ -51,26 +47,24 @@ struct AuthWelcomeView: View {
                     .textInputAutocapitalization(.words)
             }
 
-            fieldRow(icon: "phone.fill") {
-                Menu {
-                    ForEach(countryCodes, id: \.code) { item in
-                        Button("\(item.flag) \(item.code)") { countryCode = item.code }
-                    }
-                } label: {
-                    HStack(spacing: 4) {
-                        Text(countryCode).font(.brand(16)).foregroundStyle(.white)
-                        Image(systemName: "chevron.down").font(.system(size: 10)).foregroundStyle(.white.opacity(0.6))
-                    }
-                }
-                Divider().frame(height: 20).overlay(Color.white.opacity(0.2))
-                TextField("", text: $phone, prompt: Text("485 478 00 56").foregroundStyle(.white.opacity(0.45)))
+            fieldRow(icon: "envelope.fill") {
+                TextField("", text: $email, prompt: Text("you@example.com").foregroundStyle(.white.opacity(0.45)))
                     .font(.brand(16))
                     .foregroundStyle(.white)
-                    .keyboardType(.phonePad)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
             }
 
             if canContinue {
-                PrimaryButton(title: "Continue", color: .appAccentPurple) { goToVerify = true }
+                PrimaryButton(title: isSendingCode ? "Sending…" : "Continue", isEnabled: !isSendingCode, color: .appAccentPurple) {
+                    Task {
+                        isSendingCode = true
+                        let sent = await authService.startEmailRegistration(email: email)
+                        isSendingCode = false
+                        if sent { goToVerify = true }
+                    }
+                }
             }
 
             HStack(spacing: 12) {
