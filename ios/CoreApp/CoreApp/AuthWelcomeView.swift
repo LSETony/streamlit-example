@@ -20,7 +20,7 @@ struct AuthWelcomeView: View {
                         .clipped()
                         .ignoresSafeArea()
 
-                    card
+                    card(width: geo.size.width)
                 }
             }
             .navigationDestination(isPresented: $goToVerify) {
@@ -34,19 +34,26 @@ struct AuthWelcomeView: View {
         }
     }
 
-    private var card: some View {
-        VStack(alignment: .leading, spacing: 20) {
+    /// Card corner radius from the Figma source (82:73) — 45pt, distinct
+    /// from AppMetrics.cardCorner (30) used elsewhere in the app; this
+    /// sign-in card is intentionally softer/rounder.
+    private let cardCorner: CGFloat = 45
+
+    private func card(width: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Welcome")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.brand(32))
                     .foregroundStyle(.white)
-                Text("Sign in or create account")
-                    .font(.system(size: 15))
+                Text("Create an account")
+                    .font(.brand(16))
                     .foregroundStyle(Color.appAccent)
             }
+            .padding(.leading, width * 0.34)
 
             fieldRow(icon: "person.fill") {
                 TextField("", text: $fullName, prompt: Text("Full name").foregroundStyle(.white.opacity(0.45)))
+                    .font(.brand(16))
                     .foregroundStyle(.white)
                     .textInputAutocapitalization(.words)
             }
@@ -73,7 +80,7 @@ struct AuthWelcomeView: View {
 
             HStack(spacing: 12) {
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
-                Text("OR").font(.system(size: 12, weight: .semibold)).foregroundStyle(Color.appAccent)
+                Text("or").font(.brand(16)).foregroundStyle(Color.appAccent)
                 Rectangle().fill(Color.white.opacity(0.2)).frame(height: 1)
             }
 
@@ -98,7 +105,7 @@ struct AuthWelcomeView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
     private func fieldRow<Content: View>(icon: String, @ViewBuilder content: () -> Content) -> some View {

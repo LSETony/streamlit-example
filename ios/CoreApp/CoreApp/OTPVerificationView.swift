@@ -18,6 +18,10 @@ struct OTPVerificationView: View {
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
+    /// Card corner radius from the Figma source (82:97) — 45pt, matching
+    /// AuthWelcomeView's card.
+    private let cardCorner: CGFloat = 45
+
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .bottom) {
@@ -28,7 +32,7 @@ struct OTPVerificationView: View {
                     .clipped()
                     .ignoresSafeArea()
 
-                card
+                card(width: geo.size.width)
             }
         }
         .onAppear { focusedIndex = 0 }
@@ -38,17 +42,18 @@ struct OTPVerificationView: View {
         .navigationBarBackButtonHidden(didComplete)
     }
 
-    private var card: some View {
+    private func card(width: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Verification")
-                    .font(.system(size: 26, weight: .bold))
+                    .font(.brand(32))
                     .foregroundStyle(.white)
                 Text("We've sent a code to \(Text(email).foregroundStyle(.white))")
                     .foregroundStyle(Color.appAccent)
-                    .font(.system(size: 14))
+                    .font(.brand(16))
                     .lineLimit(2)
             }
+            .padding(.leading, width * 0.34)
 
             GlassEffectContainer(spacing: 8) {
                 HStack(spacing: 8) {
@@ -61,22 +66,21 @@ struct OTPVerificationView: View {
 
             HStack(spacing: 4) {
                 Text("Haven't received the code?")
-                    .font(.system(size: 13))
-                    .foregroundStyle(.white.opacity(0.6))
+                    .font(.brand(16))
+                    .foregroundStyle(.white)
                 if secondsRemaining > 0 {
-                    let resendLabel = Text("Resend ").font(.system(size: 13, weight: .bold)).foregroundStyle(Color.appAccent)
+                    let resendLabel = Text("Resend ").foregroundStyle(Color.appAccent)
                     let countdown = Text(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))
-                        .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(Color.appAccent)
                     Text("\(resendLabel)in \(countdown)")
-                        .font(.system(size: 13))
-                        .foregroundStyle(.white.opacity(0.6))
+                        .font(.brand(16))
+                        .foregroundStyle(.white)
                 } else {
                     Button("Resend") {
                         secondsRemaining = 48
                         Task { _ = await authService.startEmailRegistration(email: email) }
                     }
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.brand(16))
                     .foregroundStyle(Color.appAccent)
                 }
             }
@@ -88,7 +92,7 @@ struct OTPVerificationView: View {
         }
         .padding(24)
         .padding(.bottom, 12)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
     }
 
     private var isCodeComplete: Bool { digits.allSatisfy { $0.count == 1 } }

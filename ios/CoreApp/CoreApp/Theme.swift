@@ -19,7 +19,7 @@ extension Color {
     /// Secondary "liquid glass" CTA accent — the indigo/violet used for the
     /// onboarding wizard, sign-in/verification buttons, the membership card
     /// and the profile's Logout button in the latest Figma pass.
-    static let appAccentPurple = Color(red: 0x5B / 255, green: 0x2C / 255, blue: 0xF0 / 255)
+    static let appAccentPurple = Color(red: 0x59 / 255, green: 0x00 / 255, blue: 0xFF / 255)
 }
 
 enum AppMetrics {
