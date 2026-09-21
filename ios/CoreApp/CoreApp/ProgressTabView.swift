@@ -42,10 +42,8 @@ struct ProgressTabView: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     EyebrowLabel(text: "Calories burned")
-                    Text("\(appState.todayCalories)")
-                        .font(.digitalTimer(48))
-                        .foregroundStyle(.white)
-                        + Text(" kcal today")
+                    let calorieValue = Text("\(appState.todayCalories)").font(.digitalTimer(48)).foregroundStyle(.white)
+                    Text("\(calorieValue) kcal today")
                         .font(.brand(16))
                         .foregroundStyle(Color.appTextSecondary)
                     Text("\(appState.totalCaloriesThisWeek) kcal this week")

@@ -44,7 +44,8 @@ struct OTPVerificationView: View {
                 Text("Verification")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(.white)
-                (Text("We've sent a code to ").foregroundStyle(Color.appAccent) + Text(email).foregroundStyle(.white))
+                Text("We've sent a code to \(Text(email).foregroundStyle(.white))")
+                    .foregroundStyle(Color.appAccent)
                     .font(.system(size: 14))
                     .lineLimit(2)
             }
@@ -63,15 +64,13 @@ struct OTPVerificationView: View {
                     .font(.system(size: 13))
                     .foregroundStyle(.white.opacity(0.6))
                 if secondsRemaining > 0 {
-                    Text("Resend ")
+                    let resendLabel = Text("Resend ").font(.system(size: 13, weight: .bold)).foregroundStyle(Color.appAccent)
+                    let countdown = Text(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(Color.appAccent)
-                    + Text("in ")
+                    Text("\(resendLabel)in \(countdown)")
                         .font(.system(size: 13))
                         .foregroundStyle(.white.opacity(0.6))
-                    + Text(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(Color.appAccent)
                 } else {
                     Button("Resend") {
                         secondsRemaining = 48

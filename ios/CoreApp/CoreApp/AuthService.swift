@@ -48,6 +48,10 @@ final class AuthService: NSObject, ObservableObject {
 
     func signInWithGoogle() {
         authError = nil
+        guard Self.isGoogleSignInConfigured else {
+            authError = "Google Sign-In isn't configured yet — it needs a real client ID from your own Google Cloud project (see README.md). Try email or Apple instead."
+            return
+        }
         guard let presenter = Self.rootViewController() else {
             authError = "No window to present Google Sign-In from."
             return
@@ -79,6 +83,7 @@ final class AuthService: NSObject, ObservableObject {
 
     /// Call from `.onAppear` on launch to silently resume a Google session.
     func restorePreviousGoogleSignIn() {
+        guard Self.isGoogleSignInConfigured else { return }
         GIDSignIn.sharedInstance.restorePreviousSignIn { [weak self] user, _ in
             Task { @MainActor in
                 guard let self, let user else { return }
@@ -145,6 +150,17 @@ final class AuthService: NSObject, ObservableObject {
         isAuthenticated = false
     }
 
+    /// True once a real reversed Google client ID (always prefixed
+    /// `com.googleusercontent.apps.`) replaces the placeholder URL scheme
+    /// in Info.plist. Checked before calling into GIDSignIn, which
+    /// otherwise crashes the app outright — not a throwable error — when
+    /// that URL scheme isn't registered.
+    private static var isGoogleSignInConfigured: Bool {
+        guard let urlTypes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]] else { return false }
+        let schemes = urlTypes.flatMap { ($0["CFBundleURLSchemes"] as? [String]) ?? [] }
+        return schemes.contains { $0.hasPrefix("com.googleusercontent.apps.") }
+    }
+
     private static func rootViewController() -> UIViewController? {
         UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
@@ -181,9 +197,13 @@ extension AuthService: ASAuthorizationControllerDelegate {
 
 extension AuthService: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow) ?? ASPresentationAnchor()
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        if let keyWindow = scenes.flatMap(\.windows).first(where: \.isKeyWindow) {
+            return keyWindow
+        }
+        if let scene = scenes.first {
+            return UIWindow(windowScene: scene)
+        }
+        return ASPresentationAnchor()
     }
 }
