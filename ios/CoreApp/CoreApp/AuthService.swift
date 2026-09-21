@@ -35,6 +35,10 @@ final class AuthService: NSObject, ObservableObject {
 
     func signInWithApple() {
         authError = nil
+        guard Self.isAppleSignInConfigured else {
+            authError = "Sign in with Apple needs a paid Apple Developer Program membership on this project's team — a free/personal team can't provision that capability. Try email instead, or re-enable the com.apple.developer.applesignin entitlement once the project has a paid team."
+            return
+        }
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
         let controller = ASAuthorizationController(authorizationRequests: [request])
@@ -190,6 +194,14 @@ final class AuthService: NSObject, ObservableObject {
         let schemes = urlTypes.flatMap { ($0["CFBundleURLSchemes"] as? [String]) ?? [] }
         return schemes.contains { $0.hasPrefix("com.googleusercontent.apps.") }
     }
+
+    /// CoreApp.entitlements currently has no `com.apple.developer.applesignin`
+    /// key — a free/personal Apple Developer team can't create a device
+    /// provisioning profile for that capability (Xcode error: "Personal
+    /// development teams do not support the Sign In with Apple capability").
+    /// Flip this to `true` and re-add the entitlement once the project has a
+    /// paid Apple Developer Program team.
+    private static let isAppleSignInConfigured = false
 
     private static func rootViewController() -> UIViewController? {
         UIApplication.shared.connectedScenes
