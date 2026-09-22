@@ -60,16 +60,28 @@ final class PaymentService: ObservableObject {
         ])
 
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200..<300).contains(statusCode) else {
             let serverMessage = (try? JSONSerialization.jsonObject(with: data) as? [String: Any])?["error"] as? String
+            let rawBody = String(data: data, encoding: .utf8)?.prefix(200)
+            let detail = serverMessage ?? rawBody.map(String.init) ?? "empty response"
             throw NSError(
                 domain: "Payment",
-                code: (response as? HTTPURLResponse)?.statusCode ?? 0,
-                userInfo: [NSLocalizedDescriptionKey: serverMessage ?? "Payment server error"]
+                code: statusCode,
+                userInfo: [NSLocalizedDescriptionKey: "HTTP \(statusCode): \(detail)"]
             )
         }
 
         struct Result: Decodable { let clientSecret: String }
-        return try JSONDecoder().decode(Result.self, from: data).clientSecret
+        do {
+            return try JSONDecoder().decode(Result.self, from: data).clientSecret
+        } catch {
+            let rawBody = String(data: data, encoding: .utf8)?.prefix(200) ?? "unreadable"
+            throw NSError(
+                domain: "Payment",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Unexpected response: \(rawBody)"]
+            )
+        }
     }
 }
