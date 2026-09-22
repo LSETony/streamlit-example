@@ -1,9 +1,11 @@
 import SwiftUI
 
-/// Email verification screen — step 2 of registration. The 6-digit code is
-/// a real one-time code sent by Supabase Auth (AuthWelcomeView's Continue
-/// button calls authService.startEmailRegistration(email:), which triggers
-/// the email); `verify()` below checks it against Supabase for real.
+/// Email verification screen — step 2 of registration. The code is a real
+/// one-time code sent by Supabase Auth (AuthWelcomeView's Continue button
+/// calls authService.startEmailRegistration(email:), which triggers the
+/// email); `verify()` below checks it against Supabase for real. Length is
+/// this project's configured OTP length (8 digits), not Supabase's 6-digit
+/// default — codeLength is the single place to change if that's adjusted.
 ///
 /// Styled like Apple's own native verification-code screens: plain system
 /// background, a grouped digit row instead of glass-over-photo boxes (whose
@@ -22,6 +24,7 @@ struct OTPVerificationView: View {
     @State private var isVerifying = false
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let codeLength = 8
 
     var body: some View {
         ScrollView {
@@ -39,14 +42,14 @@ struct OTPVerificationView: View {
                 .padding(.top, 56)
 
                 ZStack {
-                    HStack(spacing: 10) {
-                        ForEach(0..<6, id: \.self) { i in
+                    HStack(spacing: 6) {
+                        ForEach(0..<codeLength, id: \.self) { i in
                             digitBox(i)
                         }
                     }
 
                     // Invisible field capturing all input — a single field (rather
-                    // than 6 fields cycling focus) is what lets iOS's one-time-code
+                    // than N fields cycling focus) is what lets iOS's one-time-code
                     // AutoFill actually fill the whole code in one tap.
                     TextField("", text: $code)
                         .keyboardType(.numberPad)
@@ -55,7 +58,7 @@ struct OTPVerificationView: View {
                         .foregroundStyle(.clear)
                         .tint(.clear)
                         .onChange(of: code) { _, newValue in
-                            code = String(newValue.filter(\.isNumber).prefix(6))
+                            code = String(newValue.filter(\.isNumber).prefix(codeLength))
                         }
                 }
                 .frame(maxWidth: .infinity)
@@ -101,16 +104,16 @@ struct OTPVerificationView: View {
         }
     }
 
-    private var isCodeComplete: Bool { code.count == 6 }
+    private var isCodeComplete: Bool { code.count == codeLength }
 
     private func digitBox(_ index: Int) -> some View {
         let digit = index < code.count ? String(Array(code)[index]) : ""
         let isActive = isCodeFieldFocused && index == code.count
         return Text(digit)
             .multilineTextAlignment(.center)
-            .font(.system(size: 22, weight: .semibold))
+            .font(.system(size: 17, weight: .semibold))
             .foregroundStyle(.white)
-            .frame(width: 44, height: 54)
+            .frame(width: 34, height: 46)
             .background(Color.appSurface)
             .overlay(
                 RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
