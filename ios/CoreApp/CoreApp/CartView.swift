@@ -6,6 +6,7 @@ import SwiftUI
 struct CartView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var paymentService = PaymentService()
     @State private var didCheckOut = false
 
     var body: some View {
@@ -22,6 +23,17 @@ struct CartView: View {
         .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle("Cart")
         .navigationBarTitleDisplayMode(.inline)
+        .modifier(PaymentSheetPresenter(paymentService: paymentService) { succeeded in
+            if succeeded {
+                didCheckOut = true
+                appState.clearCart()
+            }
+        })
+        .alert("Payment error", isPresented: Binding(get: { paymentService.errorMessage != nil }, set: { if !$0 { paymentService.errorMessage = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(paymentService.errorMessage ?? "")
+        }
     }
 
     private var emptyState: some View {
@@ -58,9 +70,8 @@ struct CartView: View {
                         .font(.digitalTimer(24))
                         .foregroundStyle(.white)
                 }
-                PrimaryButton(title: didCheckOut ? "✓ Order placed" : "Checkout", isEnabled: !didCheckOut) {
-                    didCheckOut = true
-                    appState.clearCart()
+                PrimaryButton(title: didCheckOut ? "✓ Order placed" : "Pay $\(appState.cartTotal) & checkout", isEnabled: !didCheckOut) {
+                    Task { await paymentService.startPayment(amountDollars: appState.cartTotal, description: "core. store order") }
                 }
             }
         }

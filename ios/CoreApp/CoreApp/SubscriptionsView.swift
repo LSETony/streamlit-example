@@ -5,6 +5,8 @@ import SwiftUI
 struct SubscriptionsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var paymentService = PaymentService()
+    @State private var payingPlanName: String?
 
     var body: some View {
         NavigationStack {
@@ -30,6 +32,17 @@ struct SubscriptionsView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
                 }
+            }
+            .modifier(PaymentSheetPresenter(paymentService: paymentService) { succeeded in
+                if succeeded, let name = payingPlanName {
+                    appState.membershipPlanName = name
+                }
+                payingPlanName = nil
+            })
+            .alert("Payment error", isPresented: Binding(get: { paymentService.errorMessage != nil }, set: { if !$0 { paymentService.errorMessage = nil } })) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(paymentService.errorMessage ?? "")
             }
         }
     }
@@ -65,8 +78,9 @@ struct SubscriptionsView: View {
                 }
             }
 
-            PrimaryButton(title: isCurrent ? "Current plan" : "Switch to \(plan.name)", isEnabled: !isCurrent, color: .appAccentPurple) {
-                appState.membershipPlanName = plan.name
+            PrimaryButton(title: isCurrent ? "Current plan" : "Pay $\(plan.price) & switch", isEnabled: !isCurrent, color: .appAccentPurple) {
+                payingPlanName = plan.name
+                Task { await paymentService.startPayment(amountDollars: plan.price, description: "\(plan.name) subscription") }
             }
         }
         .padding(20)

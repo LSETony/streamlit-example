@@ -1,9 +1,14 @@
 import SwiftUI
+import StripePaymentSheet
 
 @main
 struct CoreAppApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var authService = AuthService()
+
+    init() {
+        StripeAPI.defaultPublishableKey = StripeConfig.publishableKey
+    }
 
     var body: some Scene {
         WindowGroup {
