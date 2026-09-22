@@ -5,7 +5,7 @@ import Foundation
 /// move money lives only in the create-payment-intent Edge Function's
 /// server-side environment, never in the app.
 enum StripeConfig {
-    static let publishableKey = "REPLACE_WITH_STRIPE_PUBLISHABLE_KEY"
+    static let publishableKey = "pk_test_51UIZuWJyNC0FtLaFA2fuZPpNVjQEzgtyA0fYw9595ErbSrVJjHZHWK5HymTmFwZ1sGvp42FlygwsIw4rjlbOeZEW00sAg8TU5z"
 
     static var isConfigured: Bool {
         publishableKey.hasPrefix("pk_")
