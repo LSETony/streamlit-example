@@ -7,7 +7,12 @@ import StripePaymentSheet
 /// SubscriptionsView (paying for a plan) and CartView (checking out).
 @MainActor
 final class PaymentService: ObservableObject {
-    @Published var paymentSheet: PaymentSheet?
+    /// Never actually presented on its own — `isPresenting` stays false
+    /// until a real PaymentSheet replaces this. Exists only so the
+    /// `.paymentSheet` modifier (which requires a concrete, non-optional
+    /// PaymentSheet) can stay permanently attached to the view; see
+    /// PaymentSheetPresenter's doc comment for why that matters.
+    @Published var paymentSheet = PaymentSheet(paymentIntentClientSecret: "unset", configuration: PaymentSheet.Configuration())
     @Published var isPresenting = false
     @Published var errorMessage: String?
 
