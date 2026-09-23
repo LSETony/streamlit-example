@@ -42,3 +42,15 @@ update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supaba
 -- Female Aesthetics" (bundled WorkoutBeginnerFemale photo stays as its
 -- poster/fallback).
 update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389827-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000001';
+
+-- Tenth real video, for "Beginner Body Weight Plan" (bundled
+-- WorkoutBodyWeight photo stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389828-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000002';
+
+-- Eleventh real video, for "Sam's Prental Flow" (bundled WorkoutPrentalFlow
+-- photo stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389831-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000003';
+
+-- Twelfth real video, for "Chest and Triceps" — the last of the original
+-- 4 cards. All 12 workout cards now have a real video.
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389832-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000004';
