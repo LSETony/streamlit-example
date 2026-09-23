@@ -29,6 +29,7 @@ struct WorkoutsView: View {
             GeometryReader { geo in
                 let contentWidth = geo.size.width - AppMetrics.screenPadding * 2
                 let cardWidth = (contentWidth - 10) / 2
+                let feedCardWidth = contentWidth * 0.42
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 22) {
@@ -64,22 +65,30 @@ struct WorkoutsView: View {
                         if !filteredBeginnerPlanCards.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
                                 sectionLabel("Beginner's Plan")
-                                HStack(spacing: 10) {
-                                    ForEach(filteredBeginnerPlanCards) { card in
-                                        WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 10) {
+                                        ForEach(filteredBeginnerPlanCards) { card in
+                                            WorkoutCardTile(card: card, width: feedCardWidth) { selectedCard = card }
+                                        }
                                     }
+                                    .scrollTargetLayout()
                                 }
+                                .scrollTargetBehavior(.viewAligned)
                             }
                         }
 
                         if !filteredTopWorkoutCards.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
                                 sectionLabel("Top 10 workouts")
-                                HStack(spacing: 10) {
-                                    ForEach(filteredTopWorkoutCards) { card in
-                                        WorkoutCardTile(card: card, width: cardWidth) { selectedCard = card }
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 10) {
+                                        ForEach(filteredTopWorkoutCards) { card in
+                                            WorkoutCardTile(card: card, width: feedCardWidth) { selectedCard = card }
+                                        }
                                     }
+                                    .scrollTargetLayout()
                                 }
+                                .scrollTargetBehavior(.viewAligned)
                             }
                         }
 
