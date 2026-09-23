@@ -66,11 +66,12 @@ struct WorkoutsView: View {
                             VStack(alignment: .leading, spacing: 10) {
                                 sectionLabel("Beginner's Plan")
                                 ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 10) {
+                                    HStack(spacing: 14) {
                                         ForEach(filteredBeginnerPlanCards) { card in
                                             WorkoutCardTile(card: card, width: feedCardWidth) { selectedCard = card }
                                         }
                                     }
+                                    .padding(.trailing, AppMetrics.screenPadding)
                                     .scrollTargetLayout()
                                 }
                                 .scrollTargetBehavior(.viewAligned)
@@ -81,11 +82,12 @@ struct WorkoutsView: View {
                             VStack(alignment: .leading, spacing: 10) {
                                 sectionLabel("Top 10 workouts")
                                 ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 10) {
+                                    HStack(spacing: 14) {
                                         ForEach(filteredTopWorkoutCards) { card in
                                             WorkoutCardTile(card: card, width: feedCardWidth) { selectedCard = card }
                                         }
                                     }
+                                    .padding(.trailing, AppMetrics.screenPadding)
                                     .scrollTargetLayout()
                                 }
                                 .scrollTargetBehavior(.viewAligned)
