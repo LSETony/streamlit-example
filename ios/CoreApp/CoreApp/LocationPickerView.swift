@@ -8,6 +8,11 @@ import SwiftUI
 struct LocationPickerView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
+    /// Called right before dismissing, once a location has been tapped —
+    /// the caller uses this to chain straight into that location's photo
+    /// and info sheet (GymPhotoViewer), matching the "pick a location ->
+    /// its detail card opens" reference flow.
+    var onSelect: () -> Void = {}
 
     var body: some View {
         NavigationStack {
@@ -17,6 +22,7 @@ struct LocationPickerView: View {
                         let isSelected = location == appState.clubName
                         Button {
                             appState.clubName = location
+                            onSelect()
                             dismiss()
                         } label: {
                             HStack {

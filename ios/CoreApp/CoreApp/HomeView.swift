@@ -13,6 +13,7 @@ struct HomeView: View {
     @EnvironmentObject var appState: AppState
     @State private var activeSheet: HomeSheet?
     @State private var showGymPhoto = false
+    @State private var pendingGymPhoto = false
 
     var body: some View {
         ScrollView {
@@ -33,7 +34,15 @@ struct HomeView: View {
         }
         .background(Color.appBackground.ignoresSafeArea())
         .ignoresSafeArea(edges: .top)
-        .sheet(item: $activeSheet) { sheet in
+        .sheet(item: $activeSheet, onDismiss: {
+            // Chains straight into the location's photo/info sheet right
+            // after picking one — matches the reference flow (pick a
+            // location -> its detail card opens automatically).
+            if pendingGymPhoto {
+                pendingGymPhoto = false
+                showGymPhoto = true
+            }
+        }) { sheet in
             sheetView(for: sheet)
         }
         .sheet(isPresented: $showGymPhoto) {
@@ -46,21 +55,16 @@ struct HomeView: View {
     private var hero: some View {
         GeometryReader { geo in
             ZStack(alignment: .topLeading) {
-                Button {
-                    showGymPhoto = true
-                } label: {
-                    ZStack {
-                        Image("HomeHero")
-                            .resizable()
-                            .scaledToFill()
-                        if let heroVideoURL = appState.heroVideoURL {
-                            WorkoutHeroVideo(url: heroVideoURL)
-                        }
+                ZStack {
+                    Image("HomeHero")
+                        .resizable()
+                        .scaledToFill()
+                    if let heroVideoURL = appState.heroVideoURL {
+                        WorkoutHeroVideo(url: heroVideoURL)
                     }
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .clipped()
                 }
-                .buttonStyle(.plain)
+                .frame(width: geo.size.width, height: geo.size.height)
+                .clipped()
 
                 HStack {
                     Button {
@@ -239,7 +243,7 @@ struct HomeView: View {
         case .trainers: NavigationStack { TrainersView() }
         case .nutrition: NavigationStack { FoodRecipesView() }
         case .store: NavigationStack { StoreView() }
-        case .location: LocationPickerView()
+        case .location: LocationPickerView(onSelect: { pendingGymPhoto = true })
         case .progress: ProgressDetailView()
         case .occupancy: OccupancyDetailView()
         case .subscriptions: SubscriptionsView()
