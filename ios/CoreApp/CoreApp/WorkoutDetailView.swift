@@ -11,12 +11,15 @@ struct WorkoutDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                Image(card.imageName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 220)
-                    .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+                ZStack {
+                    WorkoutCoverImage(card: card)
+                    if let videoURL = card.videoURL {
+                        WorkoutHeroVideo(url: videoURL)
+                    }
+                }
+                .frame(height: 220)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(card.title)

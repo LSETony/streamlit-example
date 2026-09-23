@@ -1,4 +1,6 @@
 import SwiftUI
+import AVKit
+import UIKit
 
 extension Image {
     /// A custom vector icon from the design's SVG export, sized and tinted
@@ -8,6 +10,69 @@ extension Image {
             .resizable()
             .scaledToFit()
             .frame(width: size, height: size)
+    }
+}
+
+/// A WorkoutCard's cover photo — a real photo uploaded to Supabase Storage
+/// (card.imageURL) when set, falling back to the bundled asset
+/// (card.imageName) otherwise or while the remote photo is still loading.
+/// Callers apply their own `.frame`/`.clipped`; this view always fills.
+struct WorkoutCoverImage: View {
+    let card: WorkoutCard
+
+    var body: some View {
+        if let url = card.imageURL {
+            AsyncImage(url: url) { phase in
+                if case .success(let image) = phase {
+                    image.resizable().scaledToFill()
+                } else {
+                    Image(card.imageName).resizable().scaledToFill()
+                }
+            }
+        } else {
+            Image(card.imageName).resizable().scaledToFill()
+        }
+    }
+}
+
+/// A WorkoutCard's hero video — a real video uploaded to Supabase Storage,
+/// played muted and looping (like a Live Photo). Nothing renders when
+/// card.videoURL is nil; callers should keep the cover photo underneath.
+/// Uses a bare AVPlayerLayer (not SwiftUI's VideoPlayer) because
+/// VideoPlayer always shows native playback controls, which a background
+/// loop shouldn't have.
+struct WorkoutHeroVideo: UIViewRepresentable {
+    let url: URL
+
+    func makeUIView(context: Context) -> PlayerLayerView {
+        let view = PlayerLayerView()
+        let item = AVPlayerItem(url: url)
+        let player = AVPlayer(playerItem: item)
+        player.isMuted = true
+        player.actionAtItemEnd = .none
+        view.playerLayer.player = player
+        NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
+        ) { _ in
+            player.seek(to: .zero)
+            player.play()
+        }
+        player.play()
+        return view
+    }
+
+    func updateUIView(_ uiView: PlayerLayerView, context: Context) {}
+
+    final class PlayerLayerView: UIView {
+        override static var layerClass: AnyClass { AVPlayerLayer.self }
+        var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            playerLayer.videoGravity = .resizeAspectFill
+        }
+
+        required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     }
 }
 

@@ -128,17 +128,25 @@ struct WorkoutCardRow: Decodable {
     let duration: String
     let category: String
     let exercises: [ExerciseRow]
+    /// Real media uploaded to Supabase Storage — nil for cards still using
+    /// a bundled asset (imageName).
+    let imageURLString: String?
+    let videoURLString: String?
 
     enum CodingKeys: String, CodingKey {
         case section
         case imageName = "image_name"
         case title, level, duration, category, exercises
+        case imageURLString = "image_url"
+        case videoURLString = "video_url"
     }
 
     func toModel() -> WorkoutCard {
         WorkoutCard(
             imageName: imageName, title: title, level: level, duration: duration, category: category,
-            exercises: exercises.map { Exercise(name: $0.name, icon: $0.icon, sets: $0.sets, reps: $0.reps) }
+            exercises: exercises.map { Exercise(name: $0.name, icon: $0.icon, sets: $0.sets, reps: $0.reps) },
+            imageURL: imageURLString.flatMap(URL.init(string:)),
+            videoURL: videoURLString.flatMap(URL.init(string:))
         )
     }
 }

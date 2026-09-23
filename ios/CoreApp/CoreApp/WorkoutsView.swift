@@ -140,9 +140,7 @@ private struct WorkoutCardTile: View {
     var body: some View {
         Button(action: onOpen) {
             ZStack(alignment: .bottomLeading) {
-                Image(card.imageName)
-                    .resizable()
-                    .scaledToFill()
+                WorkoutCoverImage(card: card)
                     .frame(width: width, height: 200)
                     .clipped()
                 LinearGradient(colors: [.black.opacity(0.85), .black.opacity(0.35), .clear], startPoint: .bottom, endPoint: .top)

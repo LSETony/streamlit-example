@@ -62,7 +62,12 @@ create table if not exists public.workout_cards (
   title text not null,
   level text not null,
   duration text not null,
-  category text not null
+  category text not null,
+  -- Real photo/video uploaded to Supabase Storage — overrides image_name
+  -- (a bundled app asset) when set. Nullable: most cards still just use
+  -- image_name.
+  image_url text,
+  video_url text
 );
 
 create table if not exists public.exercises (

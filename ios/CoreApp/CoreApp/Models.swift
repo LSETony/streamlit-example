@@ -56,6 +56,13 @@ struct WorkoutCard: Identifiable {
     let duration: String
     let category: String
     let exercises: [Exercise]
+    /// A real photo uploaded to Supabase Storage, overriding `imageName`
+    /// (a bundled asset) when present — lets new cards use real gym
+    /// photography without shipping it inside the app binary.
+    var imageURL: URL? = nil
+    /// A real video uploaded to Supabase Storage, played muted/looping as
+    /// this card's detail-screen hero background when present.
+    var videoURL: URL? = nil
 }
 
 /// One movement inside a WorkoutCard's plan, shown in its detail screen and
