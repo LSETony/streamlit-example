@@ -252,9 +252,9 @@ insert into public.product_ingredients (product_id, name, amount, sort_order) va
 ('a0000000-0000-4000-8000-000000000004', 'Glycine', '1 200 mg', 1);
 
 insert into public.workout_cards (id, section, image_name, title, level, duration, category) values
-('b0000000-0000-4000-8000-000000000001', 'beginner_plan', 'WorkoutBeginnerFemale', 'Beginner Female Aesthetics', 'Beginner', '7 day', 'Strength'),
+('b0000000-0000-4000-8000-000000000001', 'beginner_plan', 'WorkoutBeginnerFemale', 'Strength Starter', 'Beginner', '7 day', 'Strength'),
 ('b0000000-0000-4000-8000-000000000002', 'beginner_plan', 'WorkoutBodyWeight', 'Beginner Body Weight Plan', 'Beginner', '7 day', 'Cardio'),
-('b0000000-0000-4000-8000-000000000003', 'top_workouts', 'WorkoutPrentalFlow', 'Sam''s Prental Flow', 'Beginner', '22 mins', 'Strength'),
+('b0000000-0000-4000-8000-000000000003', 'top_workouts', 'WorkoutPrentalFlow', 'Mobility Flow', 'Beginner', '22 mins', 'Strength'),
 ('b0000000-0000-4000-8000-000000000004', 'top_workouts', 'WorkoutChestTriceps', 'Chest and Triceps', 'Inter', '22 mins', 'Strength');
 
 insert into public.exercises (workout_card_id, name, icon, sets, reps, sort_order) values
