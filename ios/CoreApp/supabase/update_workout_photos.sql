@@ -28,3 +28,7 @@ update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supaba
 -- Sixth real video, for "HIIT Cardio Blast" (bundled WorkoutBodyWeight
 -- photo stays as its poster/fallback).
 update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389576-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000010';
+
+-- Seventh real video, for "Back and Biceps" (bundled WorkoutPrentalFlow
+-- photo stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389823-uhd_2160_3840_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000011';
