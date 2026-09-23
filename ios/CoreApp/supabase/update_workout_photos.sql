@@ -32,3 +32,8 @@ update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supaba
 -- Seventh real video, for "Back and Biceps" (bundled WorkoutPrentalFlow
 -- photo stays as its poster/fallback).
 update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389823-uhd_2160_3840_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000011';
+
+-- Eighth real video, for "Full Body Circuit" — the last of the 8 new
+-- cards, all now have a real video (bundled WorkoutChestTriceps photo
+-- stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389826-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000012';
