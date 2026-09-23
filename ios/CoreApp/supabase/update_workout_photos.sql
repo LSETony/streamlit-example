@@ -24,3 +24,7 @@ update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supaba
 -- Fifth real video, for "Leg Day Burner" (Top 10 workouts section;
 -- bundled WorkoutBeginnerFemale photo stays as its poster/fallback).
 update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389575-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000009';
+
+-- Sixth real video, for "HIIT Cardio Blast" (bundled WorkoutBodyWeight
+-- photo stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389576-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000010';
