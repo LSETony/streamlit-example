@@ -4,3 +4,15 @@
 -- after add_more_workouts.sql has already been run once.
 
 update public.workout_cards set image_name = 'WorkoutGymCandid1' where id = 'b0000000-0000-4000-8000-000000000005';
+
+-- Real video for the same card, uploaded to Supabase Storage — plays
+-- muted/looping as the workout detail screen's hero background.
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6388422-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000005';
+
+-- Second real video, for "Cardio Kickstart" (still uses the bundled
+-- WorkoutBodyWeight photo as its poster/fallback until the video loads).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6388429-uhd_2160_3840_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000006';
+
+-- Third real video, for "Core Basics" (bundled WorkoutPrentalFlow photo
+-- stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6388436-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000007';
