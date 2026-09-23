@@ -37,3 +37,8 @@ update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supaba
 -- cards, all now have a real video (bundled WorkoutChestTriceps photo
 -- stays as its poster/fallback).
 update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389826-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000012';
+
+-- Ninth real video, now for one of the original 4 cards: "Beginner
+-- Female Aesthetics" (bundled WorkoutBeginnerFemale photo stays as its
+-- poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389827-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000001';
