@@ -22,10 +22,24 @@ struct GymPhotoViewer: View {
                             .scaledToFill()
                             .frame(width: 220, height: 160)
                             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
-                        ForEach(["dumbbell.fill", "figure.strengthtraining.traditional"], id: \.self) { icon in
-                            PhotoPlaceholder(icon: icon)
+                        if appState.gymPhotoURLs.isEmpty {
+                            ForEach(["dumbbell.fill", "figure.strengthtraining.traditional"], id: \.self) { icon in
+                                PhotoPlaceholder(icon: icon)
+                                    .frame(width: 220, height: 160)
+                                    .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+                            }
+                        } else {
+                            ForEach(appState.gymPhotoURLs, id: \.self) { url in
+                                AsyncImage(url: url) { phase in
+                                    if case .success(let image) = phase {
+                                        image.resizable().scaledToFill()
+                                    } else {
+                                        PhotoPlaceholder()
+                                    }
+                                }
                                 .frame(width: 220, height: 160)
                                 .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+                            }
                         }
                     }
                 }

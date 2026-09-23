@@ -20,9 +20,10 @@ extension AppState {
         async let subscriptionPlanRows: [SubscriptionPlanRow] = fetch("subscription_plans")
         async let bookedSessionRows: [BookedSessionRow] = fetchOwn("booked_sessions")
         async let cartLineRows: [CartLineRow] = fetchOwn("cart_items")
+        async let appSettingRows: [AppSettingRow] = fetch("app_settings")
 
-        let (trainerRows, productRowsValue, workoutRows, importantRows, foodRows, zoneRows, planRows, sessionRows, cartRows) = await (
-            trainersRows, productRows, workoutCardRows, importantCardRows, foodRecipeRows, gymZoneRows, subscriptionPlanRows, bookedSessionRows, cartLineRows
+        let (trainerRows, productRowsValue, workoutRows, importantRows, foodRows, zoneRows, planRows, sessionRows, cartRows, settingRows) = await (
+            trainersRows, productRows, workoutCardRows, importantCardRows, foodRecipeRows, gymZoneRows, subscriptionPlanRows, bookedSessionRows, cartLineRows, appSettingRows
         )
 
         trainers = trainerRows.map { $0.toModel() }
@@ -35,6 +36,15 @@ extension AppState {
         subscriptionPlans = planRows.map { $0.toModel() }
         bookedSessions = sessionRows.map { $0.toModel() }
         cart = cartRows.map { $0.toModel() }
+
+        let settings = Dictionary(uniqueKeysWithValues: settingRows.map { ($0.key, $0.value) })
+        heroVideoURL = settings["hero_video_urls"]?
+            .split(separator: ",")
+            .compactMap { URL(string: $0.trimmingCharacters(in: .whitespaces)) }
+            .randomElement()
+        gymPhotoURLs = settings["gym_photo_urls"]?
+            .split(separator: ",")
+            .compactMap { URL(string: $0.trimmingCharacters(in: .whitespaces)) } ?? []
     }
 
     // MARK: Bookings

@@ -194,6 +194,13 @@ struct SubscriptionPlanRow: Decodable {
     }
 }
 
+// MARK: - App settings (small global key/value config)
+
+struct AppSettingRow: Decodable {
+    let key: String
+    let value: String
+}
+
 // MARK: - Calendar bookings (per device_user_id)
 
 struct BookedSessionRow: Decodable {

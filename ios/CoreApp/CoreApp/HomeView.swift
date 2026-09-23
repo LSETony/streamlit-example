@@ -49,11 +49,16 @@ struct HomeView: View {
                 Button {
                     showGymPhoto = true
                 } label: {
-                    Image("HomeHero")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: geo.size.width, height: geo.size.height)
-                        .clipped()
+                    ZStack {
+                        Image("HomeHero")
+                            .resizable()
+                            .scaledToFill()
+                        if let heroVideoURL = appState.heroVideoURL {
+                            WorkoutHeroVideo(url: heroVideoURL)
+                        }
+                    }
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
                 }
                 .buttonStyle(.plain)
 

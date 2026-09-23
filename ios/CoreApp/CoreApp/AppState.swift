@@ -43,6 +43,11 @@ final class AppState: ObservableObject {
     @Published var clubAddress: String = "1-ya Tverskaya-Yamskaya, 2/1"
     @Published var clubHoursLabel: String = "until 22:00"
     @Published var clubDescription: String = "A full strength floor, free weights, cardio and a group class studio — steps from the metro, open daily."
+    /// Uploaded gym clips that don't belong to one specific workout card —
+    /// the Home hero photo loops a randomly-picked one behind it instead.
+    @Published var heroVideoURL: URL?
+    /// Extra real gym photos for the photo strip in GymPhotoViewer.
+    @Published var gymPhotoURLs: [URL] = []
     @Published var trainingProgressPercent: Int = 67
     @Published var trainingDay: Int = 1
     @Published var trainingMinutesToday: Int = 38

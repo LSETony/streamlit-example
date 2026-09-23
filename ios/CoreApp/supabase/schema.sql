@@ -102,6 +102,16 @@ create table if not exists public.gym_zones (
   capacity integer not null
 );
 
+-- Small global key/value config table. Currently just holds
+-- 'hero_video_urls' — a comma-separated list of Supabase Storage video
+-- URLs the Home screen picks one from at random to loop behind the hero
+-- photo, so extra uploaded gym clips that don't map to a specific
+-- workout card still get used somewhere.
+create table if not exists public.app_settings (
+  key text primary key,
+  value text not null
+);
+
 create table if not exists public.subscription_plans (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -144,6 +154,7 @@ alter table public.important_cards enable row level security;
 alter table public.food_recipes enable row level security;
 alter table public.gym_zones enable row level security;
 alter table public.subscription_plans enable row level security;
+alter table public.app_settings enable row level security;
 alter table public.booked_sessions enable row level security;
 alter table public.cart_items enable row level security;
 
@@ -173,6 +184,9 @@ create policy "Public read" on public.gym_zones for select using (true);
 
 drop policy if exists "Public read" on public.subscription_plans;
 create policy "Public read" on public.subscription_plans for select using (true);
+
+drop policy if exists "Public read" on public.app_settings;
+create policy "Public read" on public.app_settings for select using (true);
 
 -- Demo-level policy: no Supabase Auth session exists to check auth.uid()
 -- against (see the comment on booked_sessions above), so the anon key is
