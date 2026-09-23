@@ -27,7 +27,7 @@ struct CoreAppApp: App {
 /// registration — AuthWelcomeView collects name + email and sends a code
 /// via Supabase Auth, OTPVerificationView checks it). Flip to `false` to
 /// skip straight to the app again.
-let requiresSignIn = true
+let requiresSignIn = false
 
 /// Launch flow: splash, then sign-in, then onboarding, then the app.
 struct RootView: View {

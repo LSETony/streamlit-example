@@ -17,7 +17,10 @@ final class AppState: ObservableObject {
 
     // MARK: Onboarding wizard (4 steps: gender, goal, contradictions, level)
 
-    @Published var hasCompletedOnboarding: Bool = false
+    // TEMPORARY: true so disabling requiresSignIn (CoreAppApp.swift) goes
+    // straight to Home instead of stopping at onboarding. Revert to false
+    // together with requiresSignIn.
+    @Published var hasCompletedOnboarding: Bool = true
     @Published var selectedGender: String?
     @Published var selectedGoal: String?
     @Published var selectedContradictions: Set<String> = []
