@@ -69,6 +69,9 @@ struct GymPhotoViewer: View {
                     .lineSpacing(4)
                     .appCard(padding: 16)
 
+                PrimaryButton(title: "Choose this location", color: .appAccent) {
+                    dismiss()
+                }
                 PrimaryButton(title: "Get Directions", color: .appAccentPurple) {
                     openInMaps()
                 }
