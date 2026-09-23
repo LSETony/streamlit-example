@@ -16,3 +16,7 @@ update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supaba
 -- Third real video, for "Core Basics" (bundled WorkoutPrentalFlow photo
 -- stays as its poster/fallback).
 update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6388436-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000007';
+
+-- Fourth real video, for "Flexibility & Mobility" (bundled
+-- WorkoutChestTriceps photo stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389571-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000008';
