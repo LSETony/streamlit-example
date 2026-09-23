@@ -289,7 +289,7 @@ insert into public.workout_cards (id, section, image_name, title, level, duratio
 ('b0000000-0000-4000-8000-000000000005', 'beginner_plan', 'WorkoutGymCandid1', 'Full Body Foundations', 'Beginner', '7 day', 'Strength'),
 ('b0000000-0000-4000-8000-000000000006', 'beginner_plan', 'WorkoutBodyWeight', 'Cardio Kickstart', 'Beginner', '7 day', 'Cardio'),
 ('b0000000-0000-4000-8000-000000000007', 'beginner_plan', 'WorkoutPrentalFlow', 'Core Basics', 'Beginner', '10 day', 'Strength'),
-('b0000000-0000-4000-8000-000000000008', 'beginner_plan', 'WorkoutChestTriceps', 'Flexibility & Mobility', 'Beginner', '5 day', 'Cardio'),
+('b0000000-0000-4000-8000-000000000008', 'beginner_plan', 'WorkoutChestTriceps', 'Flexibility & Mobility', 'Beginner', '5 day', 'Flexibility'),
 ('b0000000-0000-4000-8000-000000000009', 'top_workouts', 'WorkoutBeginnerFemale', 'Leg Day Burner', 'Inter', '30 mins', 'Strength'),
 ('b0000000-0000-4000-8000-000000000010', 'top_workouts', 'WorkoutBodyWeight', 'HIIT Cardio Blast', 'Inter', '20 mins', 'Cardio'),
 ('b0000000-0000-4000-8000-000000000011', 'top_workouts', 'WorkoutPrentalFlow', 'Back and Biceps', 'Inter', '25 mins', 'Strength'),
@@ -329,7 +329,7 @@ insert into public.exercises (workout_card_id, name, icon, sets, reps, sort_orde
 ('b0000000-0000-4000-8000-000000000012', 'Rowing Sprint', 'figure.rower', 4, '30 sec', 3);
 
 insert into public.important_cards (icon, title, subtitle) values
-('shield.fill', 'Gym Safety', 'Rules & equipment guide'),
+('shield.fill', 'Rules', 'Rules & equipment guide'),
 ('party.popper.fill', 'Events', 'What''s on this month');
 
 insert into public.food_recipes (name, price, ingredients) values

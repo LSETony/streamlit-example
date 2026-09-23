@@ -14,7 +14,7 @@ struct WorkoutsView: View {
     @State private var libraryFilter = "All"
     @State private var selectedCard: WorkoutCard?
     @State private var isShowingGymSafety = false
-    private let libraryFilters = ["All", "Strength", "Cardio"]
+    private let libraryFilters = ["All", "Strength", "Cardio", "Flexibility"]
 
     private var filteredBeginnerPlanCards: [WorkoutCard] {
         libraryFilter == "All" ? appState.beginnerPlanCards : appState.beginnerPlanCards.filter { $0.category == libraryFilter }
@@ -103,7 +103,7 @@ struct WorkoutsView: View {
                             HStack(spacing: 10) {
                                 ForEach(appState.importantCards) { card in
                                     ImportantCardTile(card: card, width: cardWidth) {
-                                        if card.title == "Gym Safety" { isShowingGymSafety = true }
+                                        if card.title == "Rules" { isShowingGymSafety = true }
                                     }
                                 }
                             }
