@@ -9,6 +9,8 @@ struct StoreView: View {
     @State private var isShowingFilters = false
     @State private var maxPrice: Double = 500
     @State private var selectedIngredients: Set<String> = []
+    @State private var sortOption = "Name"
+    private let sortOptions = ["Name", "Price: low to high", "Price: high to low"]
 
     private var priceBound: Double {
         Double(appState.products.map(\.price).max() ?? 200)
@@ -19,7 +21,7 @@ struct StoreView: View {
     }
 
     private var filteredProducts: [Product] {
-        appState.products.filter { product in
+        let filtered = appState.products.filter { product in
             let matchesSearch = search.isEmpty
                 || product.name.localizedCaseInsensitiveContains(search)
                 || product.ingredients.contains { $0.name.localizedCaseInsensitiveContains(search) }
@@ -27,6 +29,14 @@ struct StoreView: View {
             let productIngredientNames = Set(product.ingredients.map(\.name))
             let matchesIngredients = selectedIngredients.isEmpty || !productIngredientNames.isDisjoint(with: selectedIngredients)
             return matchesSearch && matchesPrice && matchesIngredients
+        }
+        switch sortOption {
+        case "Price: low to high":
+            return filtered.sorted { $0.price < $1.price }
+        case "Price: high to low":
+            return filtered.sorted { $0.price > $1.price }
+        default:
+            return filtered.sorted { $0.name < $1.name }
         }
     }
 
@@ -36,7 +46,7 @@ struct StoreView: View {
                 Text("Supplements")
                     .font(.brand(32))
                     .foregroundStyle(.white)
-                SearchToolRow(search: $search) { isShowingFilters = true }
+                SearchToolRow(search: $search, sortOptions: sortOptions, onSortSelect: { sortOption = $0 }) { isShowingFilters = true }
                 productGrid
             }
             .screenPadding()

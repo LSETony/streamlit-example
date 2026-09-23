@@ -9,6 +9,8 @@ struct FoodRecipesView: View {
     @State private var isShowingFilters = false
     @State private var maxPrice: Double = 500
     @State private var selectedIngredients: Set<String> = []
+    @State private var sortOption = "Name"
+    private let sortOptions = ["Name", "Price: low to high", "Price: high to low"]
 
     private var priceBound: Double {
         Double(appState.foodRecipes.map(\.price).max() ?? 50)
@@ -19,13 +21,21 @@ struct FoodRecipesView: View {
     }
 
     private var filteredRecipes: [FoodRecipe] {
-        appState.foodRecipes.filter { recipe in
+        let filtered = appState.foodRecipes.filter { recipe in
             let matchesSearch = search.isEmpty
                 || recipe.name.localizedCaseInsensitiveContains(search)
                 || recipe.ingredients.contains { $0.localizedCaseInsensitiveContains(search) }
             let matchesPrice = Double(recipe.price) <= maxPrice
             let matchesIngredients = selectedIngredients.isEmpty || !Set(recipe.ingredients).isDisjoint(with: selectedIngredients)
             return matchesSearch && matchesPrice && matchesIngredients
+        }
+        switch sortOption {
+        case "Price: low to high":
+            return filtered.sorted { $0.price < $1.price }
+        case "Price: high to low":
+            return filtered.sorted { $0.price > $1.price }
+        default:
+            return filtered.sorted { $0.name < $1.name }
         }
     }
 
@@ -35,7 +45,7 @@ struct FoodRecipesView: View {
                 Text("Food recipes")
                     .font(.brand(32))
                     .foregroundStyle(.white)
-                SearchToolRow(search: $search) { isShowingFilters = true }
+                SearchToolRow(search: $search, sortOptions: sortOptions, onSortSelect: { sortOption = $0 }) { isShowingFilters = true }
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                     ForEach(filteredRecipes) { recipe in

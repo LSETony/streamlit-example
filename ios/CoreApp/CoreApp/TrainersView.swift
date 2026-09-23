@@ -9,6 +9,8 @@ struct TrainersView: View {
     @State private var isShowingFilters = false
     @State private var maxPrice: Double = 500
     @State private var selectedTags: Set<String> = []
+    @State private var sortOption = "Top rated"
+    private let sortOptions = ["Top rated", "Price: low to high", "Price: high to low", "Name"]
 
     private var priceBound: Double {
         Double(appState.trainers.compactMap { Int($0.priceCompact) }.max() ?? 100)
@@ -19,7 +21,7 @@ struct TrainersView: View {
     }
 
     private var filteredTrainers: [Trainer] {
-        appState.trainers.filter { trainer in
+        let filtered = appState.trainers.filter { trainer in
             let matchesSearch = search.isEmpty
                 || trainer.name.localizedCaseInsensitiveContains(search)
                 || trainer.specialty.localizedCaseInsensitiveContains(search)
@@ -27,6 +29,16 @@ struct TrainersView: View {
             let matchesPrice = Double(Int(trainer.priceCompact) ?? 0) <= maxPrice
             let matchesTags = selectedTags.isEmpty || !Set(trainer.tags).isDisjoint(with: selectedTags)
             return matchesSearch && matchesPrice && matchesTags
+        }
+        switch sortOption {
+        case "Price: low to high":
+            return filtered.sorted { (Int($0.priceCompact) ?? 0) < (Int($1.priceCompact) ?? 0) }
+        case "Price: high to low":
+            return filtered.sorted { (Int($0.priceCompact) ?? 0) > (Int($1.priceCompact) ?? 0) }
+        case "Name":
+            return filtered.sorted { $0.name < $1.name }
+        default:
+            return filtered.sorted { (Double($0.rating) ?? 0) > (Double($1.rating) ?? 0) }
         }
     }
 
@@ -36,7 +48,7 @@ struct TrainersView: View {
                 Text("Personal Trainers")
                     .font(.brand(32))
                     .foregroundStyle(.white)
-                SearchToolRow(search: $search) { isShowingFilters = true }
+                SearchToolRow(search: $search, sortOptions: sortOptions, onSortSelect: { sortOption = $0 }) { isShowingFilters = true }
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                     ForEach(filteredTrainers) { trainer in
@@ -166,9 +178,13 @@ struct PriceTagFilterSheet: View {
 }
 
 /// Shared search field + sort/filter icon row used by Trainers, Supplements
-/// and Food recipes in the latest Figma pass.
+/// and Food recipes in the latest Figma pass. The sort icon opens a menu of
+/// `sortOptions` when the caller supplies any; with none (the default) it's
+/// a plain non-interactive icon, same as before.
 struct SearchToolRow: View {
     @Binding var search: String
+    var sortOptions: [String] = []
+    var onSortSelect: (String) -> Void = { _ in }
     var onFilterTap: () -> Void = {}
 
     var body: some View {
@@ -184,7 +200,17 @@ struct SearchToolRow: View {
                 .padding(.vertical, 13)
                 .glassEffect(.regular, in: Capsule())
 
-                toolIcon("IconSort")
+                if sortOptions.isEmpty {
+                    toolIcon("IconSort")
+                } else {
+                    Menu {
+                        ForEach(sortOptions, id: \.self) { option in
+                            Button(option) { onSortSelect(option) }
+                        }
+                    } label: {
+                        toolIcon("IconSort")
+                    }
+                }
                 Button(action: onFilterTap) {
                     Image("IconFilter").customIcon(size: 16)
                         .foregroundStyle(.white)
