@@ -13,24 +13,57 @@ extension Image {
     }
 }
 
-/// A WorkoutCard's cover photo — a real photo uploaded to Supabase Storage
-/// (card.imageURL) when set, falling back to the bundled asset
-/// (card.imageName) otherwise or while the remote photo is still loading.
-/// Callers apply their own `.frame`/`.clipped`; this view always fills.
+/// A WorkoutCard's cover photo. Priority: a real photo uploaded to
+/// Supabase Storage (card.imageURL) — then, if only a video was
+/// uploaded, a frame grabbed live from that video — then the bundled
+/// asset (card.imageName) as a last resort. This is what makes card
+/// list thumbnails (which never show the live video, only
+/// WorkoutDetailView's hero does) reflect the real uploaded footage
+/// instead of a reused generic photo. Callers apply their own
+/// `.frame`/`.clipped`; this view always fills.
 struct WorkoutCoverImage: View {
     let card: WorkoutCard
+    @State private var videoFrame: Image?
 
     var body: some View {
-        if let url = card.imageURL {
-            AsyncImage(url: url) { phase in
-                if case .success(let image) = phase {
-                    image.resizable().scaledToFill()
-                } else {
-                    Image(card.imageName).resizable().scaledToFill()
+        Group {
+            if let url = card.imageURL {
+                AsyncImage(url: url) { phase in
+                    if case .success(let image) = phase {
+                        image.resizable().scaledToFill()
+                    } else {
+                        fallback
+                    }
                 }
+            } else {
+                fallback
             }
+        }
+    }
+
+    @ViewBuilder
+    private var fallback: some View {
+        if let videoFrame {
+            videoFrame.resizable().scaledToFill()
         } else {
-            Image(card.imageName).resizable().scaledToFill()
+            Image(card.imageName)
+                .resizable()
+                .scaledToFill()
+                .task(id: card.videoURL) {
+                    guard let videoURL = card.videoURL else { return }
+                    videoFrame = await Self.grabFrame(from: videoURL)
+                }
+        }
+    }
+
+    private static func grabFrame(from url: URL) async -> Image? {
+        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
+        generator.appliesPreferredTrackTransform = true
+        do {
+            let cgImage = try await generator.image(at: CMTime(seconds: 1, preferredTimescale: 600)).image
+            return Image(decorative: cgImage, scale: 1)
+        } catch {
+            return nil
         }
     }
 }
