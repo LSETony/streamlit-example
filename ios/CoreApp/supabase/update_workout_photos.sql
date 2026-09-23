@@ -20,3 +20,7 @@ update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supaba
 -- Fourth real video, for "Flexibility & Mobility" (bundled
 -- WorkoutChestTriceps photo stays as its poster/fallback).
 update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389571-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000008';
+
+-- Fifth real video, for "Leg Day Burner" (Top 10 workouts section;
+-- bundled WorkoutBeginnerFemale photo stays as its poster/fallback).
+update public.workout_cards set video_url = 'https://ubykgrowhekmsvxhvjxf.supabase.co/storage/v1/object/public/media/6389575-uhd_3840_2160_25fps.mp4' where id = 'b0000000-0000-4000-8000-000000000009';
