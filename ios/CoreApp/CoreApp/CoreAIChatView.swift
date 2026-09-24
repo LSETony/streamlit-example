@@ -24,15 +24,25 @@ struct CoreAIChatView: View {
         SystemLanguageModel.default.availability
     }
 
+    private var unavailableReason: SystemLanguageModel.Availability.UnavailableReason? {
+        if case .unavailable(let reason) = availability { return reason }
+        return nil
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                if case .unavailable(let reason) = availability {
-                    Text(unavailableMessage(reason))
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.appWarning)
-                        .padding(.horizontal, AppMetrics.screenPadding)
-                        .padding(.top, 10)
+                if let unavailableReason {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                        Text(unavailableMessage(unavailableReason))
+                    }
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, AppMetrics.screenPadding)
+                    .padding(.vertical, 10)
+                    .background(Color.appWarning)
                 }
 
                 ScrollViewReader { proxy in
@@ -133,11 +143,16 @@ struct CoreAIChatView: View {
             }
             .buttonStyle(.plain)
             .glassEffect(.regular.tint(.appAccent).interactive(), in: Circle())
-            .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSending)
-            .opacity(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSending ? 0.4 : 1)
+            .disabled(sendDisabled)
+            .opacity(sendDisabled ? 0.4 : 1)
         }
         .padding(.horizontal, AppMetrics.screenPadding)
         .padding(.vertical, 10)
+        .disabled(unavailableReason != nil)
+    }
+
+    private var sendDisabled: Bool {
+        draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSending || unavailableReason != nil
     }
 
     private func send() {
@@ -145,6 +160,17 @@ struct CoreAIChatView: View {
         guard !text.isEmpty, !isSending else { return }
         messages.append(ChatMessage(role: .user, content: text))
         draft = ""
+
+        // Checked up front instead of just letting `respond` throw — the
+        // model being unavailable (no Apple Intelligence, still downloading,
+        // unsupported device) isn't a per-message failure, so every attempt
+        // failed the same generic way with no indication why. Now the real
+        // reason (already shown in the banner) is what actually gets
+        // reported below the message instead of a made-up "couldn't answer".
+        if let unavailableReason {
+            errorText = unavailableMessage(unavailableReason)
+            return
+        }
         errorText = nil
         isSending = true
 
@@ -157,7 +183,7 @@ struct CoreAIChatView: View {
                 }
             } catch {
                 await MainActor.run {
-                    errorText = "Core AI couldn't answer that — try rephrasing or ask again."
+                    errorText = "Core AI couldn't answer that: \(error.localizedDescription)"
                     isSending = false
                 }
             }
