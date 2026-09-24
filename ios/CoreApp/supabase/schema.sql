@@ -223,7 +223,13 @@ insert into public.trainers (image_name, name, specialty, rating, reviews, price
  'Builds high-intensity, functional programs for members chasing fat loss and conditioning rather than pure strength numbers.'),
 ('Trainer2', 'Sofia Reyes', 'Personal trainer', '4.9', 189, '$48/h', '48', 'Wed', 'success', '8 years', 52, 1975,
  array['Powerlifting','Mobility','Injury prevention'],
- 'Powerlifting-focused coaching with a strong emphasis on mobility work and injury prevention for lifters training around old injuries.');
+ 'Powerlifting-focused coaching with a strong emphasis on mobility work and injury prevention for lifters training around old injuries.'),
+('Trainer3', 'Marco Fedele', 'Personal trainer', '4.9', 156, '$50/h', '50', 'Thu', 'success', '10 years', 44, 1680,
+ array['Strength','Powerlifting','Hypertrophy'],
+ 'Strength-focused coaching built around progressive overload — works with members chasing real numbers on the big lifts.'),
+('Trainer4', 'Elena Marchetti', 'Personal trainer', '4.8', 121, '$46/h', '46', 'Fri', 'accent', '7 years', 39, 1450,
+ array['Conditioning','HIIT','Core strength'],
+ 'High-energy conditioning sessions built around circuits and core work — popular with members training for endurance events.');
 
 insert into public.products (id, abbr, name, form, dose, count, price, subscription_price, tag, tag_color, description, benefits, risks, interactions) values
 ('a0000000-0000-4000-8000-000000000001', 'B', 'B-Complex', 'Capsule', '50 mg', '90 capsules', 54, 46, 'In protocol', 'accent',
