@@ -3,6 +3,7 @@ import SwiftUI
 /// Opened from Workouts' "Events" card — a real, RSVP-able events calendar
 /// instead of an inert card, matching Gym Safety's treatment of "Rules".
 struct EventsView: View {
+    @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
     @State private var joinedEventIDs: Set<UUID> = []
 
@@ -108,6 +109,7 @@ struct EventsView: View {
                         joinedEventIDs.remove(event.id)
                     } else {
                         joinedEventIDs.insert(event.id)
+                        appState.notificationCenter.trigger(icon: "calendar.badge.checkmark", title: "You're in!", subtitle: event.title, accent: .appAccentPurple)
                     }
                 } label: {
                     Text(isJoined ? "Joined ✓" : "Join")
@@ -126,4 +128,5 @@ struct EventsView: View {
 
 #Preview {
     EventsView()
+        .environmentObject(AppState())
 }

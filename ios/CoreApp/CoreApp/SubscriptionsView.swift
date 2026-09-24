@@ -36,6 +36,7 @@ struct SubscriptionsView: View {
             .modifier(PaymentSheetPresenter(paymentService: paymentService) { succeeded in
                 if succeeded, let name = payingPlanName {
                     appState.membershipPlanName = name
+                    appState.notificationCenter.trigger(icon: "checkmark.circle.fill", title: "Payment successful", subtitle: "\(name) subscription active", accent: .appSuccess)
                 }
                 payingPlanName = nil
             })

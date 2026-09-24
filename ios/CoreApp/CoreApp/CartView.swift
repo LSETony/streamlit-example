@@ -27,6 +27,7 @@ struct CartView: View {
             if succeeded {
                 didCheckOut = true
                 appState.clearCart()
+                appState.notificationCenter.trigger(icon: "checkmark.circle.fill", title: "Order placed", subtitle: "Payment successful", accent: .appSuccess)
             }
         })
         .alert("Payment error", isPresented: Binding(get: { paymentService.errorMessage != nil }, set: { if !$0 { paymentService.errorMessage = nil } })) {

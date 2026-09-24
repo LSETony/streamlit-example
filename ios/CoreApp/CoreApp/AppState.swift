@@ -210,6 +210,12 @@ final class AppState: ObservableObject {
     // ContentView so a failure is visible without needing Xcode's console
     // open (see AppState+Supabase.swift).
     @Published var supabaseDebugMessage: String?
+
+    // MARK: Dynamic Island-style notifications
+    // Self-contained (owns its own overlay UIWindow) — see
+    // DynamicIslandNotifier.swift. Call notificationCenter.trigger(...)
+    // from anywhere; no view modifier needs to be attached.
+    let notificationCenter = DynamicNotificationCenter()
 }
 
 struct CartLine: Identifiable {

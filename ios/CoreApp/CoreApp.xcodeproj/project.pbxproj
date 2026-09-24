@@ -19,8 +19,10 @@
 		392881F6855843ACB49B7B46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */; };
 		3D72EF131AA6CEA6CAE3B712 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97814377FFBA6C26D2370416 /* CalendarView.swift */; };
 		3F356E097DF7CAE19BDEAF07 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7767DFABE3FC38A17C249E0 /* ScanView.swift */; };
+		43328045AB488CECE9AF1A75 /* DynamicIslandNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */; };
 		43554B5640BA55F311A51850 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7E1851BD66A6F385905E9F /* CartView.swift */; };
 		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
+		44D0E38093ECBF87A87876D6 /* ThinkingOrb.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */; };
 		52A35E68968F65202D122832 /* QRPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */; };
 		549E57A664D84DD0B20D5053 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48104F66160A4418A81BD9E8 /* Models.swift */; };
 		55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */; };
@@ -84,6 +86,7 @@
 		97814377FFBA6C26D2370416 /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		99018F8559804203B50FC4E6 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaymentSheetPresenter.swift; sourceTree = "<group>"; };
+		A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ThinkingOrb.swift; sourceTree = "<group>"; };
 		AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OTPVerificationView.swift; sourceTree = "<group>"; };
 		B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Francy-Regular.ttf"; sourceTree = "<group>"; };
 		CC7E1851BD66A6F385905E9F /* CartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
@@ -98,6 +101,7 @@
 		F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F7767DFABE3FC38A17C249E0 /* ScanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		F7F173CD46DBE0612AD9D873 /* AuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DynamicIslandNotifier.swift; sourceTree = "<group>"; };
 		FF518BECB85AFB2EC8F75527 /* EventsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -194,6 +198,8 @@
 				FF518BECB85AFB2EC8F75527 /* EventsView.swift */,
 				F7767DFABE3FC38A17C249E0 /* ScanView.swift */,
 				8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */,
+				FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */,
+				A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -319,6 +325,8 @@
 				FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */,
 				3F356E097DF7CAE19BDEAF07 /* ScanView.swift in Sources */,
 				D1CD4AD3F987D65633F9A927 /* VitaminDatabase.swift in Sources */,
+				43328045AB488CECE9AF1A75 /* DynamicIslandNotifier.swift in Sources */,
+				44D0E38093ECBF87A87876D6 /* ThinkingOrb.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

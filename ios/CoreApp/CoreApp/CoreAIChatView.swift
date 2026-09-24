@@ -105,8 +105,7 @@ struct CoreAIChatView: View {
 
     private var typingBubble: some View {
         HStack {
-            ProgressView()
-                .tint(Color.appTextSecondary)
+            ThinkingOrb(size: 20)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .background(Color.appSurface)
