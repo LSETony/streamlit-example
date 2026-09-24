@@ -48,6 +48,7 @@
 		EB64BE17744245A0AF0F1987 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99018F8559804203B50FC4E6 /* Components.swift */; };
 		EFE86F868A2D5B5A825B8812 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F173CD46DBE0612AD9D873 /* AuthService.swift */; };
 		F05383C3B4AB44D838E5F814 /* ProgressDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07A661384232071008EA8E3 /* ProgressDetailView.swift */; };
+		FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF518BECB85AFB2EC8F75527 /* EventsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,7 @@
 		F67907A314E1428CADEF220C /* CoreApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F7F173CD46DBE0612AD9D873 /* AuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		FF518BECB85AFB2EC8F75527 /* EventsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +187,7 @@
 				6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */,
 				04C78F049CC8950FCEE905BD /* PaymentService.swift */,
 				9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */,
+				FF518BECB85AFB2EC8F75527 /* EventsView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				2B11B98ED5A9373EA510D52E /* StripeConfig.swift in Sources */,
 				1D204D15172197CC95F29C1A /* PaymentService.swift in Sources */,
 				BAEABB3643DCA16A8216CDC6 /* PaymentSheetPresenter.swift in Sources */,
+				FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

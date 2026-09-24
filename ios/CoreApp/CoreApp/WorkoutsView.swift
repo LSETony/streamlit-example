@@ -14,6 +14,7 @@ struct WorkoutsView: View {
     @State private var libraryFilter = "All"
     @State private var selectedCard: WorkoutCard?
     @State private var isShowingGymSafety = false
+    @State private var isShowingEvents = false
     private let libraryFilters = ["All", "Strength", "Cardio", "Flexibility"]
 
     private var filteredBeginnerPlanCards: [WorkoutCard] {
@@ -106,6 +107,7 @@ struct WorkoutsView: View {
                                 ForEach(appState.importantCards) { card in
                                     ImportantCardTile(card: card, width: cardWidth) {
                                         if card.title == "Rules" { isShowingGymSafety = true }
+                                        if card.title == "Events" { isShowingEvents = true }
                                     }
                                 }
                             }
@@ -123,6 +125,9 @@ struct WorkoutsView: View {
             }
             .sheet(isPresented: $isShowingGymSafety) {
                 GymSafetyView()
+            }
+            .sheet(isPresented: $isShowingEvents) {
+                EventsView()
             }
         }
     }
