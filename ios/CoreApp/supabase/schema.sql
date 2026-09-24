@@ -217,7 +217,13 @@ insert into public.trainers (image_name, name, specialty, rating, reviews, price
  'Coaches the strength floor and writes the club''s barbell progressions. Works with lifters coming back from long breaks and with members chasing a first 2× bodyweight squat.'),
 ('Trainer2', 'Mercede Moini', 'Personal trainer', '5.0', 168, '$52/h', '52', 'Tue', 'accent', '12 years', 62, 2210,
  array['Body composition','Conditioning','Mobility'],
- 'Runs conditioning and mobility work for members coming back from injury or a long break from training.');
+ 'Runs conditioning and mobility work for members coming back from injury or a long break from training.'),
+('Trainer1', 'Daniil Orlov', 'Personal trainer', '4.8', 134, '$40/h', '40', 'Mon', 'accent', '6 years', 35, 1320,
+ array['HIIT','Fat loss','Functional training'],
+ 'Builds high-intensity, functional programs for members chasing fat loss and conditioning rather than pure strength numbers.'),
+('Trainer2', 'Sofia Reyes', 'Personal trainer', '4.9', 189, '$48/h', '48', 'Wed', 'success', '8 years', 52, 1975,
+ array['Powerlifting','Mobility','Injury prevention'],
+ 'Powerlifting-focused coaching with a strong emphasis on mobility work and injury prevention for lifters training around old injuries.');
 
 insert into public.products (id, abbr, name, form, dose, count, price, subscription_price, tag, tag_color, description, benefits, risks, interactions) values
 ('a0000000-0000-4000-8000-000000000001', 'B', 'B-Complex', 'Capsule', '50 mg', '90 capsules', 54, 46, 'In protocol', 'accent',
