@@ -14,6 +14,7 @@ struct HomeView: View {
     @State private var activeSheet: HomeSheet?
     @State private var showGymPhoto = false
     @State private var pendingGymPhoto = false
+    @State private var isShowingScan = false
 
     var body: some View {
         ScrollView {
@@ -47,6 +48,9 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showGymPhoto) {
             GymPhotoViewer()
+        }
+        .fullScreenCover(isPresented: $isShowingScan) {
+            ScanView()
         }
     }
 
@@ -198,7 +202,7 @@ struct HomeView: View {
                 rectTile(icon: "IconPerson", title: "Trainers") { activeSheet = .trainers }
                 rectTile(icon: "IconFood", title: "Food") { activeSheet = .nutrition }
                 rectTile(icon: "IconCart", title: "Store") { activeSheet = .store }
-                rectTile(icon: "IconFaceScan", title: "Scan") {}
+                rectTile(icon: "IconFaceScan", title: "Scan") { isShowingScan = true }
                 rectTile(icon: "IconAISparkle", title: "Core AI") { activeSheet = .coreAI }
             }
         }

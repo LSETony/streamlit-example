@@ -18,6 +18,7 @@
 		2B11B98ED5A9373EA510D52E /* StripeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */; };
 		392881F6855843ACB49B7B46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */; };
 		3D72EF131AA6CEA6CAE3B712 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97814377FFBA6C26D2370416 /* CalendarView.swift */; };
+		3F356E097DF7CAE19BDEAF07 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7767DFABE3FC38A17C249E0 /* ScanView.swift */; };
 		43554B5640BA55F311A51850 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7E1851BD66A6F385905E9F /* CartView.swift */; };
 		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
 		52A35E68968F65202D122832 /* QRPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */; };
@@ -43,6 +44,7 @@
 		BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67286F4868E97187636094AA /* WorkoutsView.swift */; };
 		C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */; };
 		CD6C01682CB4019E62A3746B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A6395C7AB467517757FDA0C9 /* GoogleSignIn */; };
+		D1CD4AD3F987D65633F9A927 /* VitaminDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */; };
 		DF0A25D15B132EA1F55DD11E /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */; };
 		DFD7622C13034D9789B7842F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3400C5EA574C43B3B4039970 /* ProfileView.swift */; };
 		EB64BE17744245A0AF0F1987 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99018F8559804203B50FC4E6 /* Components.swift */; };
@@ -75,6 +77,7 @@
 		6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StripeConfig.swift; sourceTree = "<group>"; };
 		77F0FD454D2243F9954D55DC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		78EEC3E4AC434CCDB1F33D3B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitaminDatabase.swift; sourceTree = "<group>"; };
 		8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OccupancyDetailView.swift; sourceTree = "<group>"; };
 		9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressTabView.swift; sourceTree = "<group>"; };
 		9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GymPhotoViewer.swift; sourceTree = "<group>"; };
@@ -93,6 +96,7 @@
 		F19E3997796F4D24A679D9FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F67907A314E1428CADEF220C /* CoreApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F7767DFABE3FC38A17C249E0 /* ScanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		F7F173CD46DBE0612AD9D873 /* AuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		FF518BECB85AFB2EC8F75527 /* EventsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -188,6 +192,8 @@
 				04C78F049CC8950FCEE905BD /* PaymentService.swift */,
 				9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */,
 				FF518BECB85AFB2EC8F75527 /* EventsView.swift */,
+				F7767DFABE3FC38A17C249E0 /* ScanView.swift */,
+				8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -311,6 +317,8 @@
 				1D204D15172197CC95F29C1A /* PaymentService.swift in Sources */,
 				BAEABB3643DCA16A8216CDC6 /* PaymentSheetPresenter.swift in Sources */,
 				FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */,
+				3F356E097DF7CAE19BDEAF07 /* ScanView.swift in Sources */,
+				D1CD4AD3F987D65633F9A927 /* VitaminDatabase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
