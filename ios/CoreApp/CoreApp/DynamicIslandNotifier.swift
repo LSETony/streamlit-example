@@ -69,10 +69,22 @@ final class DynamicNotificationCenter: ObservableObject {
         }
     }
 
+    /// The window is sized to just the top notification band (not the full
+    /// screen) — its bounds ARE the touch-capture area, so UIKit naturally
+    /// passes touches outside that band through to the app underneath with
+    /// no custom hit-testing needed. An earlier version covered the whole
+    /// screen and tried to hand-roll passthrough by comparing the hit view
+    /// against `rootViewController?.view`, but SwiftUI hosts its content as
+    /// one collapsed view for hit-testing purposes, so that comparison was
+    /// true for every point on screen — the window swallowed all touches
+    /// everywhere (including on the pill itself), so swipe/tap-to-dismiss
+    /// never actually fired. Shrinking the window's own frame avoids the
+    /// problem entirely instead of working around it.
     private func showWindow() {
         guard overlayWindow == nil else { return }
         guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else { return }
-        let window = PassthroughWindow(windowScene: scene)
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: scene.screen.bounds.width, height: 140)
         window.windowLevel = UIWindow.Level(rawValue: UIWindow.Level.alert.rawValue + 1)
         window.backgroundColor = .clear
         let host = UIHostingController(rootView: DynamicIslandOverlay(center: self))
@@ -85,16 +97,6 @@ final class DynamicNotificationCenter: ObservableObject {
     private func hideWindow() {
         overlayWindow?.isHidden = true
         overlayWindow = nil
-    }
-}
-
-/// A `UIWindow` that only intercepts touches landing on a real subview
-/// (the notification pill itself) — taps anywhere else on screen fall
-/// straight through to the app underneath.
-private final class PassthroughWindow: UIWindow {
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard let hit = super.hitTest(point, with: event) else { return nil }
-        return hit == rootViewController?.view ? nil : hit
     }
 }
 
@@ -113,7 +115,6 @@ private struct DynamicIslandOverlay: View {
                     removal: .scale(scale: 0.5, anchor: .top).combined(with: .opacity)
                 ))
             }
-            Spacer()
         }
         .frame(maxWidth: .infinity)
         .ignoresSafeArea()

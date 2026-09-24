@@ -86,10 +86,28 @@ final class HeroVideoPlayerService: ObservableObject {
     let player = AVQueuePlayer()
     private var urls: [URL] = []
     private var endObserver: NSObjectProtocol?
+    /// Without this, a single broken/404 clip in the pool (exactly what
+    /// happens mid-way through swapping files in Supabase Storage) leaves
+    /// that AVPlayerItem stuck — it never reaches "did play to end", so the
+    /// queue silently stalls forever and the hero looks like the video just
+    /// vanished. This skips straight to the next item whenever one fails.
+    private var failureObserver: NSObjectProtocol?
 
     init() {
         player.isMuted = true
         player.automaticallyWaitsToMinimizeStalling = false
+        failureObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemFailedToPlayToEndTime, object: nil, queue: .main
+        ) { [weak self] note in
+            guard let self, let failedItem = note.object as? AVPlayerItem, self.player.items().contains(failedItem) else { return }
+            self.player.advanceToNextItem()
+            // If the failed item was also the last one queued, restart the
+            // whole pool instead of leaving playback stuck empty.
+            if self.player.items().isEmpty {
+                self.enqueueAll()
+                self.player.play()
+            }
+        }
     }
 
     func configure(urls: [URL]) {
@@ -116,6 +134,7 @@ final class HeroVideoPlayerService: ObservableObject {
 
     deinit {
         if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+        if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
     }
 }
 
