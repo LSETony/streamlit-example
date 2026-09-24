@@ -58,7 +58,7 @@ struct HomeView: View {
                 ZStack {
                     Color.appBackground
                     if !appState.heroVideoURLs.isEmpty {
-                        HeroVideoQueue(urls: appState.heroVideoURLs)
+                        HeroVideoQueue(player: appState.heroVideoPlayer.player)
                     }
                 }
                 .frame(width: geo.size.width, height: geo.size.height)

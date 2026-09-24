@@ -51,6 +51,9 @@ final class AppState: ObservableObject {
     /// to the start once the last one finishes (shuffled once per launch
     /// for variety).
     @Published var heroVideoURLs: [URL] = []
+    /// Starts buffering the hero videos as soon as heroVideoURLs loads,
+    /// not only once HomeView's hero view appears — see its doc comment.
+    let heroVideoPlayer = HeroVideoPlayerService()
     /// Extra real gym photos for the photo strip in GymPhotoViewer.
     @Published var gymPhotoURLs: [URL] = []
     @Published var trainingProgressPercent: Int = 67

@@ -42,6 +42,7 @@ extension AppState {
             .split(separator: ",")
             .compactMap { URL(string: $0.trimmingCharacters(in: .whitespaces)) }
             .shuffled() ?? []
+        heroVideoPlayer.configure(urls: heroVideoURLs)
         gymPhotoURLs = settings["gym_photo_urls"]?
             .split(separator: ",")
             .compactMap { URL(string: $0.trimmingCharacters(in: .whitespaces)) } ?? []

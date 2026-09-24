@@ -13,57 +13,23 @@ extension Image {
     }
 }
 
-/// A WorkoutCard's cover photo. Priority: a real photo uploaded to
-/// Supabase Storage (card.imageURL) — then, if only a video was
-/// uploaded, a frame grabbed live from that video — then the bundled
-/// asset (card.imageName) as a last resort. This is what makes card
-/// list thumbnails (which never show the live video, only
-/// WorkoutDetailView's hero does) reflect the real uploaded footage
-/// instead of a reused generic photo. Callers apply their own
-/// `.frame`/`.clipped`; this view always fills.
+/// A WorkoutCard's cover photo — a real photo uploaded to Supabase Storage
+/// (card.imageURL) when set, otherwise the bundled asset (card.imageName).
+/// Callers apply their own `.frame`/`.clipped`; this view always fills.
 struct WorkoutCoverImage: View {
     let card: WorkoutCard
-    @State private var videoFrame: Image?
 
     var body: some View {
-        Group {
-            if let url = card.imageURL {
-                AsyncImage(url: url) { phase in
-                    if case .success(let image) = phase {
-                        image.resizable().scaledToFill()
-                    } else {
-                        fallback
-                    }
+        if let url = card.imageURL {
+            AsyncImage(url: url) { phase in
+                if case .success(let image) = phase {
+                    image.resizable().scaledToFill()
+                } else {
+                    Image(card.imageName).resizable().scaledToFill()
                 }
-            } else {
-                fallback
             }
-        }
-    }
-
-    @ViewBuilder
-    private var fallback: some View {
-        if let videoFrame {
-            videoFrame.resizable().scaledToFill()
         } else {
-            Image(card.imageName)
-                .resizable()
-                .scaledToFill()
-                .task(id: card.videoURL) {
-                    guard let videoURL = card.videoURL else { return }
-                    videoFrame = await Self.grabFrame(from: videoURL)
-                }
-        }
-    }
-
-    private static func grabFrame(from url: URL) async -> Image? {
-        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
-        generator.appliesPreferredTrackTransform = true
-        do {
-            let cgImage = try await generator.image(at: CMTime(seconds: 1, preferredTimescale: 600)).image
-            return Image(decorative: cgImage, scale: 1)
-        } catch {
-            return nil
+            Image(card.imageName).resizable().scaledToFill()
         }
     }
 }
@@ -109,53 +75,62 @@ struct WorkoutHeroVideo: UIViewRepresentable {
     func updateUIView(_ uiView: PlayerLayerView, context: Context) {}
 }
 
-/// Plays through a whole list of Storage videos in order, muted, advancing
-/// to the next one as each finishes and looping back to the first once the
-/// last one ends — used for the Home hero, which has several uploaded
-/// clips with no single one that "belongs" there.
+/// Owns the Home hero's AVQueuePlayer independently of whether HomeView is
+/// currently on screen. AppState creates this once and calls `configure`
+/// right after `heroVideoURLs` loads (during the splash/auth/onboarding
+/// screens) — so buffering starts well before the member ever reaches
+/// Home, instead of only starting when HeroVideoQueue's makeUIView first
+/// runs, which was the source of the visible startup delay.
+@MainActor
+final class HeroVideoPlayerService: ObservableObject {
+    let player = AVQueuePlayer()
+    private var urls: [URL] = []
+    private var endObserver: NSObjectProtocol?
+
+    init() {
+        player.isMuted = true
+        player.automaticallyWaitsToMinimizeStalling = false
+    }
+
+    func configure(urls: [URL]) {
+        guard urls != self.urls else { return }
+        self.urls = urls
+        enqueueAll()
+        player.play()
+    }
+
+    private func enqueueAll() {
+        guard !urls.isEmpty else { return }
+        player.removeAllItems()
+        let items = urls.map { AVPlayerItem(url: $0) }
+        for item in items { player.insert(item, after: player.items().last) }
+
+        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+        endObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime, object: items.last, queue: .main
+        ) { [weak self] _ in
+            self?.enqueueAll()
+            self?.player.play()
+        }
+    }
+
+    deinit {
+        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+    }
+}
+
+/// Displays the Home hero's already-running, already-buffering player
+/// (see HeroVideoPlayerService) — this view itself owns no playback state.
 struct HeroVideoQueue: UIViewRepresentable {
-    let urls: [URL]
+    let player: AVQueuePlayer
 
     func makeUIView(context: Context) -> PlayerLayerView {
         let view = PlayerLayerView()
-        let player = AVQueuePlayer()
-        player.isMuted = true
         view.playerLayer.player = player
-        context.coordinator.player = player
-        context.coordinator.urls = urls
-        context.coordinator.enqueueAll()
-        player.play()
         return view
     }
 
     func updateUIView(_ uiView: PlayerLayerView, context: Context) {}
-
-    func makeCoordinator() -> Coordinator { Coordinator() }
-
-    final class Coordinator {
-        var player: AVQueuePlayer?
-        var urls: [URL] = []
-        private var endObserver: NSObjectProtocol?
-
-        func enqueueAll() {
-            guard let player, !urls.isEmpty else { return }
-            player.removeAllItems()
-            let items = urls.map { AVPlayerItem(url: $0) }
-            for item in items { player.insert(item, after: player.items().last) }
-
-            if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
-            endObserver = NotificationCenter.default.addObserver(
-                forName: .AVPlayerItemDidPlayToEndTime, object: items.last, queue: .main
-            ) { [weak self] _ in
-                self?.enqueueAll()
-                self?.player?.play()
-            }
-        }
-
-        deinit {
-            if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
-        }
-    }
 }
 
 /// Horizontal progress bar used by the Home "Your Progress" card.
