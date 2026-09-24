@@ -72,10 +72,10 @@ final class AppState: ObservableObject {
     /// Behind the Home "Your Progress" card — total sets/time/calories and
     /// a session-by-session history.
     @Published var workoutHistory: [WorkoutHistoryEntry] = [
-        WorkoutHistoryEntry(date: "Today", title: "Chest and Triceps", sets: 14, minutes: 38, calories: 312),
-        WorkoutHistoryEntry(date: "Yesterday", title: "Beginner Body Weight Plan", sets: 10, minutes: 27, calories: 205),
-        WorkoutHistoryEntry(date: "Mon", title: "Sam's Prental Flow", sets: 12, minutes: 22, calories: 168),
-        WorkoutHistoryEntry(date: "Sat", title: "Beginner Female Aesthetics", sets: 16, minutes: 41, calories: 289),
+        WorkoutHistoryEntry(date: "Today", title: "Chest and Triceps", sets: 14, minutes: 38, calories: 312, completedAt: Date()),
+        WorkoutHistoryEntry(date: "Yesterday", title: "Beginner Body Weight Plan", sets: 10, minutes: 27, calories: 205, completedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()),
+        WorkoutHistoryEntry(date: "Mon", title: "Sam's Prental Flow", sets: 12, minutes: 22, calories: 168, completedAt: Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date()),
+        WorkoutHistoryEntry(date: "Sat", title: "Beginner Female Aesthetics", sets: 16, minutes: 41, calories: 289, completedAt: Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date()),
     ]
     var totalSetsThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.sets } }
     var totalMinutesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.minutes } }
@@ -139,11 +139,13 @@ final class AppState: ObservableObject {
     func rescheduleSession(_ session: BookedSession, to newDate: Date) {
         guard let index = bookedSessions.firstIndex(where: { $0.id == session.id }) else { return }
         bookedSessions[index].date = newDate
+        NotificationService.scheduleSessionReminder(id: session.id, title: session.title, trainerName: session.trainerName, date: newDate)
         Task { await self.updateSessionDate(session.id, to: newDate) }
     }
 
     func cancelSession(_ session: BookedSession) {
         bookedSessions.removeAll { $0.id == session.id }
+        NotificationService.cancelSessionReminder(id: session.id)
         Task { await self.deleteSession(session.id) }
     }
 
@@ -165,6 +167,7 @@ final class AppState: ObservableObject {
         }
         let session = BookedSession(date: date, title: zone.name, trainerName: zone.subtitle)
         bookedSessions.append(session)
+        NotificationService.scheduleSessionReminder(id: session.id, title: session.title, trainerName: session.trainerName, date: session.date)
         Task { await self.insertSession(session) }
     }
 
@@ -216,6 +219,30 @@ final class AppState: ObservableObject {
     // DynamicIslandNotifier.swift. Call notificationCenter.trigger(...)
     // from anywhere; no view modifier needs to be attached.
     let notificationCenter = DynamicNotificationCenter()
+
+    // MARK: Streaks, achievements, check-ins, referrals, leaderboard
+    // (AppState+Growth.swift). Backed by the `member_stats` Supabase table
+    // so the streak/visit count is shared across every device this member
+    // uses, not just kept in local UserDefaults.
+    @Published var streakDays: Int = 0
+    @Published var referralCode: String = ""
+    @Published var progressPhotos: [ProgressPhoto] = []
+    @Published var leaderboard: [LeaderboardEntry] = []
+    /// Not `@Published` — internal bookkeeping for streak math only (see
+    /// AppState+Growth.swift's recordActivity()), not something any view
+    /// binds to directly.
+    var lastActivityDate: Date?
+
+    var achievements: [Achievement] {
+        [
+            Achievement(icon: "figure.run", title: "First Workout", detail: "Log your first session", isUnlocked: !workoutHistory.isEmpty),
+            Achievement(icon: "flame.fill", title: "7 Day Streak", detail: "Stay active 7 days running", isUnlocked: streakDays >= 7),
+            Achievement(icon: "flame.fill", title: "30 Day Streak", detail: "Stay active 30 days running", isUnlocked: streakDays >= 30),
+            Achievement(icon: "checkmark.seal.fill", title: "10 Workouts", detail: "Complete 10 sessions", isUnlocked: workoutHistory.count >= 10),
+            Achievement(icon: "checkmark.seal.fill", title: "50 Workouts", detail: "Complete 50 sessions", isUnlocked: workoutHistory.count >= 50),
+            Achievement(icon: "star.fill", title: "100 Visits", detail: "Check in 100 times", isUnlocked: totalVisits >= 100),
+        ]
+    }
 }
 
 struct CartLine: Identifiable {

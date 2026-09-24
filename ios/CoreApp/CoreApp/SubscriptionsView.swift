@@ -37,6 +37,9 @@ struct SubscriptionsView: View {
                 if succeeded, let name = payingPlanName {
                     appState.membershipPlanName = name
                     appState.notificationCenter.trigger(icon: "checkmark.circle.fill", title: "Payment successful", subtitle: "\(name) subscription active", accent: .appSuccess)
+                    if let renewDate = Self.renewDateFormatter.date(from: appState.membershipRenewDate) {
+                        NotificationService.scheduleRenewalReminder(planName: name, renewDate: renewDate)
+                    }
                 }
                 payingPlanName = nil
             })
@@ -47,6 +50,12 @@ struct SubscriptionsView: View {
             }
         }
     }
+
+    private static let renewDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMM yyyy"
+        return formatter
+    }()
 
     private func planCard(_ plan: SubscriptionPlan) -> some View {
         let isCurrent = plan.name == appState.membershipPlanName

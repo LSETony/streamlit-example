@@ -98,6 +98,40 @@ struct WorkoutHistoryEntry: Identifiable {
     let sets: Int
     let minutes: Int
     let calories: Int
+    /// A real `Date`, alongside the display label above — used to compute
+    /// the workout streak (consecutive calendar days with a logged entry).
+    /// Defaults to now so existing call sites that only cared about the
+    /// display label keep compiling; the 4 seeded entries in AppState.swift
+    /// pass real relative dates matching their labels.
+    var completedAt: Date = Date()
+}
+
+// MARK: - Achievements / streaks (Progress tab)
+
+struct Achievement: Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let detail: String
+    let isUnlocked: Bool
+}
+
+// MARK: - Progress photos (before/after gallery)
+
+struct ProgressPhoto: Identifiable, Decodable {
+    let id: UUID
+    let imageURL: URL
+    let takenAt: Date
+}
+
+// MARK: - Community (referrals + leaderboard)
+
+struct LeaderboardEntry: Identifiable {
+    let id: String // device_user_id
+    let displayName: String
+    let totalVisits: Int
+    let streakDays: Int
+    let isMe: Bool
 }
 
 /// One point on the Progress screen's muscle-mass growth chart.

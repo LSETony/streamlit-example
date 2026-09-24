@@ -9,11 +9,14 @@ struct ProgressDetailView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
     @State private var selectedProduct: Product?
+    @State private var isShowingProgressPhotos = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
+                    streakSection
+                    achievementsSection
                     muscleMassCard
                     bodyCompositionSection
                     vitaminRecommendationsSection
@@ -35,7 +38,70 @@ struct ProgressDetailView: View {
             .sheet(item: $selectedProduct) { product in
                 NavigationStack { ProductDetailView(product: product) }
             }
+            .sheet(isPresented: $isShowingProgressPhotos) {
+                ProgressPhotosView()
+            }
         }
+    }
+
+    // MARK: Streak + achievements
+
+    private var streakSection: some View {
+        HStack(spacing: 14) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Image(systemName: "flame.fill").foregroundStyle(Color.appAccent)
+                    Text("\(appState.streakDays)").font(.digitalTimer(32)).foregroundStyle(.white)
+                }
+                Text("day streak")
+                    .font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+            }
+            Spacer()
+            Button { isShowingProgressPhotos = true } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "photo.on.rectangle.angled")
+                    Text("Photos")
+                }
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
+            }
+            .buttonStyle(.plain)
+            .glassEffect(.regular.tint(.appAccentPurple), in: Capsule())
+        }
+        .appCard(padding: 20)
+    }
+
+    private var achievementsSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            EyebrowLabel(text: "Achievements")
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                ForEach(appState.achievements) { achievement in
+                    achievementTile(achievement)
+                }
+            }
+        }
+    }
+
+    private func achievementTile(_ achievement: Achievement) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Image(systemName: achievement.icon)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(achievement.isUnlocked ? Color.appAccent : Color.appTextSecondary)
+            Text(achievement.title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(achievement.isUnlocked ? .white : Color.appTextSecondary)
+            Text(achievement.detail)
+                .font(.system(size: 11))
+                .foregroundStyle(Color.appTextSecondary)
+                .lineLimit(2)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .opacity(achievement.isUnlocked ? 1 : 0.5)
+        .background(Color.appSurface)
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
     }
 
     // MARK: Muscle mass chart

@@ -1,4 +1,5 @@
 import SwiftUI
+import HealthKit
 
 /// Opened when a workout card in the library is tapped — shows the plan's
 /// full exercise breakdown and lets the user start a live session that
@@ -107,9 +108,11 @@ struct WorkoutDetailView: View {
 /// time, then shows a finish summary with the total elapsed time.
 struct ActiveWorkoutView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appState: AppState
     let card: WorkoutCard
     @State private var exerciseIndex = 0
     @State private var currentSet = 1
+    @State private var hasRecordedCompletion = false
     private let startedAt = Date()
 
     private var isFinished: Bool { exerciseIndex >= card.exercises.count }
@@ -204,6 +207,35 @@ struct ActiveWorkoutView: View {
             } else {
                 exerciseIndex += 1
                 currentSet = 1
+            }
+        }
+        if isFinished, !hasRecordedCompletion {
+            hasRecordedCompletion = true
+            recordCompletion()
+        }
+    }
+
+    /// Logs the session (history entry, streak, Apple Health if synced,
+    /// and a Dynamic Island confirmation) the moment the last set finishes.
+    private func recordCompletion() {
+        let endedAt = Date()
+        let totalSets = card.exercises.reduce(0) { $0 + $1.sets }
+        let minutes = max(1, Int(endedAt.timeIntervalSince(startedAt) / 60))
+        let calories = Int(Double(minutes) * 7) // rough strength-training estimate, ~7 kcal/min
+        appState.workoutHistory.insert(
+            WorkoutHistoryEntry(date: "Today", title: card.title, sets: totalSets, minutes: minutes, calories: calories, completedAt: endedAt),
+            at: 0
+        )
+        if appState.appleHealthSyncEnabled {
+            HealthKitService.shared.saveWorkout(activityType: .traditionalStrengthTraining, start: startedAt, end: endedAt, calories: Double(calories))
+        }
+        Task {
+            await appState.recordActivity()
+            await MainActor.run {
+                appState.notificationCenter.trigger(
+                    icon: "flame.fill", title: "Workout complete!",
+                    subtitle: "\(appState.streakDays)-day streak", accent: .appAccent
+                )
             }
         }
     }

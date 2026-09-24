@@ -15,28 +15,46 @@ struct EventsView: View {
         let timeLabel: String
         let spotsLeft: Int
         let description: String
+        /// A real Date backing `dateLabel`/`timeLabel` — needed so a
+        /// "Join" reminder (NotificationService.scheduleEventReminder) can
+        /// actually be scheduled instead of just displayed.
+        let date: Date
+    }
+
+    private static func eventDate(month: Int, day: Int, hour: Int, minute: Int) -> Date {
+        var components = DateComponents()
+        components.year = 2026
+        components.month = month
+        components.day = day
+        components.hour = hour
+        components.minute = minute
+        return Calendar.current.date(from: components) ?? Date()
     }
 
     private let events: [ClubEvent] = [
         ClubEvent(
             icon: "flame.fill", title: "HIIT Circuit Night",
             dateLabel: "Fri, Oct 3", timeLabel: "19:00", spotsLeft: 6,
-            description: "A 45-minute group HIIT session on the studio floor — bodyweight and kettlebell circuits, all levels welcome."
+            description: "A 45-minute group HIIT session on the studio floor — bodyweight and kettlebell circuits, all levels welcome.",
+            date: eventDate(month: 10, day: 3, hour: 19, minute: 0)
         ),
         ClubEvent(
             icon: "figure.strengthtraining.traditional", title: "Powerlifting Seminar",
             dateLabel: "Sat, Oct 11", timeLabel: "11:00", spotsLeft: 10,
-            description: "Squat/bench/deadlift technique breakdown with the strength floor coaches, plus a form-check Q&A."
+            description: "Squat/bench/deadlift technique breakdown with the strength floor coaches, plus a form-check Q&A.",
+            date: eventDate(month: 10, day: 11, hour: 11, minute: 0)
         ),
         ClubEvent(
             icon: "leaf.fill", title: "Mobility & Recovery Workshop",
             dateLabel: "Wed, Oct 15", timeLabel: "18:30", spotsLeft: 14,
-            description: "Guided stretching, foam rolling and breathing work to help recovery between heavy training blocks."
+            description: "Guided stretching, foam rolling and breathing work to help recovery between heavy training blocks.",
+            date: eventDate(month: 10, day: 15, hour: 18, minute: 30)
         ),
         ClubEvent(
             icon: "person.3.fill", title: "Member Social + New Gear Reveal",
             dateLabel: "Sat, Oct 25", timeLabel: "17:00", spotsLeft: 30,
-            description: "Meet other members, try the new equipment on the strength floor, light snacks and drinks provided."
+            description: "Meet other members, try the new equipment on the strength floor, light snacks and drinks provided.",
+            date: eventDate(month: 10, day: 25, hour: 17, minute: 0)
         ),
     ]
 
@@ -107,9 +125,11 @@ struct EventsView: View {
                 Button {
                     if isJoined {
                         joinedEventIDs.remove(event.id)
+                        NotificationService.cancelEventReminder(id: event.id)
                     } else {
                         joinedEventIDs.insert(event.id)
                         appState.notificationCenter.trigger(icon: "calendar.badge.checkmark", title: "You're in!", subtitle: event.title, accent: .appAccentPurple)
+                        NotificationService.scheduleEventReminder(id: event.id, title: event.title, date: event.date)
                     }
                 } label: {
                     Text(isJoined ? "Joined ✓" : "Join")

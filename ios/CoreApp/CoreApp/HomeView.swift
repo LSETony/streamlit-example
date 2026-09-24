@@ -15,6 +15,7 @@ struct HomeView: View {
     @State private var showGymPhoto = false
     @State private var pendingGymPhoto = false
     @State private var isShowingScan = false
+    @State private var isShowingCheckIn = false
 
     var body: some View {
         ScrollView {
@@ -51,6 +52,9 @@ struct HomeView: View {
         }
         .fullScreenCover(isPresented: $isShowingScan) {
             ScanView()
+        }
+        .fullScreenCover(isPresented: $isShowingCheckIn) {
+            CheckInView()
         }
     }
 
@@ -204,6 +208,7 @@ struct HomeView: View {
                 rectTile(icon: "IconCart", title: "Store") { activeSheet = .store }
                 rectTile(icon: "IconFaceScan", title: "Scan") { isShowingScan = true }
                 rectTile(icon: "IconAISparkle", title: "Core AI") { activeSheet = .coreAI }
+                rectTile(icon: "qrcode.viewfinder", isSystemIcon: true, title: "Check In") { isShowingCheckIn = true }
             }
         }
     }

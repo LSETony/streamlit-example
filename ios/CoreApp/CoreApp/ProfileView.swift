@@ -11,6 +11,8 @@ struct ProfileView: View {
     @EnvironmentObject var authService: AuthService
     @State private var isShowingQRPass = false
     @State private var isShowingMembership = false
+    @State private var isShowingReferral = false
+    @State private var isShowingLeaderboard = false
 
     var body: some View {
         NavigationStack {
@@ -26,6 +28,7 @@ struct ProfileView: View {
                         .buttonStyle(.plain)
                     statsRow
                     healthCard
+                    communityRow
                     Spacer(minLength: 40)
                     logoutButton
                 }
@@ -41,7 +44,41 @@ struct ProfileView: View {
             .sheet(isPresented: $isShowingMembership) {
                 MembershipDetailView()
             }
+            .sheet(isPresented: $isShowingReferral) {
+                ReferralView()
+            }
+            .sheet(isPresented: $isShowingLeaderboard) {
+                LeaderboardView()
+            }
         }
+    }
+
+    private var communityRow: some View {
+        HStack(spacing: 10) {
+            Button { isShowingReferral = true } label: {
+                communityTile(icon: "person.badge.plus", title: "Invite a friend")
+            }
+            .buttonStyle(.plain)
+            Button { isShowingLeaderboard = true } label: {
+                communityTile(icon: "trophy.fill", title: "Leaderboard")
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func communityTile(icon: String, title: String) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Image(systemName: icon)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(Color.appAccent)
+            Text(title)
+                .font(.brand(15))
+                .foregroundStyle(.white)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(Color.black.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 
     private var header: some View {
@@ -128,15 +165,39 @@ struct ProfileView: View {
         .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(.white.opacity(0.5), lineWidth: 0.5))
     }
 
+    private var healthToggleBinding: Binding<Bool> {
+        Binding(
+            get: { appState.appleHealthSyncEnabled },
+            set: { newValue in
+                guard newValue else {
+                    appState.appleHealthSyncEnabled = false
+                    return
+                }
+                Task {
+                    let granted = await HealthKitService.shared.requestAuthorization()
+                    await MainActor.run {
+                        appState.appleHealthSyncEnabled = granted
+                        if !granted {
+                            appState.notificationCenter.trigger(
+                                icon: "exclamationmark.triangle.fill", title: "Apple Health not connected",
+                                subtitle: "Allow access in Settings to sync workouts.", accent: .appWarning
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+
     private var healthCard: some View {
         HStack {
             VStack(alignment: .leading, spacing: 3) {
                 Text("Apple Health").font(.brand(24)).foregroundStyle(.white)
-                Text(appState.appleHealthSyncEnabled ? "Steps, sleep, heart rate syncing" : "Disconnected")
+                Text(appState.appleHealthSyncEnabled ? "Workouts syncing to Health" : "Disconnected")
                     .font(.brand(16)).foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
-            Toggle("", isOn: $appState.appleHealthSyncEnabled)
+            Toggle("", isOn: healthToggleBinding)
                 .labelsHidden()
                 .tint(.appAccent)
         }

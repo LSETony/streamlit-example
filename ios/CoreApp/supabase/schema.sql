@@ -354,3 +354,36 @@ insert into public.subscription_plans (name, price, period, perks, recommended) 
 ('Basic', 39, 'mo', array['Gym floor access','Locker room','1 club location'], false),
 ('Unlimited 24/7', 79, 'mo', array['24/7 access, every club','Group classes included','Guest passes ×2/mo'], true),
 ('Premium + PT', 129, 'mo', array['Everything in Unlimited','4 PT sessions/mo','Priority booking'], false);
+
+-- Streaks / check-ins / referrals / leaderboard / progress photos
+-- (see add_growth_features.sql for the standalone migration; mirrored
+-- here so a fresh install has these tables from the start).
+create table if not exists public.member_stats (
+  device_user_id text primary key,
+  display_name text not null default 'Member',
+  total_visits int not null default 0,
+  current_streak int not null default 0,
+  last_activity_date date,
+  referral_code text unique,
+  referred_by text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.progress_photos (
+  id uuid primary key default gen_random_uuid(),
+  device_user_id text not null,
+  image_url text not null,
+  taken_at timestamptz not null default now()
+);
+
+alter table public.member_stats enable row level security;
+alter table public.progress_photos enable row level security;
+
+drop policy if exists "Public read" on public.member_stats;
+create policy "Public read" on public.member_stats for select using (true);
+
+drop policy if exists "Anon full access" on public.member_stats;
+create policy "Anon full access" on public.member_stats for all using (true) with check (true);
+
+drop policy if exists "Anon full access" on public.progress_photos;
+create policy "Anon full access" on public.progress_photos for all using (true) with check (true);

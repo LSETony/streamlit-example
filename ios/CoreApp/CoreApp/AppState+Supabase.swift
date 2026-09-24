@@ -46,6 +46,9 @@ extension AppState {
         gymPhotoURLs = settings["gym_photo_urls"]?
             .split(separator: ",")
             .compactMap { URL(string: $0.trimmingCharacters(in: .whitespaces)) } ?? []
+
+        await loadMemberStats()
+        await loadProgressPhotos()
     }
 
     // MARK: Bookings
