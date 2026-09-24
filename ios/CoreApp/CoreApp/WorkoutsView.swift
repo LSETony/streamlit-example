@@ -106,7 +106,7 @@ struct WorkoutsView: View {
                             HStack(spacing: 10) {
                                 ForEach(appState.importantCards) { card in
                                     ImportantCardTile(card: card, width: cardWidth) {
-                                        if card.title == "Rules" { isShowingGymSafety = true }
+                                        if card.title == "Rules" || card.title == "Gym Safety" { isShowingGymSafety = true }
                                         if card.title == "Events" { isShowingEvents = true }
                                     }
                                 }
