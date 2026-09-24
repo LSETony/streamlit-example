@@ -56,9 +56,7 @@ struct HomeView: View {
         GeometryReader { geo in
             ZStack(alignment: .topLeading) {
                 ZStack {
-                    Image("HomeHero")
-                        .resizable()
-                        .scaledToFill()
+                    Color.appBackground
                     if let heroVideoURL = appState.heroVideoURL {
                         WorkoutHeroVideo(url: heroVideoURL)
                     }
