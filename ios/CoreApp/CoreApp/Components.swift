@@ -68,12 +68,24 @@ struct WorkoutCoverImage: View {
     }
 }
 
+/// Backing UIView for both video components below — a bare AVPlayerLayer
+/// (not SwiftUI's VideoPlayer, which always shows native playback
+/// controls, wrong for a background loop).
+final class PlayerLayerView: UIView {
+    override static var layerClass: AnyClass { AVPlayerLayer.self }
+    var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        playerLayer.videoGravity = .resizeAspectFill
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+}
+
 /// A WorkoutCard's hero video — a real video uploaded to Supabase Storage,
 /// played muted and looping (like a Live Photo). Nothing renders when
 /// card.videoURL is nil; callers should keep the cover photo underneath.
-/// Uses a bare AVPlayerLayer (not SwiftUI's VideoPlayer) because
-/// VideoPlayer always shows native playback controls, which a background
-/// loop shouldn't have.
 struct WorkoutHeroVideo: UIViewRepresentable {
     let url: URL
 
@@ -95,17 +107,54 @@ struct WorkoutHeroVideo: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: PlayerLayerView, context: Context) {}
+}
 
-    final class PlayerLayerView: UIView {
-        override static var layerClass: AnyClass { AVPlayerLayer.self }
-        var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
+/// Plays through a whole list of Storage videos in order, muted, advancing
+/// to the next one as each finishes and looping back to the first once the
+/// last one ends — used for the Home hero, which has several uploaded
+/// clips with no single one that "belongs" there.
+struct HeroVideoQueue: UIViewRepresentable {
+    let urls: [URL]
 
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            playerLayer.videoGravity = .resizeAspectFill
+    func makeUIView(context: Context) -> PlayerLayerView {
+        let view = PlayerLayerView()
+        let player = AVQueuePlayer()
+        player.isMuted = true
+        view.playerLayer.player = player
+        context.coordinator.player = player
+        context.coordinator.urls = urls
+        context.coordinator.enqueueAll()
+        player.play()
+        return view
+    }
+
+    func updateUIView(_ uiView: PlayerLayerView, context: Context) {}
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    final class Coordinator {
+        var player: AVQueuePlayer?
+        var urls: [URL] = []
+        private var endObserver: NSObjectProtocol?
+
+        func enqueueAll() {
+            guard let player, !urls.isEmpty else { return }
+            player.removeAllItems()
+            let items = urls.map { AVPlayerItem(url: $0) }
+            for item in items { player.insert(item, after: player.items().last) }
+
+            if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+            endObserver = NotificationCenter.default.addObserver(
+                forName: .AVPlayerItemDidPlayToEndTime, object: items.last, queue: .main
+            ) { [weak self] _ in
+                self?.enqueueAll()
+                self?.player?.play()
+            }
         }
 
-        required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+        deinit {
+            if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+        }
     }
 }
 

@@ -47,8 +47,10 @@ final class AppState: ObservableObject {
     @Published var clubHoursLabel: String = "until 22:00"
     @Published var clubDescription: String = "A full strength floor, free weights, cardio and a group class studio — steps from the metro, open daily."
     /// Uploaded gym clips that don't belong to one specific workout card —
-    /// the Home hero photo loops a randomly-picked one behind it instead.
-    @Published var heroVideoURL: URL?
+    /// the Home hero plays through this whole set in order, looping back
+    /// to the start once the last one finishes (shuffled once per launch
+    /// for variety).
+    @Published var heroVideoURLs: [URL] = []
     /// Extra real gym photos for the photo strip in GymPhotoViewer.
     @Published var gymPhotoURLs: [URL] = []
     @Published var trainingProgressPercent: Int = 67

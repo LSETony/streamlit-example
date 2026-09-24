@@ -57,8 +57,8 @@ struct HomeView: View {
             ZStack(alignment: .topLeading) {
                 ZStack {
                     Color.appBackground
-                    if let heroVideoURL = appState.heroVideoURL {
-                        WorkoutHeroVideo(url: heroVideoURL)
+                    if !appState.heroVideoURLs.isEmpty {
+                        HeroVideoQueue(urls: appState.heroVideoURLs)
                     }
                 }
                 .frame(width: geo.size.width, height: geo.size.height)
