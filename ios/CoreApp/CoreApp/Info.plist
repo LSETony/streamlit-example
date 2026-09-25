@@ -28,6 +28,8 @@
 	<string>core. reads steps, sleep and heart rate from Apple Health to personalize your readiness score.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>core. can write completed workouts back to Apple Health.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>GIDClientID</key>
 	<string>REPLACE_WITH_YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>

@@ -137,9 +137,25 @@ struct ActiveWorkoutView: View {
         .navigationBarBackButtonHidden(isFinished)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("End") { dismiss() }.foregroundStyle(Color.appTextSecondary)
+                Button("End") {
+                    LiveActivityService.end()
+                    dismiss()
+                }.foregroundStyle(Color.appTextSecondary)
             }
         }
+        .onAppear {
+            LiveActivityService.start(workoutTitle: card.title, state: currentActivityState)
+        }
+    }
+
+    private var currentActivityState: WorkoutActivityAttributes.ContentState {
+        WorkoutActivityAttributes.ContentState(
+            exerciseName: currentExercise?.name ?? "Finished",
+            exerciseIndex: exerciseIndex,
+            totalExercises: card.exercises.count,
+            currentSet: currentSet,
+            totalSets: currentExercise?.sets ?? 0
+        )
     }
 
     @ViewBuilder
@@ -212,6 +228,8 @@ struct ActiveWorkoutView: View {
         if isFinished, !hasRecordedCompletion {
             hasRecordedCompletion = true
             recordCompletion()
+        } else {
+            LiveActivityService.update(currentActivityState)
         }
     }
 
@@ -229,6 +247,7 @@ struct ActiveWorkoutView: View {
         if appState.appleHealthSyncEnabled {
             HealthKitService.shared.saveWorkout(activityType: .traditionalStrengthTraining, start: startedAt, end: endedAt, calories: Double(calories))
         }
+        LiveActivityService.end()
         Task {
             await appState.recordActivity()
             await MainActor.run {
