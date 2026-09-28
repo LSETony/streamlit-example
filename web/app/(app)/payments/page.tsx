@@ -1,0 +1,95 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { PageHeader } from "@/components/app-shell";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/misc";
+import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
+import { PaymentStatusBadge } from "@/components/status";
+import { requireStaff } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
+import { addDays, date, dateTime, money, zonedToUtc } from "@/lib/format";
+import { METHOD_LABEL, type PaymentMethod, type PaymentStatus } from "@/lib/types";
+import { PaymentFilters } from "./filters";
+import { ExportPayments } from "./export";
+import { RefundButton } from "./refund-button";
+
+export const metadata: Metadata = { title: "Оплаты" };
+
+export interface PaymentListRow {
+  id: string; amount: number; method: PaymentMethod; status: PaymentStatus; refund_of_id: string | null; membership_id: string | null;
+  paid_at: string | null; created_at: string; description: string | null; client_id: string | null;
+  clients: { full_name: string } | null; staff: { full_name: string } | null;
+}
+
+export default async function PaymentsPage({ searchParams }: PageProps<"/payments">) {
+  const ctx = await requireStaff(["owner", "admin"]);
+  const sp = await searchParams;
+  const from = typeof sp.from === "string" ? sp.from : ctx.today;
+  const to = typeof sp.to === "string" ? sp.to : ctx.today;
+  const method = typeof sp.method === "string" ? sp.method : "";
+  const status = typeof sp.status === "string" ? sp.status : "";
+  const tz = ctx.gym.timezone;
+  const supabase = await createClient();
+
+  let q = supabase.from("payments").select("*, clients(full_name), staff(full_name)").eq("gym_id", ctx.gym.id)
+    .gte("created_at", zonedToUtc(from, "00:00", tz).toISOString())
+    .lt("created_at", zonedToUtc(addDays(to, 1), "00:00", tz).toISOString());
+  if (method) q = q.eq("method", method);
+  if (status === "refunds") q = q.not("refund_of_id", "is", null);
+  else if (status) q = q.eq("status", status).is("refund_of_id", null);
+  const [{ data }, { data: summary }] = await Promise.all([
+    q.order("created_at", { ascending: false }).limit(1000),
+    supabase.rpc("payments_summary", { p_gym: ctx.gym.id, p_from: from, p_to: to }),
+  ]);
+  const rows = (data ?? []) as unknown as PaymentListRow[];
+  const s = (summary ?? {}) as { income: number; refunds: number; net: number; cash: number; card: number; online: number; count: number };
+
+  return (
+    <>
+      <PageHeader title="Оплаты" description={from === to ? date(from) : `${date(from)} – ${date(to)}`}
+        actions={<ExportPayments rows={rows} timezone={tz} from={from} to={to} />} />
+      <PaymentFilters from={from} to={to} method={method} status={status} today={ctx.today} />
+
+      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+        <Sum label="Итого" value={money(s.net)} strong />
+        <Sum label="Наличные" value={money(s.cash)} />
+        <Sum label="Карта" value={money(s.card)} />
+        <Sum label="Онлайн" value={money(s.online)} />
+        <Sum label="Возвраты" value={s.refunds ? `−${money(s.refunds)}` : money(0)} />
+      </div>
+
+      {rows.length === 0 ? <EmptyState title="Оплат за период нет" /> : (
+        <Card>
+          <Table>
+            <THead><TR><TH>Время</TH><TH>Клиент</TH><TH>Сумма</TH><TH>Способ</TH><TH>Статус</TH><TH className="hidden lg:table-cell">Назначение</TH><TH className="hidden xl:table-cell">Принял</TH><TH /></TR></THead>
+            <TBody>
+              {rows.map((p) => (
+                <TR key={p.id}>
+                  <TD className="whitespace-nowrap tabular">{dateTime(p.paid_at ?? p.created_at, tz)}</TD>
+                  <TD>{p.client_id ? <Link className="font-medium hover:underline" href={`/clients/${p.client_id}`}>{p.clients?.full_name}</Link> : "—"}</TD>
+                  <TD className={p.refund_of_id ? "whitespace-nowrap tabular text-destructive" : "whitespace-nowrap font-medium tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount)}</TD>
+                  <TD>{METHOD_LABEL[p.method]}</TD>
+                  <TD><PaymentStatusBadge status={p.status} isRefund={!!p.refund_of_id} /></TD>
+                  <TD className="hidden text-muted-foreground lg:table-cell">{p.description}</TD>
+                  <TD className="hidden text-muted-foreground xl:table-cell">{p.staff?.full_name ?? (p.method === "online" ? "приложение" : "—")}</TD>
+                  <TD className="text-right">
+                    {!p.refund_of_id && p.status === "succeeded" && !ctx.readOnly ? <RefundButton payment={p} /> : null}
+                  </TD>
+                </TR>
+              ))}
+            </TBody>
+          </Table>
+        </Card>
+      )}
+    </>
+  );
+}
+
+function Sum({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+  return (
+    <Card className="grid gap-1 p-4">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className={strong ? "text-2xl font-semibold" : "text-lg font-medium"}>{value}</span>
+    </Card>
+  );
+}

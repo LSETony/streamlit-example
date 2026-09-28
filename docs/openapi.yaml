@@ -1,0 +1,420 @@
+openapi: 3.1.0
+info:
+  title: core. — API для мобильного приложения
+  version: "1.0"
+  description: |
+    Приложение ходит в тот же бэкенд, что и кабинет зала (раздел 6 ТЗ).
+
+    * **Чтение** — REST Supabase (`/rest/v1/...`) с RLS: клиент видит только свои строки.
+    * **Всё, что меняет деньги или доступ** — Edge Functions (`/functions/v1/...`).
+    * **Обновления в реальном времени** — Supabase Realtime (`/realtime/v1`), таблицы `bookings`, `visits`,
+      `schedule_items` (RLS действует и для Realtime).
+
+    Каждый запрос несёт заголовки `apikey: <anon key>` и `Authorization: Bearer <access_token пользователя>`.
+
+    **Ошибки** возвращаются в едином формате `{code, message}`: `code` — машинный код для логики приложения,
+    `message` — текст по-русски, который можно показать пользователю как есть.
+
+    **Версионирование.** Текущая версия — `/functions/v1`. При несовместимых изменениях новая версия
+    публикуется рядом (`v2-<функция>`), старая работает минимум 3 месяца.
+
+    **Вход.** По номеру телефона и коду из SMS через Supabase Auth:
+    `POST /auth/v1/otp {phone}` → `POST /auth/v1/verify {phone, token, type: "sms"}` (в Swift — `supabase-swift`:
+    `auth.signInWithOTP(phone:)` и `auth.verifyOTP(phone:token:type: .sms)`).
+servers:
+  - url: https://api.core.example.ru
+    description: Продакшен (серверы в РФ)
+  - url: http://localhost:54321
+    description: Локальный стенд (deploy/docker-compose.yml)
+security:
+  - apikey: []
+    bearer: []
+
+tags:
+  - name: Аккаунт
+  - name: Пропуск
+  - name: Абонементы
+  - name: Расписание
+  - name: Оплата
+  - name: Зал
+
+paths:
+  /functions/v1/link:
+    post:
+      tags: [Аккаунт]
+      summary: Привязать аккаунт к клиентам залов по телефону
+      description: |
+        Находит записи клиентов с номером телефона из аккаунта во всех залах и привязывает их к пользователю.
+        Вызывать после каждого входа. Если список пуст — клиент выбирает зал (`GET /rest/v1/public_gyms`)
+        и вызывает `POST /rest/v1/rpc/join_gym`, затем покупает абонемент.
+      responses:
+        "200":
+          description: Привязанные клиенты
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  phone: { type: string, example: "+79160000001" }
+                  clients:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        client_id: { type: string, format: uuid }
+                        gym_id: { type: string, format: uuid }
+                        gym_name: { type: string, example: Атлет }
+                        full_name: { type: string }
+        "401": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+
+  /rest/v1/rpc/join_gym:
+    post:
+      tags: [Аккаунт]
+      summary: Стать клиентом зала из приложения (источник «приложение core.»)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [p_gym, p_full_name]
+              properties:
+                p_gym: { type: string, format: uuid }
+                p_full_name: { type: string }
+                p_marketing_consent: { type: boolean, default: false }
+      responses:
+        "200": { description: id клиента, content: { application/json: { schema: { type: string, format: uuid } } } }
+
+  /functions/v1/devices:
+    post:
+      tags: [Пропуск]
+      summary: Зарегистрировать устройство — push-токен и секрет динамического QR
+      description: |
+        Возвращает `qr_secret` — храните его в Keychain. При регистрации нового устройства секреты
+        остальных устройств пользователя отзываются (скриншот QR со старого телефона не пройдёт).
+        Чтобы обновить только push-токен, передайте `device_id`.
+
+        **Как строить QR (офлайн, каждые 30 секунд):**
+        ```
+        t   = floor(unix_time / 30)
+        msg = "CORE1:" + device_id + ":" + t
+        sig = hex(HMAC-SHA256(key = hex_decode(qr_secret), msg))[0..32]   // первые 16 байт
+        QR  = msg + ":" + sig
+        ```
+        Код принимается, если он не старше 60 секунд. Пример на Swift — в `docs/mobile-app.md`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                platform: { type: string, enum: [ios, android, web, telegram], default: ios }
+                push_token: { type: string, description: APNs device token }
+                device_id: { type: string, format: uuid }
+      responses:
+        "201":
+          description: Устройство и секрет
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  device_id: { type: string, format: uuid }
+                  qr_secret: { type: string, description: "32 байта в hex" }
+                  qr_period_seconds: { type: integer, example: 30 }
+                  qr_prefix: { type: string, example: CORE1 }
+
+  /functions/v1/checkin:
+    post:
+      tags: [Пропуск]
+      summary: Проверить QR и записать визит (ресепшен, в будущем — турникеты)
+      description: |
+        Вызывает сотрудник зала. Ответ всегда `200` с полем `ok`: зелёный/красный экран — результат проверки,
+        а не ошибка API. Повторный скан в течение 10 минут не списывает второй визит (`repeat: true`).
+        Коды отказа: `QR_INVALID`, `QR_EXPIRED`, `CLIENT_NOT_FOUND`, `NO_ACTIVE_MEMBERSHIP`,
+        `MEMBERSHIP_NOT_STARTED`, `MEMBERSHIP_FROZEN`, `NO_VISITS_LEFT`.
+        Клиент в приложении узнаёт о визите через Realtime (INSERT в `visits`).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  required: [gym_id, qr]
+                  properties:
+                    gym_id: { type: string, format: uuid }
+                    qr: { type: string, example: "CORE1:ec560a80-3408-434e-93d4-12a5eb7b4075:59666666:1f0c…" }
+                - type: object
+                  required: [client_id]
+                  properties:
+                    client_id: { type: string, format: uuid, description: ручная отметка }
+      responses:
+        "200":
+          description: Результат проверки
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CheckinResult" }
+
+  /rest/v1/memberships:
+    get:
+      tags: [Абонементы]
+      summary: Мои абонементы (RLS — только свои)
+      parameters:
+        - { name: select, in: query, schema: { type: string, example: "id,plan_name,kind,status,starts_on,ends_on,visits_left,freeze_days_max,freeze_days_used" } }
+        - { name: order, in: query, schema: { type: string, example: "ends_on.desc" } }
+      responses:
+        "200":
+          description: Список
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Membership" } }
+
+  /rest/v1/membership_plans:
+    get:
+      tags: [Абонементы]
+      summary: Тарифы зала, которые продаются в приложении
+      parameters:
+        - { name: gym_id, in: query, schema: { type: string, example: "eq.d1000000-0000-0000-0000-000000000001" } }
+        - { name: sold_online, in: query, schema: { type: string, example: "eq.true" } }
+        - { name: active, in: query, schema: { type: string, example: "eq.true" } }
+      responses:
+        "200":
+          description: Тарифы (цены в копейках)
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Plan" } }
+
+  /functions/v1/memberships/{id}/freeze:
+    post:
+      tags: [Абонементы]
+      summary: Заморозить абонемент (если зал разрешил заморозку из приложения)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from, to]
+              properties:
+                from: { type: string, format: date }
+                to: { type: string, format: date }
+                reason: { type: string }
+      responses:
+        "200": { description: Заморозка оформлена, дата окончания сдвинута }
+        "403": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error", description: "FREEZE_LIMIT, FREEZE_NOT_ALLOWED, INVALID_DATE, …" }
+
+  /rest/v1/schedule_items:
+    get:
+      tags: [Расписание]
+      summary: Расписание зала со свободными местами
+      description: Число занятых мест — `bookings(count)` с фильтром по статусу или через Realtime-подписку.
+      parameters:
+        - { name: select, in: query, schema: { type: string, example: "id,title,kind,trainer_name,starts_at,ends_at,capacity,cancelled,zone_id,bookings(status)" } }
+        - { name: gym_id, in: query, schema: { type: string, example: "eq.<gym_id>" } }
+        - { name: starts_at, in: query, schema: { type: string, example: "gte.2026-09-28T00:00:00Z" } }
+        - { name: order, in: query, schema: { type: string, example: starts_at } }
+      responses:
+        "200": { description: Занятия }
+
+  /functions/v1/bookings:
+    post:
+      tags: [Расписание]
+      summary: Записаться на занятие
+      description: Места проверяются под блокировкой в базе — на последнее место проходит ровно один. Коды — `CLASS_FULL`, `ALREADY_BOOKED`, `CLASS_STARTED`, `CLASS_CANCELLED`, `NO_ACTIVE_MEMBERSHIP`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [schedule_item_id]
+              properties:
+                schedule_item_id: { type: string, format: uuid }
+      responses:
+        "201":
+          description: Запись создана, push-подтверждение и напоминание за 2 часа поставлены в очередь
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking_id: { type: string, format: uuid }
+                  spots_left: { type: integer }
+        "409": { $ref: "#/components/responses/Error" }
+  /functions/v1/bookings/{id}:
+    delete:
+      tags: [Расписание]
+      summary: Отменить запись (не позднее чем за N часов — настройка зала)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200": { description: Отменено }
+        "422": { $ref: "#/components/responses/Error", description: CANCEL_TOO_LATE }
+
+  /functions/v1/payments:
+    post:
+      tags: [Оплата]
+      summary: Создать платёж ЮKassa и вернуть токен для SDK/виджета оплаты
+      description: |
+        Создаёт абонемент в статусе `pending` и платёж. Деньги идут напрямую в магазин ЮKassa зала.
+        * `mode: embedded` (по умолчанию для приложения) — вернётся `confirmation_token` для виджета ЮKassa;
+        * `payment_token` — токен из мобильного SDK ЮKassa (токенизация карты/СБП в приложении).
+        Абонемент активируется по уведомлению ЮKassa (webhook), повторное уведомление второй абонемент не создаёт.
+        Продление: абонемент начнётся после окончания текущего.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plan_id]
+              properties:
+                plan_id: { type: string, format: uuid }
+                starts_on: { type: string, format: date }
+                mode: { type: string, enum: [embedded, redirect] }
+                payment_token: { type: string }
+                return_url: { type: string, format: uri }
+      responses:
+        "201":
+          description: Платёж создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payment_id: { type: string, format: uuid }
+                  membership_id: { type: string, format: uuid }
+                  amount: { type: integer, description: копейки }
+                  status: { type: string, enum: [pending, succeeded, canceled] }
+                  provider_payment_id: { type: string }
+                  confirmation_token: { type: [string, "null"] }
+                  confirmation_url: { type: [string, "null"] }
+        "422": { $ref: "#/components/responses/Error", description: "PLAN_NOT_FOR_SALE, ONLINE_PAYMENTS_NOT_CONFIGURED, …" }
+  /functions/v1/payments/{id}:
+    get:
+      tags: [Оплата]
+      summary: Статус платежа (опрос после возврата из оплаты)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200": { description: Платёж }
+  /functions/v1/payments/webhook:
+    post:
+      tags: [Оплата]
+      summary: Уведомления ЮKassa (вызывает ЮKassa)
+      security: []
+      description: Тело уведомлению не доверяем — статус перепроверяется запросом в ЮKassa ключами зала. События `payment.succeeded`, `payment.canceled`, `refund.succeeded`.
+      responses:
+        "200": { description: Обработано }
+
+  /functions/v1/gyms/{id}/occupancy:
+    get:
+      tags: [Зал]
+      summary: Загруженность сейчас и прогноз по часам (без персональных данных)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          description: Загруженность
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  now: { type: integer }
+                  capacity: { type: integer }
+                  load_pct: { type: [integer, "null"] }
+                  today_forecast:
+                    type: array
+                    items: { type: object, properties: { hour: { type: integer }, avg: { type: number } } }
+                  heatmap:
+                    type: array
+                    items: { type: object, properties: { dow: { type: integer }, hour: { type: integer }, avg: { type: number } } }
+  /rest/v1/public_gyms:
+    get:
+      tags: [Зал]
+      summary: Каталог залов (выбор зала новым клиентом)
+      responses:
+        "200": { description: "id, name, address, timezone, phone, logo_url" }
+
+  /functions/v1/me:
+    delete:
+      tags: [Аккаунт]
+      summary: Удалить аккаунт и данные (152-ФЗ)
+      description: Записи клиента во всех залах обезличиваются (оплаты остаются залу для бухгалтерии), устройства отзываются, аккаунт удаляется.
+      responses:
+        "200":
+          description: Готово
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  anonymized_clients: { type: integer }
+                  account_deleted: { type: boolean }
+
+components:
+  securitySchemes:
+    apikey: { type: apiKey, in: header, name: apikey }
+    bearer: { type: http, scheme: bearer, bearerFormat: JWT }
+  responses:
+    Error:
+      description: Ошибка
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string, example: MEMBERSHIP_FROZEN }
+        message: { type: string, example: Абонемент заморожен до 05.10.2026 }
+    Membership:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        plan_name: { type: string }
+        kind: { type: string, enum: [period, visits, unlimited] }
+        status: { type: string, enum: [pending, active, frozen, expired, cancelled] }
+        starts_on: { type: string, format: date }
+        ends_on: { type: string, format: date }
+        visits_left: { type: [integer, "null"] }
+        freeze_days_max: { type: integer }
+        freeze_days_used: { type: integer }
+    Plan:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        description: { type: [string, "null"] }
+        kind: { type: string, enum: [period, visits, unlimited] }
+        price: { type: integer, description: копейки }
+        duration_days: { type: integer }
+        visits_limit: { type: [integer, "null"] }
+        freeze_days_max: { type: integer }
+    CheckinResult:
+      type: object
+      properties:
+        ok: { type: boolean }
+        code: { type: string, example: OK }
+        message: { type: string, example: Проходите! }
+        repeat: { type: boolean }
+        visit_id: { type: string, format: uuid }
+        client:
+          type: [object, "null"]
+          properties:
+            id: { type: string, format: uuid }
+            full_name: { type: string }
+            photo_url: { type: [string, "null"] }
+        membership:
+          type: [object, "null"]
+          properties:
+            plan_name: { type: string }
+            ends_on: { type: string, format: date }
+            visits_left: { type: [integer, "null"] }

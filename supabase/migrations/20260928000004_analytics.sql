@@ -61,9 +61,9 @@ flags as (
          -- Стал ходить реже: за 2 недели вдвое меньше, чем в среднем за 2 недели в 6 недель до этого
          (f.membership_id is not null and not f.frozen and f.visits_prev >= 3
           and f.visits_recent < f.declining_ratio * (f.visits_prev / 3.0)) as is_declining,
-         -- Не продлил: абонемент закончился менее N дней назад
+         -- Не продлил: абонемент закончился менее N дней назад (на N-й день это уже отток)
          (f.membership_id is null and not f.has_next and f.last_ends_on is not null
-          and f.today - f.last_ends_on between 1 and f.not_renewed_days) as is_not_renewed
+          and f.today - f.last_ends_on between 1 and f.not_renewed_days - 1) as is_not_renewed
     from facts f
 )
 select fl.gym_id, fl.client_id, fl.full_name, fl.phone, fl.in_app, fl.marketing_ok, fl.tags,
@@ -351,6 +351,30 @@ select g.id as gym_id, (x ->> 'dow')::int as dow, (x ->> 'hour')::int as hour, (
   from public.gyms g
  cross join lateral jsonb_array_elements(public.gym_occupancy(g.id) -> 'heatmap') x;
 
+-- Выручка по месяцам (для графика на дашборде), быстрый агрегат по оплатам
+create or replace function public.revenue_by_month(p_gym uuid, p_months int default 12) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare
+  v_tz text;
+  v_start date;
+begin
+  perform private.require_staff(p_gym, '{owner,admin}', false);
+  select timezone into v_tz from public.gyms where id = p_gym;
+  v_start := (date_trunc('month', now() at time zone v_tz) - make_interval(months => p_months - 1))::date;
+  return (
+    select coalesce(jsonb_agg(jsonb_build_object('month', m.mon::date, 'revenue', coalesce(r.total, 0)) order by m.mon), '[]')
+      from generate_series(v_start, (now() at time zone v_tz)::date, interval '1 month') m(mon)
+      left join (
+        select date_trunc('month', paid_at at time zone v_tz)::date as mon,
+               sum(case when refund_of_id is null then amount else -amount end) as total
+          from public.payments
+         where gym_id = p_gym and paid_at >= v_start::timestamp at time zone v_tz
+           and ((refund_of_id is null and status in ('succeeded', 'refunded')) or (refund_of_id is not null and status = 'refunded'))
+         group by 1
+      ) r on r.mon = m.mon::date
+  );
+end $$;
+
 -- Итоги журнала оплат за период (FR-6.4)
 create or replace function public.payments_summary(p_gym uuid, p_from date, p_to date) returns jsonb
 language plpgsql stable security definer set search_path = public as $$
@@ -397,6 +421,7 @@ revoke execute on function public.confirm_refund(uuid, boolean, text) from authe
 revoke execute on function public.run_maintenance() from authenticated;
 revoke execute on function public.claim_notifications(int) from authenticated;
 revoke execute on function public.complete_notification(uuid, text, text, text) from authenticated;
+revoke execute on function public.admin_find_user(text) from authenticated;
 revoke execute on all functions in schema private from public, anon;
 grant execute on all functions in schema private to authenticated, service_role;
 revoke all on public.v_client_risk, public.v_clients, public.v_in_gym, public.v_gym_kpi_month,
@@ -417,4 +442,15 @@ begin
   end if;
 exception when others then
   raise notice 'pg_cron недоступен: задания нужно запускать внешним планировщиком (%).', sqlerrm;
+end $$;
+
+-- ---------------------------------------------------------------------------
+-- Realtime: запись из приложения видна на ресепшене без перезагрузки (приёмка 5.5),
+-- «вы в зале» в приложении. Политики RLS действуют и для Realtime.
+-- ---------------------------------------------------------------------------
+do $$
+begin
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    alter publication supabase_realtime add table public.bookings, public.visits, public.schedule_items;
+  end if;
 end $$;

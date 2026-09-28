@@ -1339,6 +1339,12 @@ begin
    where id = p_gym;
 end $$;
 
+-- Поиск пользователя по email для приглашения сотрудника, который уже зарегистрирован (только сервер)
+create or replace function public.admin_find_user(p_email text) returns uuid
+language sql stable security definer set search_path = public as $$
+  select id from auth.users where lower(email) = lower(trim(p_email)) limit 1
+$$;
+
 -- ---------------------------------------------------------------------------
 -- Права на функции
 -- ---------------------------------------------------------------------------
@@ -1351,6 +1357,7 @@ revoke execute on function public.confirm_refund(uuid, boolean, text) from authe
 revoke execute on function public.run_maintenance() from authenticated;
 revoke execute on function public.claim_notifications(int) from authenticated;
 revoke execute on function public.complete_notification(uuid, text, text, text) from authenticated;
+revoke execute on function public.admin_find_user(text) from authenticated;
 -- внутренние функции
 revoke execute on all functions in schema private from public, anon;
 grant execute on all functions in schema private to authenticated, service_role;

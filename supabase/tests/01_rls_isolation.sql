@@ -84,6 +84,7 @@ select tests.expect_error(format($q$update public.gyms set trial_until = '2099-0
 select tests.expect_error(format($q$select public.confirm_online_payment('yookassa', 'x', 'succeeded')$q$), '42501');
 select tests.expect_error('select public.claim_notifications(10)', '42501');
 select tests.expect_error('select public.run_maintenance()', '42501');
+select tests.expect_error($q$select public.admin_find_user('owner-b@test.ru')$q$, '42501');
 reset role;
 
 -- 5. Права ролей (раздел 2)
