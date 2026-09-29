@@ -33,7 +33,7 @@ export function AdminGyms({ gyms }: { gyms: AdminGym[] }) {
     <>
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Залы</h1>
+          <h1 className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">Залы</h1>
           <p className="text-sm text-muted-foreground">{gyms.length} · персональные данные клиентов недоступны без запроса поддержки</p>
         </div>
         <Button onClick={() => setCreate(true)}><Plus /> Новый зал</Button>

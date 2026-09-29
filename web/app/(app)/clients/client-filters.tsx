@@ -26,36 +26,44 @@ export function ClientFilters({ q, state, tag, risk, tags, showRisk }: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
+  // Как в iOS: строка поиска, под ней — ряд фильтров-капсул, который на телефоне прокручивается вбок
   return (
-    <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+    <div className="mb-4 flex flex-col gap-2.5 lg:flex-row lg:items-center">
       <div className="relative flex-1">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input value={text} onChange={(e) => setText(e.target.value)} placeholder="Поиск по ФИО или телефону" className="pl-9" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-[18px] -translate-y-1/2 text-muted-foreground" />
+        <Input type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder="Поиск по ФИО или телефону" className="h-10 pl-10" />
       </div>
-      <NativeSelect value={state} onChange={(e) => push({ state: e.target.value })} className="sm:w-48" aria-label="Статус абонемента">
-        <option value="">Все абонементы</option>
-        <option value="active">Действует</option>
-        <option value="frozen">Заморожен</option>
-        <option value="future">Начнётся позже</option>
-        <option value="expired">Закончился</option>
-        <option value="none">Без абонемента</option>
-      </NativeSelect>
-      {tags.length ? (
-        <NativeSelect value={tag} onChange={(e) => push({ tag: e.target.value })} className="sm:w-40" aria-label="Тег">
-          <option value="">Все теги</option>
-          {tags.map((t) => <option key={t} value={t}>{t}</option>)}
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:px-0">
+        <NativeSelect value={state} onChange={(e) => push({ state: e.target.value })} aria-label="Статус абонемента"
+          className={cn(pill, "w-auto", state && pillOn)}>
+          <option value="">Все абонементы</option>
+          <option value="active">Действует</option>
+          <option value="frozen">Заморожен</option>
+          <option value="future">Начнётся позже</option>
+          <option value="expired">Закончился</option>
+          <option value="none">Без абонемента</option>
         </NativeSelect>
-      ) : null}
-      {showRisk ? (
-        <button
-          type="button"
-          onClick={() => push({ risk: risk ? null : "1" })}
-          className={cn("h-11 cursor-pointer whitespace-nowrap rounded-full px-4 text-sm font-medium", risk ? "bg-foreground text-background" : "bg-field hover:bg-field-hover")}
-          aria-pressed={risk}
-        >
-          В зоне риска
-        </button>
-      ) : null}
+        {tags.length ? (
+          <NativeSelect value={tag} onChange={(e) => push({ tag: e.target.value })} aria-label="Тег" className={cn(pill, "w-auto", tag && pillOn)}>
+            <option value="">Все теги</option>
+            {tags.map((t) => <option key={t} value={t}>{t}</option>)}
+          </NativeSelect>
+        ) : null}
+        {showRisk ? (
+          <button
+            type="button"
+            onClick={() => push({ risk: risk ? null : "1" })}
+            className={cn("h-9 shrink-0 cursor-pointer whitespace-nowrap rounded-full px-4 text-[15px] font-medium transition-colors active:opacity-70",
+              risk ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}
+            aria-pressed={risk}
+          >
+            В зоне риска
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }
+
+const pill = "h-9 shrink-0 rounded-full pl-4 pr-9 text-[15px] font-medium [background-position:right_12px_center]";
+const pillOn = "bg-tint-soft text-tint-text hover:bg-tint-soft";

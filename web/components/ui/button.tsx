@@ -3,28 +3,33 @@ import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
+/**
+ * Кнопки в стиле iOS: капсула, высота 44 pt (минимальная зона касания), нажатие — лёгкое сжатие.
+ * default — заливка цветом акцента (tint), secondary — «tinted», outline — «серая» с подписью цветом акцента, ghost/link — «plain».
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-[background-color,box-shadow,transform] active:scale-[0.98] " +
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background " +
-    "disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
+  "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full text-[15px] font-semibold " +
+    "transition-[background-color,opacity,transform,filter] duration-150 active:scale-[0.97] active:opacity-80 " +
+    "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25 " +
+    "disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:size-[18px] [&_svg]:shrink-0 cursor-pointer",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.15)] hover:bg-primary/90",
-        brand: "bg-brand text-brand-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_8px_20px_-10px_var(--brand)] hover:bg-brand/90",
-        destructive: "bg-destructive text-white hover:bg-destructive/90",
-        outline: "relative glass-card glass-rim hover:bg-field-hover",
-        secondary: "bg-field text-foreground hover:bg-field-hover",
-        ghost: "hover:bg-field",
-        link: "text-foreground underline-offset-4 hover:underline",
+        default: "bg-tint text-white hover:brightness-110",
+        brand: "bg-tint text-white hover:brightness-110",
+        destructive: "bg-destructive text-white hover:brightness-110",
+        outline: "bg-field text-tint-text hover:bg-field-hover",
+        secondary: "bg-tint-soft text-tint-text hover:brightness-95 dark:hover:brightness-125",
+        ghost: "text-tint-text hover:bg-field",
+        link: "rounded-md text-tint-text hover:opacity-70",
       },
       size: {
-        default: "h-10 px-5",
-        sm: "h-8 px-3.5 text-xs",
-        lg: "h-12 px-7 text-base",
+        default: "h-11 px-5",
+        sm: "h-9 px-4 text-[13px] [&_svg]:size-4",
+        lg: "h-[50px] px-7 text-[17px]",
         xl: "h-16 px-9 text-lg",
-        icon: "size-10 rounded-[14px]",
-        "icon-sm": "size-8 rounded-xl",
+        icon: "size-11",
+        "icon-sm": "size-9 [&_svg]:size-4",
       },
     },
     defaultVariants: { variant: "default", size: "default" },

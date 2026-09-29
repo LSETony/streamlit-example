@@ -33,7 +33,7 @@ export function LoginForm({ next, error: initialError }: { next: string; error: 
   return (
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-1.5">
-        <h1 className="text-2xl font-bold tracking-tight">Вход в кабинет зала</h1>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Вход в кабинет зала</h1>
         <p className="text-sm text-muted-foreground">Для владельца, администраторов и ресепшена</p>
       </div>
       {error ? <Alert variant="danger">{error}</Alert> : null}

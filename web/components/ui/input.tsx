@@ -6,8 +6,8 @@ export function Input({ className, type, ...props }: React.ComponentProps<"input
     <input
       type={type}
       className={cn(
-        "flex h-11 w-full rounded-2xl border border-transparent bg-field px-4 py-2 text-sm placeholder:text-muted-foreground " +
-          "transition-[border-color,box-shadow] focus-visible:outline-none hover:bg-field-hover focus-visible:border-ring/60 focus-visible:bg-popover focus-visible:ring-4 focus-visible:ring-ring/15 disabled:cursor-not-allowed disabled:opacity-50 " +
+        "flex h-11 w-full rounded-xl border border-transparent bg-field px-4 py-2 text-base placeholder:text-muted-foreground " +
+          "transition-[border-color,box-shadow] focus-visible:outline-none hover:bg-field-hover focus-visible:bg-card focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 " +
           "aria-[invalid=true]:border-destructive file:border-0 file:bg-transparent file:text-sm file:font-medium",
         className,
       )}
@@ -20,8 +20,8 @@ export function Textarea({ className, ...props }: React.ComponentProps<"textarea
   return (
     <textarea
       className={cn(
-        "flex min-h-24 w-full rounded-2xl border border-transparent bg-field px-4 py-3 text-sm placeholder:text-muted-foreground " +
-          "transition-[border-color,box-shadow] focus-visible:outline-none hover:bg-field-hover focus-visible:border-ring/60 focus-visible:bg-popover focus-visible:ring-4 focus-visible:ring-ring/15 disabled:opacity-50",
+        "flex min-h-24 w-full rounded-xl border border-transparent bg-field px-4 py-3 text-base placeholder:text-muted-foreground " +
+          "transition-[border-color,box-shadow] focus-visible:outline-none hover:bg-field-hover focus-visible:bg-card focus-visible:ring-2 focus-visible:ring-ring/50 disabled:opacity-50",
         className,
       )}
       {...props}
@@ -33,8 +33,8 @@ export function NativeSelect({ className, children, ...props }: React.ComponentP
   return (
     <select
       className={cn(
-        "select-chevron flex h-11 w-full appearance-none rounded-2xl border border-transparent bg-field px-4 pr-10 text-sm " +
-          "focus-visible:outline-none hover:bg-field-hover focus-visible:border-ring/60 focus-visible:bg-popover focus-visible:ring-4 focus-visible:ring-ring/15 disabled:opacity-50",
+        "select-chevron flex h-11 w-full appearance-none rounded-xl border border-transparent bg-field px-4 pr-10 text-base " +
+          "focus-visible:outline-none hover:bg-field-hover focus-visible:bg-card focus-visible:ring-2 focus-visible:ring-ring/50 disabled:opacity-50",
         className,
       )}
       {...props}
@@ -45,7 +45,7 @@ export function NativeSelect({ className, children, ...props }: React.ComponentP
 }
 
 export function Label({ className, ...props }: React.ComponentProps<"label">) {
-  return <label className={cn("pl-1 text-[13px] font-medium leading-none text-muted-foreground", className)} {...props} />;
+  return <label className={cn("pl-1 text-[13px] leading-none text-muted-foreground", className)} {...props} />;
 }
 
 export function Field({ label, hint, error, children, className }: {
@@ -63,7 +63,7 @@ export function Field({ label, hint, error, children, className }: {
 export function Checkbox({ label, className, ...props }: React.ComponentProps<"input"> & { label: React.ReactNode }) {
   return (
     <label className={cn("flex cursor-pointer items-start gap-2.5 text-sm", className)}>
-      <input type="checkbox" className="mt-0.5 size-4 shrink-0 cursor-pointer accent-[var(--foreground)]" {...props} />
+      <input type="checkbox" className="mt-0.5 size-4 shrink-0 cursor-pointer accent-[var(--tint)]" {...props} />
       <span>{label}</span>
     </label>
   );

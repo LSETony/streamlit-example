@@ -124,7 +124,7 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
           <CardDescription>Excel (.xlsx) или CSV, до 5 000 строк. Первая строка — заголовки колонок.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-3">
-          <label className="flex cursor-pointer items-center gap-2 h-10 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+          <label className="flex h-11 cursor-pointer items-center gap-2 rounded-full bg-tint px-5 text-[15px] font-semibold text-white hover:brightness-110 active:scale-[0.97]">
             <Upload className="size-4" /> {fileName ? "Выбрать другой файл" : "Выбрать файл"}
             <input type="file" accept=".xlsx,.csv" className="sr-only" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} disabled={readOnly} />
           </label>

@@ -16,9 +16,9 @@ export default async function AdminPage() {
   const { data } = await supabase.rpc("admin_list_gyms");
   return (
     <div className="min-h-dvh">
-      <header className="flex h-16 items-center justify-between bg-sidebar px-6 text-white">
-        <div className="flex items-center gap-3"><Logo className="h-5" /><span className="text-sm text-sidebar-foreground">команда</span></div>
-        <form action={signOut}><button className="cursor-pointer text-sm text-sidebar-foreground hover:text-white">Выйти</button></form>
+      <header className="glass glass-rim sticky top-3 z-30 mx-3 mt-3 flex h-14 items-center justify-between rounded-full px-6">
+        <div className="flex items-center gap-3"><Logo className="h-5" /><span className="text-[15px] text-muted-foreground">команда</span></div>
+        <form action={signOut}><button className="cursor-pointer text-[17px] text-tint-text active:opacity-60">Выйти</button></form>
       </header>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <AdminGyms gyms={(data ?? []) as AdminGym[]} />

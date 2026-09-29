@@ -9,14 +9,18 @@ export const metadata: Metadata = {
   title: { default: "core. — кабинет зала", template: "%s · core." },
   description: "Клиенты, абонементы, посещения, расписание и клиенты в зоне риска",
   robots: { index: false, follow: false },
+  // с экрана «Домой» на iPhone открывается на весь экран, статус-бар поверх содержимого
+  appleWebApp: { capable: true, title: "core.", statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // содержимое под вырезом и полоской «домой», отступы задаются через env(safe-area-inset-*)
+  viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f5f4" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c0c0d" },
+    { media: "(prefers-color-scheme: light)", color: "#f2f2f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 };
 

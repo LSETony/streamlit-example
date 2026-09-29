@@ -40,7 +40,7 @@ export default function SignupPage() {
   if (sent) {
     return (
       <div className="grid gap-3">
-        <h1 className="text-2xl font-bold tracking-tight">Проверьте почту</h1>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Проверьте почту</h1>
         <p className="text-sm text-muted-foreground">
           Мы отправили письмо на <b className="text-foreground">{sent}</b>. Перейдите по ссылке, чтобы продолжить настройку зала.
         </p>
@@ -51,7 +51,7 @@ export default function SignupPage() {
   return (
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-1.5">
-        <h1 className="text-2xl font-bold tracking-tight">Подключить зал</h1>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Подключить зал</h1>
         <p className="text-sm text-muted-foreground">14 дней бесплатно. Настройка — около 15 минут.</p>
       </div>
       {error ? <Alert variant="danger">{error}</Alert> : null}

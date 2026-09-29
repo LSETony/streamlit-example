@@ -2,29 +2,29 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("animate-pulse rounded-2xl bg-field", className)} {...props} />;
+  return <div className={cn("animate-pulse rounded-xl bg-field", className)} {...props} />;
 }
 
 export function Separator({ className }: { className?: string }) {
-  return <div role="separator" className={cn("h-px w-full bg-border", className)} />;
+  return <div role="separator" className={cn("h-px w-full scale-y-50 bg-separator", className)} />;
 }
 
 export function Alert({ className, variant = "default", ...props }: React.ComponentProps<"div"> & { variant?: "default" | "warning" | "danger" | "success" }) {
   const styles = {
-    default: "border-border bg-muted/50",
-    warning: "border-warning/40 bg-warning/10",
-    danger: "border-destructive/40 bg-destructive/10 text-destructive",
-    success: "border-success/40 bg-success/10",
+    default: "bg-field",
+    warning: "bg-warning/12",
+    danger: "bg-destructive/10 text-destructive",
+    success: "bg-success-fill/12",
   }[variant];
-  return <div role="status" className={cn("rounded-2xl border px-4 py-3 text-sm backdrop-blur-xl", styles, className)} {...props} />;
+  return <div role="status" className={cn("rounded-2xl px-4 py-3 text-sm", styles, className)} {...props} />;
 }
 
 export function EmptyState({ icon, title, children, action, className }: {
   icon?: React.ReactNode; title: string; children?: React.ReactNode; action?: React.ReactNode; className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col items-center justify-center gap-3 relative glass-card glass-rim rounded-[28px] px-6 py-14 text-center", className)}>
-      {icon ? <div className="rounded-[18px] bg-field p-3.5 text-muted-foreground [&_svg]:size-6">{icon}</div> : null}
+    <div className={cn("flex flex-col items-center justify-center gap-3 glass-card rounded-[24px] px-6 py-14 text-center", className)}>
+      {icon ? <div className="grid size-14 place-items-center rounded-full bg-tint-soft text-tint-text [&_svg]:size-7">{icon}</div> : null}
       <div className="grid gap-1">
         <p className="font-semibold">{title}</p>
         {children ? <div className="max-w-md text-sm text-muted-foreground">{children}</div> : null}

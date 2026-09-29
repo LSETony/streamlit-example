@@ -14,7 +14,7 @@ import { normalizePhone } from "@/lib/phone";
 export const SOURCES = ["Instagram", "ВКонтакте", "Яндекс Карты", "2ГИС", "Сайт", "Рекомендация", "Вывеска", "Другое"];
 
 /** FR-2.2 Создание клиента за 30 секунд */
-export function NewClientButton({ disabled, autoOpen }: { disabled?: boolean; autoOpen?: boolean }) {
+export function NewClientButton({ disabled, autoOpen, className }: { disabled?: boolean; autoOpen?: boolean; className?: string }) {
   const router = useRouter();
   const [open, setOpenState] = useState(!!autoOpen && !disabled);
   // открыто по ссылке /clients?new=1 — после закрытия убираем параметр из адреса
@@ -43,7 +43,7 @@ export function NewClientButton({ disabled, autoOpen }: { disabled?: boolean; au
 
   return (
     <>
-      <Button onClick={() => { setOpen(true); setDup(null); setError(null); }} disabled={disabled}><UserPlus /> Новый клиент</Button>
+      <Button className={className} onClick={() => { setOpen(true); setDup(null); setError(null); }} disabled={disabled}><UserPlus /> Новый клиент</Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
