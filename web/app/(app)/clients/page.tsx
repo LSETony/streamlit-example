@@ -68,7 +68,7 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
               <Button variant="outline" asChild><Link href="/clients/import"><Upload /> Импорт</Link></Button>
             ) : null}
             {ctx.features.export !== false ? <ExportClientsButton gymId={ctx.gym.id} filters={{ q, state, tag, risk }} /> : null}
-            <NewClientButton disabled={ctx.readOnly} />
+            <NewClientButton disabled={ctx.readOnly} autoOpen={sp.new === "1"} />
           </>
         }
       />
@@ -95,7 +95,7 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
             </THead>
             <TBody>
               {rows.map((c) => (
-                <TR key={c.id} className="relative hover:bg-muted/40">
+                <TR key={c.id} className="relative transition-colors hover:bg-field">
                   <TD>
                     <Link href={`/clients/${c.id}`} className="flex items-center gap-3 after:absolute after:inset-0">
                       <Avatar name={c.full_name} className="size-8 text-xs" />

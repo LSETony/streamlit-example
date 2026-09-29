@@ -61,7 +61,7 @@ export function StaffManager({ staff, meId, readOnly }: {
   });
   return (
     <>
-      <div className="mb-4 flex justify-end"><Button onClick={() => setOpen(true)} disabled={readOnly}><UserPlus /> Пригласить</Button></div>
+      <div className="mb-3 flex items-center justify-between gap-3"><p className="pl-1 text-sm text-muted-foreground">В команде: <b className="text-foreground">{staff.filter((s) => s.active).length}</b></p><Button onClick={() => setOpen(true)} disabled={readOnly}><UserPlus /> Пригласить</Button></div>
       <Card>
         <Table>
           <THead><TR><TH>Сотрудник</TH><TH>Роль</TH><TH>Статус</TH><TH /></TR></THead>

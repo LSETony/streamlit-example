@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/app-shell";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/misc";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
@@ -14,6 +15,7 @@ import { ExportPayments } from "./export";
 import { RefundButton } from "./refund-button";
 
 export const metadata: Metadata = { title: "Оплаты" };
+const PAGE = 50;
 
 export interface PaymentListRow {
   id: string; amount: number; method: PaymentMethod; status: PaymentStatus; refund_of_id: string | null; membership_id: string | null;
@@ -28,6 +30,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
   const to = typeof sp.to === "string" ? sp.to : ctx.today;
   const method = typeof sp.method === "string" ? sp.method : "";
   const status = typeof sp.status === "string" ? sp.status : "";
+  const page = Math.max(1, Number(sp.page) || 1);
   const tz = ctx.gym.timezone;
   const supabase = await createClient();
 
@@ -42,6 +45,14 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
     supabase.rpc("payments_summary", { p_gym: ctx.gym.id, p_from: from, p_to: to }),
   ]);
   const rows = (data ?? []) as unknown as PaymentListRow[];
+  const shown = rows.slice((page - 1) * PAGE, page * PAGE);
+  const pageHref = (p: number) => {
+    const params = new URLSearchParams({ from, to });
+    if (method) params.set("method", method);
+    if (status) params.set("status", status);
+    params.set("page", String(p));
+    return `/payments?${params}`;
+  };
   const s = (summary ?? {}) as { income: number; refunds: number; net: number; cash: number; card: number; online: number; count: number };
 
   return (
@@ -63,8 +74,8 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
           <Table>
             <THead><TR><TH>Время</TH><TH>Клиент</TH><TH>Сумма</TH><TH>Способ</TH><TH>Статус</TH><TH className="hidden lg:table-cell">Назначение</TH><TH className="hidden xl:table-cell">Принял</TH><TH /></TR></THead>
             <TBody>
-              {rows.map((p) => (
-                <TR key={p.id}>
+              {shown.map((p) => (
+                <TR key={p.id} className="transition-colors hover:bg-field">
                   <TD className="whitespace-nowrap tabular">{dateTime(p.paid_at ?? p.created_at, tz)}</TD>
                   <TD>{p.client_id ? <Link className="font-medium hover:underline" href={`/clients/${p.client_id}`}>{p.clients?.full_name}</Link> : "—"}</TD>
                   <TD className={p.refund_of_id ? "whitespace-nowrap tabular text-destructive" : "whitespace-nowrap font-medium tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount)}</TD>
@@ -79,6 +90,19 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
               ))}
             </TBody>
           </Table>
+          {rows.length > PAGE ? (
+            <div className="flex items-center justify-between border-t border-border px-4 py-3 text-sm">
+              <span className="text-muted-foreground">{(page - 1) * PAGE + 1}–{Math.min(page * PAGE, rows.length)} из {rows.length}</span>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" asChild disabled={page <= 1}>
+                  {page > 1 ? <Link href={pageHref(page - 1)}>Назад</Link> : <span>Назад</span>}
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  {page * PAGE < rows.length ? <Link href={pageHref(page + 1)}>Дальше</Link> : <span>Дальше</span>}
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </Card>
       )}
     </>
@@ -87,9 +111,9 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
 
 function Sum({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
-    <Card className="grid gap-1 p-4">
+    <Card variant={strong ? "hero" : "glass"} className="grid gap-1 rounded-[24px] p-4">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <span className={strong ? "text-2xl font-semibold" : "text-lg font-medium"}>{value}</span>
+      <span className={strong ? "text-2xl font-semibold tabular" : "text-lg font-medium tabular"}>{value}</span>
     </Card>
   );
 }

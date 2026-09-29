@@ -219,7 +219,7 @@ body::before {
 
 /* Тёмное стекло для боковой панели и шапки — одинаковое в обеих темах */
 @utility glass-dark {
-  background: linear-gradient(170deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0) 35%), rgb(22 22 24 / 0.86);
+  background: linear-gradient(170deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0) 35%), rgb(30 30 30 / 0.94);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   backdrop-filter: blur(32px) saturate(180%);
   border: 1px solid rgb(255 255 255 / 0.07);

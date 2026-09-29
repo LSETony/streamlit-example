@@ -8,7 +8,7 @@ export const Dialog = D.Root;
 export const DialogTrigger = D.Trigger;
 export const DialogClose = D.Close;
 
-export function DialogContent({ className, children, wide, ...props }: React.ComponentProps<typeof D.Content> & { wide?: boolean }) {
+export function DialogContent({ className, children, wide, hideClose, ...props }: React.ComponentProps<typeof D.Content> & { wide?: boolean; hideClose?: boolean }) {
   return (
     <D.Portal>
       <D.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md data-[state=open]:animate-in data-[state=open]:fade-in-0" />
@@ -22,9 +22,9 @@ export function DialogContent({ className, children, wide, ...props }: React.Com
         {...props}
       >
         {children}
-        <D.Close className="absolute right-4 top-4 grid size-9 cursor-pointer place-items-center rounded-full bg-field text-muted-foreground hover:bg-field-hover hover:text-foreground" aria-label="Закрыть">
+        {hideClose ? null : <D.Close className="absolute right-4 top-4 grid size-9 cursor-pointer place-items-center rounded-full bg-field text-muted-foreground hover:bg-field-hover hover:text-foreground" aria-label="Закрыть">
           <X className="size-4" />
-        </D.Close>
+        </D.Close>}
       </D.Content>
     </D.Portal>
   );
