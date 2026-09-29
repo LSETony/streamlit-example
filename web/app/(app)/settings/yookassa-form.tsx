@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox, Field, Input, NativeSelect } from "@/components/ui/input";
+import { Field, Input, NativeSelect } from "@/components/ui/input";
+import { SwitchRow } from "@/components/ui/switch";
 import { Alert } from "@/components/ui/misc";
 import { saveYookassa } from "@/app/actions/gym";
 
@@ -33,7 +34,7 @@ export function YookassaForm({ status, disabled }: { status: { connected: boolea
           </NativeSelect>
         </Field>
       </div>
-      <Checkbox name="send_receipt" defaultChecked={status.sendReceipt} label="Отправлять чеки по 54-ФЗ через ЮKassa" />
+      <SwitchRow name="send_receipt" defaultChecked={status.sendReceipt} title="Чеки по 54-ФЗ" description="ЮKassa отправит чек клиенту на телефон или email" />
       <Alert>
         В личном кабинете ЮKassa укажите адрес для уведомлений: <code className="text-xs">https://&lt;адрес API&gt;/functions/v1/payments/webhook</code>,
         события payment.succeeded, payment.canceled, refund.succeeded.

@@ -2,12 +2,14 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Plus, Smartphone, Tags } from "lucide-react";
+import { Archive, ArchiveRestore, Pencil, Plus, Smartphone, Tags } from "lucide-react";
+import { PageHeader } from "@/components/app-shell";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Checkbox, Field, Input, NativeSelect, Textarea } from "@/components/ui/input";
+import { Field, Input, NativeSelect, Textarea } from "@/components/ui/input";
+import { SwitchRow } from "@/components/ui/switch";
 import { Alert, EmptyState } from "@/components/ui/misc";
 import { savePlan, setPlanActive } from "@/app/actions/plans";
 import { money, plural } from "@/lib/format";
@@ -18,44 +20,56 @@ export function PlansManager({ plans, readOnly }: { plans: Plan[]; readOnly: boo
   const router = useRouter();
   const [edit, setEdit] = useState<Plan | "new" | null>(null);
   const [, start] = useTransition();
+  const active = plans.filter((p) => p.active);
+  const archived = plans.filter((p) => !p.active);
+  const card = (p: Plan) => (
+    <Card key={p.id} className={cn("group flex flex-col overflow-hidden", !p.active && "opacity-60")}>
+      <div className="flex flex-1 flex-col gap-5 p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="grid gap-1">
+            <span className="text-xs font-medium uppercase tracking-[0.06em] text-muted-foreground">{PLAN_KIND_LABEL[p.kind]}</span>
+            <p className="text-lg font-semibold leading-tight">{p.name}</p>
+          </div>
+          {p.sold_online ? (
+            <span title="Продаётся в приложении" className="grid size-8 place-items-center rounded-full bg-brand-soft text-brand-ink"><Smartphone className="size-4" /></span>
+          ) : null}
+        </div>
+        <p className="text-[28px] font-semibold leading-none tracking-tight tabular">{money(p.price)}</p>
+        <dl className="grid grid-cols-3 gap-2 text-sm">
+          <Meta label="Срок" value={`${p.duration_days} ${plural(p.duration_days, "день", "дня", "дней")}`} />
+          <Meta label="Визиты" value={p.visits_limit ? String(p.visits_limit) : "∞"} />
+          <Meta label="Заморозка" value={p.freeze_days_max ? `${p.freeze_days_max} дн.` : "—"} />
+        </dl>
+      </div>
+      <div className="flex items-center justify-between border-t border-border bg-surface-2 px-3 py-2">
+        <Button variant="ghost" size="sm" onClick={() => setEdit(p)} disabled={readOnly}><Pencil /> Изменить</Button>
+        <Button variant="ghost" size="sm" disabled={readOnly} className="text-muted-foreground" onClick={() => start(async () => {
+          const r = await setPlanActive(p.id, !p.active);
+          if (!r.ok) toast.error(r.error.message); else router.refresh();
+        })}>{p.active ? <><Archive /> В архив</> : <><ArchiveRestore /> Вернуть</>}</Button>
+      </div>
+    </Card>
+  );
   return (
     <>
-      <div className="mb-4 flex justify-end">
-        <Button onClick={() => setEdit("new")} disabled={readOnly}><Plus /> Новый тариф</Button>
-      </div>
+      <PageHeader
+        title="Тарифы"
+        description="Цена фиксируется в момент продажи — изменение тарифа не меняет уже проданные абонементы"
+        actions={<Button onClick={() => setEdit("new")} disabled={readOnly}><Plus /> Новый тариф</Button>}
+      />
       {plans.length === 0 ? (
         <EmptyState icon={<Tags />} title="Тарифов пока нет" action={<Button onClick={() => setEdit("new")}><Plus /> Создать тариф</Button>}>
           Тарифы трёх типов: на срок, на число визитов и безлимит.
         </EmptyState>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {plans.map((p) => (
-            <Card key={p.id} className={p.active ? "grid gap-4 p-5" : "grid gap-4 p-5 opacity-60"}>
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-lg font-semibold">{p.name}</p>
-                  <p className="text-sm text-muted-foreground">{PLAN_KIND_LABEL[p.kind]}</p>
-                </div>
-                <p className="text-xl font-semibold tabular">{money(p.price)}</p>
-              </div>
-              <ul className="grid gap-1 text-sm">
-                <li>Срок: {p.duration_days} {plural(p.duration_days, "день", "дня", "дней")}</li>
-                {p.visits_limit ? <li>Визитов: {p.visits_limit}</li> : null}
-                <li>Заморозка: {p.freeze_days_max ? `до ${p.freeze_days_max} дн.` : "нет"}</li>
-              </ul>
-              <div className="flex flex-wrap items-center gap-2">
-                {p.sold_online ? <Badge variant="brand"><Smartphone className="size-3" /> продаётся в приложении</Badge> : null}
-                {!p.active ? <Badge variant="outline">в архиве</Badge> : null}
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setEdit(p)} disabled={readOnly}>Изменить</Button>
-                <Button variant="ghost" size="sm" disabled={readOnly} onClick={() => start(async () => {
-                  const r = await setPlanActive(p.id, !p.active);
-                  if (!r.ok) toast.error(r.error.message); else router.refresh();
-                })}>{p.active ? "В архив" : "Вернуть в продажу"}</Button>
-              </div>
-            </Card>
-          ))}
+        <div className="grid gap-8">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{active.map(card)}</div>
+          {archived.length ? (
+            <div className="grid gap-3">
+              <h2 className="text-sm font-medium text-muted-foreground">Архив · не продаются</h2>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{archived.map(card)}</div>
+            </div>
+          ) : null}
         </div>
       )}
       {edit ? <PlanDialog plan={edit === "new" ? null : edit} onClose={() => { setEdit(null); router.refresh(); }} /> : null}
@@ -94,7 +108,7 @@ export function PlanDialog({ plan, onClose }: { plan: Plan | null; onClose: () =
             <Field label="Заморозка, дней максимум"><Input name="freeze_days_max" type="number" min={0} defaultValue={plan?.freeze_days_max ?? 0} /></Field>
           </div>
           <Field label="Описание для приложения"><Textarea name="description" rows={2} defaultValue={plan?.description ?? ""} /></Field>
-          <Checkbox name="sold_online" defaultChecked={plan?.sold_online ?? true} label="Продаётся в приложении (онлайн-оплата)" />
+          <SwitchRow name="sold_online" defaultChecked={plan?.sold_online ?? true} title="Продаётся в приложении" description="Клиенты смогут купить и продлить тариф онлайн" />
           {error ? <Alert variant="danger">{error}</Alert> : null}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>Отмена</Button>
@@ -103,5 +117,14 @@ export function PlanDialog({ plan, onClose }: { plan: Plan | null; onClose: () =
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function Meta({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid gap-0.5 rounded-lg bg-surface-2 px-2.5 py-2">
+      <dt className="text-[11px] text-muted-foreground">{label}</dt>
+      <dd className="font-medium tabular">{value}</dd>
+    </div>
   );
 }

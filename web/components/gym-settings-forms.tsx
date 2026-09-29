@@ -2,9 +2,10 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Trash2, Plus } from "lucide-react";
+import { Check, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Checkbox, Field, Input, NativeSelect, Textarea } from "@/components/ui/input";
+import { Field, Input, NativeSelect, Textarea, TimeSelect } from "@/components/ui/input";
+import { Switch, SwitchRow } from "@/components/ui/switch";
 import { Alert } from "@/components/ui/misc";
 import { deleteZone, saveZone, updateGymProfile, updateGymSettings } from "@/app/actions/gym";
 import type { Gym, GymSettings, RiskReason } from "@/lib/types";
@@ -60,22 +61,29 @@ export function HoursForm({ settings, disabled, onSaved, submitLabel = "Сохр
   const [capacity, setCapacity] = useState(String(settings.capacity ?? 50));
   return (
     <div className="grid gap-4">
-      <div className="grid gap-2">
+      <div className="divide-y divide-border rounded-xl border border-border">
         {DAYS.map(([k, label]) => {
           const v = hours[k];
           return (
-            <div key={k} className="grid grid-cols-[40px_1fr] items-center gap-3 sm:grid-cols-[40px_140px_1fr]">
-              <span className="text-sm font-medium">{label}</span>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" className="size-4" checked={!!v} onChange={(e) => setHours((h) => ({ ...h, [k]: e.target.checked ? ["08:00", "22:00"] : null }))} />
-                {v ? "Открыто" : "Выходной"}
-              </label>
+            <div key={k} className="flex min-h-14 flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5">
+              <span className="w-8 text-sm font-semibold">{label}</span>
+              <Switch
+                checked={!!v}
+                onCheckedChange={(on) => setHours((h) => ({ ...h, [k]: on ? ["08:00", "22:00"] : null }))}
+                aria-label={`${label}: открыто`}
+              />
               {v ? (
-                <div className="col-span-2 flex items-center gap-2 sm:col-span-1">
-                  <Input type="time" value={v[0]} onChange={(e) => setHours((h) => ({ ...h, [k]: [e.target.value, v[1]] }))} className="w-32" aria-label={`${label}: открытие`} />
-                  <span className="text-muted-foreground">—</span>
-                  <Input type="time" value={v[1]} onChange={(e) => setHours((h) => ({ ...h, [k]: [v[0], e.target.value] }))} className="w-32" aria-label={`${label}: закрытие`} />
+                <div className="flex items-center gap-2">
+                  <TimeSelect value={v[0]} onChange={(t) => setHours((h) => ({ ...h, [k]: [t, v[1]] }))} aria-label={`${label}: открытие`} />
+                  <span className="text-muted-foreground">–</span>
+                  <TimeSelect value={v[1]} onChange={(t) => setHours((h) => ({ ...h, [k]: [v[0], t] }))} aria-label={`${label}: закрытие`} />
                 </div>
+              ) : <span className="text-sm text-muted-foreground">Выходной</span>}
+              {v && k === "mon" ? (
+                <button type="button" className="ml-auto cursor-pointer text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                  onClick={() => setHours((h) => Object.fromEntries(DAYS.map(([d]) => [d, ["mon", "tue", "wed", "thu", "fri"].includes(d) ? v : h[d]])))}>
+                  Как в понедельник для будней
+                </button>
               ) : null}
             </div>
           );
@@ -100,15 +108,16 @@ export function RulesForm({ settings, disabled }: { settings: GymSettings; disab
       notify_fallback: String(f.get("notify_fallback")) as GymSettings["notify_fallback"],
     }))}>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label="Автовыход из зала через, ч" hint="Если клиент не отметил выход"><Input name="auto_checkout_hours" type="number" min={1} max={24} defaultValue={settings.auto_checkout_hours ?? 3} /></Field>
-        <Field label="Отмена записи клиентом не позднее, ч"><Input name="booking_cancel_hours" type="number" min={0} max={72} defaultValue={settings.booking_cancel_hours ?? 2} /></Field>
-        <Field label="Клиентам без приложения отправлять">
+        <Field label="Автовыход, часов" hint="Если клиент не отметил выход"><Input name="auto_checkout_hours" type="number" min={1} max={24} defaultValue={settings.auto_checkout_hours ?? 3} /></Field>
+        <Field label="Отмена записи, ч до начала" hint="Для клиентов в приложении"><Input name="booking_cancel_hours" type="number" min={0} max={72} defaultValue={settings.booking_cancel_hours ?? 2} /></Field>
+        <Field label="Клиентам без приложения">
           <NativeSelect name="notify_fallback" defaultValue={settings.notify_fallback ?? "sms"}>
-            <option value="sms">SMS</option><option value="email">Email</option><option value="none">Ничего</option>
+            <option value="sms">SMS</option><option value="email">Email</option><option value="none">Не отправлять</option>
           </NativeSelect>
         </Field>
       </div>
-      <Checkbox name="allow_app_freeze" defaultChecked={settings.allow_app_freeze ?? true} label="Клиенты могут сами заморозить абонемент в приложении (в пределах лимита тарифа)" />
+      <SwitchRow name="allow_app_freeze" defaultChecked={settings.allow_app_freeze ?? true}
+        title="Заморозка из приложения" description="Клиенты могут сами заморозить абонемент в пределах лимита тарифа" />
       {error ? <Alert variant="danger">{error}</Alert> : null}
       <div><Button type="submit" disabled={pending || disabled}>Сохранить</Button></div>
     </form>
@@ -133,10 +142,10 @@ export function RiskForm({ settings, disabled }: { settings: GymSettings; disabl
       },
     }))}>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label="«Пропал»: нет визитов, дней"><Input name="gone_days" type="number" min={3} max={60} defaultValue={r.gone_days} /></Field>
-        <Field label="«Заканчивается»: осталось дней"><Input name="expiring_days" type="number" min={1} max={30} defaultValue={r.expiring_days} /></Field>
-        <Field label="«Реже»: доля от обычного, %"><Input name="declining_pct" type="number" min={10} max={90} defaultValue={Math.round(r.declining_ratio * 100)} /></Field>
-        <Field label="«Не продлил»: дней после окончания"><Input name="not_renewed_days" type="number" min={3} max={60} defaultValue={r.not_renewed_days} /></Field>
+        <Field label="«Пропал», дней без визитов"><Input name="gone_days" type="number" min={3} max={60} defaultValue={r.gone_days} /></Field>
+        <Field label="«Заканчивается», дней до конца"><Input name="expiring_days" type="number" min={1} max={30} defaultValue={r.expiring_days} /></Field>
+        <Field label="«Реже», % от обычного"><Input name="declining_pct" type="number" min={10} max={90} defaultValue={Math.round(r.declining_ratio * 100)} /></Field>
+        <Field label="«Не продлил», дней после"><Input name="not_renewed_days" type="number" min={3} max={60} defaultValue={r.not_renewed_days} /></Field>
       </div>
       <p className="text-sm text-muted-foreground">Шаблоны сообщений для Telegram и WhatsApp. Подстановки: {"{name}"} — имя, {"{gym}"} — зал, {"{date}"} — дата окончания.</p>
       <div className="grid gap-4 lg:grid-cols-2">
@@ -156,24 +165,32 @@ export function ZonesEditor({ zones, disabled }: { zones: { id: string; name: st
   const [capacity, setCapacity] = useState("10");
   return (
     <div className="grid gap-3">
-      {zones.map((z) => (
-        <form key={z.id} className="flex flex-wrap items-center gap-2" action={(f) => run(() => saveZone(f))}>
-          <input type="hidden" name="id" value={z.id} />
-          <Input name="name" defaultValue={z.name} className="max-w-xs flex-1" aria-label="Название зоны" />
-          <Input name="capacity" type="number" min={1} defaultValue={z.capacity} className="w-24" aria-label="Вместимость" />
-          <Button type="submit" variant="outline" size="sm" disabled={pending || disabled}>Сохранить</Button>
-          <Button type="button" variant="ghost" size="icon-sm" aria-label="Удалить зону" disabled={pending || disabled} onClick={() => confirm(`Удалить зону «${z.name}»?`) && run(() => deleteZone(z.id), "Зона удалена")}><Trash2 /></Button>
-        </form>
-      ))}
-      <div className="flex flex-wrap items-center gap-2">
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Тренажёрный зал, сауна, дорожки…" className="max-w-xs flex-1" aria-label="Новая зона" />
-        <Input value={capacity} onChange={(e) => setCapacity(e.target.value)} type="number" min={1} className="w-24" aria-label="Вместимость" />
-        <Button variant="outline" size="sm" disabled={pending || disabled || !name.trim()} onClick={() => {
-          const f = new FormData();
-          f.set("name", name);
-          f.set("capacity", capacity);
-          run(() => saveZone(f), "Зона добавлена", () => setName(""));
-        }}><Plus /> Добавить</Button>
+      <div className="divide-y divide-border rounded-xl border border-border">
+        <div className="grid grid-cols-[1fr_88px_112px] gap-2 px-4 py-2 text-xs font-medium text-muted-foreground">
+          <span>Зона</span><span>Мест</span><span />
+        </div>
+        {zones.map((z) => (
+          <form key={z.id} className="grid grid-cols-[1fr_88px_112px] items-center gap-2 px-4 py-2" action={(f) => run(() => saveZone(f))}>
+            <input type="hidden" name="id" value={z.id} />
+            <Input name="name" defaultValue={z.name} className="h-9 border-transparent bg-transparent px-2 hover:border-input focus-visible:bg-card" aria-label="Название зоны" />
+            <Input name="capacity" type="number" min={1} defaultValue={z.capacity} className="h-9 tabular" aria-label="Вместимость" />
+            <div className="flex justify-end gap-0.5">
+              <Button type="submit" variant="ghost" size="icon-sm" disabled={pending || disabled} aria-label="Сохранить зону" title="Сохранить"><Check /></Button>
+              <Button type="button" variant="ghost" size="icon-sm" aria-label="Удалить зону" title="Удалить" disabled={pending || disabled}
+                onClick={() => confirm(`Удалить зону «${z.name}»?`) && run(() => deleteZone(z.id), "Зона удалена")}><Trash2 /></Button>
+            </div>
+          </form>
+        ))}
+        <div className="grid grid-cols-[1fr_88px_112px] items-center gap-2 bg-surface-2 px-4 py-2">
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Новая зона: сауна, дорожки…" className="h-9" aria-label="Новая зона" />
+          <Input value={capacity} onChange={(e) => setCapacity(e.target.value)} type="number" min={1} className="h-9 tabular" aria-label="Вместимость" />
+          <Button size="sm" variant="outline" disabled={pending || disabled || !name.trim()} onClick={() => {
+            const f = new FormData();
+            f.set("name", name);
+            f.set("capacity", capacity);
+            run(() => saveZone(f), "Зона добавлена", () => setName(""));
+          }}><Plus /> Добавить</Button>
+        </div>
       </div>
       {error ? <Alert variant="danger">{error}</Alert> : null}
     </div>

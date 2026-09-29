@@ -1,8 +1,9 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { CheckCircle2, Pencil, ShoppingCart, Smartphone, Snowflake, Trash2, RotateCcw, AlertTriangle } from "lucide-react";
+import { CheckCircle2, ChevronLeft, Pencil, ShoppingCart, Smartphone, Snowflake, Trash2, RotateCcw, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,11 +57,14 @@ export function ClientCard(props: {
 
   return (
     <div className="grid gap-6">
+      <Link href="/clients" className="-mb-2 inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <ChevronLeft className="size-4" /> Клиенты
+      </Link>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex items-center gap-4">
           <Avatar name={client.full_name} src={client.photo_url} className="size-16 text-xl" />
           <div className="grid gap-1">
-            <h1 className="text-2xl font-bold tracking-tight">{client.full_name}</h1>
+            <h1 className="text-[26px] font-bold leading-tight tracking-[-0.02em]">{client.full_name}</h1>
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <a href={`tel:${client.phone}`} className="tabular hover:text-foreground">{phone(client.phone)}</a>
               {client.email ? <span>· {client.email}</span> : null}
@@ -99,7 +103,12 @@ export function ClientCard(props: {
                 {current.visits_left !== null ? ` · ${current.visits_left} ${plural(current.visits_left, "визит", "визита", "визитов")}` : ""}
               </span>
             </>
-          ) : <span className="text-muted-foreground">Нет действующего</span>}
+          ) : (
+            <>
+              <span className="font-semibold text-muted-foreground">Нет действующего</span>
+              <button className="w-fit cursor-pointer text-sm font-medium underline-offset-2 hover:underline disabled:opacity-50" onClick={() => setSell({ renew: null })} disabled={readOnly}>Продать →</button>
+            </>
+          )}
         </Stat>
         <Stat label="Последний визит">
           <span className="font-semibold">{client.last_visit_at ? dateTime(client.last_visit_at, timezone) : "—"}</span>
@@ -286,8 +295,8 @@ export function ClientCard(props: {
 
 function Stat({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <Card className="grid gap-1 p-4">
-      <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</span>
+    <Card className="grid content-start gap-1 p-4 [&>span:nth-child(2)]:text-[17px]">
+      <span className="text-xs text-muted-foreground">{label}</span>
       {children}
     </Card>
   );

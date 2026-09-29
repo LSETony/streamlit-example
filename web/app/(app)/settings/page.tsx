@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { Clock, CreditCard, Crown, MapPin, ShieldAlert, SlidersHorizontal, Store } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HoursForm, ProfileForm, RiskForm, RulesForm, ZonesEditor } from "@/components/gym-settings-forms";
 import { requireStaff } from "@/lib/auth";
@@ -12,6 +13,14 @@ import { YookassaForm } from "./yookassa-form";
 export const metadata: Metadata = { title: "Настройки зала" };
 
 const PLAN_LABEL = { start: "Старт", business: "Бизнес", network: "Сеть" } as const;
+const SECTIONS = [
+  { id: "gym", title: "Зал", icon: Store },
+  { id: "hours", title: "Часы работы", icon: Clock },
+  { id: "zones", title: "Зоны", icon: MapPin },
+  { id: "rules", title: "Правила", icon: SlidersHorizontal },
+  { id: "risk", title: "«В зоне риска»", icon: ShieldAlert },
+  { id: "payments", title: "Онлайн-оплата", icon: CreditCard },
+] as const;
 
 export default async function SettingsPage() {
   const ctx = await requireStaff(["owner"]);
@@ -24,37 +33,62 @@ export default async function SettingsPage() {
   const paid = g.paid_until && g.paid_until >= ctx.today;
   return (
     <>
-      <PageHeader title="Настройки зала" />
-      <div className="grid gap-6">
-        <Section title="Подписка core." description="Тариф и оплата подписки ведутся командой core.">
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <Badge variant="brand">Тариф «{PLAN_LABEL[g.core_plan]}»</Badge>
-            {paid ? <span>Оплачено до {date(g.paid_until)}</span>
-              : g.trial_until >= ctx.today ? <span>Пробный период до {date(g.trial_until)}</span>
-              : <Badge variant="danger">Пробный период закончился — режим «только чтение»</Badge>}
+      <PageHeader title="Настройки зала" description="Изменения сохраняются по разделам" />
+      <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
+        <nav className="hidden lg:block" aria-label="Разделы настроек">
+          <div className="sticky top-8 grid gap-0.5">
+            {SECTIONS.map(({ id, title, icon: Icon }) => (
+              <a key={id} href={`#${id}`} className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-card hover:text-foreground">
+                <Icon className="size-4" /> {title}
+              </a>
+            ))}
           </div>
-        </Section>
-        <Section title="Зал"><ProfileForm gym={g} disabled={ctx.readOnly} /></Section>
-        <Section title="Часы работы и вместимость"><HoursForm settings={g.settings} disabled={ctx.readOnly} /></Section>
-        <Section title="Зоны" description="Зал, сауна, дорожки, пилатес — для расписания и брони"><ZonesEditor zones={zones ?? []} disabled={ctx.readOnly} /></Section>
-        <Section title="Правила"><RulesForm settings={g.settings} disabled={ctx.readOnly} /></Section>
-        <Section title="«В зоне риска»" description="Пороги попадания в список и шаблоны сообщений"><RiskForm settings={g.settings} disabled={ctx.readOnly} /></Section>
-        <Section title="Онлайн-оплата ЮKassa" description="Деньги поступают напрямую на счёт зала. Ключ хранится в зашифрованном виде только на сервере.">
-          <YookassaForm status={yk} disabled={ctx.readOnly} />
-        </Section>
+        </nav>
+
+        <div className="grid min-w-0 gap-6">
+          <Card className="flex flex-wrap items-center gap-4 bg-sidebar p-5 text-white">
+            <span className="grid size-11 place-items-center rounded-xl bg-brand text-brand-foreground"><Crown className="size-5" /></span>
+            <div className="grid flex-1 gap-0.5">
+              <p className="font-semibold">Подписка core. · тариф «{PLAN_LABEL[g.core_plan]}»</p>
+              <p className="text-sm text-sidebar-foreground">
+                {paid ? `Оплачено до ${date(g.paid_until)}`
+                  : g.trial_until >= ctx.today ? `Пробный период до ${date(g.trial_until)}`
+                  : "Пробный период закончился — кабинет в режиме «только чтение»"}
+              </p>
+            </div>
+            {paid || g.trial_until >= ctx.today ? <Badge variant="brand">Активна</Badge> : <Badge variant="danger">Только чтение</Badge>}
+          </Card>
+
+          <Section id="gym" title="Зал" description="Название и часовой пояс видят клиенты в приложении">
+            <ProfileForm gym={g} disabled={ctx.readOnly} />
+          </Section>
+          <Section id="hours" title="Часы работы и вместимость" description="Нужны для расписания, тепловой карты и «тихих часов» уведомлений">
+            <HoursForm settings={g.settings} disabled={ctx.readOnly} />
+          </Section>
+          <Section id="zones" title="Зоны" description="Зал, сауна, дорожки, студия — для расписания и брони">
+            <ZonesEditor zones={zones ?? []} disabled={ctx.readOnly} />
+          </Section>
+          <Section id="rules" title="Правила"><RulesForm settings={g.settings} disabled={ctx.readOnly} /></Section>
+          <Section id="risk" title="«В зоне риска»" description="Пороги попадания в список и шаблоны сообщений">
+            <RiskForm settings={g.settings} disabled={ctx.readOnly} />
+          </Section>
+          <Section id="payments" title="Онлайн-оплата ЮKassa" description="Деньги поступают напрямую на счёт зала. Ключ хранится в зашифрованном виде только на сервере.">
+            <YookassaForm status={yk} disabled={ctx.readOnly} />
+          </Section>
+        </div>
       </div>
     </>
   );
 }
 
-function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
+function Section({ id, title, description, children }: { id: string; title: string; description?: string; children: React.ReactNode }) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        {description ? <CardDescription>{description}</CardDescription> : null}
-      </CardHeader>
-      <CardContent>{children}</CardContent>
+    <Card id={id} className="scroll-mt-8">
+      <div className="grid gap-1 border-b border-border px-6 py-5">
+        <h2 className="text-base font-semibold tracking-tight">{title}</h2>
+        {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+      </div>
+      <div className="p-6">{children}</div>
     </Card>
   );
 }

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Camera, CameraOff, CheckCircle2, LogOut, ScanLine, ShoppingCart, Users, XCircle, Keyboard } from "lucide-react";
+import { Camera, CameraOff, CheckCircle2, LogOut, QrCode, ShoppingCart, Users, XCircle, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, Alert, EmptyState } from "@/components/ui/misc";
@@ -174,15 +174,31 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
         {cameraError ? <Alert variant="danger">{cameraError}</Alert> : null}
 
         <Card className="overflow-hidden">
-          <div className={cn("relative grid aspect-[4/3] max-h-[52vh] w-full place-items-center bg-sidebar sm:aspect-video", !cameraOn && "aspect-[3/1] sm:aspect-[4/1]")}>
-            <video ref={videoRef} className={cn("absolute inset-0 size-full object-cover", !cameraOn && "hidden")} muted playsInline />
-            {!cameraOn ? (
-              <div className="flex flex-col items-center gap-2 px-6 text-center text-sidebar-foreground">
-                <ScanLine className="size-8 text-brand" />
-                <p className="text-sm">Камера выключена. Ручной сканер штрихкодов работает всегда — просто сканируйте.</p>
+          {cameraOn ? (
+            <div className="relative aspect-[4/3] max-h-[56vh] w-full bg-sidebar sm:aspect-video">
+              <video ref={videoRef} className="absolute inset-0 size-full object-cover" muted playsInline />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
+                <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-brand opacity-75" /><span className="relative inline-flex size-2 rounded-full bg-brand" /></span>
+                Камера сканирует
+              </span>
+            </div>
+          ) : (
+            <div className="grid gap-6 p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:p-8">
+              <div className="relative mx-auto grid size-32 place-items-center rounded-3xl bg-sidebar text-brand sm:mx-0">
+                <QrCode className="size-14" strokeWidth={1.4} />
+                <span aria-hidden className="absolute inset-x-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-brand shadow-[0_0_12px_2px_var(--brand)] animate-[scan_2.4s_ease-in-out_infinite]" />
               </div>
-            ) : null}
-          </div>
+              <div className="grid gap-3 text-center sm:text-left">
+                <p className="inline-flex items-center justify-center gap-2 text-sm font-medium text-success sm:justify-start">
+                  <span className="size-2 rounded-full bg-success" /> Сканер готов
+                </p>
+                <p className="text-xl font-semibold tracking-tight">Поднесите QR-пропуск из приложения</p>
+                <p className="text-sm text-muted-foreground">
+                  Ручной сканер штрихкодов работает сразу. Для камеры планшета или веб-камеры нажмите «Включить камеру».
+                </p>
+              </div>
+            </div>
+          )}
         </Card>
 
         <Card>
@@ -267,7 +283,7 @@ function ResultOverlay({ result, onClose, onSell }: { result: CheckinResult; onC
       {ok ? <CheckCircle2 className="size-20 sm:size-24" strokeWidth={1.5} /> : <XCircle className="size-20 sm:size-24" strokeWidth={1.5} />}
       {result.client ? (
         <div className="flex flex-col items-center gap-3">
-          <Avatar name={result.client.full_name} src={result.client.photo_url} className="size-28 bg-white/20 text-3xl text-white sm:size-36" />
+          <Avatar name={result.client.full_name} src={result.client.photo_url} className="size-28 bg-white/20 text-3xl text-white ring-4 ring-white/25 dark:bg-white/20 dark:text-white sm:size-36" />
           <p className="text-3xl font-bold tracking-tight sm:text-5xl">{result.client.full_name}</p>
         </div>
       ) : null}
