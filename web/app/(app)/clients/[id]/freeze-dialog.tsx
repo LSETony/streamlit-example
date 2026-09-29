@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/misc";
 import { freezeMembership } from "@/app/actions/memberships";
 import { addDays, date, daysBetween } from "@/lib/format";
 import type { Membership } from "@/lib/types";
+import { DatePicker } from "@/components/ui/date-picker";
 
 /** FR-3.4 Заморозка в пределах лимита тарифа */
 export function FreezeDialog({ membership, clientId, today, onClose }: { membership: Membership; clientId: string; today: string; onClose: () => void }) {
@@ -27,8 +28,8 @@ export function FreezeDialog({ membership, clientId, today, onClose }: { members
           <DialogDescription>{membership.plan_name}: доступно {left} дн. из {membership.freeze_days_max}. Дата окончания сдвинется автоматически.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="С"><Input type="date" value={from} min={today} max={membership.ends_on} onChange={(e) => setFrom(e.target.value)} /></Field>
-          <Field label="По"><Input type="date" value={to} min={from} onChange={(e) => setTo(e.target.value)} /></Field>
+          <Field label="С"><DatePicker value={from} min={today} max={membership.ends_on} onChange={setFrom} aria-label="С" /></Field>
+          <Field label="По"><DatePicker value={to} min={from} onChange={setTo} aria-label="По" /></Field>
         </div>
         <Field label="Причина (необязательно)"><Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Отпуск, болезнь…" /></Field>
         {days > 0 ? (

@@ -9,6 +9,7 @@ import { Segmented, segmentClass } from "@/components/ui/tabs";
 import { createSeries } from "@/app/actions/schedule";
 import { addDays } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { DatePicker } from "@/components/ui/date-picker";
 
 const WD = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
@@ -58,7 +59,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Название"><Input name="title" required placeholder={kind === "zone_slot" ? "Сауна" : kind === "personal" ? "Персональная тренировка" : "Йога"} /></Field>
             <Field label="Тренер"><Input name="trainer" placeholder="Имя тренера" /></Field>
-            <Field label="Дата"><Input name="date" type="date" defaultValue={initialDate} required /></Field>
+            <Field label="Дата"><DatePicker name="date" defaultValue={initialDate} required aria-label="Дата" /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Начало"><Input name="time" type="time" defaultValue={initialTime} required step={300} /></Field>
               <Field label="Минут"><Input name="duration" type="number" min={5} max={600} defaultValue={kind === "personal" ? 60 : 55} required /></Field>
@@ -83,7 +84,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
                     className={cn("size-10 cursor-pointer rounded-full text-sm", weekdays.includes(i + 1) ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}>{w}</button>
                 ))}
               </div>
-              <Field label="До"><Input name="until" type="date" defaultValue={addDays(initialDate, 83)} /></Field>
+              <Field label="До"><DatePicker name="until" defaultValue={addDays(initialDate, 83)} min={initialDate} aria-label="Повторять до" /></Field>
             </div>
           ) : null}
           {error ? <Alert variant="danger">{error}</Alert> : null}
