@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export function Card({ className, variant = "glass", ...props }: React.ComponentProps<"div"> & { variant?: "glass" | "hero" }) {
-  return <div className={cn("rounded-[28px] text-card-foreground", variant === "hero" ? "hero" : "glass", className)} {...props} />;
+  return <div className={cn("relative glass-rim rounded-[28px] text-card-foreground", variant === "hero" ? "hero" : "glass-card", className)} {...props} />;
 }
 
 export function CardHeader({ className, ...props }: React.ComponentProps<"div">) {

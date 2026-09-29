@@ -34,7 +34,7 @@ export default async function OnboardingPage({ searchParams }: PageProps<"/onboa
 
   return (
     <div className="min-h-dvh bg-background">
-      <header className="glass sticky top-3 z-30 mx-3 mt-3 flex h-16 items-center rounded-[22px] px-6"><Logo className="h-6" /></header>
+      <header className="glass glass-rim sticky top-3 z-30 mx-3 mt-3 flex h-16 items-center rounded-[22px] px-6"><Logo className="h-6" /></header>
       <main className="mx-auto w-full max-w-3xl px-4 py-10">
         <Wizard step={step} gym={ctx?.gym ?? null} zones={zones} plans={plans} staff={staff} email={user.email ?? ""} />
       </main>
