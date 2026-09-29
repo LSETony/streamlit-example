@@ -40,6 +40,7 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
   return (
     <ScheduleView
       view={view}
+      viewChosen={sp.view === "day" || sp.view === "week"}
       from={from}
       days={days}
       today={ctx.today}

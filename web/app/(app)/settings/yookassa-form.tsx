@@ -36,7 +36,7 @@ export function YookassaForm({ status, disabled }: { status: { connected: boolea
       </div>
       <SwitchRow name="send_receipt" defaultChecked={status.sendReceipt} title="Чеки по 54-ФЗ" description="ЮKassa отправит чек клиенту на телефон или email" />
       <Alert>
-        В личном кабинете ЮKassa укажите адрес для уведомлений: <code className="text-xs">https://&lt;адрес API&gt;/functions/v1/payments/webhook</code>,
+        В личном кабинете ЮKassa укажите адрес для уведомлений: <code className="break-all text-xs">https://&lt;адрес API&gt;/functions/v1/payments/webhook</code>,
         события payment.succeeded, payment.canceled, refund.succeeded.
       </Alert>
       {error ? <Alert variant="danger">{error}</Alert> : null}

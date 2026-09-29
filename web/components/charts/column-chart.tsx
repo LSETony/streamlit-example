@@ -48,7 +48,7 @@ export function ColumnChart({ data, unit = "", highlightLast, height = 140 }: {
       </div>
       <div className="mt-1 flex gap-1 border-t border-border pt-1">
         {data.map((d) => (
-          <span key={d.key} className="flex-1 text-center text-[10px] text-muted-foreground">{formatLabel(d.key)}</span>
+          <span key={d.key} className="min-w-0 flex-1 overflow-hidden text-center text-[10px] text-muted-foreground max-[420px]:even:invisible">{formatLabel(d.key)}</span>
         ))}
       </div>
       <table className="sr-only">

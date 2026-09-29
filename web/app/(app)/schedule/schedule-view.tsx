@@ -32,14 +32,21 @@ function minutesOfDay(ts: string, tz: string): number {
   return h * 60 + m;
 }
 
-export function ScheduleView({ view, from, days, today, items, zones, gymId, timezone, canEdit, readOnly, hours }: {
-  view: "week" | "day"; from: string; days: number; today: string; items: Item[]; zones: { id: string; name: string; capacity: number }[];
+export function ScheduleView({ view, viewChosen, from, days, today, items, zones, gymId, timezone, canEdit, readOnly, hours }: {
+  view: "week" | "day"; viewChosen?: boolean; from: string; days: number; today: string; items: Item[]; zones: { id: string; name: string; capacity: number }[];
   gymId: string; timezone: string; canEdit: boolean; readOnly: boolean; hours?: Record<string, [string, string] | null>;
 }) {
   const router = useRouter();
   const [create, setCreate] = useState<{ date: string; time: string } | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [supabase] = useState(createClient);
+
+  // На телефоне семь колонок недели слишком узкие: если вид не выбран явно, сразу открываем день
+  useEffect(() => {
+    if (viewChosen || view !== "week" || !window.matchMedia("(max-width: 639px)").matches) return;
+    const day = today >= from && today <= addDays(from, days - 1) ? today : from;
+    router.replace(`/schedule?view=day&date=${day}`);
+  }, [viewChosen, view, from, days, today, router]);
 
   // Записи из приложения видны без перезагрузки (Realtime)
   useEffect(() => {
