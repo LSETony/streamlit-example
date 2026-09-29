@@ -1,0 +1,40 @@
+# Публичный сервер: кабинет (Next.js) + HTTPS (Caddy, сертификаты Let's Encrypt автоматически).
+# Используется поверх docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.public.yml --env-file .env up -d --build
+# Обычно запускается скриптом deploy/install.sh.
+services:
+  kong:
+    ports: !override
+      - "127.0.0.1:${KONG_HTTP_PORT:-54321}:8000"   # наружу API доступно только через Caddy (HTTPS)
+
+  web:
+    build:
+      context: ../web
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${API_EXTERNAL_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}
+    restart: unless-stopped
+    depends_on: [kong]
+    environment:
+      SUPABASE_INTERNAL_URL: http://kong:8000
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      GYM_SECRETS_KEY: ${GYM_SECRETS_KEY}
+      PUBLIC_APP_URL: ${SITE_URL}
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [web, kong]
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+      TLS_MODE: ${TLS_MODE:-public}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro,z
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:

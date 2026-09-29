@@ -1,0 +1,30 @@
+# HTTPS для кабинета и API. Сертификаты Let's Encrypt выпускаются автоматически.
+# TLS_MODE=internal — самоподписанный сертификат (проверка без публичного адреса).
+(tls_public) {
+}
+
+(tls_internal) {
+	tls internal
+}
+
+(common) {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}
+
+{$APP_DOMAIN} {
+	import common
+	import tls_{$TLS_MODE}
+	reverse_proxy web:3000
+}
+
+{$API_DOMAIN} {
+	import common
+	import tls_{$TLS_MODE}
+	reverse_proxy kong:8000
+}

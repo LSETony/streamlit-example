@@ -1,0 +1,4 @@
+{
+  "compilerOptions": { "strict": true, "lib": ["deno.ns", "deno.window", "dom"] },
+  "lint": { "rules": { "exclude": ["no-explicit-any", "no-import-prefix"] } }
+}

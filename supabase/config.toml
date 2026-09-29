@@ -1,0 +1,74 @@
+# Конфигурация Supabase CLI для локальной разработки (supabase start).
+# В продакшене Supabase развёрнут self-hosted на серверах в России (см. docs/deploy.md).
+project_id = "core"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+port = 54323
+
+[storage]
+enabled = true
+file_size_limit = "10MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://localhost:3000/reset-password"]
+# Выход после 12 часов бездействия (раздел 7)
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+[auth.sessions]
+inactivity_timeout = "12h"
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+# Пароли от 8 символов (раздел 7)
+[auth.password]
+min_length = 8
+
+# Вход клиентов приложения по телефону и коду из SMS
+[auth.sms]
+enable_signup = true
+enable_confirmations = true
+[auth.sms.test_otp]
+79161234567 = "123456"
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+# Webhook ЮKassa и служебные воркеры вызываются без пользовательского JWT —
+# проверку делают сами функции (перезапрос статуса в ЮKassa, CRON_SECRET, getUser()).
+[functions.payments]
+verify_jwt = false
+[functions.notify]
+verify_jwt = false
+[functions.maintenance]
+verify_jwt = false
+[functions.sms-hook]
+verify_jwt = false
+
+# В продакшене коды входа отправляются через российский SMS-шлюз:
+# [auth.hook.send_sms]
+# enabled = true
+# uri = "http://functions:9000/sms-hook"
+# secrets = "env(SEND_SMS_HOOK_SECRET)"
