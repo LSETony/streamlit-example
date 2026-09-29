@@ -40,8 +40,8 @@ const AVATAR_TINTS = [
   "bg-[oklch(0.93_0.05_160)] text-[oklch(0.42_0.09_160)] dark:bg-[oklch(0.32_0.05_160)] dark:text-[oklch(0.88_0.06_160)]",
   "bg-[oklch(0.94_0.05_70)] text-[oklch(0.45_0.1_60)] dark:bg-[oklch(0.33_0.05_70)] dark:text-[oklch(0.9_0.07_75)]",
   "bg-[oklch(0.93_0.04_20)] text-[oklch(0.45_0.12_25)] dark:bg-[oklch(0.33_0.05_20)] dark:text-[oklch(0.88_0.06_20)]",
-  "bg-[oklch(0.93_0.04_300)] text-[oklch(0.44_0.1_300)] dark:bg-[oklch(0.32_0.05_300)] dark:text-[oklch(0.88_0.06_300)]",
-  "bg-[oklch(0.94_0.05_125)] text-[oklch(0.42_0.1_130)] dark:bg-[oklch(0.32_0.06_125)] dark:text-[oklch(0.9_0.12_125)]",
+  "bg-[#efe6ff] text-[#4a00d6] dark:bg-[#2a1a4a] dark:text-[#b79bff]",
+  "bg-[#ffe7e0] text-[#b82000] dark:bg-[#3a1c14] dark:text-[#ff9b80]",
 ];
 
 function tint(name: string): string {
