@@ -54,8 +54,8 @@ const NAV: { title: string; items: NavItem[] }[] = [
 /** Порядок вкладок нижней панели на телефоне: сначала то, чем пользуются каждый день */
 const TAB_PRIORITY = ["/reception", "/clients", "/schedule", "/dashboard", "/risk"];
 
-const GRADIENT_TILE =
-  "bg-[linear-gradient(135deg,#f92c00,#b0179a_55%,#5900ff)] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.3),0_8px_18px_-8px_rgb(249_44_0/0.7)]";
+const ACTIVE_TILE =
+  "bg-brand text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_8px_18px_-8px_rgb(249_44_0/0.7)]";
 
 export function AppShell({ role, features, gymId, gymName, userName, riskCount, readOnly, children, banner }: {
   role: Role; features: Record<string, boolean>; gymId: string; gymName: string; userName: string; riskCount: number | null;
@@ -112,7 +112,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
                 <span
                   className={cn(
                     "grid size-9 shrink-0 place-items-center rounded-[14px] transition-colors",
-                    active ? GRADIENT_TILE : "bg-white/[0.05] ring-1 ring-inset ring-white/[0.07] group-hover:bg-white/[0.09]",
+                    active ? ACTIVE_TILE : "bg-white/[0.05] ring-1 ring-inset ring-white/[0.07] group-hover:bg-white/[0.09]",
                   )}
                 >
                   <Icon className={cn("size-[18px]", active ? "" : "opacity-70 group-hover:opacity-100")} />
@@ -187,7 +187,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
           return (
             <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined}
               className={cn("relative flex flex-col items-center gap-1 text-[11px] font-medium", active ? "text-white" : "text-sidebar-foreground")}>
-              <span className={cn("grid h-8 w-12 place-items-center rounded-full transition-colors", active ? GRADIENT_TILE : "")}>
+              <span className={cn("grid h-8 w-12 place-items-center rounded-full transition-colors", active ? ACTIVE_TILE : "")}>
                 <t.icon className="size-[18px]" />
               </span>
               {t.short ?? t.label}
@@ -196,7 +196,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
           );
         })}
         <button onClick={() => setOpen(true)} className={cn("flex cursor-pointer flex-col items-center gap-1 text-[11px] font-medium", moreActive ? "text-white" : "text-sidebar-foreground")}>
-          <span className={cn("grid h-8 w-12 place-items-center rounded-full", moreActive ? GRADIENT_TILE : "")}>
+          <span className={cn("grid h-8 w-12 place-items-center rounded-full", moreActive ? ACTIVE_TILE : "")}>
             <LayoutGrid className="size-[18px]" />
           </span>
           Ещё
