@@ -3,7 +3,8 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Field, Input, NativeSelect, Textarea } from "@/components/ui/input";
+import { Field, Input, NativeSelect, Textarea, TimeSelect } from "@/components/ui/input";
+import { SwitchRow } from "@/components/ui/switch";
 import { Alert } from "@/components/ui/misc";
 import { Segmented, segmentClass } from "@/components/ui/tabs";
 import { createSeries } from "@/app/actions/schedule";
@@ -61,7 +62,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
             <Field label="Тренер"><Input name="trainer" placeholder="Имя тренера" /></Field>
             <Field label="Дата"><DatePicker name="date" defaultValue={initialDate} required aria-label="Дата" /></Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Начало"><Input name="time" type="time" defaultValue={initialTime} required step={300} /></Field>
+              <Field label="Начало"><TimeSelect name="time" defaultValue={initialTime} step={15} className="w-full" aria-label="Начало" /></Field>
               <Field label="Минут"><Input name="duration" type="number" min={5} max={600} defaultValue={kind === "personal" ? 60 : 55} required /></Field>
             </div>
             <Field label="Зона">
@@ -73,9 +74,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
             <Field label="Мест"><Input name="capacity" type="number" min={1} max={500} defaultValue={kind === "personal" ? 1 : 12} required /></Field>
           </div>
           <Field label="Описание (необязательно)"><Textarea name="description" rows={2} /></Field>
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <input type="checkbox" checked={repeat} onChange={(e) => setRepeat(e.target.checked)} className="size-4" /> Повторять каждую неделю
-          </label>
+          <SwitchRow title="Повторять каждую неделю" checked={repeat} onCheckedChange={setRepeat} />
           {repeat ? (
             <div className="grid gap-3 rounded-xl bg-muted/50 p-3 sm:grid-cols-[1fr_auto] sm:items-end">
               <div className="flex flex-wrap gap-1.5">
