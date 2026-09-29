@@ -12,6 +12,23 @@
 | Self-hosted Supabase для серверов в РФ | `deploy` | Docker Compose: Postgres, Auth, REST, Realtime, Functions, Kong |
 | Документация | `docs` | OpenAPI для приложения, подключение iOS, развёртывание |
 
+## Развернуть на сервере со ссылкой (5–10 минут)
+
+1. Создайте виртуальную машину в Yandex Cloud или Selectel: Ubuntu 24.04, 2 vCPU, 4 ГБ RAM, диск 30 ГБ,
+   публичный IP. Разрешите входящие порты 22, 80 и 443.
+2. Подключитесь по SSH и выполните одну команду:
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/LSETony/streamlit-example/claude/pensive-hawking-361iv6/deploy/install.sh | sudo bash -s -- --demo
+   ```
+
+3. Через 5–10 минут скрипт напечатает ссылку вида `https://app.<IP>.sslip.io` и демо-входы
+   (`owner@demo.core` / `demo12345`). HTTPS-сертификат выпускается автоматически.
+
+Свой домен: добавьте A-записи `app.<домен>` и `api.<домен>` на IP сервера и запустите скрипт с `--domain <домен>`.
+Без `--demo` база будет пустой — первый владелец регистрируется на странице «Подключить зал».
+Подробности (резервные копии, ЮKassa, SMS, push) — `docs/deploy.md`.
+
 ## Быстрый старт (локально)
 
 Нужны Docker и Node.js 20+.

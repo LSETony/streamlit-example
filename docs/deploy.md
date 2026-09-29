@@ -22,7 +22,19 @@ Edge Functions, шлюз Kong, миграции и расписание фоно
   Домены, например: `api.core.example.ru` → Kong :54321, `app.core.example.ru` → кабинет (Next.js).
 * Наружу открыты только 443/80. Порт PostgreSQL слушает только 127.0.0.1.
 
-## Первый запуск
+## Самый быстрый путь
+
+`deploy/install.sh` ставит Docker, скачивает код, генерирует секреты, собирает кабинет, поднимает всё за Caddy
+с автоматическим HTTPS и (с `--demo`) загружает демо-зал:
+
+```bash
+sudo bash deploy/install.sh --demo                    # адреса app.<IP>.sslip.io и api.<IP>.sslip.io
+sudo bash deploy/install.sh --domain core.example.ru  # app.core.example.ru и api.core.example.ru
+```
+
+Повторный запуск обновляет код и пересобирает кабинет, секреты в `deploy/.env` сохраняются.
+
+## Первый запуск вручную
 
 ```bash
 git clone … && cd …

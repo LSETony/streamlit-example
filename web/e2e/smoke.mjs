@@ -49,10 +49,11 @@ function qrPayload(deviceId, secretHex, now = Date.now()) {
   return `${msg}:${createHmac("sha256", Buffer.from(secretHex, "hex")).update(msg).digest("hex").slice(0, 32)}`;
 }
 
-const browser = await chromium.launch();
+// Для стенда с тестовыми доменами: PW_HOST_RULES="MAP *.core.test 127.0.0.1", PW_IGNORE_HTTPS=1 (самоподписанный сертификат)
+const browser = await chromium.launch({ args: process.env.PW_HOST_RULES ? [`--host-resolver-rules=${process.env.PW_HOST_RULES}`] : [] });
 const openPages = [];
 async function login(email) {
-  const ctx = await browser.newContext({ viewport: { width: 1366, height: 900 }, locale: "ru-RU", permissions: ["clipboard-read", "clipboard-write"] });
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 900 }, locale: "ru-RU", ignoreHTTPSErrors: !!process.env.PW_IGNORE_HTTPS, permissions: ["clipboard-read", "clipboard-write"] });
   const page = await ctx.newPage();
   openPages.push(page);
   page.on("pageerror", (e) => { failures++; console.log(`  ! ошибка на странице: ${e.message}`); });
