@@ -49,7 +49,7 @@ export function CommandMenu({ open, onOpenChange, gymId, sections, readOnly }: {
             {actions.map((a) => (
               <button key={a.href} type="button" onClick={() => go(a.href)}
                 className="group flex cursor-pointer flex-col items-start gap-3 rounded-[20px] bg-field p-3.5 text-left transition-colors hover:bg-field-hover">
-                <span className="grid size-9 place-items-center rounded-[12px] bg-brand text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]">
+                <span className="grid size-9 place-items-center rounded-[12px] bg-violet text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]">
                   <a.icon className="size-[18px]" />
                 </span>
                 <span className="grid gap-0.5">

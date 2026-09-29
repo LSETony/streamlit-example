@@ -11,11 +11,11 @@ export const DialogClose = D.Close;
 export function DialogContent({ className, children, wide, hideClose, ...props }: React.ComponentProps<typeof D.Content> & { wide?: boolean; hideClose?: boolean }) {
   return (
     <D.Portal>
-      <D.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md data-[state=open]:animate-in data-[state=open]:fade-in-0" />
+      <D.Overlay className="fixed inset-0 z-50 bg-black/30 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
       <D.Content
         className={cn(
           "fixed left-1/2 top-1/2 z-50 grid max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto " +
-            "glass-strong rounded-[28px] p-7 focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-[0.98]",
+            "glass-strong glass-rim rounded-[28px] p-7 focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-[0.98]",
           wide ? "max-w-2xl" : "max-w-lg",
           className,
         )}

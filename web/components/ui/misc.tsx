@@ -23,7 +23,7 @@ export function EmptyState({ icon, title, children, action, className }: {
   icon?: React.ReactNode; title: string; children?: React.ReactNode; action?: React.ReactNode; className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col items-center justify-center gap-3 glass rounded-[28px] px-6 py-14 text-center", className)}>
+    <div className={cn("flex flex-col items-center justify-center gap-3 relative glass-card glass-rim rounded-[28px] px-6 py-14 text-center", className)}>
       {icon ? <div className="rounded-[18px] bg-field p-3.5 text-muted-foreground [&_svg]:size-6">{icon}</div> : null}
       <div className="grid gap-1">
         <p className="font-semibold">{title}</p>

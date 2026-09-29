@@ -74,7 +74,7 @@ export function ClientSearch({ gymId, onSelect, autoFocus, placeholder = "ФИО
         />
       </div>
       {q.trim().length >= 2 && (items.length > 0 || !loading) ? (
-        <div className={cn(inline ? "mt-2 grid gap-0.5" : "glass-strong absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl p-1.5")} role="listbox">
+        <div className={cn(inline ? "mt-2 grid gap-0.5" : "glass-strong glass-rim absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl p-1.5")} role="listbox">
           {items.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">Никого не нашли</p>
           ) : items.map((c, i) => (
