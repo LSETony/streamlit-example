@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* низкий экран — телефон в альбомной ориентации: панели становятся компактными */
+@custom-variant short (@media (max-height: 520px));
+
 @custom-variant dark {
   &:where([data-theme="dark"], [data-theme="dark"] *) {
     @slot;
@@ -219,6 +222,13 @@
   }
   html {
     -webkit-tap-highlight-color: transparent;
+    /* Safari не увеличивает текст сам при повороте телефона */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  /* без задержки и двойного касания-зума на кнопках и ссылках */
+  a, button, [role="button"], label, input, select, textarea {
+    touch-action: manipulation;
   }
   body {
     min-height: 100dvh;

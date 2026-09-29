@@ -66,7 +66,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
         <Card variant="hero" className="flex flex-col justify-between gap-6 p-7">
           <div className="grid gap-2">
             <span className="text-sm text-muted-foreground">Выручка</span>
-            <span className="text-5xl font-semibold tracking-tight sm:text-6xl">{money(c.revenue)}</span>
+            <span className="whitespace-nowrap text-[clamp(2.25rem,10.5vw,3.75rem)] font-semibold leading-none tracking-tight">{money(c.revenue)}</span>
             <Delta current={c.revenue} previous={pv.revenue} format={money} goodWhenUp label="к прошлому периоду" />
           </div>
           <div>

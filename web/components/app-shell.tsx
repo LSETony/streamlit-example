@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   LayoutDashboard, ScanLine, Users, AlertTriangle, CalendarDays, Wallet, Tags, UserCog, ScrollText, Settings, LogOut, X, Moon, Sun, ChevronLeft,
   Search, Plus, LayoutGrid,
@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { signOut } from "@/app/actions/auth";
 import type { Role } from "@/lib/types";
 import { ROLE_LABEL } from "@/lib/types";
+
+const noSubscribe = () => () => {};
 
 interface NavItem {
   href: string;
@@ -81,6 +83,26 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
   const canCheckIn = items.some((i) => i.href === "/reception");
   const inlineTitle = collapsed && title ? title : null;
   const navTitle = useMemo(() => ({ setTitle, setCollapsed }), []);
+
+  // Как в Safari: на телефоне и планшете верхняя панель уезжает при прокрутке вниз и возвращается при прокрутке вверх
+  const [barHidden, setBarHidden] = useState(false);
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (Math.abs(y - last) < 8) return;
+      setBarHidden(y > last && y > 120);
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  // при переходе на другую страницу панель снова видна
+  const [barPath, setBarPath] = useState(pathname);
+  if (barPath !== pathname) {
+    setBarPath(pathname);
+    setBarHidden(false);
+  }
 
   // Ctrl/⌘+K открывает поиск с любой страницы
   useEffect(() => {
@@ -164,7 +186,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
   return (
     <NavTitleContext.Provider value={navTitle}>
       <div className="flex min-h-dvh">
-        <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 p-3 lg:block">
+        <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] lg:block">
           <div className="glass glass-rim relative flex h-full flex-col gap-5 rounded-[28px] px-3 pb-3 pt-6">
             <Link href="/" className="px-3 text-foreground" aria-label="core. — на главную">
               <Logo className="h-6" />
@@ -175,7 +197,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] pt-[calc(env(safe-area-inset-top)+5rem)] lg:pb-10 lg:pt-0">
+        <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(env(safe-area-inset-top)+5rem)] short:pb-[calc(env(safe-area-inset-bottom)+4.5rem)] short:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pb-10 lg:pl-0 lg:pt-[env(safe-area-inset-top)]">
           {banner}
           <div className="mx-auto w-full max-w-[1600px] px-4 py-2 sm:px-6 lg:px-8 lg:py-6">
             <div className="hidden h-[52px] lg:mb-5 lg:block" aria-hidden />
@@ -204,7 +226,8 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
         {/* Плавающие панели идут в DOM после содержимого: иначе Chromium не размывает то, что под ними */}
 
         {/* телефон и iPad в портрете: навигационная панель сверху, вкладки снизу (iOS 26) */}
-        <div className="glass glass-rim fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full pl-5 pr-1.5 lg:hidden">
+        <div className={cn("glass glass-rim fixed left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full pl-5 pr-1.5 transition-transform duration-300 short:top-[max(0.5rem,env(safe-area-inset-top))] short:h-12 lg:hidden",
+          barHidden && "-translate-y-[calc(100%+env(safe-area-inset-top)+1rem)]")}>
           <div className="relative min-w-0 flex-1">
             <Link href="/" aria-label="core. — на главную"
               className={cn("block w-fit text-foreground transition-all duration-300", inlineTitle && "pointer-events-none -translate-y-2 opacity-0")}>
@@ -225,12 +248,12 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
             </Link>
           ) : null}
         </div>
-        <nav className="glass glass-rim fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid h-16 grid-flow-col auto-cols-fr items-center gap-1 rounded-full p-1 md:inset-x-auto md:left-1/2 md:h-14 md:-translate-x-1/2 md:auto-cols-max md:p-1.5 lg:hidden" aria-label="Основные разделы">
+        <nav className="glass glass-rim fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] z-40 grid h-16 grid-flow-col auto-cols-fr items-center gap-1 rounded-full p-1 short:bottom-[max(0.5rem,env(safe-area-inset-bottom))] md:left-1/2 md:right-auto md:h-14 md:-translate-x-1/2 md:auto-cols-max md:p-1.5 short:left-1/2 short:right-auto short:h-12 short:-translate-x-1/2 short:auto-cols-max short:p-1 lg:hidden" aria-label="Основные разделы">
           {tabs.map((t) => {
             const active = isActive(t.href);
             return (
               <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined}
-                className={cn("relative flex h-full flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold transition-colors active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px]",
+                className={cn("relative flex h-full flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold transition-colors active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px] short:flex-row short:gap-1.5 short:px-4 short:text-[13px]",
                   active ? "bg-field text-tint-text" : "text-foreground/80")}>
                 <t.icon className="size-[22px]" strokeWidth={active ? 2.25 : 1.9} />
                 {t.short ?? t.label}
@@ -239,7 +262,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
             );
           })}
           <button onClick={() => setOpen(true)}
-            className={cn("flex h-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px]",
+            className={cn("flex h-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px] short:flex-row short:gap-1.5 short:px-4 short:text-[13px]",
               moreActive ? "bg-field text-tint-text" : "text-foreground/80")}>
             <LayoutGrid className="size-[22px]" strokeWidth={moreActive ? 2.25 : 1.9} />
             Ещё
@@ -247,7 +270,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
         </nav>
 
         {/* iPad в альбоме и компьютер: навигационная панель над колонкой содержимого */}
-        <div className="glass glass-rim fixed top-3 z-30 hidden h-[52px] items-center gap-2 rounded-full p-1.5 pl-5 lg:flex
+        <div className="glass glass-rim fixed top-[max(0.75rem,env(safe-area-inset-top))] z-30 hidden h-[52px] items-center gap-2 rounded-full p-1.5 pl-5 lg:flex
           left-[calc(300px+max(0px,(100vw-300px-1600px)/2)+2rem)] right-[calc(max(0px,(100vw-300px-1600px)/2)+2rem)]">
           <p className={cn("min-w-0 flex-1 truncate text-[17px] font-semibold transition-all duration-300",
             inlineTitle ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0")} aria-hidden={!inlineTitle}>
@@ -257,7 +280,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
             className="flex h-10 w-72 shrink-0 cursor-pointer items-center gap-2 rounded-full bg-field pl-3.5 pr-2 text-[15px] text-muted-foreground transition-colors hover:bg-field-hover">
             <Search className="size-[18px]" />
             <span className="flex-1 text-left">Поиск</span>
-            <Kbd>Ctrl K</Kbd>
+            <ShortcutHint />
           </button>
           {canCheckIn && !isActive("/reception") ? (
             <Button variant="secondary" asChild className="h-10"><Link href="/reception"><ScanLine /> Отметить визит</Link></Button>
@@ -271,6 +294,12 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
       </div>
     </NavTitleContext.Provider>
   );
+}
+
+/** Подсказка сочетания: «⌘K» на Mac и iPad с клавиатурой, «Ctrl K» на остальных; на сенсорных экранах без мыши скрыта */
+function ShortcutHint() {
+  const apple = useSyncExternalStore(noSubscribe, () => /Mac|iPhone|iPad|iPod/.test(navigator.userAgent), () => false);
+  return <span className="[@media(pointer:coarse)]:hidden"><Kbd>{apple ? "⌘K" : "Ctrl K"}</Kbd></span>;
 }
 
 function ThemeToggle() {
