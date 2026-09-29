@@ -15,6 +15,10 @@
    можно вернуться позже), в Redirect URLs добавьте `https://<адрес-кабинета>/auth/callback`.
 4. **Project Settings → API**: скопируйте Project URL, anon (publishable) key и service_role (secret) key.
 
+Ошибка `type "staff_role" already exists` значит, что файл уже выполнялся и база создана. Проверьте:
+`select count(*) from clients;` — если 320, всё готово. Если нужно начать заново, выполните
+`supabase/reset-cloud.sql` (удаляет всё core. в проекте), затем снова `supabase/setup-cloud.sql`.
+
 ## 2. Vercel (кабинет) — ~5 минут
 
 1. На vercel.com: **Add New → Project → Import** репозитория `LSETony/streamlit-example`.
