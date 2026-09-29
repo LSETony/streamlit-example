@@ -12,6 +12,7 @@ import { addDays, date, money, plural } from "@/lib/format";
 import type { Plan } from "@/lib/types";
 import { PLAN_KIND_LABEL } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { DatePicker } from "@/components/ui/date-picker";
 
 type Method = "cash" | "card" | "online";
 
@@ -119,7 +120,7 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
 
             {!renew ? (
               <Field label="Дата начала" hint={endsOn ? `Действует до ${date(endsOn)}` : undefined}>
-                <Input type="date" value={startsOn} min={addDays(today, -30)} onChange={(e) => setStartsOn(e.target.value)} />
+                <DatePicker value={startsOn} min={addDays(today, -30)} onChange={setStartsOn} aria-label="Начало" />
               </Field>
             ) : (
               <p className="text-sm text-muted-foreground">

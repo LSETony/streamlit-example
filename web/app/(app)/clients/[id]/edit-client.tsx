@@ -9,6 +9,7 @@ import { Alert } from "@/components/ui/misc";
 import { anonymizeClient, updateClientAction } from "@/app/actions/clients";
 import type { Client } from "@/lib/types";
 import { SOURCES } from "../new-client";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export function EditClientDialog({ client, onClose }: { client: Client; onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +28,7 @@ export function EditClientDialog({ client, onClose }: { client: Client; onClose:
             <Field label="ФИО"><Input name="full_name" defaultValue={client.full_name} required /></Field>
             <Field label="Телефон"><Input name="phone" type="tel" defaultValue={client.phone ?? ""} required /></Field>
             <Field label="Email"><Input name="email" type="email" defaultValue={client.email ?? ""} /></Field>
-            <Field label="Дата рождения"><Input name="birth_date" type="date" defaultValue={client.birth_date ?? ""} /></Field>
+            <Field label="Дата рождения"><DatePicker name="birth_date" defaultValue={client.birth_date ?? ""} max={new Date().toISOString().slice(0, 10)} placeholder="Не указана" clearable aria-label="Дата рождения" /></Field>
             <Field label="Пол">
               <NativeSelect name="gender" defaultValue={client.gender ?? ""}>
                 <option value="">Не указан</option><option value="female">Женский</option><option value="male">Мужской</option>

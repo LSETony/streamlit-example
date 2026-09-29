@@ -13,6 +13,7 @@ import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { TIMEZONES } from "@/components/gym-settings-forms";
 import { adminCreateGym, adminUpdateGym } from "@/app/actions/admin";
 import { date } from "@/lib/format";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export interface AdminGym {
   id: string; name: string; address: string | null; core_plan: "start" | "business" | "network"; trial_until: string; paid_until: string | null;
@@ -79,8 +80,8 @@ function EditGym({ gym, onClose }: { gym: AdminGym; onClose: () => void }) {
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Тариф"><NativeSelect value={plan} onChange={(e) => setPlan(e.target.value as AdminGym["core_plan"])}>
             {Object.entries(PLAN).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect></Field>
-          <Field label="Пробный период до"><Input type="date" value={trial} onChange={(e) => setTrial(e.target.value)} /></Field>
-          <Field label="Оплачено до" hint="Пусто — не оплачено"><Input type="date" value={paid} onChange={(e) => setPaid(e.target.value)} /></Field>
+          <Field label="Пробный период до"><DatePicker value={trial} onChange={setTrial} clearable aria-label="Пробный период до" /></Field>
+          <Field label="Оплачено до" hint="Пусто — не оплачено"><DatePicker value={paid} onChange={setPaid} clearable placeholder="Не оплачено" aria-label="Оплачено до" /></Field>
         </div>
         <div className="grid gap-2 sm:grid-cols-2">
           {FEATURES.map(([k, l]) => (

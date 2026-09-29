@@ -1,9 +1,10 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { Input, NativeSelect } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Segmented, segmentClass } from "@/components/ui/tabs";
 import { addDays } from "@/lib/format";
+import { DateRangePicker } from "@/components/ui/date-picker";
 
 const pill = "h-9 shrink-0 rounded-full text-[15px] font-medium";
 const pillOn = "bg-tint-soft text-tint-text hover:bg-tint-soft";
@@ -27,8 +28,7 @@ export function PaymentFilters({ from, to, method, status, today }: { from: stri
         ))}
       </Segmented>
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:px-0">
-        <Input type="date" value={from} onChange={(e) => go({ from: e.target.value })} className={cn(pill, "w-[150px] px-4")} aria-label="С" />
-        <Input type="date" value={to} onChange={(e) => go({ to: e.target.value })} className={cn(pill, "w-[150px] px-4")} aria-label="По" />
+        <DateRangePicker from={from} to={to} max={today} onChange={(f, t) => go({ from: f, to: t })} className={cn(pill, "shrink-0 px-4")} aria-label="Период" />
         <NativeSelect value={method} onChange={(e) => go({ method: e.target.value })} className={cn(pill, "w-auto pl-4 pr-9 [background-position:right_12px_center]", method && pillOn)} aria-label="Способ">
           <option value="">Все способы</option><option value="cash">Наличные</option><option value="card">Карта</option><option value="online">Онлайн</option>
         </NativeSelect>
