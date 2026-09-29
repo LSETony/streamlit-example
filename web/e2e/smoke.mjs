@@ -205,7 +205,8 @@ await step("владелец: создание занятия; ресепшен:
   await owner.goto(`${APP}/schedule?view=day&date=${tomorrow}`);
   await owner.getByRole("button", { name: "Занятие" }).click();
   await owner.fill("input[name=title]", `E2E ${RUN}`);
-  await owner.fill("input[name=time]", "13:00");
+  await owner.getByRole("combobox", { name: "Начало" }).click();
+  await owner.getByRole("option", { name: "13:00", exact: true }).click();
   await owner.fill("input[name=capacity]", "1");
   await owner.getByRole("button", { name: "Создать" }).click();
   await owner.getByText("Занятие создано").waitFor({ timeout: 8000 });

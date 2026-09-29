@@ -65,5 +65,5 @@ export function ClientFilters({ q, state, tag, risk, tags, showRisk }: {
   );
 }
 
-const pill = "h-9 shrink-0 rounded-full pl-4 pr-9 text-[15px] font-medium [background-position:right_12px_center]";
+const pill = "h-9 shrink-0 rounded-full px-4 text-[15px] font-medium";
 const pillOn = "bg-tint-soft text-tint-text hover:bg-tint-soft";

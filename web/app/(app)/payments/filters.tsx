@@ -29,10 +29,10 @@ export function PaymentFilters({ from, to, method, status, today }: { from: stri
       </Segmented>
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:px-0">
         <DateRangePicker from={from} to={to} max={today} onChange={(f, t) => go({ from: f, to: t })} className={cn(pill, "shrink-0 px-4")} aria-label="Период" />
-        <NativeSelect value={method} onChange={(e) => go({ method: e.target.value })} className={cn(pill, "w-auto pl-4 pr-9 [background-position:right_12px_center]", method && pillOn)} aria-label="Способ">
+        <NativeSelect value={method} onChange={(e) => go({ method: e.target.value })} className={cn(pill, "w-auto px-4", method && pillOn)} aria-label="Способ">
           <option value="">Все способы</option><option value="cash">Наличные</option><option value="card">Карта</option><option value="online">Онлайн</option>
         </NativeSelect>
-        <NativeSelect value={status} onChange={(e) => go({ status: e.target.value })} className={cn(pill, "w-auto pl-4 pr-9 [background-position:right_12px_center]", status && pillOn)} aria-label="Статус">
+        <NativeSelect value={status} onChange={(e) => go({ status: e.target.value })} className={cn(pill, "w-auto px-4", status && pillOn)} aria-label="Статус">
           <option value="">Все статусы</option><option value="succeeded">Оплачено</option><option value="pending">Ожидает</option>
           <option value="failed">Не прошла</option><option value="refunds">Возвраты</option>
         </NativeSelect>
