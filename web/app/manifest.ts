@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Клиенты, абонементы, посещения, расписание и клиенты в зоне риска",
     start_url: "/",
     display: "standalone",
-    background_color: "#f2f2f7",
+    background_color: "#510bf5",
     theme_color: "#f2f2f7",
     lang: "ru",
     icons: [
