@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
   return (
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-1.5">
-        <h1 className="text-2xl font-bold tracking-tight">Восстановление пароля</h1>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Восстановление пароля</h1>
         <p className="text-sm text-muted-foreground">Пришлём ссылку для нового пароля на email</p>
       </div>
       {sent ? <Alert variant="success">Если такой email зарегистрирован, письмо уже в пути.</Alert> : null}

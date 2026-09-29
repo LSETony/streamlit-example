@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   LayoutDashboard, ScanLine, Users, AlertTriangle, CalendarDays, Wallet, Tags, UserCog, ScrollText, Settings, LogOut, X, Moon, Sun, ChevronLeft,
-  Search, UserPlus, LayoutGrid,
+  Search, Plus, LayoutGrid,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { CommandMenu, Kbd } from "@/components/command-menu";
@@ -18,7 +18,7 @@ interface NavItem {
   href: string;
   label: string;
   short?: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   roles: Role[];
   feature?: string;
 }
@@ -54,8 +54,11 @@ const NAV: { title: string; items: NavItem[] }[] = [
 /** Порядок вкладок нижней панели на телефоне: сначала то, чем пользуются каждый день */
 const TAB_PRIORITY = ["/reception", "/clients", "/schedule", "/dashboard", "/risk"];
 
-const ACTIVE_TILE =
-  "bg-violet text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_8px_18px_-8px_rgb(89_0_255/0.8)]";
+/**
+ * Крупный заголовок страницы (как в iOS) сообщает навигационной панели свой текст и виден ли он:
+ * когда заголовок уходит под панель при прокрутке, в панели появляется компактный заголовок.
+ */
+const NavTitleContext = createContext<{ setTitle: (t: string | null) => void; setCollapsed: (v: boolean) => void } | null>(null);
 
 export function AppShell({ role, features, gymId, gymName, userName, riskCount, readOnly, children, banner }: {
   role: Role; features: Record<string, boolean>; gymId: string; gymName: string; userName: string; riskCount: number | null;
@@ -64,6 +67,8 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState(false);
+  const [title, setTitle] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
   const groups = NAV.map((g) => ({
     ...g,
     items: g.items.filter((i) => i.roles.includes(role) && (!i.feature || features[i.feature] !== false)),
@@ -72,6 +77,10 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const tabs = TAB_PRIORITY.map((h) => items.find((i) => i.href === h)).filter((i): i is NavItem => !!i).slice(0, 4);
   const moreActive = !tabs.some((t) => isActive(t.href));
+  const canAddClient = !readOnly && items.some((i) => i.href === "/clients");
+  const canCheckIn = items.some((i) => i.href === "/reception");
+  const inlineTitle = collapsed && title ? title : null;
+  const navTitle = useMemo(() => ({ setTitle, setCollapsed }), []);
 
   // Ctrl/⌘+K открывает поиск с любой страницы
   useEffect(() => {
@@ -85,16 +94,18 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const badge = (href: string) =>
+  const badge = (href: string, active: boolean) =>
     href === "/risk" && riskCount ? (
-      <span className="grid h-6 min-w-6 place-items-center rounded-full bg-brand px-1.5 text-[11px] font-semibold text-white tabular">{riskCount}</span>
+      <span className={cn("grid h-[22px] min-w-[22px] place-items-center rounded-full px-1.5 text-[12px] font-semibold tabular",
+        active ? "bg-white/25 text-white" : "bg-brand text-white")}>{riskCount}</span>
     ) : null;
 
+  // Боковая панель iPadOS: иконки цветом акцента, выбранный раздел залит акцентом
   const nav = (
-    <nav className="-mx-1 flex flex-1 flex-col gap-5 overflow-y-auto px-1" aria-label="Разделы">
+    <nav className="-mx-1 flex flex-1 flex-col gap-4 overflow-y-auto px-1" aria-label="Разделы">
       {groups.map((g) => (
-        <div key={g.title} className="grid gap-1">
-          <p className="px-3 pb-1 text-[11px] font-medium uppercase tracking-[0.08em] text-sidebar-foreground/45">{g.title}</p>
+        <div key={g.title} className="grid gap-0.5">
+          <p className="px-3 pb-1 text-[13px] font-semibold text-muted-foreground">{g.title}</p>
           {g.items.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -105,20 +116,13 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
                 onClick={() => setOpen(false)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "group flex items-center gap-3 rounded-[18px] p-1 pr-3 text-[14px] font-medium transition-colors",
-                  active ? "bg-white/[0.07] text-white" : "text-sidebar-foreground hover:bg-white/[0.04] hover:text-white",
+                  "flex h-11 items-center gap-3 rounded-xl px-3 text-[15px] font-medium transition-colors active:opacity-70",
+                  active ? "bg-tint text-white" : "text-foreground hover:bg-field",
                 )}
               >
-                <span
-                  className={cn(
-                    "grid size-9 shrink-0 place-items-center rounded-[14px] transition-colors",
-                    active ? ACTIVE_TILE : "bg-white/[0.05] ring-1 ring-inset ring-white/[0.07] group-hover:bg-white/[0.09]",
-                  )}
-                >
-                  <Icon className={cn("size-[18px]", active ? "" : "opacity-70 group-hover:opacity-100")} />
-                </span>
-                <span className="flex-1">{item.label}</span>
-                {badge(item.href)}
+                <Icon className={cn("size-5 shrink-0", active ? "text-white" : "text-tint-text")} strokeWidth={2} />
+                <span className="flex-1 truncate">{item.label}</span>
+                {badge(item.href, active)}
               </Link>
             );
           })}
@@ -128,127 +132,144 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
   );
 
   const gymCard = (
-    <div className="flex items-center gap-3 rounded-[20px] bg-white/[0.05] p-2 ring-1 ring-inset ring-white/[0.07]">
-      <span className="grid size-10 shrink-0 place-items-center rounded-[14px] bg-brand text-sm font-bold text-brand-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.3)]">
+    <div className="flex items-center gap-3 px-2">
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand text-[17px] font-bold text-white">
         {gymName.trim()[0]?.toUpperCase() ?? "З"}
       </span>
       <span className="min-w-0">
-        <span className="block truncate text-sm font-semibold text-white">{gymName}</span>
-        <span className="block text-xs text-sidebar-foreground/60">Кабинет зала</span>
+        <span className="block truncate text-[15px] font-semibold">{gymName}</span>
+        <span className="block text-[13px] text-muted-foreground">Кабинет зала</span>
       </span>
     </div>
   );
 
   const footer = (
-    <div className="flex items-center gap-2.5 rounded-[20px] bg-white/[0.05] p-2 ring-1 ring-inset ring-white/[0.07]">
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-xs font-semibold text-white">
+    <div className="flex items-center gap-2.5 rounded-2xl bg-field p-2">
+      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,#a5a5ab,#86868c)] text-[13px] font-semibold text-white">
         {userName.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-white">{userName}</p>
-        <p className="text-xs text-sidebar-foreground/60">{ROLE_LABEL[role]}</p>
+        <p className="truncate text-[15px] font-medium">{userName}</p>
+        <p className="text-[13px] text-muted-foreground">{ROLE_LABEL[role]}</p>
       </div>
       <ThemeToggle />
       <form action={signOut}>
-        <button className="grid size-9 cursor-pointer place-items-center rounded-[12px] bg-white/[0.05] text-sidebar-foreground hover:bg-white/10 hover:text-white" aria-label="Выйти" title="Выйти">
-          <LogOut className="size-4" />
+        <button className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field-hover active:opacity-60" aria-label="Выйти" title="Выйти">
+          <LogOut className="size-[18px]" />
         </button>
       </form>
     </div>
   );
 
-  const canAddClient = !readOnly && items.some((i) => i.href === "/clients");
-  const canCheckIn = items.some((i) => i.href === "/reception");
-
   return (
-    <div className="flex min-h-dvh">
-      <aside className="sticky top-0 hidden h-dvh w-[288px] shrink-0 p-3 lg:block">
-        <div className="glass-dark glass-rim relative flex h-full flex-col gap-5 rounded-[32px] px-3 pb-3 pt-6">
-          <Link href="/" className="px-3 text-white" aria-label="core. — на главную">
-            <Logo className="h-6" />
-          </Link>
-          {gymCard}
-          {nav}
-          {footer}
-        </div>
-      </aside>
-
-      {open ? (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Меню">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setOpen(false)} />
-          <div className="glass-dark glass-rim absolute inset-x-2 bottom-2 flex max-h-[85dvh] flex-col gap-4 rounded-[28px] p-3 animate-in slide-in-from-bottom-8 fade-in-0">
-            <div className="flex items-center justify-between pl-3">
-              <span className="text-white"><Logo className="h-5" /></span>
-              <button onClick={() => setOpen(false)} className="grid size-10 place-items-center rounded-[14px] bg-white/[0.06] text-white" aria-label="Закрыть меню">
-                <X className="size-5" />
-              </button>
-            </div>
+    <NavTitleContext.Provider value={navTitle}>
+      <div className="flex min-h-dvh">
+        <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 p-3 lg:block">
+          <div className="glass glass-rim relative flex h-full flex-col gap-5 rounded-[28px] px-3 pb-3 pt-6">
+            <Link href="/" className="px-3 text-foreground" aria-label="core. — на главную">
+              <Logo className="h-6" />
+            </Link>
             {gymCard}
             {nav}
             {footer}
           </div>
-        </div>
-      ) : null}
+        </aside>
 
-      <main className="min-w-0 flex-1 pb-24 pt-[72px] lg:pb-0 lg:pt-0">
-        {banner}
-        <div className="mx-auto w-full max-w-[1360px] px-4 py-6 sm:px-6 lg:px-8 lg:py-6">
-          <div className="hidden h-[52px] lg:mb-6 lg:block" aria-hidden />
-          {children}
-        </div>
-      </main>
+        <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] pt-[calc(env(safe-area-inset-top)+5rem)] lg:pb-10 lg:pt-0">
+          {banner}
+          <div className="mx-auto w-full max-w-[1600px] px-4 py-2 sm:px-6 lg:px-8 lg:py-6">
+            <div className="hidden h-[52px] lg:mb-5 lg:block" aria-hidden />
+            {children}
+          </div>
+        </main>
 
-      {/* телефон и планшет: шапка сверху, вкладки снизу */}
-      <div className="glass glass-rim fixed inset-x-3 top-3 z-40 flex h-14 items-center gap-2 rounded-[22px] pl-5 pr-2 lg:hidden">
-        <Link href="/" className="text-foreground" aria-label="core. — на главную"><Logo className="h-5" /></Link>
-        <span className="mx-2 flex-1 truncate text-center text-xs text-muted-foreground">{gymName}</span>
-        <button onClick={() => setSearch(true)} className="grid size-10 place-items-center rounded-full bg-field text-foreground" aria-label="Поиск">
-          <Search className="size-5" />
-        </button>
-      </div>
-      <nav className="glass glass-rim fixed inset-x-3 bottom-3 z-40 grid h-16 grid-flow-col auto-cols-fr items-center rounded-[24px] px-1.5 pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="Основные разделы">
-        {tabs.map((t) => {
-          const active = isActive(t.href);
-          return (
-            <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined}
-              className={cn("relative flex flex-col items-center gap-1 text-[11px] font-medium", active ? "text-foreground" : "text-muted-foreground")}>
-              <span className={cn("grid h-8 w-12 place-items-center rounded-full transition-colors", active ? ACTIVE_TILE : "")}>
-                <t.icon className="size-[18px]" />
-              </span>
-              {t.short ?? t.label}
-              {t.href === "/risk" && riskCount ? <span className="absolute -top-0.5 left-1/2 ml-2 size-2 rounded-full bg-brand" aria-hidden /> : null}
+        {open ? (
+          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Меню">
+            <div className="absolute inset-0 bg-black/30 animate-in fade-in-0" onClick={() => setOpen(false)} />
+            <div className="absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col gap-4 rounded-t-[32px] bg-popover px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-7 shadow-pop animate-in slide-in-from-bottom duration-300">
+              <span aria-hidden className="absolute left-1/2 top-2 h-[5px] w-9 -translate-x-1/2 rounded-full bg-label-3" />
+              <div className="flex items-center justify-between pl-2">
+                <span className="text-foreground"><Logo className="h-5" /></span>
+                <button onClick={() => setOpen(false)} className="grid size-[30px] place-items-center rounded-full bg-field text-muted-foreground" aria-label="Закрыть меню">
+                  <X className="size-4" strokeWidth={2.5} />
+                </button>
+              </div>
+              {gymCard}
+              {nav}
+              {footer}
+            </div>
+          </div>
+        ) : null}
+
+        {/* Плавающие панели идут в DOM после содержимого: иначе Chromium не размывает то, что под ними */}
+
+        {/* телефон и iPad в портрете: навигационная панель сверху, вкладки снизу (iOS 26) */}
+        <div className="glass glass-rim fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full pl-5 pr-1.5 lg:hidden">
+          <div className="relative min-w-0 flex-1">
+            <Link href="/" aria-label="core. — на главную"
+              className={cn("block w-fit text-foreground transition-all duration-300", inlineTitle && "pointer-events-none -translate-y-2 opacity-0")}>
+              <Logo className="h-5" />
             </Link>
-          );
-        })}
-        <button onClick={() => setOpen(true)} className={cn("flex cursor-pointer flex-col items-center gap-1 text-[11px] font-medium", moreActive ? "text-foreground" : "text-muted-foreground")}>
-          <span className={cn("grid h-8 w-12 place-items-center rounded-full", moreActive ? ACTIVE_TILE : "")}>
-            <LayoutGrid className="size-[18px]" />
-          </span>
-          Ещё
-        </button>
-      </nav>
-      {/* Плавающие панели идут в DOM после содержимого: иначе Chromium не размывает то, что под ними */}
-      {/* верхняя панель: поиск и частые действия */}
-      {/* выравнивание по колонке содержимого: боковая панель 288px + поля 2rem, колонка не шире 1360px */}
-      <div className="glass glass-rim fixed top-3 z-30 hidden items-center gap-2 rounded-full p-1.5 lg:flex
-        left-[calc(288px+max(0px,(100vw-288px-1360px)/2)+2rem)] right-[calc(max(0px,(100vw-288px-1360px)/2)+2rem)]">
-        <button onClick={() => setSearch(true)}
-          className="flex h-10 w-full max-w-md cursor-pointer items-center gap-3 rounded-full bg-field pl-4 pr-2 text-sm text-muted-foreground transition-colors hover:bg-field-hover hover:text-foreground">
-          <Search className="size-4" />
-          <span className="flex-1 text-left">Найти клиента или раздел</span>
-          <Kbd>Ctrl K</Kbd>
-        </button>
-        <div className="ml-auto flex items-center gap-2">
+            <p aria-hidden={!inlineTitle}
+              className={cn("absolute inset-0 truncate text-[17px] font-semibold leading-5 transition-all duration-300 flex items-center",
+                inlineTitle ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0")}>
+              {title}
+            </p>
+          </div>
+          <button onClick={() => setSearch(true)} className="grid size-11 place-items-center rounded-full text-tint-text hover:bg-field active:opacity-60" aria-label="Поиск">
+            <Search className="size-[22px]" />
+          </button>
+          {canAddClient ? (
+            <Link href="/clients?new=1" className="grid size-11 place-items-center rounded-full bg-tint text-white active:opacity-80" aria-label="Новый клиент">
+              <Plus className="size-6" />
+            </Link>
+          ) : null}
+        </div>
+        <nav className="glass glass-rim fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid h-16 grid-flow-col auto-cols-fr items-center gap-1 rounded-full p-1 md:inset-x-auto md:left-1/2 md:h-14 md:-translate-x-1/2 md:auto-cols-max md:p-1.5 lg:hidden" aria-label="Основные разделы">
+          {tabs.map((t) => {
+            const active = isActive(t.href);
+            return (
+              <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined}
+                className={cn("relative flex h-full flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold transition-colors active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px]",
+                  active ? "bg-field text-tint-text" : "text-foreground/80")}>
+                <t.icon className="size-[22px]" strokeWidth={active ? 2.25 : 1.9} />
+                {t.short ?? t.label}
+                {t.href === "/risk" && riskCount ? <span className="absolute right-[22%] top-2 size-2 rounded-full bg-brand md:right-2" aria-hidden /> : null}
+              </Link>
+            );
+          })}
+          <button onClick={() => setOpen(true)}
+            className={cn("flex h-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px]",
+              moreActive ? "bg-field text-tint-text" : "text-foreground/80")}>
+            <LayoutGrid className="size-[22px]" strokeWidth={moreActive ? 2.25 : 1.9} />
+            Ещё
+          </button>
+        </nav>
+
+        {/* iPad в альбоме и компьютер: навигационная панель над колонкой содержимого */}
+        <div className="glass glass-rim fixed top-3 z-30 hidden h-[52px] items-center gap-2 rounded-full p-1.5 pl-5 lg:flex
+          left-[calc(300px+max(0px,(100vw-300px-1600px)/2)+2rem)] right-[calc(max(0px,(100vw-300px-1600px)/2)+2rem)]">
+          <p className={cn("min-w-0 flex-1 truncate text-[17px] font-semibold transition-all duration-300",
+            inlineTitle ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0")} aria-hidden={!inlineTitle}>
+            {title}
+          </p>
+          <button onClick={() => setSearch(true)}
+            className="flex h-10 w-72 shrink-0 cursor-pointer items-center gap-2 rounded-full bg-field pl-3.5 pr-2 text-[15px] text-muted-foreground transition-colors hover:bg-field-hover">
+            <Search className="size-[18px]" />
+            <span className="flex-1 text-left">Поиск</span>
+            <Kbd>Ctrl K</Kbd>
+          </button>
           {canCheckIn && !isActive("/reception") ? (
-            <Button variant="secondary" asChild><Link href="/reception"><ScanLine /> Отметить визит</Link></Button>
+            <Button variant="secondary" asChild className="h-10"><Link href="/reception"><ScanLine /> Отметить визит</Link></Button>
           ) : null}
           {canAddClient ? (
-            <Button variant="brand" asChild><Link href="/clients?new=1"><UserPlus /> Клиент</Link></Button>
+            <Button asChild className="h-10"><Link href="/clients?new=1"><Plus /> Клиент</Link></Button>
           ) : null}
         </div>
+
+        <CommandMenu open={search} onOpenChange={setSearch} gymId={gymId} sections={items} readOnly={readOnly} />
       </div>
-      <CommandMenu open={search} onOpenChange={setSearch} gymId={gymId} sections={items} readOnly={readOnly} />
-    </div>
+    </NavTitleContext.Provider>
   );
 }
 
@@ -267,26 +288,46 @@ function ThemeToggle() {
     }
   };
   return (
-    <button onClick={toggle} className="grid size-9 cursor-pointer place-items-center rounded-[12px] bg-white/[0.05] text-sidebar-foreground hover:bg-white/10 hover:text-white" aria-label="Сменить тему" title="Сменить тему">
-      <Sun className="hidden size-4 dark:block" />
-      <Moon className="size-4 dark:hidden" />
+    <button onClick={toggle} className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field-hover active:opacity-60" aria-label="Сменить тему" title="Сменить тему">
+      <Sun className="hidden size-[18px] dark:block" />
+      <Moon className="size-[18px] dark:hidden" />
     </button>
   );
 }
 
+/** Крупный заголовок iOS (34 pt): при прокрутке уходит, и компактная версия появляется в навигационной панели */
 export function PageHeader({ title, description, actions, back }: {
   title: React.ReactNode; description?: React.ReactNode; actions?: React.ReactNode; back?: { href: string; label: string };
 }) {
+  const nav = useContext(NavTitleContext);
+  const ref = useRef<HTMLHeadingElement>(null);
+  const text = typeof title === "string" ? title : null;
+
+  useEffect(() => {
+    if (!nav) return;
+    nav.setTitle(text);
+    const el = ref.current;
+    if (!el) return;
+    // панель занимает ~76px сверху: заголовок считается ушедшим, когда скрылся под ней
+    const io = new IntersectionObserver(([e]) => nav.setCollapsed(!e.isIntersecting), { rootMargin: "-76px 0px 0px 0px" });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      nav.setCollapsed(false);
+      nav.setTitle(null);
+    };
+  }, [nav, text]);
+
   return (
-    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div className="grid min-w-0 gap-1.5">
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+      <div className="grid min-w-[min(100%,18rem)] flex-1 gap-1">
         {back ? (
-          <Link href={back.href} className="-ml-0.5 inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-            <ChevronLeft className="size-4" /> {back.label}
+          <Link href={back.href} className="-ml-1.5 inline-flex w-fit items-center gap-0.5 text-[17px] text-tint-text active:opacity-60">
+            <ChevronLeft className="size-6" strokeWidth={2.25} /> {back.label}
           </Link>
         ) : null}
-        <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.03em] sm:text-[34px]">{title}</h1>
-        {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+        <h1 ref={ref} className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">{title}</h1>
+        {description ? <p className="text-[15px] text-muted-foreground">{description}</p> : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
     </div>

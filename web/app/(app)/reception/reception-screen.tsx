@@ -162,7 +162,7 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
       <div className="grid content-start gap-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight sm:text-[28px]">Ресепшен</h1>
+            <h1 className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">Ресепшен</h1>
             <p className="text-sm text-muted-foreground">Сканируйте QR из приложения или найдите клиента вручную</p>
           </div>
           <Button variant={cameraOn ? "outline" : "default"} size="lg" onClick={() => setCameraOn((v) => !v)} disabled={readOnly}>

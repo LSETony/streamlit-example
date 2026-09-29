@@ -56,15 +56,15 @@ export function ClientCard(props: {
   }
 
   return (
-    <div className="grid gap-6">
-      <Link href="/clients" className="-mb-2 inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="size-4" /> Клиенты
+    <div className="grid gap-6 [&>*]:min-w-0">
+      <Link href="/clients" className="-mb-2 -ml-1.5 inline-flex w-fit items-center gap-0.5 text-[17px] text-tint-text active:opacity-60">
+        <ChevronLeft className="size-6" strokeWidth={2.25} /> Клиенты
       </Link>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-4">
           <Avatar name={client.full_name} src={client.photo_url} className="size-16 text-xl" />
-          <div className="grid gap-1">
-            <h1 className="text-[26px] font-bold leading-tight tracking-[-0.02em]">{client.full_name}</h1>
+          <div className="grid min-w-0 gap-1">
+            <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">{client.full_name}</h1>
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <a href={`tel:${client.phone}`} className="tabular hover:text-foreground">{phone(client.phone)}</a>
               {client.email ? <span>· {client.email}</span> : null}

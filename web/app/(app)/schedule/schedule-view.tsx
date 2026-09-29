@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Segmented, segmentClass } from "@/components/ui/tabs";
 import { createClient } from "@/lib/supabase/client";
 import { addDays, time, todayIn } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -19,9 +20,10 @@ export interface Item {
 
 const HOUR_PX = 64;
 const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+// Как события в «Календаре» iOS: мягкая заливка цвета типа и полоска слева
 const KIND_STYLE = {
-  class: "border-l-foreground bg-card",
-  personal: "border-l-info bg-info/8",
+  class: "border-l-tint bg-tint-soft",
+  personal: "border-l-success-fill bg-success-fill/15",
   zone_slot: "border-l-brand bg-brand/12",
 } as const;
 
@@ -79,14 +81,14 @@ export function ScheduleView({ view, from, days, today, items, zones, gymId, tim
         description={title}
         actions={
           <>
-            <div className="flex rounded-full bg-field p-1">
+            <Segmented>
               {(["day", "week"] as const).map((v) => (
                 <Link key={v} href={`/schedule?view=${v}&date=${v === "day" && view === "week" ? (dayList.includes(today) ? today : from) : from}`}
-                  className={cn("rounded-full px-4 py-1.5 text-sm font-medium", view === v ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>
+                  aria-current={view === v ? "page" : undefined} className={segmentClass}>
                   {v === "day" ? "День" : "Неделя"}
                 </Link>
               ))}
-            </div>
+            </Segmented>
             <Button variant="outline" size="icon" asChild><Link href={nav(-1)} aria-label="Назад"><ChevronLeft /></Link></Button>
             <Button variant="outline" asChild><Link href={`/schedule?view=${view}&date=${today}`}>Сегодня</Link></Button>
             <Button variant="outline" size="icon" asChild><Link href={nav(1)} aria-label="Вперёд"><ChevronRight /></Link></Button>
@@ -139,7 +141,7 @@ export function ScheduleView({ view, from, days, today, items, zones, gymId, tim
                       title={`${i.title} · ${time(i.starts_at, timezone)}${i.trainer_name ? ` · ${i.trainer_name}` : ""}${zoneName(i.zone_id) ? ` · ${zoneName(i.zone_id)}` : ""} · ${i.booked}/${i.capacity}`}
                       onClick={() => setOpenId(i.id)}
                       className={cn(
-                        "absolute z-10 cursor-pointer overflow-hidden rounded-xl border border-border border-l-[3px] px-2 py-1 text-left text-xs shadow-sm transition-shadow hover:shadow-md",
+                        "absolute z-10 cursor-pointer overflow-hidden rounded-md border-l-[3px] px-2 py-1 text-left text-xs transition-[filter] hover:brightness-95 active:brightness-90 dark:hover:brightness-125",
                         KIND_STYLE[i.kind], i.cancelled && "opacity-50 line-through",
                       )}
                       style={{ top: top + 1, height, left: `calc(${(col / cols) * 100}% + 2px)`, width: `calc(${100 / cols}% - 4px)` }}
@@ -147,7 +149,7 @@ export function ScheduleView({ view, from, days, today, items, zones, gymId, tim
                       <span className="block truncate font-semibold">{i.title}</span>
                       <span className="flex items-center gap-1.5 truncate text-muted-foreground">
                         <span className="tabular">{time(i.starts_at, timezone)}</span>
-                        <span className={cn("rounded px-1 tabular", full ? "bg-destructive/15 text-destructive" : "bg-muted text-foreground")}>{i.booked}/{i.capacity}</span>
+                        <span className={cn("rounded px-1 tabular", full ? "bg-destructive/15 text-destructive" : "bg-card/70 text-foreground")}>{i.booked}/{i.capacity}</span>
                         {height > 50 ? null : <span className="truncate">{i.trainer_name ?? ""}</span>}
                       </span>
                       {height > 50 ? (

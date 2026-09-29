@@ -11,7 +11,7 @@ export default function PayDonePage() {
       <div className="grid max-w-sm justify-items-center gap-4 text-center">
         <Logo className="h-7" />
         <CheckCircle2 className="size-14 text-success" strokeWidth={1.5} />
-        <h1 className="text-2xl font-bold tracking-tight">Спасибо! Оплата обрабатывается</h1>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Спасибо! Оплата обрабатывается</h1>
         <p className="text-sm text-muted-foreground">
           Абонемент активируется автоматически в течение минуты, чек придёт на телефон или email. Эту страницу можно закрыть.
         </p>

@@ -12,123 +12,149 @@
   }
 }
 
-/* Дизайн-токены core.: фирменные #1E1E1E (графит), #F92C00 (оранжевый акцент), #5900FF (фиолетовый). Светлая и тёмная темы. */
+/*
+  Дизайн-токены core. в системе iOS (UIKit): семантические цвета с парой «светлая/тёмная тема».
+  Фон — systemGroupedBackground, ячейки — secondarySystemGroupedBackground, метки label/secondaryLabel,
+  заливки полей — tertiarySystemFill, системные green/red/orange. Цвет акцента (tint) — фирменный #5900FF,
+  #F92C00 — фирменный оранжевый (логотип, значок зала), #1E1E1E — графит.
+*/
 :root {
-  --background: #f6f5f4;
-  --foreground: #1e1e1e;
-  --card: oklch(1 0 0);
+  --background: #f2f2f7;
+  --foreground: #1c1c1e;
+  --card: #ffffff;
   --card-foreground: var(--foreground);
-  --muted: oklch(0.945 0.005 106);
-  --muted-foreground: oklch(0.5 0.01 265);
-  --border: oklch(0.905 0.006 106);
-  --input: oklch(0.87 0.007 106);
+  --muted: #e5e5ea;
+  --muted-foreground: rgb(60 60 67 / 0.62);
+  --label-3: rgb(60 60 67 / 0.32);
+  --border: rgb(60 60 67 / 0.14);
+  --separator: rgb(60 60 67 / 0.2);
+  --input: rgb(60 60 67 / 0.18);
   --ring: #5900ff;
-  --primary: #1e1e1e;
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: #5900ff;
+  --primary-foreground: #ffffff;
+  --tint: #5900ff;
+  --tint-text: #5900ff;
+  --tint-soft: rgb(89 0 255 / 0.1);
   --brand: #f92c00;
   --brand-foreground: #ffffff;
   --violet: #5900ff;
-  --destructive: #d9182b;
-  --success: oklch(0.58 0.15 150);
-  --warning: oklch(0.78 0.16 70);
-  --warning-foreground: oklch(0.45 0.12 60);
+  --destructive: #ff3b30;
+  --success: #248a3d;
+  --success-fill: #34c759;
+  --warning: #ff9500;
+  --warning-foreground: #c93400;
   --info: #5900ff;
   --sidebar: #1e1e1e;
   --sidebar-foreground: #bdbdbd;
   --sidebar-muted: #2c2c2c;
   --chart-1: #5900ff;
-  --chart-grid: oklch(0.92 0.005 106);
-  --brand-soft: #efe6ff;
+  --chart-grid: rgb(60 60 67 / 0.12);
+  --brand-soft: #eee6ff;
   --brand-ink: #4a00d6;
-  --surface-2: oklch(0.985 0.003 106);
-  --elev-card: 0 1px 2px oklch(0.2 0.01 265 / 0.04), 0 1px 1px oklch(0.2 0.01 265 / 0.03);
-  --elev-pop: 0 12px 32px -8px oklch(0.2 0.01 265 / 0.18), 0 2px 6px oklch(0.2 0.01 265 / 0.06);
+  --surface-2: #f2f2f7;
+  --elev-card: 0 1px 2px rgb(0 0 0 / 0.04);
+  --elev-pop: 0 20px 50px -12px rgb(0 0 0 / 0.25), 0 4px 12px -4px rgb(0 0 0 / 0.08);
   --popover: #ffffff;
-  --field: rgb(30 30 30 / 0.045);
-  --field-hover: rgb(30 30 30 / 0.07);
-  /* стекло (как в iOS): полупрозрачная заливка, размытие фона, светлая кромка сверху */
-  --glass: rgb(255 255 255 / 0.55);
-  --glass-card: rgb(255 255 255 / 0.72);
-  --glass-strong: rgb(250 250 250 / 0.72);
+  --field: rgb(118 118 128 / 0.12);
+  --field-hover: rgb(120 120 128 / 0.18);
+  --glass: rgb(255 255 255 / 0.62);
+  --glass-card: #ffffff;
+  --glass-strong: rgb(249 249 249 / 0.78);
   --glass-rim-hi: rgb(255 255 255 / 0.95);
   --glass-rim-lo: rgb(255 255 255 / 0.35);
-  --glass-inner: inset 0 1px 1px rgb(255 255 255 / 0.9), inset 0 -1px 1px rgb(0 0 0 / 0.03);
-  --glass-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.07), 0 10px 30px -12px rgb(30 30 30 / 0.22), 0 2px 6px -2px rgb(30 30 30 / 0.06);
+  --glass-inner: inset 0 1px 1px rgb(255 255 255 / 0.9);
+  --glass-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.06), 0 8px 28px -10px rgb(0 0 0 / 0.18);
+  --card-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.03), 0 1px 2px rgb(0 0 0 / 0.03);
+  --segment-thumb: #ffffff;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0c0c0d;
-    --foreground: #f2f2f2;
-    --card: #18181a;
-    --muted: #262626;
-    --muted-foreground: oklch(0.68 0.008 265);
-    --border: #2e2e2e;
-    --input: #3a3a3a;
+    --background: #000000;
+    --foreground: #ffffff;
+    --card: #1c1c1e;
+    --muted: #2c2c2e;
+    --muted-foreground: rgb(235 235 245 / 0.6);
+    --label-3: rgb(235 235 245 / 0.3);
+    --border: rgb(84 84 88 / 0.45);
+    --separator: rgb(84 84 88 / 0.6);
+    --input: rgb(84 84 88 / 0.6);
     --ring: #8c5cff;
-    --primary: #f2f2f2;
-    --primary-foreground: #1e1e1e;
-    --warning-foreground: oklch(0.82 0.14 75);
-    --sidebar: #101010;
-    --sidebar-muted: #242424;
+    --tint-text: #a27dff;
+    --tint-soft: rgb(140 92 255 / 0.2);
+    --destructive: #ff453a;
+    --success: #30d158;
+    --success-fill: #30d158;
+    --warning: #ff9f0a;
+    --warning-foreground: #ff9f0a;
+    --info: #a27dff;
+    --sidebar: #1c1c1e;
+    --sidebar-muted: #2c2c2e;
     --chart-1: #8c5cff;
-    --chart-grid: #2a2a2a;
-    --brand-soft: #2a1a4a;
+    --chart-grid: rgb(84 84 88 / 0.35);
+    --brand-soft: #2a1f45;
     --brand-ink: #b79bff;
-    --surface-2: oklch(0.175 0.006 265);
-    --elev-card: 0 0 0 1px oklch(1 0 0 / 0.02);
-    --elev-pop: 0 16px 40px -8px oklch(0 0 0 / 0.6);
-    --popover: #1c1c1e;
-    --field: rgb(255 255 255 / 0.06);
-    --field-hover: rgb(255 255 255 / 0.09);
-    --glass: rgb(40 40 44 / 0.42);
-    --glass-card: rgb(255 255 255 / 0.045);
-    --glass-strong: rgb(34 34 38 / 0.7);
-    --glass-rim-hi: rgb(255 255 255 / 0.3);
+    --surface-2: #2c2c2e;
+    --elev-card: none;
+    --elev-pop: 0 24px 60px -12px rgb(0 0 0 / 0.8);
+    --popover: #2c2c2e;
+    --field: rgb(118 118 128 / 0.24);
+    --field-hover: rgb(120 120 128 / 0.32);
+    --glass: rgb(30 30 32 / 0.55);
+    --glass-card: #1c1c1e;
+    --glass-strong: rgb(36 36 38 / 0.78);
+    --glass-rim-hi: rgb(255 255 255 / 0.28);
     --glass-rim-lo: rgb(255 255 255 / 0.06);
-    --glass-inner: inset 0 1px 1px rgb(255 255 255 / 0.12), inset 0 -1px 1px rgb(0 0 0 / 0.25);
-    --glass-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.7), 0 18px 44px -18px rgb(0 0 0 / 0.85);
+    --glass-inner: inset 0 1px 1px rgb(255 255 255 / 0.1);
+    --glass-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.8), 0 12px 36px -12px rgb(0 0 0 / 0.9);
+    --card-shadow: none;
+    --segment-thumb: #636366;
     color-scheme: dark;
-  
-  --info: #9a73ff;
-}
+  }
 }
 
 :root[data-theme="dark"] {
-  --background: #0c0c0d;
-  --foreground: #f2f2f2;
-  --card: #18181a;
-  --muted: #262626;
-  --muted-foreground: oklch(0.68 0.008 265);
-  --border: #2e2e2e;
-  --input: #3a3a3a;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #1c1c1e;
+  --muted: #2c2c2e;
+  --muted-foreground: rgb(235 235 245 / 0.6);
+  --label-3: rgb(235 235 245 / 0.3);
+  --border: rgb(84 84 88 / 0.45);
+  --separator: rgb(84 84 88 / 0.6);
+  --input: rgb(84 84 88 / 0.6);
   --ring: #8c5cff;
-  --primary: #f2f2f2;
-  --primary-foreground: #1e1e1e;
-  --warning-foreground: oklch(0.82 0.14 75);
-  --sidebar: #101010;
-  --sidebar-muted: #242424;
+  --tint-text: #a27dff;
+  --tint-soft: rgb(140 92 255 / 0.2);
+  --destructive: #ff453a;
+  --success: #30d158;
+  --success-fill: #30d158;
+  --warning: #ff9f0a;
+  --warning-foreground: #ff9f0a;
+  --info: #a27dff;
+  --sidebar: #1c1c1e;
+  --sidebar-muted: #2c2c2e;
   --chart-1: #8c5cff;
-  --chart-grid: #2a2a2a;
-  --brand-soft: #2a1a4a;
+  --chart-grid: rgb(84 84 88 / 0.35);
+  --brand-soft: #2a1f45;
   --brand-ink: #b79bff;
-  --surface-2: oklch(0.175 0.006 265);
-  --elev-card: 0 0 0 1px oklch(1 0 0 / 0.02);
-  --elev-pop: 0 16px 40px -8px oklch(0 0 0 / 0.6);
-  --popover: #1c1c1e;
-  --field: rgb(255 255 255 / 0.06);
-  --field-hover: rgb(255 255 255 / 0.09);
-  --glass: rgb(40 40 44 / 0.42);
-  --glass-card: rgb(255 255 255 / 0.045);
-  --glass-strong: rgb(34 34 38 / 0.7);
-  --glass-rim-hi: rgb(255 255 255 / 0.3);
+  --surface-2: #2c2c2e;
+  --elev-card: none;
+  --elev-pop: 0 24px 60px -12px rgb(0 0 0 / 0.8);
+  --popover: #2c2c2e;
+  --field: rgb(118 118 128 / 0.24);
+  --field-hover: rgb(120 120 128 / 0.32);
+  --glass: rgb(30 30 32 / 0.55);
+  --glass-card: #1c1c1e;
+  --glass-strong: rgb(36 36 38 / 0.78);
+  --glass-rim-hi: rgb(255 255 255 / 0.28);
   --glass-rim-lo: rgb(255 255 255 / 0.06);
-  --glass-inner: inset 0 1px 1px rgb(255 255 255 / 0.12), inset 0 -1px 1px rgb(0 0 0 / 0.25);
-  --glass-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.7), 0 18px 44px -18px rgb(0 0 0 / 0.85);
+  --glass-inner: inset 0 1px 1px rgb(255 255 255 / 0.1);
+  --glass-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.8), 0 12px 36px -12px rgb(0 0 0 / 0.9);
+  --card-shadow: none;
+  --segment-thumb: #636366;
   color-scheme: dark;
-
-  --info: #9a73ff;
 }
 
 @theme inline {
@@ -146,6 +172,12 @@
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-violet: var(--violet);
+  --color-tint: var(--tint);
+  --color-tint-text: var(--tint-text);
+  --color-tint-soft: var(--tint-soft);
+  --color-separator: var(--separator);
+  --color-label-3: var(--label-3);
+  --color-success-fill: var(--success-fill);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
@@ -162,7 +194,22 @@
   --color-field-hover: var(--field-hover);
   --shadow-card: var(--elev-card);
   --shadow-pop: var(--elev-pop);
-  --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+  /* SF Pro на устройствах Apple, Onest — на остальных (кириллица, близкая геометрия) */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", var(--font-onest), "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* шкала текста iOS: footnote 13, subheadline 15, body 17, title3 20, title2 22 */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.375rem;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.5625rem;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.75rem;
+  --radius-ios: 1.5rem;
+  /* боковая панель iPadOS — с 1152px: iPad в альбоме и компьютеры; iPad Pro в портрете (1024) получает вкладки и всю ширину */
+  --breakpoint-lg: 72rem;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -179,6 +226,16 @@
     color: var(--foreground);
     font-family: var(--font-sans);
     font-feature-settings: "tnum" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--tint-soft);
+  }
+  /* элементы сетки не растягиваются шире экрана из-за широких таблиц — таблица прокручивается внутри себя */
+  main :where(.grid) > * {
+    min-width: 0;
   }
   input[type="date"]::-webkit-calendar-picker-indicator,
   input[type="time"]::-webkit-calendar-picker-indicator {
@@ -218,15 +275,29 @@
 }
 
 /*
-  Карточки содержимого: тот же полупрозрачный материал с кромкой и бликом, но без размытия фона.
-  Как в iOS: размывающее стекло — только у плавающего слоя (панели, меню, окна), который проходит над содержимым.
-  Заодно Chromium не размывает содержимое элементов, у которых самих есть backdrop-filter.
+  Карточки содержимого — ячейки как в iOS (secondarySystemGroupedBackground): непрозрачные, без размытия.
+  Размывающее стекло — только у плавающего слоя (панели, меню, окна), который проходит над содержимым.
 */
 @utility glass-card {
-  --rim-hi: var(--glass-rim-hi);
-  --rim-lo: var(--glass-rim-lo);
   background-color: var(--glass-card);
-  box-shadow: var(--glass-inner), var(--glass-shadow);
+  box-shadow: var(--card-shadow);
+}
+
+/* Разделитель строки списка с отступом слева, как в iOS: --sep-inset задаёт, где он начинается */
+@utility ios-sep {
+  position: relative;
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: var(--sep-inset, 1rem);
+    height: 1px;
+    background: var(--separator);
+    transform: scaleY(0.5);
+    transform-origin: bottom;
+    pointer-events: none;
+  }
 }
 
 /* Плотнее и сильнее размывает — окна, меню, всплывающие списки */

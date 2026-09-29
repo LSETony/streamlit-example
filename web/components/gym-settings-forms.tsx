@@ -61,7 +61,7 @@ export function HoursForm({ settings, disabled, onSaved, submitLabel = "Сохр
   const [capacity, setCapacity] = useState(String(settings.capacity ?? 50));
   return (
     <div className="grid gap-4">
-      <div className="divide-y divide-border rounded-xl border border-border">
+      <div className="divide-y divide-separator/70 overflow-hidden rounded-2xl bg-surface-2">
         {DAYS.map(([k, label]) => {
           const v = hours[k];
           return (
@@ -165,7 +165,7 @@ export function ZonesEditor({ zones, disabled }: { zones: { id: string; name: st
   const [capacity, setCapacity] = useState("10");
   return (
     <div className="grid gap-3">
-      <div className="divide-y divide-border rounded-xl border border-border">
+      <div className="divide-y divide-separator/70 overflow-hidden rounded-2xl bg-surface-2">
         <div className="grid grid-cols-[1fr_88px_112px] gap-2 px-4 py-2 text-xs font-medium text-muted-foreground">
           <span>Зона</span><span>Мест</span><span />
         </div>

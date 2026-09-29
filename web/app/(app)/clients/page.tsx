@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Smartphone, Upload, Users } from "lucide-react";
+import { ChevronRight, Smartphone, Upload, Users } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -64,11 +64,12 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
         description={`${total} ${total === 1 ? "клиент" : "клиентов"}${q || state || tag || risk ? " по фильтру" : ""}`}
         actions={
           <>
+            {/* на телефоне импорт и выгрузка не нужны, а «Новый клиент» — кнопка «+» в навигационной панели */}
             {canImport ? (
-              <Button variant="outline" asChild><Link href="/clients/import"><Upload /> Импорт</Link></Button>
+              <Button variant="outline" asChild className="hidden sm:inline-flex"><Link href="/clients/import"><Upload /> Импорт</Link></Button>
             ) : null}
-            {ctx.features.export !== false ? <ExportClientsButton gymId={ctx.gym.id} filters={{ q, state, tag, risk }} /> : null}
-            <NewClientButton disabled={ctx.readOnly} autoOpen={sp.new === "1"} />
+            {ctx.features.export !== false ? <span className="hidden sm:contents"><ExportClientsButton gymId={ctx.gym.id} filters={{ q, state, tag, risk }} /></span> : null}
+            <NewClientButton disabled={ctx.readOnly} autoOpen={sp.new === "1"} className="hidden sm:inline-flex" />
           </>
         }
       />
@@ -82,8 +83,27 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
           {q || state || tag || risk ? "Попробуйте изменить поиск или фильтры." : "Перенесите базу из Excel за пару минут или добавьте первого клиента."}
         </EmptyState>
       ) : (
-        <Card>
-          <Table>
+        <Card className="overflow-hidden">
+          {/* телефон: список iOS — аватар, имя, телефон, статус и шеврон */}
+          <ul className="md:hidden">
+            {rows.map((c) => (
+              <li key={c.id} className="ios-sep [--sep-inset:4.25rem]">
+                <Link href={`/clients/${c.id}`} className="flex min-h-[64px] items-center gap-3 px-4 py-2.5 active:bg-field">
+                  <Avatar name={c.full_name} className="size-10 text-[13px]" />
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-1.5 truncate text-[17px] font-medium leading-[22px]">
+                      <span className="truncate">{c.full_name}</span>
+                      {c.in_app ? <Smartphone className="size-3.5 shrink-0 text-muted-foreground" aria-label="Подключён к приложению" /> : null}
+                    </span>
+                    <span className="block truncate text-[15px] leading-5 text-muted-foreground tabular">{phone(c.phone)}</span>
+                  </span>
+                  <MembershipStateBadge state={c.membership_state} endsOn={c.membership_ends_on} />
+                  <ChevronRight className="size-5 shrink-0 text-label-3" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Table className="hidden md:table">
             <THead>
               <TR>
                 <TH>Клиент</TH>

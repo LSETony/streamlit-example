@@ -39,7 +39,7 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
       <ol className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
         {STEPS.map((s, i) => (
           <li key={s} className={cn("flex items-center gap-2", i === step ? "font-semibold" : "text-muted-foreground")}>
-            <span className={cn("grid size-6 place-items-center rounded-full text-xs", i < step ? "bg-foreground text-background" : i === step ? "bg-brand text-brand-foreground" : "bg-muted")}>
+            <span className={cn("grid size-6 place-items-center rounded-full text-xs", i < step ? "bg-tint-soft text-tint-text" : i === step ? "bg-tint text-white" : "bg-field")}>
               {i < step ? <Check className="size-3.5" /> : i + 1}
             </span>
             {s}

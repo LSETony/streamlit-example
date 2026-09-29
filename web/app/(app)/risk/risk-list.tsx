@@ -46,7 +46,7 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
   return (
     <div className="grid gap-4">
       <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
-        <div className="flex flex-wrap gap-2">
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
           <Chip active={!reason} onClick={() => { setReason(""); setLimit(STEP); }}>Все · {rows.length}</Chip>
           {ORDER.map((r) => <Chip key={r} active={reason === r} onClick={() => { setReason(r); setLimit(STEP); }}>{RISK_LABEL[r]} · {counts[r] ?? 0}</Chip>)}
           <Chip active={hideContacted} onClick={() => setHideContacted((v) => !v)}>Без контакта</Chip>
@@ -66,12 +66,12 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
         </EmptyState>
       ) : (
         <Card className="overflow-hidden">
-          <ul className="divide-y divide-border">
+          <ul>
             {list.slice(0, limit).map((r) => {
               const digits = (r.phone ?? "").replace(/\D/g, "");
               const text = encodeURIComponent(fill(tpl[r.reason], r, gymName));
               return (
-                <li key={r.client_id} className="grid gap-3 px-5 py-4 transition-colors hover:bg-field sm:grid-cols-[1fr_auto] sm:items-center">
+                <li key={r.client_id} className="ios-sep grid gap-3 px-4 py-3.5 transition-colors [--sep-inset:4.25rem] hover:bg-field sm:grid-cols-[1fr_auto] sm:items-center sm:px-5">
                   <div className="flex min-w-0 items-start gap-3">
                     <Avatar name={r.full_name} className="mt-0.5 size-10 text-xs" />
                     <div className="grid min-w-0 gap-1">
@@ -173,7 +173,7 @@ function IconLink({ label, href, external, onClick, children }: { label: string;
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={active}
-      className={cn("h-9 cursor-pointer rounded-full px-4 text-sm font-medium transition-colors", active ? "bg-foreground text-background" : "bg-field hover:bg-field-hover")}>
+      className={cn("h-9 shrink-0 cursor-pointer whitespace-nowrap rounded-full px-4 text-[15px] font-medium transition-colors active:opacity-70", active ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}>
       {children}
     </button>
   );

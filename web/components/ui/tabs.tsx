@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 
 export const Tabs = T.Root;
 
+/** Сегментированный переключатель iOS: серая дорожка, белый «ползунок» у выбранного сегмента */
 export function TabsList({ className, ...props }: React.ComponentProps<typeof T.List>) {
   return (
     <T.List
-      className={cn("inline-flex h-11 max-w-full items-center gap-1 overflow-x-auto rounded-full bg-field p-1 text-muted-foreground", className)}
+      className={cn("inline-flex h-9 max-w-full items-center overflow-x-auto rounded-full bg-field p-[3px] text-foreground", className)}
       {...props}
     />
   );
@@ -16,15 +17,20 @@ export function TabsList({ className, ...props }: React.ComponentProps<typeof T.
 
 export function TabsTrigger({ className, ...props }: React.ComponentProps<typeof T.Trigger>) {
   return (
-    <T.Trigger
-      className={cn(
-        "inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-4 text-sm font-medium transition-all " +
-          "data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-[0_6px_16px_-8px_rgb(0_0_0/0.5)] hover:text-foreground",
-        className,
-      )}
-      {...props}
-    />
+    <T.Trigger className={cn(segmentClass, "data-[state=active]:bg-[var(--segment-thumb)]", className)} {...props} />
   );
+}
+
+export const segmentClass =
+  "inline-flex h-full min-w-16 cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[13px] font-semibold " +
+  "text-foreground/75 transition-[background-color,box-shadow,color] duration-200 hover:text-foreground " +
+  "data-[state=active]:text-foreground data-[state=active]:shadow-[0_3px_8px_rgb(0_0_0/0.12),0_3px_1px_rgb(0_0_0/0.04)] " +
+  "aria-pressed:bg-[var(--segment-thumb)] aria-pressed:text-foreground aria-pressed:shadow-[0_3px_8px_rgb(0_0_0/0.12),0_3px_1px_rgb(0_0_0/0.04)] " +
+  "aria-[current=page]:bg-[var(--segment-thumb)] aria-[current=page]:text-foreground aria-[current=page]:shadow-[0_3px_8px_rgb(0_0_0/0.12),0_3px_1px_rgb(0_0_0/0.04)]";
+
+/** Та же дорожка для кнопок и ссылок (выбранный сегмент — aria-pressed или aria-current="page") */
+export function Segmented({ className, ...props }: React.ComponentProps<"div">) {
+  return <div role="group" className={cn("inline-flex h-9 max-w-full items-center overflow-x-auto rounded-full bg-field p-[3px]", className)} {...props} />;
 }
 
 export function TabsContent({ className, ...props }: React.ComponentProps<typeof T.Content>) {

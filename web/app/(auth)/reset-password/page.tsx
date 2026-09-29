@@ -34,7 +34,7 @@ export default function ResetPasswordPage() {
   return (
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-1.5">
-        <h1 className="text-2xl font-bold tracking-tight">Задайте пароль</h1>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Задайте пароль</h1>
         <p className="text-sm text-muted-foreground">Не короче 8 символов</p>
       </div>
       {error ? <Alert variant="danger">{error}</Alert> : null}

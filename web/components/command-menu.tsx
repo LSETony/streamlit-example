@@ -33,7 +33,7 @@ export function CommandMenu({ open, onOpenChange, gymId, sections, readOnly }: {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setQ(""); }}>
-      <DialogContent hideClose className="top-[8dvh] max-w-xl translate-y-0 gap-4 p-3 sm:top-[12dvh]">
+      <DialogContent hideClose sheet={false} className="top-[8dvh] max-w-xl translate-y-0 gap-4 bg-[var(--glass-strong)] p-3 backdrop-blur-[40px] backdrop-saturate-[1.9] sm:top-[12dvh]">
         <DialogTitle className="sr-only">Быстрый поиск</DialogTitle>
         <ClientSearch
           gymId={gymId}

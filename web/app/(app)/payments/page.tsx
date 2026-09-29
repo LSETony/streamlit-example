@@ -61,7 +61,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
         actions={<ExportPayments rows={rows} timezone={tz} from={from} to={to} />} />
       <PaymentFilters from={from} to={to} method={method} status={status} today={ctx.today} />
 
-      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5 [&>*:first-child]:col-span-2 md:[&>*:first-child]:col-span-1">
         <Sum label="Итого" value={money(s.net)} strong />
         <Sum label="Наличные" value={money(s.cash)} />
         <Sum label="Карта" value={money(s.card)} />
@@ -70,8 +70,29 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
       </div>
 
       {rows.length === 0 ? <EmptyState title="Оплат за период нет" /> : (
-        <Card>
-          <Table>
+        <Card className="overflow-hidden">
+          {/* телефон: список iOS — клиент и время слева, сумма и статус справа */}
+          <ul className="md:hidden">
+            {shown.map((p) => (
+              <li key={p.id} className="ios-sep">
+                <div className="flex min-h-[60px] items-center gap-3 px-4 py-2.5">
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[17px] leading-[22px]">
+                      {p.client_id ? <Link className="font-medium active:opacity-60" href={`/clients/${p.client_id}`}>{p.clients?.full_name}</Link> : "—"}
+                    </span>
+                    <span className="block truncate text-[13px] leading-[18px] text-muted-foreground tabular">
+                      {dateTime(p.paid_at ?? p.created_at, tz)} · {METHOD_LABEL[p.method]}
+                    </span>
+                  </span>
+                  <span className="grid justify-items-end gap-1">
+                    <span className={p.refund_of_id ? "text-[17px] font-semibold tabular text-destructive" : "text-[17px] font-semibold tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount)}</span>
+                    <PaymentStatusBadge status={p.status} isRefund={!!p.refund_of_id} />
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <Table className="hidden md:table">
             <THead><TR><TH>Время</TH><TH>Клиент</TH><TH>Сумма</TH><TH>Способ</TH><TH>Статус</TH><TH className="hidden lg:table-cell">Назначение</TH><TH className="hidden xl:table-cell">Принял</TH><TH /></TR></THead>
             <TBody>
               {shown.map((p) => (
@@ -111,7 +132,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
 
 function Sum({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
-    <Card variant={strong ? "hero" : "glass"} className="grid gap-1 rounded-[24px] p-4">
+    <Card variant={strong ? "hero" : "glass"} className="grid gap-1 p-4">
       <span className="text-xs text-muted-foreground">{label}</span>
       <span className={strong ? "text-2xl font-semibold tabular" : "text-lg font-medium tabular"}>{value}</span>
     </Card>
