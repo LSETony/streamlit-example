@@ -14,9 +14,14 @@ import { normalizePhone } from "@/lib/phone";
 export const SOURCES = ["Instagram", "ВКонтакте", "Яндекс Карты", "2ГИС", "Сайт", "Рекомендация", "Вывеска", "Другое"];
 
 /** FR-2.2 Создание клиента за 30 секунд */
-export function NewClientButton({ disabled }: { disabled?: boolean }) {
+export function NewClientButton({ disabled, autoOpen }: { disabled?: boolean; autoOpen?: boolean }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(!!autoOpen && !disabled);
+  // открыто по ссылке /clients?new=1 — после закрытия убираем параметр из адреса
+  const setOpen = (v: boolean) => {
+    setOpenState(v);
+    if (!v && autoOpen) router.replace("/clients");
+  };
   const [error, setError] = useState<string | null>(null);
   const [dup, setDup] = useState<DuplicateClient | null>(null);
   const [pending, start] = useTransition();
@@ -31,7 +36,7 @@ export function NewClientButton({ disabled }: { disabled?: boolean }) {
       const res = await createClientAction(form);
       if (!res.ok) return setError(res.error.message);
       toast.success("Клиент добавлен");
-      setOpen(false);
+      setOpenState(false);
       router.push(`/clients/${res.data.id}?sell=1`);
     });
   }
@@ -52,7 +57,7 @@ export function NewClientButton({ disabled }: { disabled?: boolean }) {
             <Field
               label="Телефон"
               error={dup ? undefined : null}
-              hint={dup ? <span className="text-warning-foreground">Уже есть клиент с этим телефоном: <Link className="font-medium underline" href={`/clients/${dup.id}`} onClick={() => setOpen(false)}>{dup.full_name}</Link></span> : undefined}
+              hint={dup ? <span className="text-warning-foreground">Уже есть клиент с этим телефоном: <Link className="font-medium underline" href={`/clients/${dup.id}`} onClick={() => setOpenState(false)}>{dup.full_name}</Link></span> : undefined}
             >
               <Input name="phone" type="tel" inputMode="tel" required placeholder="+7 900 000-00-00" onBlur={(e) => checkPhone(e.target.value)} />
             </Field>

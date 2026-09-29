@@ -20,7 +20,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
   ) : null;
 
   return (
-    <AppShell role={ctx.staff.role} features={ctx.features} gymName={ctx.gym.name} userName={ctx.staff.full_name}
+    <AppShell role={ctx.staff.role} features={ctx.features} gymId={ctx.gym.id} gymName={ctx.gym.name} readOnly={ctx.readOnly} userName={ctx.staff.full_name}
       riskCount={count ?? null} banner={banner}>
       {children}
     </AppShell>
