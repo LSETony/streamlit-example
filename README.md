@@ -12,7 +12,11 @@
 | Self-hosted Supabase для серверов в РФ | `deploy` | Docker Compose: Postgres, Auth, REST, Realtime, Functions, Kong |
 | Документация | `docs` | OpenAPI для приложения, подключение iOS, развёртывание |
 
-## Развернуть на сервере со ссылкой (5–10 минут)
+## Демо-ссылка за 10 минут: Vercel + Supabase Cloud
+
+Пошагово — `docs/vercel.md`: один SQL-файл `supabase/setup-cloud.sql` в Supabase и импорт папки `web` в Vercel.
+
+## Развернуть на своём сервере в РФ со ссылкой (5–10 минут)
 
 1. Создайте виртуальную машину в Yandex Cloud или Selectel: Ubuntu 24.04, 2 vCPU, 4 ГБ RAM, диск 30 ГБ,
    публичный IP. Разрешите входящие порты 22, 80 и 443.
