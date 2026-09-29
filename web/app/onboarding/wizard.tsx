@@ -68,7 +68,7 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
         <StepCard title="Пригласите сотрудников" description="Администраторы и ресепшен получат письмо со ссылкой. Можно сделать позже в разделе «Сотрудники».">
           <InviteForm compact onDone={() => router.refresh()} />
           <ul className="grid gap-1 text-sm">
-            {staff.map((s) => <li key={s.id} className="flex justify-between rounded-lg bg-muted/50 px-3 py-2"><span>{s.full_name} · {s.email}</span><span className="text-muted-foreground">{ROLE_LABEL[s.role as Role]}</span></li>)}
+            {staff.map((s) => <li key={s.id} className="flex justify-between rounded-2xl bg-field px-3 py-2"><span>{s.full_name} · {s.email}</span><span className="text-muted-foreground">{ROLE_LABEL[s.role as Role]}</span></li>)}
           </ul>
           <Nav onBack={() => go(3)} onNext={() => go(5)} />
         </StepCard>
@@ -126,7 +126,7 @@ function PlansStep({ plans, onBack, onNext }: { plans: Plan[]; onBack: () => voi
       {plans.length ? (
         <ul className="grid gap-2">
           {plans.map((p) => (
-            <li key={p.id} className="flex items-center justify-between rounded-xl border border-border px-4 py-3">
+            <li key={p.id} className="flex items-center justify-between rounded-2xl bg-field px-4 py-3">
               <span><b>{p.name}</b> <span className="text-sm text-muted-foreground">· {PLAN_KIND_LABEL[p.kind]} · {p.duration_days} дн.{p.visits_limit ? ` · ${p.visits_limit} виз.` : ""}</span></span>
               <span className="font-semibold tabular">{money(p.price)}</span>
             </li>

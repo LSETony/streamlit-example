@@ -50,7 +50,7 @@ export function ClientFilters({ q, state, tag, risk, tags, showRisk }: {
         <button
           type="button"
           onClick={() => push({ risk: risk ? null : "1" })}
-          className={cn("h-10 cursor-pointer whitespace-nowrap rounded-lg border px-3 text-sm", risk ? "border-foreground bg-foreground text-background" : "border-input bg-card hover:bg-muted")}
+          className={cn("h-11 cursor-pointer whitespace-nowrap rounded-full px-4 text-sm font-medium", risk ? "bg-foreground text-background" : "bg-field hover:bg-field-hover")}
           aria-pressed={risk}
         >
           В зоне риска

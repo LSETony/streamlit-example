@@ -156,7 +156,7 @@ function ContactDialog({ row, channel: initial, text, onClose }: { row: RiskRow;
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={active}
-      className={cn("h-9 cursor-pointer rounded-full border px-3.5 text-sm transition-colors", active ? "border-foreground bg-foreground text-background" : "border-border bg-card hover:bg-muted")}>
+      className={cn("h-9 cursor-pointer rounded-full px-4 text-sm font-medium transition-colors", active ? "bg-foreground text-background" : "bg-field hover:bg-field-hover")}>
       {children}
     </button>
   );

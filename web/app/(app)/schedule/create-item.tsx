@@ -49,9 +49,9 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
       <DialogContent wide>
         <DialogHeader><DialogTitle>Новое занятие</DialogTitle></DialogHeader>
         <form action={submit} className="grid gap-4">
-          <div className="flex rounded-lg border border-border p-0.5">
+          <div className="flex rounded-full bg-field p-1">
             {([["class", "Групповое"], ["personal", "Персональная"], ["zone_slot", "Слот зоны"]] as const).map(([k, l]) => (
-              <button key={k} type="button" onClick={() => setKind(k)} className={cn("flex-1 cursor-pointer rounded-md py-1.5 text-sm", kind === k ? "bg-foreground text-background" : "text-muted-foreground")}>{l}</button>
+              <button key={k} type="button" onClick={() => setKind(k)} className={cn("flex-1 cursor-pointer rounded-full py-2 text-sm font-medium", kind === k ? "bg-foreground text-background" : "text-muted-foreground")}>{l}</button>
             ))}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -79,7 +79,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
               <div className="flex flex-wrap gap-1.5">
                 {WD.map((w, i) => (
                   <button key={w} type="button" onClick={() => setWeekdays((s) => s.includes(i + 1) ? s.filter((x) => x !== i + 1) : [...s, i + 1])}
-                    className={cn("size-10 cursor-pointer rounded-lg border text-sm", weekdays.includes(i + 1) ? "border-foreground bg-foreground text-background" : "border-border bg-card")}>{w}</button>
+                    className={cn("size-10 cursor-pointer rounded-full text-sm", weekdays.includes(i + 1) ? "bg-foreground text-background" : "bg-field hover:bg-field-hover")}>{w}</button>
                 ))}
               </div>
               <Field label="До"><Input name="until" type="date" defaultValue={addDays(initialDate, 83)} /></Field>
