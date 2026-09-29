@@ -52,8 +52,6 @@
   --glass-ring: rgb(30 30 30 / 0.06);
   --glass-hl: rgb(255 255 255 / 0.95);
   --glass-shadow: 0 12px 32px -14px rgb(30 30 30 / 0.2), 0 1px 2px rgb(30 30 30 / 0.04);
-  --glow-violet: rgb(89 0 255 / 0.16);
-  --glow-orange: rgb(249 44 0 / 0.13);
   color-scheme: light;
 }
 
@@ -88,8 +86,6 @@
     --glass-ring: rgb(0 0 0 / 0.4);
     --glass-hl: rgb(255 255 255 / 0.12);
     --glass-shadow: 0 24px 48px -20px rgb(0 0 0 / 0.8);
-    --glow-violet: rgb(89 0 255 / 0.38);
-    --glow-orange: rgb(249 44 0 / 0.24);
     color-scheme: dark;
   
   --info: #9a73ff;
@@ -126,8 +122,6 @@
   --glass-ring: rgb(0 0 0 / 0.4);
   --glass-hl: rgb(255 255 255 / 0.12);
   --glass-shadow: 0 24px 48px -20px rgb(0 0 0 / 0.8);
-  --glow-violet: rgb(89 0 255 / 0.38);
-  --glow-orange: rgb(249 44 0 / 0.24);
   color-scheme: dark;
 
   --info: #9a73ff;
@@ -188,19 +182,6 @@
   }
 }
 
-/* Цветное свечение за интерфейсом — без него стеклу нечего размывать */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(45% 40% at 88% 4%, var(--glow-violet), transparent 70%),
-    radial-gradient(40% 38% at 8% 96%, var(--glow-orange), transparent 70%),
-    radial-gradient(30% 30% at 55% 55%, color-mix(in srgb, var(--glow-violet) 45%, transparent), transparent 70%);
-}
-
 @utility glass {
   background: linear-gradient(160deg, var(--glass-hl) -60%, transparent 40%), var(--glass);
   -webkit-backdrop-filter: blur(28px) saturate(170%);
@@ -226,7 +207,7 @@ body::before {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1), 0 24px 48px -24px rgb(0 0 0 / 0.6);
 }
 
-/* Акцентная карточка: градиент фирменных цветов, текст и графики внутри — белые */
+/* Акцентная карточка: фирменный оранжевый, текст и графики внутри — белые */
 @utility hero {
   --foreground: #ffffff;
   --card-foreground: #ffffff;
@@ -239,12 +220,9 @@ body::before {
   --success: #ffffff;
   --destructive: #ffffff;
   color: var(--foreground);
-  background:
-    radial-gradient(90% 80% at 100% 100%, rgb(89 0 255 / 0.95), transparent 70%),
-    radial-gradient(70% 90% at 0% 0%, #ff5a1f, transparent 75%),
-    linear-gradient(135deg, #f92c00 0%, #c4178a 55%, #5900ff 100%);
+  background: var(--brand);
   border: 1px solid rgb(255 255 255 / 0.18);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 28px 56px -28px rgb(89 0 255 / 0.7);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 24px 48px -28px rgb(249 44 0 / 0.65);
 }
 
 @utility select-chevron {
