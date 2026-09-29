@@ -17,7 +17,7 @@ export default async function AdminPage() {
   return (
     <div className="min-h-dvh">
       <header className="flex h-16 items-center justify-between bg-sidebar px-6 text-white">
-        <div className="flex items-center gap-3"><Logo className="h-6" /><span className="text-sm text-sidebar-foreground">команда</span></div>
+        <div className="flex items-center gap-3"><Logo className="h-5" /><span className="text-sm text-sidebar-foreground">команда</span></div>
         <form action={signOut}><button className="cursor-pointer text-sm text-sidebar-foreground hover:text-white">Выйти</button></form>
       </header>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">

@@ -125,7 +125,7 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
     <div className="flex min-h-dvh">
       <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-5 bg-sidebar px-4 pb-4 pt-6 lg:flex">
         <Link href="/" className="px-2 text-white" aria-label="core. — на главную">
-          <Logo className="h-7" />
+          <Logo className="h-6" />
         </Link>
         {gymCard}
         {nav}
@@ -134,7 +134,7 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
 
       {/* мобильная и планшетная шапка */}
       <div className="fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between bg-sidebar px-4 lg:hidden">
-        <Link href="/" className="text-white"><Logo className="h-6" /></Link>
+        <Link href="/" className="text-white"><Logo className="h-5" /></Link>
         <span className="mx-3 flex-1 truncate text-center text-xs text-sidebar-foreground">{gymName}</span>
         <button onClick={() => setOpen(true)} className="rounded-lg p-2 text-white" aria-label="Меню">
           <Menu className="size-5" />
@@ -145,7 +145,7 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
           <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
           <div className="absolute inset-y-0 right-0 flex w-72 max-w-[85vw] flex-col gap-6 bg-sidebar p-4 animate-in slide-in-from-right">
             <div className="flex items-center justify-between px-2 pt-2">
-              <span className="text-white"><Logo className="h-6" /></span>
+              <span className="text-white"><Logo className="h-5" /></span>
               <button onClick={() => setOpen(false)} className="rounded-lg p-2 text-white" aria-label="Закрыть меню">
                 <X className="size-5" />
               </button>
