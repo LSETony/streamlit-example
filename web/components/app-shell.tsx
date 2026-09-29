@@ -61,7 +61,7 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
   const nav = (
     <nav className="-mx-1 flex flex-1 flex-col gap-5 overflow-y-auto px-1" aria-label="Разделы">
       {groups.map((g) => (
-        <div key={g.title} className="grid gap-0.5">
+        <div key={g.title} className="grid gap-1">
           <p className="px-3 pb-1 text-[11px] font-medium uppercase tracking-[0.08em] text-sidebar-foreground/45">{g.title}</p>
           {g.items.map((item) => {
             const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -73,15 +73,23 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
                 onClick={() => setOpen(false)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[14px] font-medium transition-colors",
-                  active ? "bg-sidebar-muted text-white" : "text-sidebar-foreground hover:bg-sidebar-muted/50 hover:text-white",
+                  "group flex items-center gap-3 rounded-[18px] p-1 pr-3 text-[14px] font-medium transition-colors",
+                  active ? "bg-white/[0.06] text-white" : "text-sidebar-foreground hover:bg-white/[0.04] hover:text-white",
                 )}
               >
-                {active ? <span aria-hidden className="absolute inset-y-2 -left-1 w-[3px] rounded-full bg-brand" /> : null}
-                <Icon className={cn("size-[18px] shrink-0", active ? "text-brand" : "opacity-60 group-hover:opacity-100")} />
+                <span
+                  className={cn(
+                    "grid size-9 shrink-0 place-items-center rounded-[14px] transition-colors",
+                    active
+                      ? "bg-[linear-gradient(135deg,#f92c00,#b0179a_55%,#5900ff)] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.3),0_8px_18px_-8px_rgb(249_44_0/0.7)]"
+                      : "bg-white/[0.05] ring-1 ring-inset ring-white/[0.07] group-hover:bg-white/[0.09]",
+                  )}
+                >
+                  <Icon className={cn("size-[18px]", active ? "" : "opacity-70 group-hover:opacity-100")} />
+                </span>
                 <span className="flex-1">{item.label}</span>
                 {item.href === "/risk" && riskCount ? (
-                  <span className="min-w-6 rounded-full bg-white/10 px-1.5 text-center text-[11px] font-semibold text-white tabular">{riskCount}</span>
+                  <span className="grid h-7 min-w-7 place-items-center rounded-full px-1.5 text-[11px] font-semibold text-white ring-1 ring-inset ring-white/20 tabular">{riskCount}</span>
                 ) : null}
               </Link>
             );
@@ -92,8 +100,8 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
   );
 
   const gymCard = (
-    <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] p-2.5 ring-1 ring-white/[0.06]">
-      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand text-sm font-bold text-brand-foreground">
+    <div className="flex items-center gap-3 rounded-[20px] bg-white/[0.05] p-2 ring-1 ring-inset ring-white/[0.07]">
+      <span className="grid size-10 shrink-0 place-items-center rounded-[14px] bg-brand text-sm font-bold text-brand-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.3)]">
         {gymName.trim()[0]?.toUpperCase() ?? "З"}
       </span>
       <span className="min-w-0">
@@ -104,8 +112,8 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
   );
 
   const footer = (
-    <div className="flex items-center gap-3 border-t border-white/[0.07] pt-4">
-      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white/10 text-xs font-semibold text-white">
+    <div className="flex items-center gap-2.5 rounded-[20px] bg-white/[0.05] p-2 ring-1 ring-inset ring-white/[0.07]">
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-xs font-semibold text-white">
         {userName.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
       </span>
       <div className="min-w-0 flex-1">
@@ -114,7 +122,7 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
       </div>
       <ThemeToggle />
       <form action={signOut}>
-        <button className="grid size-8 cursor-pointer place-items-center rounded-lg text-sidebar-foreground hover:bg-sidebar-muted hover:text-white" aria-label="Выйти" title="Выйти">
+        <button className="grid size-9 cursor-pointer place-items-center rounded-[12px] bg-white/[0.05] text-sidebar-foreground hover:bg-white/10 hover:text-white" aria-label="Выйти" title="Выйти">
           <LogOut className="size-4" />
         </button>
       </form>
@@ -123,30 +131,32 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
 
   return (
     <div className="flex min-h-dvh">
-      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-5 bg-sidebar px-4 pb-4 pt-6 lg:flex">
-        <Link href="/" className="px-2 text-white" aria-label="core. — на главную">
-          <Logo className="h-6" />
-        </Link>
-        {gymCard}
-        {nav}
-        {footer}
+      <aside className="sticky top-0 hidden h-dvh w-[288px] shrink-0 p-3 lg:block">
+        <div className="glass-dark flex h-full flex-col gap-5 rounded-[32px] px-3 pb-3 pt-6">
+          <Link href="/" className="px-3 text-white" aria-label="core. — на главную">
+            <Logo className="h-6" />
+          </Link>
+          {gymCard}
+          {nav}
+          {footer}
+        </div>
       </aside>
 
       {/* мобильная и планшетная шапка */}
-      <div className="fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between bg-sidebar px-4 lg:hidden">
+      <div className="glass-dark fixed inset-x-3 top-3 z-40 flex h-14 items-center justify-between rounded-[22px] pl-5 pr-2 lg:hidden">
         <Link href="/" className="text-white"><Logo className="h-5" /></Link>
         <span className="mx-3 flex-1 truncate text-center text-xs text-sidebar-foreground">{gymName}</span>
-        <button onClick={() => setOpen(true)} className="rounded-lg p-2 text-white" aria-label="Меню">
+        <button onClick={() => setOpen(true)} className="grid size-10 place-items-center rounded-[14px] bg-white/[0.06] text-white" aria-label="Меню">
           <Menu className="size-5" />
         </button>
       </div>
       {open ? (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
-          <div className="absolute inset-y-0 right-0 flex w-72 max-w-[85vw] flex-col gap-6 bg-sidebar p-4 animate-in slide-in-from-right">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div className="glass-dark absolute inset-y-2 right-2 flex w-72 max-w-[85vw] flex-col gap-5 rounded-[28px] p-3 animate-in slide-in-from-right">
             <div className="flex items-center justify-between px-2 pt-2">
               <span className="text-white"><Logo className="h-5" /></span>
-              <button onClick={() => setOpen(false)} className="rounded-lg p-2 text-white" aria-label="Закрыть меню">
+              <button onClick={() => setOpen(false)} className="grid size-10 place-items-center rounded-[14px] bg-white/[0.06] text-white" aria-label="Закрыть меню">
                 <X className="size-5" />
               </button>
             </div>
@@ -157,9 +167,9 @@ export function AppShell({ role, features, gymName, userName, riskCount, childre
         </div>
       ) : null}
 
-      <main className="min-w-0 flex-1 pt-14 lg:pt-0">
+      <main className="min-w-0 flex-1 pt-[72px] lg:pt-0">
         {banner}
-        <div className="mx-auto w-full max-w-[1360px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9">{children}</div>
+        <div className="mx-auto w-full max-w-[1360px] px-4 py-6 sm:px-6 lg:px-8 lg:py-9">{children}</div>
       </main>
     </div>
   );
@@ -180,7 +190,7 @@ function ThemeToggle() {
     }
   };
   return (
-    <button onClick={toggle} className="grid size-8 cursor-pointer place-items-center rounded-lg text-sidebar-foreground hover:bg-sidebar-muted hover:text-white" aria-label="Сменить тему" title="Сменить тему">
+    <button onClick={toggle} className="grid size-9 cursor-pointer place-items-center rounded-[12px] bg-white/[0.05] text-sidebar-foreground hover:bg-white/10 hover:text-white" aria-label="Сменить тему" title="Сменить тему">
       <Sun className="hidden size-4 dark:block" />
       <Moon className="size-4 dark:hidden" />
     </button>
@@ -198,7 +208,7 @@ export function PageHeader({ title, description, actions, back }: {
             <ChevronLeft className="size-4" /> {back.label}
           </Link>
         ) : null}
-        <h1 className="text-[26px] font-bold leading-tight tracking-[-0.02em] sm:text-[30px]">{title}</h1>
+        <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.03em] sm:text-[36px]">{title}</h1>
         {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}

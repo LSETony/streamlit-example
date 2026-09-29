@@ -11,18 +11,18 @@ export const DialogClose = D.Close;
 export function DialogContent({ className, children, wide, ...props }: React.ComponentProps<typeof D.Content> & { wide?: boolean }) {
   return (
     <D.Portal>
-      <D.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-[2px] data-[state=open]:animate-in data-[state=open]:fade-in-0" />
+      <D.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md data-[state=open]:animate-in data-[state=open]:fade-in-0" />
       <D.Content
         className={cn(
           "fixed left-1/2 top-1/2 z-50 grid max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto " +
-            "rounded-2xl border border-border bg-card p-6 shadow-pop focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-[0.98]",
+            "glass-strong rounded-[28px] p-7 focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-[0.98]",
           wide ? "max-w-2xl" : "max-w-lg",
           className,
         )}
         {...props}
       >
         {children}
-        <D.Close className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Закрыть">
+        <D.Close className="absolute right-4 top-4 grid size-9 cursor-pointer place-items-center rounded-full bg-field text-muted-foreground hover:bg-field-hover hover:text-foreground" aria-label="Закрыть">
           <X className="size-4" />
         </D.Close>
       </D.Content>

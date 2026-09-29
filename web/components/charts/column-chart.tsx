@@ -16,7 +16,7 @@ export function ColumnChart({ data, unit = "", highlightLast, height = 140 }: {
       <div className="relative flex items-end gap-1" style={{ height }}>
         {[0.5, 1].map((f) => (
           <div key={f} className="pointer-events-none absolute inset-x-0 border-t border-[var(--chart-grid)]" style={{ bottom: `${f * 100}%` }}>
-            <span className="absolute -top-2 right-0 bg-card pl-1 text-[10px] leading-none text-muted-foreground tabular">{formatValue(nice * f)}</span>
+            <span className="absolute -top-2 right-0 pl-1 text-[10px] leading-none text-muted-foreground tabular">{formatValue(nice * f)}</span>
           </div>
         ))}
         {data.map((d, i) => {
@@ -38,7 +38,7 @@ export function ColumnChart({ data, unit = "", highlightLast, height = 140 }: {
                 }}
               />
               {hover === i ? (
-                <div className="pointer-events-none absolute bottom-full z-10 mb-1 whitespace-nowrap rounded-lg border border-border bg-card px-2 py-1 text-xs shadow-md">
+                <div className="pointer-events-none absolute bottom-full z-10 mb-1 whitespace-nowrap rounded-xl bg-popover px-2.5 py-1.5 text-xs shadow-md backdrop-blur-xl">
                   <span className="text-muted-foreground">{formatLabel(d.key)}</span> <b className="tabular">{formatValue(d.value)}</b>
                 </div>
               ) : null}

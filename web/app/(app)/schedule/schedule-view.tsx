@@ -79,10 +79,10 @@ export function ScheduleView({ view, from, days, today, items, zones, gymId, tim
         description={title}
         actions={
           <>
-            <div className="flex rounded-lg border border-border bg-card p-0.5">
+            <div className="flex rounded-full bg-field p-1">
               {(["day", "week"] as const).map((v) => (
                 <Link key={v} href={`/schedule?view=${v}&date=${v === "day" && view === "week" ? (dayList.includes(today) ? today : from) : from}`}
-                  className={cn("rounded-md px-3 py-1.5 text-sm", view === v ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>
+                  className={cn("rounded-full px-4 py-1.5 text-sm font-medium", view === v ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>
                   {v === "day" ? "День" : "Неделя"}
                 </Link>
               ))}
@@ -103,7 +103,7 @@ export function ScheduleView({ view, from, days, today, items, zones, gymId, tim
               <Link key={d} href={`/schedule?view=day&date=${d}`}
                 className={cn("border-b border-l border-border px-3 py-2 text-sm hover:bg-muted/40", d === today && "bg-muted/60")}>
                 <span className="text-muted-foreground">{WEEKDAYS[(new Date(d + "T00:00:00Z").getUTCDay() + 6) % 7] ?? WEEKDAYS[i]}</span>{" "}
-                <span className={cn("font-semibold", d === today && "rounded-md bg-brand px-1.5 text-brand-foreground")}>{Number(d.slice(8))}</span>
+                <span className={cn("font-semibold", d === today && "rounded-full bg-brand px-2 text-brand-foreground")}>{Number(d.slice(8))}</span>
               </Link>
             ))}
 
@@ -139,7 +139,7 @@ export function ScheduleView({ view, from, days, today, items, zones, gymId, tim
                       title={`${i.title} · ${time(i.starts_at, timezone)}${i.trainer_name ? ` · ${i.trainer_name}` : ""}${zoneName(i.zone_id) ? ` · ${zoneName(i.zone_id)}` : ""} · ${i.booked}/${i.capacity}`}
                       onClick={() => setOpenId(i.id)}
                       className={cn(
-                        "absolute z-10 cursor-pointer overflow-hidden rounded-lg border border-border border-l-[3px] px-2 py-1 text-left text-xs shadow-sm transition-shadow hover:shadow-md",
+                        "absolute z-10 cursor-pointer overflow-hidden rounded-xl border border-border border-l-[3px] px-2 py-1 text-left text-xs shadow-sm transition-shadow hover:shadow-md",
                         KIND_STYLE[i.kind], i.cancelled && "opacity-50 line-through",
                       )}
                       style={{ top: top + 1, height, left: `calc(${(col / cols) * 100}% + 2px)`, width: `calc(${100 / cols}% - 4px)` }}

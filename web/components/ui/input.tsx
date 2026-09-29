@@ -6,8 +6,8 @@ export function Input({ className, type, ...props }: React.ComponentProps<"input
     <input
       type={type}
       className={cn(
-        "flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm placeholder:text-muted-foreground " +
-          "transition-[border-color,box-shadow] focus-visible:outline-none focus-visible:border-foreground/40 focus-visible:ring-4 focus-visible:ring-foreground/8 disabled:cursor-not-allowed disabled:opacity-50 " +
+        "flex h-11 w-full rounded-2xl border border-transparent bg-field px-4 py-2 text-sm placeholder:text-muted-foreground " +
+          "transition-[border-color,box-shadow] focus-visible:outline-none hover:bg-field-hover focus-visible:border-ring/60 focus-visible:bg-popover focus-visible:ring-4 focus-visible:ring-ring/15 disabled:cursor-not-allowed disabled:opacity-50 " +
           "aria-[invalid=true]:border-destructive file:border-0 file:bg-transparent file:text-sm file:font-medium",
         className,
       )}
@@ -20,8 +20,8 @@ export function Textarea({ className, ...props }: React.ComponentProps<"textarea
   return (
     <textarea
       className={cn(
-        "flex min-h-20 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm placeholder:text-muted-foreground " +
-          "transition-[border-color,box-shadow] focus-visible:outline-none focus-visible:border-foreground/40 focus-visible:ring-4 focus-visible:ring-foreground/8 disabled:opacity-50",
+        "flex min-h-24 w-full rounded-2xl border border-transparent bg-field px-4 py-3 text-sm placeholder:text-muted-foreground " +
+          "transition-[border-color,box-shadow] focus-visible:outline-none hover:bg-field-hover focus-visible:border-ring/60 focus-visible:bg-popover focus-visible:ring-4 focus-visible:ring-ring/15 disabled:opacity-50",
         className,
       )}
       {...props}
@@ -33,9 +33,8 @@ export function NativeSelect({ className, children, ...props }: React.ComponentP
   return (
     <select
       className={cn(
-        "flex h-10 w-full appearance-none rounded-lg border border-input bg-card bg-[length:16px] bg-[right_10px_center] bg-no-repeat px-3 pr-9 text-sm " +
-          "focus-visible:outline-none focus-visible:border-foreground/40 focus-visible:ring-4 focus-visible:ring-foreground/8 disabled:opacity-50 " +
-          "bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")]",
+        "select-chevron flex h-11 w-full appearance-none rounded-2xl border border-transparent bg-field px-4 pr-10 text-sm " +
+          "focus-visible:outline-none hover:bg-field-hover focus-visible:border-ring/60 focus-visible:bg-popover focus-visible:ring-4 focus-visible:ring-ring/15 disabled:opacity-50",
         className,
       )}
       {...props}
@@ -46,7 +45,7 @@ export function NativeSelect({ className, children, ...props }: React.ComponentP
 }
 
 export function Label({ className, ...props }: React.ComponentProps<"label">) {
-  return <label className={cn("text-[13px] font-medium leading-none text-foreground/80", className)} {...props} />;
+  return <label className={cn("pl-1 text-[13px] font-medium leading-none text-muted-foreground", className)} {...props} />;
 }
 
 export function Field({ label, hint, error, children, className }: {
@@ -79,7 +78,7 @@ export function TimeSelect({ value, onChange, className, step = 30, "aria-label"
   if (!options.includes(value)) options.push(value);
   options.sort();
   return (
-    <NativeSelect value={value} onChange={(e) => onChange(e.target.value)} className={cn("w-[92px] tabular", className)} aria-label={ariaLabel}>
+    <NativeSelect value={value} onChange={(e) => onChange(e.target.value)} className={cn("w-[104px] pl-3.5 pr-8 [background-position:right_10px_center] tabular", className)} aria-label={ariaLabel}>
       {options.map((o) => <option key={o} value={o}>{o === "24:00" ? "24:00" : o}</option>)}
     </NativeSelect>
   );

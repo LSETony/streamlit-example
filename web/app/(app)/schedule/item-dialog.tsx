@@ -65,7 +65,7 @@ export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, on
             ) : null}
             <div className="grid max-h-80 gap-1 overflow-y-auto">
               {active.length === 0 ? <p className="py-4 text-center text-sm text-muted-foreground">Пока никто не записан</p> : active.map((b) => (
-                <div key={b.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-muted/50">
+                <div key={b.id} className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-muted/50">
                   <Link href={`/clients/${b.client_id}`} className="flex-1 truncate text-sm font-medium hover:underline">{b.clients?.full_name}</Link>
                   {b.channel === "app" ? <Badge variant="outline">приложение</Badge> : null}
                   {b.status === "attended" ? <Badge variant="success">пришёл</Badge> : b.status === "no_show" ? <Badge variant="danger">не пришёл</Badge> : null}

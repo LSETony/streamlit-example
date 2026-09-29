@@ -122,7 +122,7 @@ export function PlanDialog({ plan, onClose }: { plan: Plan | null; onClose: () =
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid gap-0.5 rounded-lg bg-surface-2 px-2.5 py-2">
+    <div className="grid gap-0.5 rounded-xl bg-field px-2.5 py-2">
       <dt className="text-[11px] text-muted-foreground">{label}</dt>
       <dd className="font-medium tabular">{value}</dd>
     </div>

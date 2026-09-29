@@ -63,7 +63,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
       />
 
       <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-        <Card className="flex flex-col justify-between gap-6 p-6">
+        <Card variant="hero" className="flex flex-col justify-between gap-6 p-7">
           <div className="grid gap-2">
             <span className="text-sm text-muted-foreground">Выручка</span>
             <span className="text-5xl font-semibold tracking-tight sm:text-6xl">{money(c.revenue)}</span>
@@ -125,7 +125,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
             <CardContent className="grid gap-3">
               <div className="flex flex-wrap gap-2">
                 {(["not_renewed", "expiring", "gone", "declining"] as RiskReason[]).map((r) => (
-                  <Link key={r} href={`/risk?reason=${r}`} className="flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm hover:bg-muted/50">
+                  <Link key={r} href={`/risk?reason=${r}`} className="flex items-center gap-2 rounded-full bg-field py-1.5 pl-1.5 pr-3.5 text-sm hover:bg-field-hover">
                     <RiskBadge reason={r} /> <span className="font-semibold tabular">{riskCounts[r] ?? 0}</span>
                   </Link>
                 ))}

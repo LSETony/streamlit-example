@@ -9,7 +9,7 @@ export function Switch({ className, ...props }: React.ComponentProps<typeof S.Ro
       className={cn(
         "peer inline-flex h-6 w-10 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors " +
           "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-foreground/10 disabled:cursor-not-allowed disabled:opacity-50 " +
-          "data-[state=checked]:bg-foreground data-[state=unchecked]:bg-input",
+          "data-[state=checked]:bg-info data-[state=unchecked]:bg-field-hover",
         className,
       )}
       {...props}

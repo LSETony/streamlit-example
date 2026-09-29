@@ -38,7 +38,7 @@ export default async function SettingsPage() {
         <nav className="hidden lg:block" aria-label="Разделы настроек">
           <div className="sticky top-8 grid gap-0.5">
             {SECTIONS.map(({ id, title, icon: Icon }) => (
-              <a key={id} href={`#${id}`} className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-card hover:text-foreground">
+              <a key={id} href={`#${id}`} className="flex items-center gap-2.5 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-field hover:text-foreground">
                 <Icon className="size-4" /> {title}
               </a>
             ))}
