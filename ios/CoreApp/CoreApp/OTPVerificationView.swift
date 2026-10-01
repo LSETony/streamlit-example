@@ -23,7 +23,6 @@ struct OTPVerificationView: View {
     @State private var didComplete = false
     @State private var isVerifying = false
 
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private let codeLength = 8
 
     var body: some View {
@@ -76,6 +75,7 @@ struct OTPVerificationView: View {
                     } else {
                         Button("Resend") {
                             secondsRemaining = 48
+                            startCountdown()
                             Task { _ = await authService.startEmailRegistration(email: email) }
                         }
                         .font(.system(size: 14, weight: .semibold))
@@ -93,9 +93,7 @@ struct OTPVerificationView: View {
         }
         .background(Color.appBackground.ignoresSafeArea())
         .onAppear { isCodeFieldFocused = true }
-        .onReceive(timer) { _ in
-            if secondsRemaining > 0 { secondsRemaining -= 1 }
-        }
+        .task { startCountdown() }
         .navigationBarBackButtonHidden(didComplete)
         .alert("Verification error", isPresented: Binding(get: { authService.authError != nil }, set: { if !$0 { authService.authError = nil } })) {
             Button("OK", role: .cancel) {}
@@ -120,6 +118,23 @@ struct OTPVerificationView: View {
                     .stroke(isActive ? Color.appAccentPurple : Color.appDivider, lineWidth: isActive ? 2 : 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+    }
+
+    /// Ticks `secondsRemaining` down once a second until it hits 0, then
+    /// stops — replaces a Combine `Timer.publish(...).autoconnect()`
+    /// stored as a property, which newer Swift's strict concurrency
+    /// checking rejects (Publishers.Autoconnect isn't Sendable). Re-called
+    /// from the Resend button to restart the countdown; never overlaps
+    /// with a previous run since Resend only appears once this loop has
+    /// already finished.
+    private func startCountdown() {
+        Task {
+            while secondsRemaining > 0 {
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                guard secondsRemaining > 0 else { break }
+                secondsRemaining -= 1
+            }
+        }
     }
 
     private func verify() {

@@ -1,4 +1,5 @@
 import Foundation
+import Supabase
 
 /// Streaks, check-ins, referrals, the leaderboard and the before/after
 /// photo gallery — all backed by supabase/add_growth_features.sql's
@@ -20,7 +21,11 @@ extension AppState {
             totalVisits = row.totalVisits
             streakDays = row.currentStreak
             lastActivityDate = row.lastActivityDate.flatMap(SupabaseDate.parseDay)
-            referralCode = row.referralCode ?? (await ensureReferralCode())
+            if let code = row.referralCode {
+                referralCode = code
+            } else {
+                referralCode = await ensureReferralCode()
+            }
         } else {
             referralCode = Self.generateReferralCode()
             await upsertMemberStats(
