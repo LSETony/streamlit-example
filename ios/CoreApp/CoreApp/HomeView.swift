@@ -27,7 +27,7 @@ struct HomeView: View {
                     specialsCard
                 }
                 .screenPadding()
-                .padding(.top, -224) // nests the cards inside the photo, matching the source proportions
+                .padding(.top, -180) // nests the cards inside the photo, matching the source proportions
 
                 statsRow
                     .screenPadding()
