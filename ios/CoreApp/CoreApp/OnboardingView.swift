@@ -38,7 +38,7 @@ struct OnboardingView: View {
             Text(step == 2 ? "Tell us about yourself" : stepTitle)
                 .font(.brand(32))
                 .foregroundStyle(.white)
-            Text("This tailor plans and your experience")
+            Text(stepSubtitle)
                 .font(.brand(13))
                 .foregroundStyle(Color.appTextSecondary)
         }
@@ -49,6 +49,15 @@ struct OnboardingView: View {
         case 0: return "Tell us about yourself"
         case 1: return "What's your goal?"
         default: return "Choose your level"
+        }
+    }
+
+    private var stepSubtitle: String {
+        switch step {
+        case 0: return "This tailor plans and your experience"
+        case 1: return "We're here to help you out"
+        case 2: return "Give us more details, so we can better assist you"
+        default: return "Almost done"
         }
     }
 
@@ -151,8 +160,7 @@ struct OnboardingView: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity)
-        .background(Color.appSurface.opacity(0.5))
-        .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+        .background(Color.black.opacity(0.2))
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 
@@ -184,18 +192,7 @@ struct OnboardingView: View {
         let isSelected = appState.selectedLevel == title
         return Button { appState.selectedLevel = title } label: {
             ZStack(alignment: .topLeading) {
-                if isSelected, title == "Beginner" {
-                    GeometryReader { geo in
-                        ZStack {
-                            Image("WorkoutBeginnerFemale")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: geo.size.width, height: geo.size.height)
-                                .clipped()
-                            LinearGradient(colors: [.black.opacity(0.1), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
-                        }
-                    }
-                } else if isSelected {
+                if isSelected {
                     Color.appAccentPurple
                 }
                 VStack(alignment: .leading, spacing: 8) {
@@ -210,10 +207,10 @@ struct OnboardingView: View {
                 .padding(16)
             }
             .frame(maxWidth: .infinity, minHeight: 193, alignment: .topLeading)
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                    .stroke(isSelected ? Color.clear : Color.appDivider, lineWidth: 1)
+                RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                    .stroke(isSelected ? Color.clear : .white.opacity(0.5), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -250,7 +247,8 @@ struct OnboardingView: View {
             .padding(.horizontal, 18)
             .padding(.vertical, isSelected ? 6 : 18)
             .frame(maxWidth: .infinity, minHeight: 72)
-            .overlay(Capsule().stroke(Color.appDivider, lineWidth: 1))
+            .background(Color.appOptionRowFill)
+            .clipShape(Capsule())
         }
         .buttonStyle(.plain)
     }
@@ -276,7 +274,7 @@ private struct FlowChips: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 18)
             .padding(.vertical, 12)
-            .background(isOn ? Color.appAccent : Color.white.opacity(0.06))
+            .background(isOn ? Color.appAccent : Color.appOptionRowFill)
             .overlay(Capsule().stroke(isOn ? .clear : Color.appDivider, lineWidth: 1))
             .clipShape(Capsule())
             .onTapGesture {

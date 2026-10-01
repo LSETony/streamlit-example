@@ -20,6 +20,12 @@ extension Color {
     /// onboarding wizard, sign-in/verification buttons, the membership card
     /// and the profile's Logout button in the latest Figma pass.
     static let appAccentPurple = Color(red: 0x59 / 255, green: 0x00 / 255, blue: 0xFF / 255)
+
+    /// The translucent warm-gray fill (rgba(60,56,56,0.2) in the source) on
+    /// the onboarding wizard's option rows and contraindication chips —
+    /// close to but distinct from appSurface/appSurfaceElevated, so kept as
+    /// its own token rather than reusing a cooler gray that doesn't match.
+    static let appOptionRowFill = Color(red: 0x3C / 255, green: 0x38 / 255, blue: 0x38 / 255).opacity(0.2)
 }
 
 enum AppMetrics {
