@@ -154,7 +154,7 @@ struct HomeView: View {
                         .foregroundStyle(.white.opacity(0.75))
                 }
                 Spacer(minLength: 8)
-                pillLabel("Check out", background: .appAccentPurple.opacity(0.4))
+                glassPillLabel("Check out", tint: .appAccentPurple)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(18)
@@ -172,6 +172,15 @@ struct HomeView: View {
             .padding(.vertical, 8)
             .background(background)
             .clipShape(Capsule())
+    }
+
+    private func glassPillLabel(_ text: String, tint: Color) -> some View {
+        Text(text)
+            .font(.brand(10))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .glassEffect(.regular.tint(tint), in: Capsule())
     }
 
     /// A quick, dynamic read on how busy the club is right now — same
