@@ -129,8 +129,7 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(18)
             .frame(height: 196)
-            .background(Color.appBackground.opacity(0.2))
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
         .buttonStyle(.plain)
     }
