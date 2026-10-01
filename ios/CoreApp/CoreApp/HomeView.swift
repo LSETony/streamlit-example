@@ -70,7 +70,13 @@ struct HomeView: View {
                     }
                 }
                 .frame(width: geo.size.width, height: geo.size.height)
-                .clipped()
+                .clipShape(
+                    UnevenRoundedRectangle(
+                        topLeadingRadius: 0, bottomLeadingRadius: AppMetrics.cardCorner,
+                        bottomTrailingRadius: AppMetrics.cardCorner, topTrailingRadius: 0,
+                        style: .continuous
+                    )
+                )
 
                 HStack {
                     Button {
