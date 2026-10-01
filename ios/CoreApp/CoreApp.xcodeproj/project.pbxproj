@@ -307,6 +307,7 @@
 				424658A028CA6DAF50F921BC /* Info.plist */,
 			);
 			name = CoreWidgets;
+			path = CoreWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
