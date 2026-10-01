@@ -182,10 +182,12 @@ struct HomeView: View {
         Button {
             activeSheet = .progress
         } label: {
-            HStack(spacing: 10) {
-                statTile(label: "Sets", value: "\(appState.trainingSetsToday)")
-                statTile(label: "Time", value: Self.formatMinutes(appState.trainingMinutesToday))
-                statTile(label: "Calories", value: "\(appState.trainingCaloriesToday)")
+            GlassEffectContainer(spacing: 10) {
+                HStack(spacing: 10) {
+                    statTile(label: "Sets", value: "\(appState.trainingSetsToday)")
+                    statTile(label: "Time", value: Self.formatMinutes(appState.trainingMinutesToday))
+                    statTile(label: "Calories", value: "\(appState.trainingCaloriesToday)")
+                }
             }
         }
         .buttonStyle(.plain)
@@ -204,8 +206,7 @@ struct HomeView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(18)
-        .background(Color.appBackground.opacity(0.2))
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 
     private static func formatMinutes(_ minutes: Int) -> String {
