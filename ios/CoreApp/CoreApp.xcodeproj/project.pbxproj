@@ -43,6 +43,7 @@
 		732C82C2D156E355FF600562 /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48290E2C932A5BA6DFF18347 /* ReferralView.swift */; };
 		73F652550548443DB32F62B9 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D5C91EAAA4F0DB404FA79 /* StoreView.swift */; };
 		751542B8D2F326DAF7C48472 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B522620C7AB48BA1A10A72FD /* HealthKitService.swift */; };
+		75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */; };
 		7C5C13D38099181B65B53829 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56518D16D8FD135E7DDD0E4 /* LeaderboardView.swift */; };
 		827A626C864C99A017D8DBCA /* GymPhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */; };
 		84A8770FE10326533B8AF26E /* WorkoutActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */; };
@@ -126,6 +127,7 @@
 		5E33F8791E4F6E9BEF57AC18 /* CoreWidgetsBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreWidgetsBundle.swift; sourceTree = "<group>"; };
 		61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreApp.entitlements; sourceTree = "<group>"; };
 		67286F4868E97187636094AA /* WorkoutsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
+		69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodaysSpecialsView.swift; sourceTree = "<group>"; };
 		6E46CDD914A646D49A055E8D /* CoreAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppApp.swift; sourceTree = "<group>"; };
 		6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StripeConfig.swift; sourceTree = "<group>"; };
 		77F0FD454D2243F9954D55DC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 				CDF9CCF5A54DD6B35ED51235 /* AppState+Growth.swift */,
 				3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */,
 				2039733A32D3965970AD290D /* LiveActivityService.swift */,
+				69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -485,6 +488,7 @@
 				3D21BB83D644E86307DAAE27 /* AppState+Growth.swift in Sources */,
 				84A8770FE10326533B8AF26E /* WorkoutActivityAttributes.swift in Sources */,
 				0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */,
+				75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

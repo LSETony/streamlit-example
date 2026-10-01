@@ -150,17 +150,80 @@ final class AppState: ObservableObject {
     /// to bookedSessions (and Supabase) so it shows up in the Calendar tab
     /// too.
     func bookZone(_ zone: GymZone, at time: String) {
+        guard let date = Self.nextOccurrence(of: time) else { return }
+        let session = BookedSession(date: date, title: zone.name, trainerName: zone.subtitle)
+        bookedSessions.append(session)
+        NotificationService.scheduleSessionReminder(id: session.id, title: session.title, trainerName: session.trainerName, date: session.date)
+        Task { await self.insertSession(session) }
+    }
+
+    /// The next real calendar `Date` matching a "HH:mm" time string — today
+    /// if that time hasn't passed yet, otherwise tomorrow.
+    static func nextOccurrence(of time: String) -> Date? {
         let parts = time.split(separator: ":").compactMap { Int($0) }
-        guard parts.count == 2 else { return }
+        guard parts.count == 2 else { return nil }
         let calendar = Calendar.current
         let now = Date()
         var date = calendar.date(bySettingHour: parts[0], minute: parts[1], second: 0, of: now) ?? now
         if date < now {
             date = calendar.date(byAdding: .day, value: 1, to: date) ?? date
         }
-        let session = BookedSession(date: date, title: zone.name, trainerName: zone.subtitle)
+        return date
+    }
+
+    // MARK: Today's Specials (unbooked trainer slots, discounted)
+
+    /// A trainer time slot nobody has booked yet today — offered at a
+    /// discount so the club doesn't just lose that capacity. Behind Home's
+    /// "Specials for today" card.
+    struct TrainerSpecial: Identifiable {
+        var id: String { "\(trainer.id)-\(time)" }
+        let trainer: Trainer
+        let time: String
+        let originalPrice: Int
+        let discountPercent: Int
+        var discountedPrice: Int { max(0, originalPrice - originalPrice * discountPercent / 100) }
+    }
+
+    /// Every (trainer, slot) pair for today that isn't already in
+    /// bookedSessions — recomputed live, so booking one removes it from
+    /// the list immediately.
+    var todaysSpecials: [TrainerSpecial] {
+        let calendar = Calendar.current
+        let today = Date()
+        let bookedTodayByTrainer: Set<String> = Set(
+            bookedSessions
+                .filter { calendar.isDate($0.date, inSameDayAs: today) }
+                .map { session -> String in
+                    let components = calendar.dateComponents([.hour, .minute], from: session.date)
+                    // bookTrainerSpecial stores the trainer's name as `title`
+                    // (zone bookings store the zone's name there instead,
+                    // which just won't collide with any trainer's name).
+                    return "\(session.title)|\(String(format: "%02d:%02d", components.hour ?? 0, components.minute ?? 0))"
+                }
+        )
+        return trainers.flatMap { trainer -> [TrainerSpecial] in
+            trainerSlots.compactMap { slot -> TrainerSpecial? in
+                guard let slotDate = Self.nextOccurrence(of: slot), calendar.isDate(slotDate, inSameDayAs: today) else { return nil }
+                let key = "\(trainer.name)|\(slot)"
+                guard !bookedTodayByTrainer.contains(key) else { return nil }
+                return TrainerSpecial(trainer: trainer, time: slot, originalPrice: Int(trainer.priceCompact) ?? 0, discountPercent: 30)
+            }
+        }
+    }
+
+    /// Books a discounted last-minute slot from `todaysSpecials` — same
+    /// bookedSessions/Supabase/reminder path as bookZone, just titled for
+    /// a trainer session instead of a zone.
+    func bookTrainerSpecial(_ special: TrainerSpecial) {
+        guard let date = Self.nextOccurrence(of: special.time) else { return }
+        let session = BookedSession(date: date, title: special.trainer.name, trainerName: special.trainer.specialty)
         bookedSessions.append(session)
         NotificationService.scheduleSessionReminder(id: session.id, title: session.title, trainerName: session.trainerName, date: session.date)
+        notificationCenter.trigger(
+            icon: "tag.fill", title: "Special booked!",
+            subtitle: "\(special.trainer.name) · \(special.time) · $\(special.discountedPrice)", accent: .appAccentPurple
+        )
         Task { await self.insertSession(session) }
     }
 

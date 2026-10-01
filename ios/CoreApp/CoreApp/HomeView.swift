@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store, location, progress, occupancy, subscriptions, book, coreAI
+    case trainers, nutrition, store, location, progress, occupancy, subscriptions, book, coreAI, specials
     var id: String { rawValue }
 }
 
@@ -142,20 +142,24 @@ struct HomeView: View {
 
     private var specialsCard: some View {
         Button {
-            activeSheet = .store
+            activeSheet = .specials
         } label: {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Specials for today")
                     .font(.brand(16))
                     .foregroundStyle(.white)
+                if !appState.todaysSpecials.isEmpty {
+                    Text("\(appState.todaysSpecials.count) unbooked slots, discounted")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white.opacity(0.75))
+                }
                 Spacer(minLength: 8)
-                pillLabel("Check out", background: .appAccentPurple.opacity(0.2))
+                pillLabel("Check out", background: .appAccentPurple.opacity(0.4))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(18)
             .frame(height: 196)
-            .background(Color.appAccentPurple)
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+            .glassEffect(.regular.tint(.appAccentPurple), in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
         .buttonStyle(.plain)
     }
@@ -277,6 +281,7 @@ struct HomeView: View {
         case .subscriptions: SubscriptionsView()
         case .book: BookZoneView()
         case .coreAI: CoreAIChatView()
+        case .specials: TodaysSpecialsView()
         }
     }
 }
