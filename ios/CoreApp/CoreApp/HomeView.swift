@@ -5,10 +5,11 @@ private enum HomeSheet: String, Identifiable {
     var id: String { rawValue }
 }
 
-/// Matches the Home frame in the Figma source exactly: photo hero with the
-/// club name and store icon, an occupancy glass card overlapping
-/// the photo, a progress card, and the 6-icon grid. Nothing else — there is
-/// no readiness ring, in-progress banner, or upcoming list in the source.
+/// Matches the redesigned Home frame (Figma node 391:476): photo hero with
+/// the club name and wallet icon, two overlapping cards (Occupancy +
+/// Specials for today), a Sets/Time/Calories stats row, and the 6-icon
+/// grid — replaces the earlier single occupancy card + "Your Progress"
+/// sparkline card layout.
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
     @State private var activeSheet: HomeSheet?
@@ -22,11 +23,14 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 10) {
                 hero
 
-                occupancyGlassCard
-                    .screenPadding()
-                    .padding(.top, -224) // nests the card inside the photo, matching the source proportions
+                HStack(spacing: 10) {
+                    occupancyCard
+                    specialsCard
+                }
+                .screenPadding()
+                .padding(.top, -224) // nests the cards inside the photo, matching the source proportions
 
-                progressCard
+                statsRow
                     .screenPadding()
                 iconGrid
                     .screenPadding()
@@ -107,94 +111,110 @@ struct HomeView: View {
         .glassEffect(.regular.interactive(), in: Capsule())
     }
 
-    private var occupancyGlassCard: some View {
+    private var occupancyCard: some View {
         Button {
             activeSheet = .occupancy
         } label: {
             VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Club Occupancy")
-                        .font(.brand(24))
-                        .foregroundStyle(.white)
-                    Spacer()
-                    Image(systemName: "arrow.up.right")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.white)
-                        .frame(width: 32, height: 32)
-                        .glassEffect(.regular.tint(.appAccent), in: Circle())
-                }
-                HStack(alignment: .bottom, spacing: 10) {
-                    Text("\(appState.occupancyPercent)")
-                        .font(.digitalTimer(48))
-                        .foregroundStyle(.white)
-                    Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
-                        .font(.brand(16))
-                        .foregroundStyle(.white.opacity(0.75))
-                        .padding(.bottom, 6)
-                }
-                HStack(alignment: .bottom, spacing: 6) {
-                    ForEach(appState.occupancyBars.indices, id: \.self) { i in
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .fill(i == 2 ? Color.appAccent : .white.opacity(0.7))
-                            .frame(height: max(4, appState.occupancyBars[i] * 40))
-                    }
-                }
-                .frame(height: 40, alignment: .bottom)
-                .padding(.top, 4)
-                HStack {
-                    ForEach(["06", "10", "14", "22"], id: \.self) { hour in
-                        Text(hour).font(.brand(10)).foregroundStyle(.white.opacity(0.6))
-                        if hour != "22" { Spacer() }
-                    }
-                }
+                Text("Occupancy")
+                    .font(.brand(16))
+                    .foregroundStyle(.white)
+                Text("\(appState.occupancyPercent)%")
+                    .font(.digitalTimer(56))
+                    .foregroundStyle(.white)
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+                Text(trafficLabel)
+                    .font(.digitalTimer(13))
+                    .foregroundStyle(.white)
+                Spacer(minLength: 8)
+                pillLabel("View more", background: .appAccent)
             }
-            .glassCard(padding: 18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(18)
+            .frame(height: 196)
+            .background(Color.appBackground.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
         .buttonStyle(.plain)
     }
 
-    // MARK: Progress card
+    private var specialsCard: some View {
+        Button {
+            activeSheet = .store
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Specials for today")
+                    .font(.brand(16))
+                    .foregroundStyle(.white)
+                Spacer(minLength: 8)
+                pillLabel("Check out", background: .appAccentPurple.opacity(0.2))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(18)
+            .frame(height: 196)
+            .background(Color.appAccentPurple)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        }
+        .buttonStyle(.plain)
+    }
 
-    private var progressCard: some View {
+    private func pillLabel(_ text: String, background: Color) -> some View {
+        Text(text)
+            .font(.brand(10))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(background)
+            .clipShape(Capsule())
+    }
+
+    /// A quick, dynamic read on how busy the club is right now — same
+    /// thresholds OccupancyDetailView's full breakdown implies, just
+    /// condensed to one word for this small card.
+    private var trafficLabel: String {
+        switch appState.occupancyPercent {
+        case 80...: return "huge traffic"
+        case 50..<80: return "moderate traffic"
+        default: return "light traffic"
+        }
+    }
+
+    // MARK: Stats row (Sets / Time / Calories)
+
+    private var statsRow: some View {
         Button {
             activeSheet = .progress
         } label: {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Your Progress")
-                    .font(.brand(24))
-                    .foregroundStyle(.white)
-                HStack(alignment: .bottom) {
-                    Text("\(appState.trainingProgressPercent)%")
-                        .font(.digitalTimer(48))
-                        .foregroundStyle(.white)
-                    Spacer()
-                    progressSparkline
-                }
-                ProgressBarView(value: Double(appState.trainingProgressPercent) / 100, color: .appAccentPurple, height: 20)
-                HStack {
-                    Text("day \(appState.trainingDay)").font(.brand(16)).foregroundStyle(Color.appTextSecondary)
-                    Spacer()
-                    Text("\(appState.trainingMinutesToday) mins training").font(.brand(16)).foregroundStyle(Color.appTextSecondary)
-                }
+            HStack(spacing: 10) {
+                statTile(label: "Sets", value: "\(appState.trainingSetsToday)")
+                statTile(label: "Time", value: Self.formatMinutes(appState.trainingMinutesToday))
+                statTile(label: "Calories", value: "\(appState.trainingCaloriesToday)")
             }
-            .appCard(padding: 20)
         }
         .buttonStyle(.plain)
     }
 
-    /// The mini bar-chart sparkline next to the progress percentage —
-    /// matches the source's exact 9-bar geometry (accent bars mark days
-    /// with a completed workout).
-    private var progressSparkline: some View {
-        HStack(alignment: .bottom, spacing: 4) {
-            ForEach(appState.progressSparkline.indices, id: \.self) { i in
-                let bar = appState.progressSparkline[i]
-                Capsule()
-                    .fill(bar.highlighted ? Color.appAccent : .white.opacity(0.7))
-                    .frame(width: 6, height: max(4, bar.value * 40))
-            }
+    private func statTile(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(label)
+                .font(.brand(16))
+                .foregroundStyle(.white)
+            Text(value)
+                .font(.digitalTimer(36))
+                .foregroundStyle(.white)
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
         }
-        .frame(height: 40, alignment: .bottom)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .background(Color.appBackground.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+    }
+
+    private static func formatMinutes(_ minutes: Int) -> String {
+        guard minutes >= 60 else { return "\(minutes)m" }
+        return "\(minutes / 60)h\(minutes % 60)"
     }
 
     // MARK: Icon grid (rounded-rect glass tiles)

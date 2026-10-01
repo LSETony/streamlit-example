@@ -61,13 +61,6 @@ final class AppState: ObservableObject {
     @Published var trainingMinutesToday: Int = 38
     @Published var trainingSetsToday: Int = 14
     @Published var trainingCaloriesToday: Int = 312
-    /// The mini bar-chart sparkline next to "Your Progress" (9 bars, height
-    /// 0...1, matching the Figma source's exact geometry); highlighted bars
-    /// mark days with a completed workout.
-    @Published var progressSparkline: [(value: Double, highlighted: Bool)] = [
-        (0.33, true), (0.68, true), (0.47, false), (1.0, false), (0.75, true),
-        (0.56, false), (0.22, true), (0.68, false), (0.87, true),
-    ]
 
     /// Behind the Home "Your Progress" card — total sets/time/calories and
     /// a session-by-session history.
