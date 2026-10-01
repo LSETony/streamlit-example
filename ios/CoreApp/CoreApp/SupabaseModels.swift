@@ -165,8 +165,16 @@ struct FoodRecipeRow: Decodable {
     let name: String
     let price: Int
     let ingredients: [String]
+    let imageURLString: String?
 
-    func toModel() -> FoodRecipe { FoodRecipe(name: name, price: price, ingredients: ingredients) }
+    enum CodingKeys: String, CodingKey {
+        case name, price, ingredients
+        case imageURLString = "image_url"
+    }
+
+    func toModel() -> FoodRecipe {
+        FoodRecipe(name: name, price: price, ingredients: ingredients, imageURL: imageURLString.flatMap(URL.init(string:)))
+    }
 }
 
 // MARK: - Gym zones

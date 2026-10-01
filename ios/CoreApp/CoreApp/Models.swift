@@ -87,6 +87,9 @@ struct FoodRecipe: Identifiable {
     let name: String
     let price: Int
     let ingredients: [String]
+    /// Real photo uploaded/linked from the internet — nil falls back to
+    /// the gradient PhotoPlaceholder.
+    var imageURL: URL? = nil
 }
 
 // MARK: - Workout progress history (behind Home's "Your Progress" card)

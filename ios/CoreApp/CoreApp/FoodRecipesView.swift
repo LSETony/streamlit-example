@@ -82,7 +82,7 @@ private struct RecipeTile: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            PhotoPlaceholder(icon: "fork.knife")
+            recipePhoto
             LinearGradient(colors: [.black.opacity(0.55), .clear], startPoint: .bottom, endPoint: .center)
             VStack(alignment: .leading, spacing: 2) {
                 Text(recipe.name)
@@ -97,6 +97,21 @@ private struct RecipeTile: View {
         .frame(height: 190)
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+    }
+
+    @ViewBuilder
+    private var recipePhoto: some View {
+        if let url = recipe.imageURL {
+            AsyncImage(url: url) { phase in
+                if case .success(let image) = phase {
+                    image.resizable().scaledToFill()
+                } else {
+                    PhotoPlaceholder(icon: "fork.knife")
+                }
+            }
+        } else {
+            PhotoPlaceholder(icon: "fork.knife")
+        }
     }
 }
 

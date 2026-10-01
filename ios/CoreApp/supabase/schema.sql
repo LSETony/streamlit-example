@@ -91,7 +91,10 @@ create table if not exists public.food_recipes (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   price integer not null,
-  ingredients text[] not null default '{}'
+  ingredients text[] not null default '{}',
+  -- Real photo URL (e.g. a stock CDN link) — nullable: falls back to the
+  -- gradient PhotoPlaceholder when unset.
+  image_url text
 );
 
 create table if not exists public.gym_zones (
@@ -338,11 +341,11 @@ insert into public.important_cards (icon, title, subtitle) values
 ('shield.fill', 'Rules', 'Rules & equipment guide'),
 ('party.popper.fill', 'Events', 'What''s on this month');
 
-insert into public.food_recipes (name, price, ingredients) values
-('Chicken Cajun', 9, array['Chicken breast','Cajun spice','Olive oil','Bell pepper']),
-('Protein pancakes', 6, array['Whey protein','Egg','Banana','Oats']),
-('Beef Jerky', 12, array['Beef','Soy sauce','Black pepper','Garlic powder']),
-('Carnivore Soup', 10, array['Beef bone broth','Beef chunks','Salt','Egg']);
+insert into public.food_recipes (name, price, ingredients, image_url) values
+('Chicken Cajun', 9, array['Chicken breast','Cajun spice','Olive oil','Bell pepper'], 'https://images.pexels.com/photos/1162255/pexels-photo-1162255.jpeg?auto=compress&cs=tinysrgb&w=1200'),
+('Protein pancakes', 6, array['Whey protein','Egg','Banana','Oats'], 'https://images.pexels.com/photos/6072378/pexels-photo-6072378.jpeg?auto=compress&cs=tinysrgb&w=1200'),
+('Beef Jerky', 12, array['Beef','Soy sauce','Black pepper','Garlic powder'], 'https://images.pexels.com/photos/5892851/pexels-photo-5892851.jpeg?auto=compress&cs=tinysrgb&w=1200'),
+('Carnivore Soup', 10, array['Beef bone broth','Beef chunks','Salt','Egg'], 'https://images.pexels.com/photos/3559899/pexels-photo-3559899.jpeg?auto=compress&cs=tinysrgb&w=1200');
 
 insert into public.gym_zones (icon, name, subtitle, capacity) values
 ('figure.pilates', 'Pilates Studio', 'Reformer & mat sessions', 8),
