@@ -197,34 +197,34 @@ struct HomeView: View {
     // MARK: Stats row (Sets / Time / Calories)
 
     private var statsRow: some View {
-        Button {
-            activeSheet = .progress
-        } label: {
-            GlassEffectContainer(spacing: 10) {
-                HStack(spacing: 10) {
-                    statTile(label: "Sets", value: "\(appState.trainingSetsToday)")
-                    statTile(label: "Time", value: Self.formatMinutes(appState.trainingMinutesToday))
-                    statTile(label: "Calories", value: "\(appState.trainingCaloriesToday)")
-                }
+        GlassEffectContainer(spacing: 10) {
+            HStack(spacing: 10) {
+                statTile(label: "Sets", value: "\(appState.trainingSetsToday)")
+                statTile(label: "Time", value: Self.formatMinutes(appState.trainingMinutesToday))
+                statTile(label: "Calories", value: "\(appState.trainingCaloriesToday)")
             }
         }
-        .buttonStyle(.plain)
     }
 
     private func statTile(label: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(label)
-                .font(.brand(16))
-                .foregroundStyle(.white)
-            Text(value)
-                .font(.digitalTimer(36))
-                .foregroundStyle(.white)
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
+        Button {
+            activeSheet = .progress
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(label)
+                    .font(.brand(16))
+                    .foregroundStyle(.white)
+                Text(value)
+                    .font(.digitalTimer(36))
+                    .foregroundStyle(.white)
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(18)
+            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .buttonStyle(.plain)
     }
 
     private static func formatMinutes(_ minutes: Int) -> String {
