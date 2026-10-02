@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>core. для залов</title>
+<meta name="description" content="CRM для фитнес-залов и студий: клиенты, абонементы, вход по QR, расписание, онлайн-оплата и список клиентов в зоне риска.">
+<meta property="og:title" content="core. — CRM для фитнес-залов">
+<meta property="og:description" content="Видите, каких клиентов можете потерять, — с первой недели.">
+<meta property="og:image" content="assets/hero.jpg">
+<meta name="theme-color" content="#5900FF">
+<link rel="icon" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: floating glass pill nav → cinematic gym video in a rounded frame → product cards like listings → dark spotlight on the risk list → light sections → closing video card. Headlines end with the brand's orange dot, like the logo. */
+:root {
+  --paper: #F3F2F8;        /* фон: холодный, с уклоном в фиолетовый */
+  --card: #FFFFFF;
+  --ink: #1E1E1E;          /* графит бренда */
+  --muted: #6B6878;
+  --line: rgba(30, 20, 60, .1);
+  --violet: #5900FF;       /* акцент бренда */
+  --violet-soft: #EDE5FF;
+  --violet-text: #4A00D6;
+  --signal: #F92C00;       /* точка из логотипа */
+  --night: #121117;        /* тёмная секция и подписи на видео */
+  --night-ink: #F4F2FA;
+  --night-muted: #A9A5B8;
+  --glass: rgba(255, 255, 255, .72);
+  --shadow: 0 1px 2px rgba(20, 10, 50, .06), 0 12px 40px -12px rgba(20, 10, 50, .18);
+  --f-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --f-body: "Onest", -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r-xl: 36px; --r-lg: 26px; --r-md: 18px;
+  --wrap: 1240px;
+  --gutter: clamp(16px, 4vw, 32px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E0D13; --card: #18171F; --ink: #F2F1F7; --muted: #A09CB0; --line: rgba(255, 255, 255, .1);
+    --violet: #7B3DFF; --violet-soft: #241A3D; --violet-text: #B79BFF; --signal: #FF4A22;
+    --night: #08070B; --glass: rgba(24, 23, 31, .72); --shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 40px -12px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E0D13; --card: #18171F; --ink: #F2F1F7; --muted: #A09CB0; --line: rgba(255, 255, 255, .1);
+  --violet: #7B3DFF; --violet-soft: #241A3D; --violet-text: #B79BFF; --signal: #FF4A22;
+  --night: #08070B; --glass: rgba(24, 23, 31, .72); --shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 40px -12px rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; border-radius: 10px; }
+.wrap { width: 100%; max-width: calc(var(--wrap) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+.dot { color: var(--signal); }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; letter-spacing: -.02em; line-height: 1.08; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(30px, 4.4vw, 54px); }
+h3 { font-size: 21px; letter-spacing: -.01em; line-height: 1.2; }
+p { margin: 0; }
+.lede { font-size: clamp(17px, 1.6vw, 20px); color: var(--muted); max-width: 58ch; text-wrap: pretty; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--violet-text); }
+section { padding-block: clamp(72px, 10vw, 128px); }
+.head { display: grid; gap: 18px; margin-bottom: clamp(36px, 5vw, 56px); }
+.head.split { grid-template-columns: 1.1fr 1fr; align-items: end; gap: 24px 48px; }
+
+/* Кнопки */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 26px; border-radius: 999px; font: 600 16px/1 var(--f-body); border: 0; cursor: pointer; transition: transform .15s ease, background .2s ease, box-shadow .2s ease; white-space: nowrap; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--violet); color: #fff; box-shadow: 0 10px 30px -10px rgba(89, 0, 255, .7); }
+.btn-primary:hover { background: #4A00D6; }
+.btn-light { background: rgba(255,255,255,.14); color: #fff; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.28); }
+.btn-light:hover { background: rgba(255,255,255,.24); }
+.btn-ghost { background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.btn-ghost:hover { box-shadow: inset 0 0 0 1px var(--violet); }
+.btn svg { width: 18px; height: 18px; }
+
+/* Навигация */
+.nav { position: fixed; z-index: 50; top: calc(env(safe-area-inset-top, 0px) + 14px); left: 0; right: 0; pointer-events: none; }
+.nav .bar { pointer-events: auto; display: flex; align-items: center; gap: 8px; height: 62px; padding: 0 8px 0 24px; border-radius: 999px; background: var(--glass); backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px); box-shadow: var(--shadow), inset 0 0 0 1px var(--line); }
+.logo { display: inline-flex; color: var(--ink); }
+.logo svg { height: 24px; width: auto; }
+.logo .ldot { fill: var(--signal); }
+.nav .links { display: flex; gap: 2px; margin-left: 20px; }
+.nav .links a { padding: 9px 14px; border-radius: 999px; font-size: 15px; font-weight: 500; color: var(--muted); transition: color .2s, background .2s; }
+.nav .links a:hover { color: var(--ink); background: var(--violet-soft); }
+.nav .end { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.nav .login { padding: 9px 14px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.nav .btn { height: 46px; padding: 0 20px; font-size: 15px; gap: .3em; }
+.lang { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--violet-soft); }
+.lang button { border: 0; background: transparent; color: var(--muted); font: 600 12px/1 var(--f-mono); letter-spacing: .06em; padding: 8px 10px; border-radius: 999px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(20,10,50,.15); }
+
+/* Обложка */
+.hero { padding-block: calc(env(safe-area-inset-top, 0px) + 92px) 0; }
+.stage { position: relative; border-radius: var(--r-xl); overflow: hidden; background: var(--night); color: var(--night-ink); min-height: clamp(560px, 78vh, 780px); display: flex; isolation: isolate; }
+.stage video, .stage .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.stage::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(10,8,16,.86) 0%, rgba(10,8,16,.55) 45%, rgba(10,8,16,.1) 80%), linear-gradient(0deg, rgba(10,8,16,.7), transparent 45%); }
+.stage .copy { align-self: flex-end; display: grid; gap: 24px; padding: clamp(28px, 5vw, 64px); max-width: 780px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; width: fit-content; padding: 8px 14px 8px 10px; border-radius: 999px; background: rgba(255,255,255,.12); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); font-size: 14px; font-weight: 500; }
+.chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 4px rgba(249,44,0,.25); }
+.hero h1 { font-size: clamp(40px, 7vw, 92px); font-weight: 700; letter-spacing: -.035em; line-height: .98; }
+.hero .sub { font-size: clamp(17px, 1.7vw, 21px); color: rgba(244,242,250,.82); max-width: 50ch; }
+.hero .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero .note { font: 500 13px/1.4 var(--f-mono); color: rgba(244,242,250,.62); letter-spacing: .02em; }
+
+/* Карточки поверх видео */
+.float { position: absolute; z-index: 2; border-radius: 22px; background: rgba(20,18,28,.5); backdrop-filter: saturate(160%) blur(22px); -webkit-backdrop-filter: saturate(160%) blur(22px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 20px 50px -20px rgba(0,0,0,.6); color: #fff; padding: 16px 18px; display: flex; gap: 14px; align-items: center; animation: rise .9s cubic-bezier(.2,.8,.2,1) both; }
+.float small { display: block; font-size: 13px; color: rgba(255,255,255,.66); }
+.float b { display: block; font-size: 17px; font-weight: 600; }
+.f-pass { right: clamp(20px, 4vw, 56px); top: clamp(96px, 16%, 140px); animation-delay: .25s; }
+.f-pass .ok { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: #1DB954; }
+.f-pass .ok svg { width: 26px; height: 26px; color: #fff; }
+.f-risk { right: clamp(20px, 7vw, 120px); bottom: clamp(28px, 10%, 90px); animation-delay: .45s; flex-direction: column; align-items: stretch; gap: 10px; min-width: 260px; }
+.f-risk .row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.f-risk .n { font: 600 34px/1 var(--f-display); }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.14); }
+.pill.r { background: rgba(249,44,0,.28); color: #FFD3C8; }
+.pill.y { background: rgba(255,170,0,.26); color: #FFE2A8; }
+.pill.v { background: rgba(123,61,255,.4); color: #E3D6FF; }
+@keyframes rise { from { transform: translateY(18px) scale(.98); } to { transform: none; } }
+
+/* Цифры */
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 20px; background: var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); }
+.fact { background: var(--card); padding: 24px 26px; display: grid; gap: 6px; }
+.fact .v { font: 600 clamp(26px, 3vw, 36px)/1 var(--f-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.fact .v em { font-style: normal; color: var(--violet-text); }
+.fact .k { font-size: 15px; color: var(--muted); }
+
+/* Возможности: карточки, как объявления */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.tile { position: relative; display: flex; flex-direction: column; border-radius: var(--r-lg); background: var(--card); box-shadow: var(--shadow); overflow: hidden; transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; min-width: 0; }
+.tile:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(20,10,50,.06), 0 28px 60px -20px rgba(40,10,120,.35); }
+.tile .media { position: relative; margin: 10px 10px 0; border-radius: 18px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--violet-soft); }
+.tile .media img { width: 100%; height: 100%; object-fit: cover; object-position: left top; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.tile:hover .media img { transform: scale(1.04); }
+.tile .media img.photo { object-position: center; }
+/* скриншот кабинета в маленькой карточке: без боковой панели и крупнее */
+.tile:not(.wide) .media img[data-shot] { width: 150%; max-width: none; height: auto; margin-left: -30%; object-fit: initial; }
+.tag { position: absolute; left: 12px; top: 12px; padding: 6px 11px; border-radius: 999px; background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font: 500 11px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+.tile .body { display: grid; gap: 8px; padding: 20px 22px 24px; }
+.tile .body p { color: var(--muted); font-size: 16px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px; font: 500 13px/1.3 var(--f-mono); color: var(--violet-text); }
+.tile.wide { grid-column: span 2; }
+.tile.wide .media { aspect-ratio: 16 / 7.4; }
+
+/* Тёмная секция «В зоне риска» */
+.dark { background: var(--night); color: var(--night-ink); border-radius: var(--r-xl); margin-inline: clamp(8px, 1.4vw, 20px); overflow: hidden; }
+.dark .lede { color: var(--night-muted); }
+.dark .eyebrow { color: #B79BFF; }
+.spot { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+.reasons { display: grid; gap: 10px; margin-top: 32px; }
+.reason { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; padding: 16px 18px; border-radius: 18px; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.reason .pill { grid-row: span 2; align-self: start; margin-top: 2px; }
+.reason b { font-weight: 600; }
+.reason span { color: var(--night-muted); font-size: 15px; }
+.shots { position: relative; padding-bottom: 40px; }
+.frame { border-radius: 20px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 40px 80px -30px rgba(0,0,0,.8); background: #fff; }
+.frame img { width: 100%; }
+.phone { position: absolute; width: 30%; max-width: 230px; right: -2%; bottom: 0; border-radius: 34px; padding: 7px; background: #0B0A0F; box-shadow: 0 0 0 1px rgba(255,255,255,.14), 0 30px 60px -20px rgba(0,0,0,.9); }
+.phone img { border-radius: 28px; width: 100%; }
+.dark .result { display: flex; align-items: center; gap: 14px; margin-top: 28px; font-size: 15px; color: var(--night-muted); }
+.dark .result b { font: 600 28px/1 var(--f-display); color: #fff; }
+
+/* Ресепшен */
+.split2 { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+.ipad { border-radius: 30px; padding: 12px; background: #16151B; box-shadow: var(--shadow), 0 40px 80px -40px rgba(40,10,120,.5); }
+.ipad img { border-radius: 20px; width: 100%; }
+.checks { display: grid; gap: 18px; margin-top: 30px; padding: 0; list-style: none; }
+.checks li { display: grid; grid-template-columns: 36px 1fr; gap: 14px; align-items: start; }
+.checks .ic { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--violet-soft); color: var(--violet-text); }
+.checks .ic svg { width: 18px; height: 18px; }
+.checks b { display: block; font-weight: 600; }
+.checks span { color: var(--muted); font-size: 16px; }
+
+/* Шаги запуска */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
+.step { padding: 28px; border-radius: var(--r-lg); background: var(--card); box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 12px; align-content: start; }
+.step .num { font: 500 13px/1 var(--f-mono); color: var(--muted); letter-spacing: .06em; }
+.step .t { font: 600 clamp(34px, 3.4vw, 44px)/1 var(--f-display); letter-spacing: -.03em; color: var(--violet-text); }
+.step p { color: var(--muted); font-size: 16px; }
+
+/* Для каких залов */
+.strip { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 14px; }
+.shot { position: relative; border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 3 / 4; background: var(--night); color: #fff; }
+.shot.big { aspect-ratio: auto; }
+.shot img, .shot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.shot::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10,8,16,.75), transparent 55%); }
+.shot figcaption { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; display: grid; gap: 2px; }
+.shot figcaption b { font: 600 18px/1.2 var(--f-display); letter-spacing: -.01em; }
+.shot figcaption span { font-size: 14px; color: rgba(255,255,255,.75); }
+figure { margin: 0; }
+
+/* Стоимость */
+.price { display: grid; grid-template-columns: 1fr 1.1fr; border-radius: var(--r-xl); background: var(--card); box-shadow: var(--shadow); overflow: hidden; }
+.price .l { min-width: 0; padding: clamp(28px, 4vw, 52px); display: grid; gap: 22px; align-content: start; background: var(--violet); color: #fff; }
+.price .l .eyebrow { color: rgba(255,255,255,.75); }
+.price .big { font: 700 clamp(44px, 5.4vw, 80px)/.92 var(--f-display); letter-spacing: -.04em; }
+.price .l p { color: rgba(255,255,255,.82); max-width: 40ch; }
+.price .l .btn { background: #fff; color: var(--violet); width: fit-content; }
+.price .r { padding: clamp(28px, 4vw, 52px); }
+.inc { list-style: none; padding: 0; margin: 18px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
+.inc li { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; }
+.inc svg { flex: none; width: 20px; height: 20px; color: var(--violet-text); margin-top: 2px; }
+
+/* Вопросы */
+.faq { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(32px, 5vw, 72px); align-items: start; }
+.qa { display: grid; gap: 10px; }
+details { border-radius: var(--r-md); background: var(--card); box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .2s; }
+details[open] { box-shadow: inset 0 0 0 1px var(--violet); }
+summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 20px 22px; font-weight: 600; font-size: 17px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--violet-soft); color: var(--violet-text); font: 500 20px/1 var(--f-body); transition: transform .25s; }
+details[open] summary::after { transform: rotate(45deg); }
+details p { padding: 0 22px 22px; color: var(--muted); max-width: 62ch; }
+
+/* Финальный призыв */
+.final { position: relative; border-radius: var(--r-xl); overflow: hidden; background: var(--night); color: #fff; padding: clamp(40px, 7vw, 96px) clamp(24px, 5vw, 64px); display: grid; gap: 26px; justify-items: start; isolation: isolate; }
+.final video, .final .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.final::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, rgba(10,8,16,.9) 10%, rgba(10,8,16,.45)); }
+.final h2 { font-size: clamp(34px, 5.4vw, 72px); max-width: 15ch; }
+.final p { color: rgba(255,255,255,.78); max-width: 46ch; font-size: 18px; }
+
+footer { padding-block: 56px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.foot { display: flex; flex-wrap: wrap; gap: 24px 40px; justify-content: space-between; align-items: flex-start; padding-top: 32px; border-top: 1px solid var(--line); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px; color: var(--muted); }
+.foot nav a:hover { color: var(--ink); }
+.foot small { display: block; margin-top: 12px; color: var(--muted); font-size: 14px; max-width: 40ch; }
+
+/* Адаптив */
+@media (max-width: 1080px) {
+  .nav .links { display: none; }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .tile.wide { grid-column: span 2; }
+  .facts { grid-template-columns: repeat(2, 1fr); }
+  .spot, .split2, .faq, .price, .head.split { grid-template-columns: 1fr; }
+  .strip { grid-template-columns: 1fr 1fr; }
+  .shot.big { grid-column: span 2; aspect-ratio: 16 / 9; }
+}
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .nav .login { display: none; }
+  .nav .bar { padding-left: 18px; height: 58px; }
+  .nav .btn { padding: 0 16px; height: 42px; }
+  .stage { min-height: 780px; }
+  .stage::after { background: linear-gradient(0deg, rgba(10,8,16,.92) 15%, rgba(10,8,16,.35) 70%, rgba(10,8,16,.2)); }
+  .f-pass { left: 16px; right: auto; top: 20px; }
+  .f-risk { display: none; }
+  .grid, .steps { grid-template-columns: 1fr; }
+  .tile.wide { grid-column: auto; }
+  .tile.wide .media { aspect-ratio: 4 / 3; }
+  .inc { grid-template-columns: 1fr; }
+  .hero .cta .btn { flex: 1 1 auto; }
+  .phone { width: 34%; }
+  .reason { grid-template-columns: 1fr; }
+  .reason .pill { grid-row: auto; width: fit-content; }
+}
+@media (max-width: 420px) {
+  .nav .cta-text-long { display: none; }
+  .facts { grid-template-columns: 1fr; }
+  .strip { grid-template-columns: 1fr; }
+  .shot.big { grid-column: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="bar">
+      <a class="logo" href="#top" aria-label="core.">
+        <svg viewBox="40 40 1420 357" role="img" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M392.7 190A176.5 176.5 0 1 0 393.3 243L307.7 243A92.5 92.5 0 1 1 306.5 190ZM585 42.0A176.5 176.5 0 1 0 585 395.0A176.5 176.5 0 1 0 585 42.0ZM585 126.0A92.5 92.5 0 1 1 585 311.0A92.5 92.5 0 1 1 585 126.0ZM776 46H858V390H776ZM858 92C885 58 925 42 972 42V125C925 125 886 140 858 172ZM1339.2 240A176.5 176.5 0 1 0 1333.4 268L1242.1 268A92.5 92.5 0 0 1 1074 240ZM1084 172A92.5 92.5 0 0 1 1244 172Z"/><path class="ldot" d="M1410 299A48 48 0 1 0 1410 395A48 48 0 1 0 1410 299Z"/></svg>
+      </a>
+      <nav class="links" aria-label="Разделы" data-i18n-attr="aria-label:nav_aria">
+        <a href="#features" data-i18n="nav_features">Возможности</a>
+        <a href="#risk" data-i18n="nav_risk">В зоне риска</a>
+        <a href="#reception" data-i18n="nav_reception">Ресепшен</a>
+        <a href="#pricing" data-i18n="nav_pricing">Стоимость</a>
+        <a href="#faq" data-i18n="nav_faq">Вопросы</a>
+      </nav>
+      <div class="end">
+        <div class="lang" role="group" aria-label="Язык" data-i18n-attr="aria-label:lang_aria">
+          <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a class="login" href="/login" data-app="/login" data-i18n="login">Войти</a>
+        <a class="btn btn-primary" href="/signup" data-app="/signup"><span data-i18n="try_short">Попробовать</span><span class="cta-text-long" data-i18n="try_free_suffix">бесплатно</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="stage">
+        <img class="poster" src="assets/hero.jpg" alt="">
+        <video autoplay muted loop playsinline preload="auto" poster="assets/hero.jpg" aria-hidden="true"><source src="assets/hero.mp4" type="video/mp4"></video>
+
+        <div class="float f-pass" aria-hidden="true">
+          <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg></span>
+          <span><small data-i18n="f_pass_k">Проход разрешён · 0,4 с</small><b data-i18n="f_pass_v">Проходите! «Месяц» до 31.10</b></span>
+        </div>
+        <div class="float f-risk" aria-hidden="true">
+          <div class="row"><small data-i18n="f_risk_k">В зоне риска</small><span class="n">84</span></div>
+          <div class="pills"><span class="pill r" data-i18n="r_notrenewed">Не продлил</span><span class="pill y" data-i18n="r_expiring">Заканчивается</span><span class="pill v" data-i18n="r_gone">Пропал</span></div>
+        </div>
+
+        <div class="copy">
+          <span class="chip"><i></i><span data-i18n="hero_chip">CRM для фитнес-залов и студий</span></span>
+          <h1 data-i18n-html="hero_h1">Клиенты не уходят молча<span class="dot">.</span></h1>
+          <p class="sub" data-i18n="hero_sub">core. показывает, кого из клиентов зал может потерять, — с первой недели. Абонементы, вход по QR, расписание и онлайн-оплата в одном кабинете.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="/signup" data-app="/signup" data-i18n="cta_start">Подключить зал</a>
+            <a class="btn btn-light" href="#features" data-i18n="cta_look">Посмотреть, как устроено</a>
+          </div>
+          <p class="note" data-i18n="hero_note">14 дней бесплатно · настройка около 15 минут · без карты</p>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div class="fact"><span class="v" data-i18n-html="fact1_v">&lt;&nbsp;0,5&nbsp;<em>с</em></span><span class="k" data-i18n="fact1_k">от скана QR до зелёного экрана</span></div>
+        <div class="fact"><span class="v" data-i18n-html="fact2_v">≈&nbsp;3&nbsp;<em>с</em></span><span class="k" data-i18n="fact2_k">новый клиент с продажей абонемента</span></div>
+        <div class="fact"><span class="v" data-i18n-html="fact3_v">5&nbsp;000 <em>строк</em></span><span class="k" data-i18n="fact3_k">за один импорт из Excel или CSV</span></div>
+        <div class="fact"><span class="v" data-i18n-html="fact4_v">152-<em>ФЗ</em></span><span class="k" data-i18n="fact4_k">данные хранятся на серверах в России</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="head split">
+        <div class="head" style="margin:0">
+          <span class="eyebrow" data-i18n="feat_eyebrow">Возможности</span>
+          <h2 data-i18n-html="feat_h2">Всё, чем живёт зал, в одном кабинете<span class="dot">.</span></h2>
+        </div>
+        <p class="lede" data-i18n="feat_lede">От ресепшена до выручки. Кабинет работает в браузере на iPad, ноутбуке и телефоне, а клиенты пользуются приложением core.</p>
+      </div>
+
+      <div class="grid">
+        <article class="tile wide">
+          <div class="media"><img data-shot="dashboard" src="assets/dashboard-ru.jpg" alt="Дашборд core.: выручка, активные клиенты, продления и отток" data-i18n-attr="alt:alt_dashboard" loading="lazy"><span class="tag" data-i18n="tag_owner">Для владельца</span></div>
+          <div class="body">
+            <h3 data-i18n="t_dash">Дашборд владельца</h3>
+            <p data-i18n="t_dash_p">Выручка по месяцам, активные клиенты, процент продления и отток в сравнении с прошлым периодом. Тепловая карта показывает, когда в зале людно.</p>
+            <div class="meta"><span data-i18n="m_dash1">выручка</span><span data-i18n="m_dash2">продления</span><span data-i18n="m_dash3">загруженность</span></div>
+          </div>
+        </article>
+        <article class="tile">
+          <div class="media"><img data-shot="reception" src="assets/reception-ru.jpg" alt="Экран ресепшена со сканером QR" data-i18n-attr="alt:alt_reception" loading="lazy"><span class="tag" data-i18n="tag_desk">Ресепшен</span></div>
+          <div class="body">
+            <h3 data-i18n="t_qr">Вход по QR</h3>
+            <p data-i18n="t_qr_p">Клиент показывает пропуск из приложения, администратор видит зелёный или красный экран и остаток визитов.</p>
+          </div>
+        </article>
+        <article class="tile">
+          <div class="media"><img data-shot="client" src="assets/client-ru.jpg" alt="Карточка клиента с абонементом и историей" data-i18n-attr="alt:alt_client" loading="lazy"><span class="tag" data-i18n="tag_clients">Клиенты</span></div>
+          <div class="body">
+            <h3 data-i18n="t_client">Клиенты и абонементы</h3>
+            <p data-i18n="t_client_p">Карточка с абонементом, визитами, оплатами и заметками. Продажа, продление и заморозка в два касания.</p>
+          </div>
+        </article>
+        <article class="tile">
+          <div class="media"><img data-shot="schedule" src="assets/schedule-ru.jpg" alt="Расписание занятий на неделю" data-i18n-attr="alt:alt_schedule" loading="lazy"><span class="tag" data-i18n="tag_schedule">Расписание</span></div>
+          <div class="body">
+            <h3 data-i18n="t_sched">Расписание и запись</h3>
+            <p data-i18n="t_sched_p">Групповые занятия, персональные тренировки и слоты зон. Клиенты записываются из приложения, лишний сверх мест не пройдёт.</p>
+          </div>
+        </article>
+        <article class="tile">
+          <div class="media"><img class="photo" src="assets/bike.jpg" alt="" loading="lazy"><span class="tag" data-i18n="tag_pay">Оплата</span></div>
+          <div class="body">
+            <h3 data-i18n="t_pay">Онлайн-оплата ЮKassa</h3>
+            <p data-i18n="t_pay_p">Ссылка на оплату картой или через СБП. Деньги приходят на счёт зала, чек по 54-ФЗ уходит клиенту сам, абонемент активируется автоматически.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="risk" class="dark">
+    <div class="wrap spot">
+      <div>
+        <div class="head" style="margin:0">
+          <span class="eyebrow" data-i18n="risk_eyebrow">Главное в core.</span>
+          <h2 data-i18n-html="risk_h2">Список тех, кого вы можете потерять<span class="dot">.</span></h2>
+          <p class="lede" data-i18n="risk_lede">Клиенты редко предупреждают, что уходят. core. замечает это по визитам и абонементам и собирает список, который обновляется сразу после визита или продажи.</p>
+        </div>
+        <div class="reasons">
+          <div class="reason"><span class="pill r" data-i18n="r_notrenewed">Не продлил</span><b data-i18n="r1_b">Абонемент закончился, нового нет</b><span data-i18n="r1_s">Позвоните, пока клиент не выбрал другой зал</span></div>
+          <div class="reason"><span class="pill y" data-i18n="r_expiring">Заканчивается</span><b data-i18n="r2_b">До конца абонемента несколько дней</b><span data-i18n="r2_s">Самое время предложить продление</span></div>
+          <div class="reason"><span class="pill v" data-i18n="r_gone">Пропал</span><b data-i18n="r3_b">Абонемент есть, а визитов нет</b><span data-i18n="r3_s">Напомните о себе сообщением в Telegram или WhatsApp</span></div>
+          <div class="reason"><span class="pill" data-i18n="r_less">Стал ходить реже</span><b data-i18n="r4_b">Визитов заметно меньше обычного</b><span data-i18n="r4_s">Подберите удобное время или тренера</span></div>
+        </div>
+        <p class="result"><span data-i18n="risk_result">После звонка или сообщения отметьте контакт, и core. посчитает, сколько клиентов вернулись.</span></p>
+      </div>
+      <div class="shots">
+        <div class="frame"><img data-shot="risk" src="assets/risk-ru.jpg" alt="Список клиентов в зоне риска с кнопками звонка и сообщения" data-i18n-attr="alt:alt_risk" loading="lazy"></div>
+        <div class="phone"><img data-shot="phone-risk" src="assets/phone-risk-ru.jpg" alt="" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reception">
+    <div class="wrap split2">
+      <div class="ipad"><img data-shot="ipad-reception" src="assets/ipad-reception-ru.jpg" alt="Ресепшен core. на iPad" data-i18n-attr="alt:alt_ipad" loading="lazy"></div>
+      <div>
+        <div class="head" style="margin:0">
+          <span class="eyebrow" data-i18n="rec_eyebrow">Ресепшен</span>
+          <h2 data-i18n-html="rec_h2">Поставьте iPad на стойку, и ресепшен готов<span class="dot">.</span></h2>
+        </div>
+        <ul class="checks">
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2M7 12h10"/></svg></span><div><b data-i18n="c1_b">QR меняется каждые 30 секунд</b><span data-i18n="c1_s">Скриншот чужого пропуска не пройдёт, а приложению для этого не нужен интернет.</span></div></li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg></span><div><b data-i18n="c2_b">Камера планшета или ручной сканер</b><span data-i18n="c2_s">Без покупки турникетов и отдельного оборудования.</span></div></li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><div><b data-i18n="c3_b">Отметка вручную по фамилии или телефону</b><span data-i18n="c3_s">Если клиент забыл телефон, найдите его за пару букв.</span></div></li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><b data-i18n="c4_b">Роли для команды</b><span data-i18n="c4_s">Ресепшен видит клиентов и продажи, но не выручку. Все изменения абонементов и оплат попадают в журнал.</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="start" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i18n="st_eyebrow">Запуск</span>
+        <h2 data-i18n-html="st_h2">Переезд из таблицы за один вечер<span class="dot">.</span></h2>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="num" data-i18n="s1_n">Шаг 1</span><span class="t" data-i18n="s1_t">15 мин</span><h3 data-i18n="s1_h">Подключите зал</h3><p data-i18n="s1_p">Мастер настройки спросит часы работы, зоны и тарифы. Готовые шаблоны абонементов можно поправить под свои цены.</p></div>
+        <div class="step"><span class="num" data-i18n="s2_n">Шаг 2</span><span class="t" data-i18n="s2_t">Excel</span><h3 data-i18n="s2_h">Перенесите клиентов</h3><p data-i18n="s2_p">Загрузите текущую таблицу. core. сам распознает колонки, телефоны и даты, а строки с ошибками отдаст отдельным файлом.</p></div>
+        <div class="step"><span class="num" data-i18n="s3_n">Шаг 3</span><span class="t" data-i18n="s3_t">QR</span><h3 data-i18n="s3_h">Пригласите клиентов</h3><p data-i18n="s3_p">Клиенты входят в приложение по номеру телефона и сразу видят свой абонемент, расписание и пропуск.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gyms" style="padding-top:0">
+    <div class="wrap">
+      <div class="head split">
+        <div class="head" style="margin:0">
+          <span class="eyebrow" data-i18n="g_eyebrow">Для кого</span>
+          <h2 data-i18n-html="g_h2">Для небольших залов, где каждый клиент на счету<span class="dot">.</span></h2>
+        </div>
+        <p class="lede" data-i18n="g_lede">Тренажёрные залы, студии, боксы, кроссфит и сауны. Безлимит, абонементы на число визитов и разовые посещения работают из коробки.</p>
+      </div>
+      <div class="strip">
+        <figure class="shot big"><video autoplay muted loop playsinline preload="metadata" poster="assets/boxjump.jpg" aria-hidden="true"><source src="assets/boxjump.mp4" type="video/mp4"></video><figcaption><b data-i18n="g1_b">Функциональный тренинг</b><span data-i18n="g1_s">Групповые занятия с записью и лимитом мест</span></figcaption></figure>
+        <figure class="shot"><img src="assets/jumprope.jpg" alt="" loading="lazy"><figcaption><b data-i18n="g2_b">Тренажёрный зал</b><span data-i18n="g2_s">Безлимит на месяц, квартал и год</span></figcaption></figure>
+        <figure class="shot"><img src="assets/pushup.jpg" alt="" loading="lazy"><figcaption><b data-i18n="g3_b">Персональные</b><span data-i18n="g3_s">Тренировки с тренером по записи</span></figcaption></figure>
+        <figure class="shot"><img src="assets/rest.jpg" alt="" loading="lazy"><figcaption><b data-i18n="g4_b">Студии</b><span data-i18n="g4_s">Абонементы на 8 или 12 занятий</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" style="padding-top:0">
+    <div class="wrap">
+      <div class="price">
+        <div class="l">
+          <span class="eyebrow" data-i18n="p_eyebrow">Стоимость</span>
+          <span class="big" data-i18n-html="p_big">14 дней<br>бесплатно</span>
+          <p data-i18n="p_text">Полный доступ ко всем возможностям, без карты. После пробного периода подберём тариф под размер зала, а данные останутся на месте.</p>
+          <a class="btn" href="/signup" data-app="/signup" data-i18n="cta_start">Подключить зал</a>
+        </div>
+        <div class="r">
+          <h3 data-i18n="p_inc">Что входит</h3>
+          <ul class="inc">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i1">Клиенты, абонементы, заморозки</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i2">Ресепшен и вход по QR</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i3">Список «В зоне риска»</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i4">Расписание и запись на занятия</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i5">Онлайн-оплата через ЮKassa</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i6">Дашборд и выгрузка в Excel</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i7">Приложение core. для клиентов</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="i8">Сотрудники с ролями и журнал действий</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" style="padding-top:0">
+    <div class="wrap faq">
+      <div class="head" style="margin:0">
+        <span class="eyebrow" data-i18n="q_eyebrow">Вопросы</span>
+        <h2 data-i18n-html="q_h2">Частые вопросы<span class="dot">.</span></h2>
+        <p class="lede" data-i18n="q_lede">Если ответа нет в списке, напишите нам после регистрации прямо из кабинета.</p>
+      </div>
+      <div class="qa">
+        <details open><summary data-i18n="q1">Сколько времени займёт запуск?</summary><p data-i18n="a1">Регистрация и настройка зала занимают около 15 минут. Базу клиентов переносите из Excel или CSV: колонки, телефоны и даты распознаются автоматически.</p></details>
+        <details><summary data-i18n="q2">Нужно ли покупать оборудование?</summary><p data-i18n="a2">Нет. Кабинет работает в браузере на iPad, ноутбуке или компьютере. QR сканирует камера планшета или обычный ручной сканер штрихкодов.</p></details>
+        <details><summary data-i18n="q3">Где хранятся данные клиентов?</summary><p data-i18n="a3">На серверах в России, в соответствии с 152-ФЗ. Согласия клиентов на обработку данных и рассылки сохраняются в карточках.</p></details>
+        <details><summary data-i18n="q4">Как клиенты платят онлайн?</summary><p data-i18n="a4">Через ЮKassa картой или по СБП. Деньги поступают напрямую на счёт зала, чек по 54-ФЗ отправляется автоматически, абонемент активируется сам.</p></details>
+        <details><summary data-i18n="q5">Можно ли работать на английском?</summary><p data-i18n="a5">Да. Кабинет переключается между русским и английским, язык выбирается по браузеру и меняется в меню профиля.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="final">
+        <img class="poster" src="assets/boxjump.jpg" alt="">
+        <h2 data-i18n-html="fin_h2">Запустите зал в core. сегодня<span class="dot">.</span></h2>
+        <p data-i18n="fin_p">14 дней бесплатно. Через неделю вы увидите первых клиентов, которых можно вернуть.</p>
+        <div class="cta" style="display:flex;flex-wrap:wrap;gap:12px">
+          <a class="btn btn-primary" href="/signup" data-app="/signup" data-i18n="cta_start">Подключить зал</a>
+          <a class="btn btn-light" href="/login" data-app="/login" data-i18n="cta_login">Войти в кабинет</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="logo" href="#top" aria-label="core."><svg viewBox="40 40 1420 357" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M392.7 190A176.5 176.5 0 1 0 393.3 243L307.7 243A92.5 92.5 0 1 1 306.5 190ZM585 42.0A176.5 176.5 0 1 0 585 395.0A176.5 176.5 0 1 0 585 42.0ZM585 126.0A92.5 92.5 0 1 1 585 311.0A92.5 92.5 0 1 1 585 126.0ZM776 46H858V390H776ZM858 92C885 58 925 42 972 42V125C925 125 886 140 858 172ZM1339.2 240A176.5 176.5 0 1 0 1333.4 268L1242.1 268A92.5 92.5 0 0 1 1074 240ZM1084 172A92.5 92.5 0 0 1 1244 172Z"/><path class="ldot" d="M1410 299A48 48 0 1 0 1410 395A48 48 0 1 0 1410 299Z"/></svg></a>
+      <small data-i18n="foot_text">CRM для фитнес-залов и студий. Данные хранятся на серверах в России в соответствии с 152-ФЗ.</small>
+    </div>
+    <nav aria-label="Ссылки" data-i18n-attr="aria-label:foot_aria">
+      <a href="#features" data-i18n="nav_features">Возможности</a>
+      <a href="#risk" data-i18n="nav_risk">В зоне риска</a>
+      <a href="#pricing" data-i18n="nav_pricing">Стоимость</a>
+      <a href="#faq" data-i18n="nav_faq">Вопросы</a>
+      <a href="/login" data-app="/login" data-i18n="login">Войти</a>
+    </nav>
+    <small>© 2026 core.</small>
+  </div>
+</footer>
+
+<script>
+// Адрес кабинета: кнопки «Войти» и «Подключить зал» ведут сюда
+const APP_URL = "https://streamlit-example-6xag.vercel.app";
+
+const EN = {
+  nav_aria: "Sections", lang_aria: "Language", foot_aria: "Links",
+  nav_features: "Features", nav_risk: "At risk", nav_reception: "Front desk", nav_pricing: "Pricing", nav_faq: "FAQ",
+  login: "Sign in", try_short: "Try", try_free_suffix: "for free",
+  f_pass_k: "Access granted · 0.4 s", f_pass_v: "Come in! “Month” until 31 Oct", f_risk_k: "At risk",
+  r_notrenewed: "Not renewed", r_expiring: "Expiring", r_gone: "Gone", r_less: "Visiting less",
+  hero_chip: "CRM for gyms and fitness studios",
+  hero_h1: 'Clients don’t leave quietly<span class="dot">.</span>',
+  hero_sub: "core. shows which clients your gym might lose, from the very first week. Memberships, QR check-in, schedule and online payments in one dashboard.",
+  cta_start: "Connect your gym", cta_look: "See how it works", cta_login: "Sign in to dashboard",
+  hero_note: "14 days free · about 15 minutes to set up · no card",
+  fact1_v: '&lt;&nbsp;0.5&nbsp;<em>s</em>', fact1_k: "from QR scan to the green screen",
+  fact2_v: '≈&nbsp;3&nbsp;<em>s</em>', fact2_k: "to add a client and sell a membership",
+  fact3_v: '5,000 <em>rows</em>', fact3_k: "per import from Excel or CSV",
+  fact4_v: '152-<em>FZ</em>', fact4_k: "data stored on servers in Russia",
+  feat_eyebrow: "Features", feat_h2: 'Everything your gym runs on, in one dashboard<span class="dot">.</span>',
+  feat_lede: "From the front desk to revenue. The dashboard runs in the browser on iPad, laptop and phone, and clients use the core. app.",
+  tag_owner: "For owners", t_dash: "Owner dashboard",
+  t_dash_p: "Monthly revenue, active clients, renewal rate and churn compared with the previous period. A heatmap shows when the gym is busy.",
+  m_dash1: "revenue", m_dash2: "renewals", m_dash3: "occupancy",
+  tag_desk: "Front desk", t_qr: "QR check-in", t_qr_p: "The client shows a pass from the app; the admin sees a green or red screen and the visits left.",
+  tag_clients: "Clients", t_client: "Clients and memberships", t_client_p: "A card with membership, visits, payments and notes. Sell, renew or freeze in two taps.",
+  tag_schedule: "Schedule", t_sched: "Schedule and bookings", t_sched_p: "Group classes, personal training and zone slots. Clients book from the app, and no one gets in over capacity.",
+  tag_pay: "Payments", t_pay: "Online payments via YooKassa", t_pay_p: "A payment link for card or SBP. Money goes to the gym’s account, the 54-FZ receipt is sent automatically and the membership activates itself.",
+  risk_eyebrow: "The heart of core.", risk_h2: 'A list of the clients you might lose<span class="dot">.</span>',
+  risk_lede: "Clients rarely tell you they’re leaving. core. notices it from visits and memberships and builds a list that updates right after a visit or sale.",
+  r1_b: "Membership ended, no new one", r1_s: "Call before they pick another gym",
+  r2_b: "A few days left on the membership", r2_s: "The right moment to offer a renewal",
+  r3_b: "Has a membership but no visits", r3_s: "Remind them with a Telegram or WhatsApp message",
+  r4_b: "Far fewer visits than usual", r4_s: "Find a better time or coach",
+  risk_result: "After a call or message, log the contact and core. counts how many clients came back.",
+  rec_eyebrow: "Front desk", rec_h2: 'Put an iPad on the desk and you’re ready<span class="dot">.</span>',
+  c1_b: "The QR changes every 30 seconds", c1_s: "A screenshot of someone else’s pass won’t work, and the app doesn’t need internet for it.",
+  c2_b: "Tablet camera or handheld scanner", c2_s: "No turnstiles or special hardware to buy.",
+  c3_b: "Manual check-in by name or phone", c3_s: "If a client forgot their phone, find them with a few letters.",
+  c4_b: "Roles for your team", c4_s: "Front desk sees clients and sales, not revenue. Every membership and payment change goes to the log.",
+  st_eyebrow: "Getting started", st_h2: 'Move off spreadsheets in one evening<span class="dot">.</span>',
+  s1_n: "Step 1", s1_t: "15 min", s1_h: "Connect your gym", s1_p: "The setup wizard asks for opening hours, zones and plans. Ready-made membership templates can be adjusted to your prices.",
+  s2_n: "Step 2", s2_t: "Excel", s2_h: "Move your clients", s2_p: "Upload your current spreadsheet. core. recognises columns, phones and dates, and returns rows with errors as a separate file.",
+  s3_n: "Step 3", s3_t: "QR", s3_h: "Invite your clients", s3_p: "Clients sign in to the app with their phone number and instantly see their membership, schedule and pass.",
+  g_eyebrow: "Who it’s for", g_h2: 'For small gyms where every client counts<span class="dot">.</span>',
+  g_lede: "Gyms, studios, boxing, CrossFit and saunas. Unlimited, visit-pack and single-visit memberships work out of the box.",
+  g1_b: "Functional training", g1_s: "Group classes with booking and capacity limits",
+  g2_b: "Gym floor", g2_s: "Unlimited for a month, quarter or year",
+  g3_b: "Personal training", g3_s: "Sessions with a coach by booking",
+  g4_b: "Studios", g4_s: "Packs of 8 or 12 classes",
+  p_eyebrow: "Pricing", p_big: "14 days<br>free",
+  p_text: "Full access to every feature, no card. After the trial we’ll pick a plan that fits your gym, and your data stays in place.",
+  p_inc: "What’s included",
+  i1: "Clients, memberships, freezes", i2: "Front desk and QR check-in", i3: "“At risk” list", i4: "Schedule and class bookings",
+  i5: "Online payments via YooKassa", i6: "Dashboard and Excel export", i7: "core. app for clients", i8: "Staff roles and activity log",
+  q_eyebrow: "FAQ", q_h2: 'Frequently asked questions<span class="dot">.</span>', q_lede: "If your question isn’t here, message us from the dashboard after signing up.",
+  q1: "How long does it take to get started?", a1: "Signing up and setting up the gym takes about 15 minutes. Move your client base from Excel or CSV: columns, phones and dates are recognised automatically.",
+  q2: "Do I need to buy hardware?", a2: "No. The dashboard runs in the browser on an iPad, laptop or computer. QR codes are scanned with the tablet camera or a regular handheld barcode scanner.",
+  q3: "Where is client data stored?", a3: "On servers in Russia, in line with Federal Law 152-FZ. Clients’ consents to data processing and newsletters are saved on their cards.",
+  q4: "How do clients pay online?", a4: "Through YooKassa by card or SBP. Money goes straight to the gym’s account, the 54-FZ receipt is sent automatically and the membership activates itself.",
+  q5: "Can I use it in English?", a5: "Yes. The dashboard switches between Russian and English; the language follows the browser and can be changed in the profile menu.",
+  fin_h2: 'Launch your gym on core. today<span class="dot">.</span>', fin_p: "14 days free. Within a week you’ll see the first clients you can win back.",
+  foot_text: "CRM for gyms and fitness studios. Data is stored on servers in Russia in line with Federal Law 152-FZ.",
+  alt_dashboard: "core. dashboard: revenue, active clients, renewals and churn", alt_reception: "Front desk screen with a QR scanner",
+  alt_client: "Client card with membership and history", alt_schedule: "Weekly class schedule",
+  alt_risk: "List of at-risk clients with call and message buttons", alt_ipad: "core. front desk on an iPad",
+};
+
+// Русские тексты берём из самой страницы, чтобы переключение работало в обе стороны
+const RU = {};
+document.querySelectorAll("[data-i18n]").forEach((el) => { RU[el.dataset.i18n] ??= el.textContent; });
+document.querySelectorAll("[data-i18n-html]").forEach((el) => { RU[el.dataset.i18nHtml] ??= el.innerHTML; });
+document.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+  const [attr, key] = el.dataset.i18nAttr.split(":"); RU[key] ??= el.getAttribute(attr);
+});
+
+function setLang(lang) {
+  const d = lang === "en" ? EN : RU;
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach((el) => { const v = d[el.dataset.i18n]; if (v != null) el.textContent = v; });
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => { const v = d[el.dataset.i18nHtml]; if (v != null) el.innerHTML = v; });
+  document.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+    const [attr, key] = el.dataset.i18nAttr.split(":"); if (d[key] != null) el.setAttribute(attr, d[key]);
+  });
+  document.querySelectorAll("img[data-shot]").forEach((img) => { img.src = `assets/${img.dataset.shot}-${lang}.jpg`; });
+  document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  document.title = lang === "en" ? "core. for gyms" : "core. для залов";
+  try { localStorage.setItem("core-lang", lang); } catch {}
+}
+
+document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
+document.querySelectorAll("[data-app]").forEach((a) => { a.href = APP_URL + a.dataset.app; });
+
+let saved = null;
+try { saved = localStorage.getItem("core-lang"); } catch {}
+const browser = (navigator.languages || [navigator.language || "ru"]).map((l) => l.toLowerCase());
+const initial = saved || (browser[0].startsWith("en") ? "en" : browser.some((l) => /^(ru|uk|be|kk)/.test(l)) ? "ru" : "en");
+if (initial !== "ru") setLang(initial);
+
+// Видео не крутим, если пользователь просит меньше анимации
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) document.querySelectorAll("video").forEach((v) => { v.removeAttribute("autoplay"); v.pause(); });
+</script>
+</body>
+</html>
