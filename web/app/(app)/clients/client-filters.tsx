@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { Input, NativeSelect } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 export function ClientFilters({ q, state, tag, risk, tags, showRisk }: {
   q: string; state: string; tag: string; risk: boolean; tags: string[]; showRisk: boolean;
 }) {
+  const t = useT();
   const router = useRouter();
   const pathname = usePathname();
   const [text, setText] = useState(q);
@@ -57,7 +59,7 @@ export function ClientFilters({ q, state, tag, risk, tags, showRisk }: {
               risk ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}
             aria-pressed={risk}
           >
-            В зоне риска
+            {t("В зоне риска")}
           </button>
         ) : null}
       </div>

@@ -2,6 +2,7 @@
 import * as React from "react";
 import { Tabs as T } from "radix-ui";
 import { cn } from "@/lib/utils";
+import { useTx } from "@/lib/i18n/client";
 
 export const Tabs = T.Root;
 
@@ -15,9 +16,10 @@ export function TabsList({ className, ...props }: React.ComponentProps<typeof T.
   );
 }
 
-export function TabsTrigger({ className, ...props }: React.ComponentProps<typeof T.Trigger>) {
+export function TabsTrigger({ className, children, ...props }: React.ComponentProps<typeof T.Trigger>) {
+  const tx = useTx();
   return (
-    <T.Trigger className={cn(segmentClass, "data-[state=active]:bg-[var(--segment-thumb)]", className)} {...props} />
+    <T.Trigger className={cn(segmentClass, "data-[state=active]:bg-[var(--segment-thumb)]", className)} {...props}>{tx(children)}</T.Trigger>
   );
 }
 

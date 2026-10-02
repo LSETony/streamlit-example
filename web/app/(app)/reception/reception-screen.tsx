@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Camera, CameraOff, CheckCircle2, LogOut, QrCode, ShoppingCart, Users, XCircle, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +10,12 @@ import { ClientSearch } from "@/components/client-search";
 import { SellDialog } from "@/components/sell-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { toAppError } from "@/lib/errors";
-import { date, plural, time } from "@/lib/format";
+import { date, time } from "@/lib/format";
 import { looksLikeCoreQr } from "@/lib/qr";
 import type { CheckinResult, ClientRow } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
+import { errorText } from "@/lib/i18n/core";
 
 interface InGym {
   visit_id: string;
@@ -28,6 +30,7 @@ interface InGym {
 export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: {
   gymId: string; timezone: string; today: string; capacity: number; readOnly: boolean;
 }) {
+  const t = useT();
   const [supabase] = useState(createClient);
   const [result, setResult] = useState<CheckinResult | null>(null);
   const [inGym, setInGym] = useState<InGym[]>([]);
@@ -117,7 +120,7 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
         await s.start();
         setCameraError(null);
       } catch {
-        setCameraError("Нет доступа к камере. Разрешите доступ в настройках браузера или используйте ручной сканер.");
+        setCameraError(t("Нет доступа к камере. Разрешите доступ в настройках браузера или используйте ручной сканер."));
         setCameraOn(false);
       }
     })();
@@ -126,7 +129,7 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
       scanner?.stop();
       scanner?.destroy();
     };
-  }, [cameraOn, checkQr]);
+  }, [cameraOn, checkQr, t]);
 
   // Ручной USB/Bluetooth-сканер работает как клавиатура: собираем строку до Enter
   useEffect(() => {
@@ -162,8 +165,8 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
       <div className="grid content-start gap-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">Ресепшен</h1>
-            <p className="text-sm text-muted-foreground">Сканируйте QR из приложения или найдите клиента вручную</p>
+            <h1 className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">{t("Ресепшен")}</h1>
+            <p className="text-sm text-muted-foreground">{t("Сканируйте QR из приложения или найдите клиента вручную")}</p>
           </div>
           <Button variant={cameraOn ? "outline" : "default"} size="lg" onClick={() => setCameraOn((v) => !v)} disabled={readOnly}>
             {cameraOn ? <><CameraOff /> Выключить камеру</> : <><Camera /> Включить камеру</>}
@@ -179,7 +182,7 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
               <video ref={videoRef} className="absolute inset-0 size-full object-cover" muted playsInline />
               <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
                 <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-brand opacity-75" /><span className="relative inline-flex size-2 rounded-full bg-brand" /></span>
-                Камера сканирует
+                {t("Камера сканирует")}
               </span>
             </div>
           ) : (
@@ -190,11 +193,11 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
               </div>
               <div className="grid gap-3 text-center sm:text-left">
                 <p className="inline-flex items-center justify-center gap-2 text-sm font-medium text-success sm:justify-start">
-                  <span className="size-2 rounded-full bg-success" /> Сканер готов
+                  <span className="size-2 rounded-full bg-success" /> {t("Сканер готов")}
                 </p>
-                <p className="text-xl font-semibold tracking-tight">Поднесите QR-пропуск из приложения</p>
+                <p className="text-xl font-semibold tracking-tight">{t("Поднесите QR-пропуск из приложения")}</p>
                 <p className="text-sm text-muted-foreground">
-                  Ручной сканер штрихкодов работает сразу. Для камеры планшета или веб-камеры нажмите «Включить камеру».
+                  {t("Ручной сканер штрихкодов работает сразу. Для камеры планшета или веб-камеры нажмите «Включить камеру».")}
                 </p>
               </div>
             </div>
@@ -227,7 +230,7 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
               <Avatar name={v.full_name} src={v.photo_url} className="size-9 text-xs" />
               <Link href={`/clients/${v.client_id}`} className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium">{v.full_name}</span>
-                <span className="block text-xs text-muted-foreground">с {time(v.checked_in_at, timezone)}{v.plan_name ? ` · ${v.plan_name}` : ""}</span>
+                <span className="block text-xs text-muted-foreground">{t("с {time}", { time: time(v.checked_in_at, timezone) })}{v.plan_name ? ` · ${v.plan_name}` : ""}</span>
               </Link>
               <Button variant="ghost" size="icon-sm" onClick={() => checkout(v.visit_id)} aria-label="Отметить выход" title="Отметить выход">
                 <LogOut />
@@ -261,6 +264,7 @@ export function ReceptionScreen({ gymId, timezone, today, capacity, readOnly }: 
 
 /** FR-4.2 Результат проверки на весь экран */
 function ResultOverlay({ result, onClose, onSell }: { result: CheckinResult; onClose: () => void; onSell?: () => void }) {
+  const t = useT();
   const ok = result.ok;
   const m = result.membership;
   useEffect(() => {
@@ -273,7 +277,7 @@ function ResultOverlay({ result, onClose, onSell }: { result: CheckinResult; onC
     <div
       role="alertdialog"
       aria-live="assertive"
-      aria-label={ok ? "Проход разрешён" : "Проход запрещён"}
+      aria-label={ok ? t("Проход разрешён") : t("Проход запрещён")}
       onClick={onClose}
       className={cn(
         "fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6 p-6 text-center text-white animate-in fade-in-0 zoom-in-95 duration-150",
@@ -287,11 +291,11 @@ function ResultOverlay({ result, onClose, onSell }: { result: CheckinResult; onC
           <p className="text-3xl font-bold tracking-tight sm:text-5xl">{result.client.full_name}</p>
         </div>
       ) : null}
-      <p className="text-xl font-semibold sm:text-3xl">{result.repeat ? "Визит уже отмечен" : result.message}</p>
+      <p className="text-xl font-semibold sm:text-3xl">{result.repeat ? t("Визит уже отмечен") : errorText(t, result)}</p>
       {ok && m ? (
         <p className="text-lg text-white/85 sm:text-2xl">
-          {m.plan_name} · до {date(m.ends_on)}
-          {m.visits_left !== null ? ` · осталось ${m.visits_left} ${plural(m.visits_left, "визит", "визита", "визитов")}` : ""}
+          {m.plan_name} · {t("до {date}", { date: date(m.ends_on) })}
+          {m.visits_left !== null ? ` · ${t("осталось")} ${m.visits_left} ${t.n(m.visits_left, "визит|визита|визитов")}` : ""}
         </p>
       ) : null}
       <div className="flex flex-wrap justify-center gap-3" onClick={(e) => e.stopPropagation()}>

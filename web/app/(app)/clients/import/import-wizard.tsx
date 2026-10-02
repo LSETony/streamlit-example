@@ -11,10 +11,13 @@ import { importChunk, type ImportReport } from "@/app/actions/clients";
 import { downloadXlsx } from "@/lib/excel";
 import { chunk, FIELDS, guessMapping, prepareRows, TEMPLATE_EXAMPLE, TEMPLATE_HEADERS, type CellValue, type FieldKey, type Mapping } from "@/lib/import";
 import { date, phone } from "@/lib/format";
+import { useT } from "@/lib/i18n/client";
+import type { T } from "@/lib/i18n/core";
 
 const MAX_ROWS = 5000;
 
 export function ImportWizard({ planNames, readOnly }: { planNames: string[]; readOnly: boolean }) {
+  const t = useT();
   const [fileName, setFileName] = useState<string | null>(null);
   const [data, setData] = useState<CellValue[][] | null>(null);
   const [mapping, setMapping] = useState<Mapping>({});
@@ -23,7 +26,7 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [report, setReport] = useState<(ImportReport & { ms: number }) | null>(null);
 
-  const headers = useMemo(() => (data?.[0] ?? []).map((h, i) => String(h ?? `Колонка ${i + 1}`)), [data]);
+  const headers = useMemo(() => (data?.[0] ?? []).map((h, i) => String(h ?? t("Колонка {n}", { n: i + 1 }))), [data, t]);
   const prepared = useMemo(() => (data ? prepareRows(data, mapping) : null), [data, mapping]);
   const unknownPlans = useMemo(() => {
     if (!prepared) return [];
@@ -45,13 +48,13 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
         const { readSheet } = await import("read-excel-file/browser");
         rows = (await readSheet(file)) as CellValue[][];
       }
-      if (rows.length < 2) throw new Error("В файле нет строк с данными");
-      if (rows.length - 1 > MAX_ROWS) throw new Error(`В файле ${rows.length - 1} строк — за один раз можно загрузить до ${MAX_ROWS}. Разбейте файл на части.`);
+      if (rows.length < 2) throw new Error(t("В файле нет строк с данными"));
+      if (rows.length - 1 > MAX_ROWS) throw new Error(t("В файле {n} строк — за один раз можно загрузить до {max}. Разбейте файл на части.", { n: rows.length - 1, max: MAX_ROWS }));
       setData(rows);
       setMapping(guessMapping(rows[0].map((h) => String(h ?? ""))));
     } catch (e) {
       setData(null);
-      setError(e instanceof Error ? e.message : "Не удалось прочитать файл. Сохраните его в формате .xlsx или .csv");
+      setError(e instanceof Error ? e.message : t("Не удалось прочитать файл. Сохраните его в формате .xlsx или .csv"));
     }
   }
 
@@ -90,21 +93,21 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
         <Alert variant={report.errors.length ? "warning" : "success"} className="flex items-start gap-3">
           <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
           <div className="grid gap-1">
-            <p className="font-semibold">Импорт завершён за {(report.ms / 1000).toFixed(1)} с</p>
-            <p>Новых клиентов: {report.created} · обновлено: {report.updated} · абонементов: {report.memberships} · с ошибками: {report.errors.length}</p>
+            <p className="font-semibold">{t("Импорт завершён за {s} с", { s: (report.ms / 1000).toFixed(1) })}</p>
+            <p>{t("Новых клиентов: {a} · обновлено: {b} · абонементов: {c} · с ошибками: {d}", { a: report.created, b: report.updated, c: report.memberships, d: report.errors.length })}</p>
           </div>
         </Alert>
         {report.errors.length ? (
           <Card>
             <CardHeader className="flex-row items-center justify-between">
               <div><CardTitle>Строки с ошибками</CardTitle><CardDescription>Исправьте их в файле и загрузите файл ещё раз — остальные клиенты не задублируются</CardDescription></div>
-              <Button variant="outline" onClick={() => downloadXlsx("ошибки-импорта.xlsx", ["Строка", "Ошибка"], report.errors.map((e) => [e.row, e.error]), [10, 60])}>
+              <Button variant="outline" onClick={() => downloadXlsx(`${t("ошибки-импорта")}.xlsx`, [t("Строка"), t("Ошибка")], report.errors.map((e) => [e.row, issueText(t, e.error)]), [10, 60])}>
                 <Download /> Отчёт
               </Button>
             </CardHeader>
             <Table>
               <THead><TR><TH className="w-24">Строка</TH><TH>Причина</TH></TR></THead>
-              <TBody>{report.errors.slice(0, 200).map((e, i) => <TR key={i}><TD className="tabular">{e.row}</TD><TD>{e.error}</TD></TR>)}</TBody>
+              <TBody>{report.errors.slice(0, 200).map((e, i) => <TR key={i}><TD className="tabular">{e.row}</TD><TD>{issueText(t, e.error)}</TD></TR>)}</TBody>
             </Table>
           </Card>
         ) : null}
@@ -125,13 +128,13 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-3">
           <label className="flex h-11 cursor-pointer items-center gap-2 rounded-full bg-tint px-5 text-[15px] font-semibold text-white hover:brightness-110 active:scale-[0.97]">
-            <Upload className="size-4" /> {fileName ? "Выбрать другой файл" : "Выбрать файл"}
+            <Upload className="size-4" /> {fileName ? t("Выбрать другой файл") : t("Выбрать файл")}
             <input type="file" accept=".xlsx,.csv" className="sr-only" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} disabled={readOnly} />
           </label>
-          <Button variant="outline" onClick={() => downloadXlsx("шаблон-импорта-core.xlsx", TEMPLATE_HEADERS, [TEMPLATE_EXAMPLE], [26, 18, 22, 14, 6, 14, 16, 20, 14, 16, 18, 14])}>
+          <Button variant="outline" onClick={() => downloadXlsx(`${t("шаблон-импорта-core")}.xlsx`, TEMPLATE_HEADERS.map((h) => t(h)), [TEMPLATE_EXAMPLE], [26, 18, 22, 14, 6, 14, 16, 20, 14, 16, 18, 14])}>
             <FileSpreadsheet /> Скачать шаблон
           </Button>
-          {fileName ? <span className="text-sm text-muted-foreground">{fileName} · {data ? data.length - 1 : 0} строк</span> : null}
+          {fileName ? <span className="text-sm text-muted-foreground">{fileName} · {data ? data.length - 1 : 0} {t.n(data ? data.length - 1 : 0, "строка|строки|строк")}</span> : null}
         </CardContent>
       </Card>
 
@@ -147,7 +150,7 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
             <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {FIELDS.map((f) => (
                 <label key={f.key} className="grid gap-1 text-sm">
-                  <span className="font-medium">{f.label}{f.key === "phone" || f.key === "full_name" ? " *" : ""}</span>
+                  <span className="font-medium">{t(f.label)}{f.key === "phone" || f.key === "full_name" ? " *" : ""}</span>
                   <NativeSelect
                     value={mapping[f.key] ?? ""}
                     onChange={(e) => setMapping((m) => ({ ...m, [f.key]: e.target.value === "" ? undefined : Number(e.target.value) }) as Mapping)}
@@ -164,7 +167,7 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
             <CardHeader>
               <CardTitle>3. Предпросмотр</CardTitle>
               <CardDescription>
-                Готово к загрузке: {prepared.rows.length}. С ошибками: {prepared.issues.length} — они не помешают остальным.
+                {t("Готово к загрузке: {a}. С ошибками: {b} — они не помешают остальным.", { a: prepared.rows.length, b: prepared.issues.length })}
               </CardDescription>
             </CardHeader>
             <Table>
@@ -175,7 +178,7 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
                     <TD className="tabular text-muted-foreground">{r.row}</TD>
                     <TD className="font-medium">{r.full_name}</TD>
                     <TD className="tabular">{phone(r.phone)}</TD>
-                    <TD>{r.plan_name ?? (r.ends_on ? "Абонемент (импорт)" : "—")}</TD>
+                    <TD>{r.plan_name ?? (r.ends_on ? t("Абонемент (импорт)") : "—")}</TD>
                     <TD className="tabular">{r.ends_on ? `${r.starts_on ? date(r.starts_on) : "…"} – ${date(r.ends_on)}` : "—"}</TD>
                     <TD className="tabular">{r.visits_left ?? "—"}</TD>
                   </TR>
@@ -184,16 +187,15 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
             </Table>
             {prepared.issues.length ? (
               <CardContent className="grid gap-1 border-t border-border pt-4 text-sm">
-                {prepared.issues.slice(0, 5).map((i) => <p key={i.row} className="text-destructive">Строка {i.row}: {i.error}</p>)}
-                {prepared.issues.length > 5 ? <p className="text-muted-foreground">…и ещё {prepared.issues.length - 5}</p> : null}
+                {prepared.issues.slice(0, 5).map((i) => <p key={i.row} className="text-destructive">{t("Строка")} {i.row}: {issueText(t, i.error)}</p>)}
+                {prepared.issues.length > 5 ? <p className="text-muted-foreground">{t("…и ещё {n}", { n: prepared.issues.length - 5 })}</p> : null}
               </CardContent>
             ) : null}
           </Card>
 
           {unknownPlans.length ? (
             <Alert variant="warning">
-              Тарифов «{unknownPlans.slice(0, 3).join("», «")}»{unknownPlans.length > 3 ? " и др." : ""} нет в зале — абонементы загрузятся с этими названиями,
-              но без лимита заморозки. Чтобы связать их с тарифами, создайте тарифы с такими же названиями до импорта.
+              {t("Тарифов {plans} нет в зале — абонементы загрузятся с этими названиями, но без лимита заморозки. Чтобы связать их с тарифами, создайте тарифы с такими же названиями до импорта.", { plans: `«${unknownPlans.slice(0, 3).join("», «")}»${unknownPlans.length > 3 ? ` ${t("и др.")}` : ""}` })}
             </Alert>
           ) : null}
 
@@ -203,9 +205,9 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
                 label="Клиенты из файла дали залу согласие на обработку персональных данных (отметка сохранится в карточках)" />
               <div className="flex items-center gap-3">
                 <Button size="lg" onClick={run} disabled={!ready || !!progress || prepared.rows.length === 0 || readOnly}>
-                  {progress ? `Загружаем… ${progress.done} из ${progress.total}` : `Загрузить ${prepared.rows.length} клиентов`}
+                  {progress ? t("Загружаем… {a} из {b}", { a: progress.done, b: progress.total }) : t("Загрузить {n} клиентов", { n: prepared.rows.length })}
                 </Button>
-                {!ready ? <span className="text-sm text-muted-foreground">Укажите колонки ФИО и телефона</span> : null}
+                {!ready ? <span className="text-sm text-muted-foreground">{t("Укажите колонки ФИО и телефона")}</span> : null}
               </div>
               {progress ? (
                 <div className="h-2 overflow-hidden rounded-full bg-muted">
@@ -218,6 +220,14 @@ export function ImportWizard({ planNames, readOnly }: { planNames: string[]; rea
       ) : null}
     </div>
   );
+}
+
+/** Ошибки разбора файла: «Некорректный телефон: 123» → перевод начала, значение как есть */
+function issueText(t: T, error: string): string {
+  const col = error.match(/^Некорректная дата в колонке «(.+)»: (.*)$/);
+  if (col) return t("Некорректная дата в колонке «{col}»: {value}", { col: t(col[1]), value: col[2] });
+  const m = error.match(/^([^:]+): (.*)$/);
+  return m ? `${t(m[1])}: ${m[2] === "пусто" ? t("пусто") : m[2]}` : t(error);
 }
 
 export type { FieldKey };

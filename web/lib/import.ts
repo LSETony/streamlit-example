@@ -12,15 +12,15 @@ export const FIELDS: { key: FieldKey; label: string; synonyms: string[] }[] = [
   { key: "middle_name", label: "Отчество", synonyms: ["отчество", "middle name"] },
   { key: "phone", label: "Телефон", synonyms: ["телефон", "тел", "моб", "мобильный", "phone", "номер телефона", "номер"] },
   { key: "email", label: "Email", synonyms: ["email", "e-mail", "почта", "эл. почта", "электронная почта"] },
-  { key: "birth_date", label: "Дата рождения", synonyms: ["дата рождения", "день рождения", "др", "birthday", "birth date"] },
+  { key: "birth_date", label: "Дата рождения", synonyms: ["дата рождения", "день рождения", "др", "birthday", "birth date", "date of birth"] },
   { key: "gender", label: "Пол", synonyms: ["пол", "gender", "sex"] },
   { key: "source", label: "Источник", synonyms: ["источник", "откуда", "канал", "source"] },
   { key: "tags", label: "Теги", synonyms: ["теги", "метки", "tags", "группа"] },
   { key: "note", label: "Заметка", synonyms: ["заметка", "комментарий", "примечание", "note", "comment"] },
-  { key: "plan_name", label: "Абонемент (тариф)", synonyms: ["абонемент", "тариф", "вид абонемента", "plan"] },
-  { key: "starts_on", label: "Начало абонемента", synonyms: ["начало", "дата начала", "с", "начало абонемента", "дата покупки", "start"] },
-  { key: "ends_on", label: "Окончание абонемента", synonyms: ["окончание", "дата окончания", "действует до", "до", "конец", "окончание абонемента", "end"] },
-  { key: "visits_left", label: "Осталось визитов", synonyms: ["осталось визитов", "остаток", "визитов осталось", "осталось занятий", "остаток занятий"] },
+  { key: "plan_name", label: "Абонемент (тариф)", synonyms: ["абонемент", "тариф", "вид абонемента", "plan", "membership", "membership plan"] },
+  { key: "starts_on", label: "Начало абонемента", synonyms: ["начало", "дата начала", "с", "начало абонемента", "дата покупки", "start", "membership start", "start date"] },
+  { key: "ends_on", label: "Окончание абонемента", synonyms: ["окончание", "дата окончания", "действует до", "до", "конец", "окончание абонемента", "end", "membership end", "end date", "valid until"] },
+  { key: "visits_left", label: "Осталось визитов", synonyms: ["осталось визитов", "остаток", "визитов осталось", "осталось занятий", "остаток занятий", "visits left", "remaining visits"] },
 ];
 
 export type Mapping = Partial<Record<FieldKey, number>>;

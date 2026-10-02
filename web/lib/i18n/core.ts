@@ -1,4 +1,4 @@
-import { EN } from "./en";
+import { EN, EN_PATTERNS } from "./en";
 
 /*
   Языки кабинета: русский (основной) и английский.
@@ -37,8 +37,21 @@ function ruForm(n: number, forms: string[]): string {
   return many;
 }
 
+/** Перевод с запасным вариантом для «Текст: подробности» — переводится часть до двоеточия (сообщения с именами, кодами) */
+function lookup(text: string): string {
+  const hit = EN[text];
+  if (hit !== undefined) return hit;
+  for (const [re, en] of EN_PATTERNS) if (re.test(text)) return text.replace(re, en);
+  const i = text.indexOf(": ");
+  if (i > 0) {
+    const head = EN[text.slice(0, i + 1)];
+    if (head !== undefined) return head + text.slice(i + 1);
+  }
+  return text;
+}
+
 export function makeT(locale: Locale): T {
-  const t = ((text: string, vars?: Vars) => fill(locale === "en" ? (EN[text] ?? text) : text, vars)) as T;
+  const t = ((text: string, vars?: Vars) => fill(locale === "en" ? lookup(text) : text, vars)) as T;
   t.n = (count, forms) => {
     if (locale === "en") {
       const [one, other = one] = (EN[forms] ?? forms).split("|");
@@ -70,4 +83,11 @@ export function errorText(t: T, err: { code?: string; message: string } | null |
   if (!err) return "";
   if (t.locale === "en" && err.code && EN[`error:${err.code}`]) return EN[`error:${err.code}`];
   return t(err.message);
+}
+
+/** Назначение платежа из БД («Абонемент «Месяц»») на языке кабинета */
+export function paymentDescription(t: T, description: string | null | undefined): string {
+  if (!description) return "";
+  const m = description.match(/^Абонемент «(.+)»$/);
+  return m ? t("Абонемент «{plan}»", { plan: m[1] }) : t(description);
 }

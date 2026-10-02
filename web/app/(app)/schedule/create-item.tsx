@@ -1,6 +1,6 @@
 "use client";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Field, Input, NativeSelect, Textarea, TimeSelect } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { createSeries } from "@/app/actions/schedule";
 import { addDays } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useT } from "@/lib/i18n/client";
 
 const WD = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
@@ -18,6 +19,7 @@ const WD = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }: {
   gymZones: { id: string; name: string; capacity: number }[]; initialDate: string; initialTime: string; onClose: () => void;
 }) {
+  const t = useT();
   const [kind, setKind] = useState<"class" | "personal" | "zone_slot">("class");
   const [repeat, setRepeat] = useState(false);
   const initialDow = (new Date(initialDate + "T00:00:00Z").getUTCDay() + 6) % 7 + 1;
@@ -42,7 +44,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
         description: String(form.get("description")).trim() || null,
       });
       if (!r.ok) return setError(r.error.message);
-      toast.success(r.data.created > 1 ? `Создано занятий: ${r.data.created}` : "Занятие создано");
+      toast.success(r.data.created > 1 ? "Создано занятий: {n}" : "Занятие создано", { n: r.data.created });
       onClose();
     });
   }
@@ -54,7 +56,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
         <form action={submit} className="grid gap-4">
           <Segmented className="flex w-full">
             {([["class", "Групповое"], ["personal", "Персональная"], ["zone_slot", "Слот зоны"]] as const).map(([k, l]) => (
-              <button key={k} type="button" onClick={() => setKind(k)} aria-pressed={kind === k} className={cn(segmentClass, "flex-1 px-2")}>{l}</button>
+              <button key={k} type="button" onClick={() => setKind(k)} aria-pressed={kind === k} className={cn(segmentClass, "flex-1 px-2")}>{t(l)}</button>
             ))}
           </Segmented>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -80,7 +82,7 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
               <div className="flex flex-wrap gap-1.5">
                 {WD.map((w, i) => (
                   <button key={w} type="button" onClick={() => setWeekdays((s) => s.includes(i + 1) ? s.filter((x) => x !== i + 1) : [...s, i + 1])}
-                    className={cn("size-10 cursor-pointer rounded-full text-sm", weekdays.includes(i + 1) ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}>{w}</button>
+                    className={cn("size-10 cursor-pointer rounded-full text-sm", weekdays.includes(i + 1) ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}>{t(w)}</button>
                 ))}
               </div>
               <Field label="До"><DatePicker name="until" defaultValue={addDays(initialDate, 83)} min={initialDate} aria-label="Повторять до" /></Field>

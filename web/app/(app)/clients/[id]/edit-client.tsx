@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox, Field, Input, NativeSelect } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { anonymizeClient, updateClientAction } from "@/app/actions/clients";
 import type { Client } from "@/lib/types";
 import { SOURCES } from "../new-client";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useT } from "@/lib/i18n/client";
 
 export function EditClientDialog({ client, onClose }: { client: Client; onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +58,7 @@ export function EditClientDialog({ client, onClose }: { client: Client; onClose:
 
 /** FR-2.6 Удаление клиента по его запросу: обезличивание с сохранением оплат */
 export function DeleteClientDialog({ client, onClose }: { client: Client; onClose: () => void }) {
+  const t = useT();
   const router = useRouter();
   const [confirmText, setConfirmText] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -67,15 +69,14 @@ export function DeleteClientDialog({ client, onClose }: { client: Client; onClos
         <DialogHeader>
           <DialogTitle>Удалить данные клиента?</DialogTitle>
           <DialogDescription>
-            ФИО, телефон, email и заметки будут обезличены без возможности восстановления. Оплаты сохранятся для бухгалтерии,
-            будущие записи на занятия будут отменены.
+            {t("ФИО, телефон, email и заметки будут обезличены без возможности восстановления. Оплаты сохранятся для бухгалтерии, будущие записи на занятия будут отменены.")}
           </DialogDescription>
         </DialogHeader>
-        <Field label={`Для подтверждения введите «удалить»`}><Input value={confirmText} onChange={(e) => setConfirmText(e.target.value)} /></Field>
+        <Field label={t("Для подтверждения введите «{word}»", { word: t("удалить") })}><Input value={confirmText} onChange={(e) => setConfirmText(e.target.value)} /></Field>
         {error ? <Alert variant="danger">{error}</Alert> : null}
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Отмена</Button>
-          <Button variant="destructive" disabled={pending || confirmText.trim().toLowerCase() !== "удалить"} onClick={() => start(async () => {
+          <Button variant="destructive" disabled={pending || confirmText.trim().toLowerCase() !== t("удалить")} onClick={() => start(async () => {
             const r = await anonymizeClient(client.id);
             if (!r.ok) return setError(r.error.message);
             toast.success("Данные клиента обезличены");

@@ -3,6 +3,7 @@ import * as React from "react";
 import { Dialog as D } from "radix-ui";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT, useTx } from "@/lib/i18n/client";
 
 export const Dialog = D.Root;
 export const DialogTrigger = D.Trigger;
@@ -15,6 +16,7 @@ export const DialogClose = D.Close;
 export function DialogContent({ className, children, wide, hideClose, sheet = true, ...props }: React.ComponentProps<typeof D.Content> & {
   wide?: boolean; hideClose?: boolean; sheet?: boolean;
 }) {
+  const t = useT();
   return (
     <D.Portal>
       <D.Overlay className="fixed inset-0 z-50 bg-black/30 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" />
@@ -36,7 +38,7 @@ export function DialogContent({ className, children, wide, hideClose, sheet = tr
       >
         {sheet ? <span aria-hidden className="absolute left-1/2 top-2 h-[5px] w-9 -translate-x-1/2 rounded-full bg-label-3 sm:hidden" /> : null}
         {children}
-        {hideClose ? null : <D.Close className="absolute right-4 top-4 grid size-[30px] cursor-pointer place-items-center rounded-full bg-field text-muted-foreground hover:bg-field-hover hover:text-foreground" aria-label="Закрыть">
+        {hideClose ? null : <D.Close className="absolute right-4 top-4 grid size-[30px] cursor-pointer place-items-center rounded-full bg-field text-muted-foreground hover:bg-field-hover hover:text-foreground" aria-label={t("Закрыть")}>
           <X className="size-4" strokeWidth={2.5} />
         </D.Close>}
       </D.Content>
@@ -48,12 +50,14 @@ export function DialogHeader({ className, ...props }: React.ComponentProps<"div"
   return <div className={cn("flex flex-col gap-1.5 pr-6", className)} {...props} />;
 }
 
-export function DialogTitle({ className, ...props }: React.ComponentProps<typeof D.Title>) {
-  return <D.Title className={cn("text-[20px] font-bold leading-[25px] tracking-[-0.01em]", className)} {...props} />;
+export function DialogTitle({ className, children, ...props }: React.ComponentProps<typeof D.Title>) {
+  const tx = useTx();
+  return <D.Title className={cn("text-[20px] font-bold leading-[25px] tracking-[-0.01em]", className)} {...props}>{tx(children)}</D.Title>;
 }
 
-export function DialogDescription({ className, ...props }: React.ComponentProps<typeof D.Description>) {
-  return <D.Description className={cn("text-sm text-muted-foreground", className)} {...props} />;
+export function DialogDescription({ className, children, ...props }: React.ComponentProps<typeof D.Description>) {
+  const tx = useTx();
+  return <D.Description className={cn("text-sm text-muted-foreground", className)} {...props}>{tx(children)}</D.Description>;
 }
 
 export function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {

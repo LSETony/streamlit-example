@@ -3,8 +3,11 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { addDays, zonedToUtc } from "@/lib/format";
 import { ScheduleView, type Item } from "./schedule-view";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Расписание" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Расписание") };
+}
 
 function mondayOf(d: string): string {
   const [y, m, day] = d.split("-").map(Number);

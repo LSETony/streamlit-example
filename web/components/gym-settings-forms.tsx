@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Check, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, Input, NativeSelect, Textarea, TimeSelect } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { Alert } from "@/components/ui/misc";
 import { deleteZone, saveZone, updateGymProfile, updateGymSettings } from "@/app/actions/gym";
 import type { Gym, GymSettings, RiskReason } from "@/lib/types";
 import { RISK_LABEL } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 export const TIMEZONES = [
   ["Europe/Kaliningrad", "Калининград (UTC+2)"], ["Europe/Moscow", "Москва (UTC+3)"], ["Europe/Samara", "Самара (UTC+4)"],
@@ -56,6 +57,7 @@ export function ProfileForm({ gym, disabled }: { gym: Gym; disabled?: boolean })
 }
 
 export function HoursForm({ settings, disabled, onSaved, submitLabel = "Сохранить" }: { settings: GymSettings; disabled?: boolean; onSaved?: () => void; submitLabel?: string }) {
+  const tr = useT();
   const { pending, error, run } = useSave();
   const [hours, setHours] = useState(settings.hours ?? {});
   const [capacity, setCapacity] = useState(String(settings.capacity ?? 50));
@@ -66,23 +68,23 @@ export function HoursForm({ settings, disabled, onSaved, submitLabel = "Сохр
           const v = hours[k];
           return (
             <div key={k} className="flex min-h-14 flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5">
-              <span className="w-8 text-sm font-semibold">{label}</span>
+              <span className="w-8 text-sm font-semibold">{tr(label)}</span>
               <Switch
                 checked={!!v}
                 onCheckedChange={(on) => setHours((h) => ({ ...h, [k]: on ? ["08:00", "22:00"] : null }))}
-                aria-label={`${label}: открыто`}
+                aria-label={tr("{day}: открыто", { day: tr(label) })}
               />
               {v ? (
                 <div className="flex items-center gap-2">
-                  <TimeSelect value={v[0]} onChange={(t) => setHours((h) => ({ ...h, [k]: [t, v[1]] }))} aria-label={`${label}: открытие`} />
+                  <TimeSelect value={v[0]} onChange={(t) => setHours((h) => ({ ...h, [k]: [t, v[1]] }))} aria-label={tr("{day}: открытие", { day: tr(label) })} />
                   <span className="text-muted-foreground">–</span>
-                  <TimeSelect value={v[1]} onChange={(t) => setHours((h) => ({ ...h, [k]: [v[0], t] }))} aria-label={`${label}: закрытие`} />
+                  <TimeSelect value={v[1]} onChange={(t) => setHours((h) => ({ ...h, [k]: [v[0], t] }))} aria-label={tr("{day}: закрытие", { day: tr(label) })} />
                 </div>
-              ) : <span className="text-sm text-muted-foreground">Выходной</span>}
+              ) : <span className="text-sm text-muted-foreground">{tr("Выходной")}</span>}
               {v && k === "mon" ? (
                 <button type="button" className="ml-auto cursor-pointer text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
                   onClick={() => setHours((h) => Object.fromEntries(DAYS.map(([d]) => [d, ["mon", "tue", "wed", "thu", "fri"].includes(d) ? v : h[d]])))}>
-                  Как в понедельник для будней
+                  {tr("Как в понедельник для будней")}
                 </button>
               ) : null}
             </div>
@@ -125,6 +127,7 @@ export function RulesForm({ settings, disabled }: { settings: GymSettings; disab
 }
 
 export function RiskForm({ settings, disabled }: { settings: GymSettings; disabled?: boolean }) {
+  const tr = useT();
   const { pending, error, run } = useSave();
   const r = settings.risk ?? { gone_days: 10, expiring_days: 7, declining_ratio: 0.5, not_renewed_days: 14 };
   const t = settings.message_templates ?? ({} as Record<RiskReason, string>);
@@ -147,7 +150,7 @@ export function RiskForm({ settings, disabled }: { settings: GymSettings; disabl
         <Field label="«Реже», % от обычного"><Input name="declining_pct" type="number" min={10} max={90} defaultValue={Math.round(r.declining_ratio * 100)} /></Field>
         <Field label="«Не продлил», дней после"><Input name="not_renewed_days" type="number" min={3} max={60} defaultValue={r.not_renewed_days} /></Field>
       </div>
-      <p className="text-sm text-muted-foreground">Шаблоны сообщений для Telegram и WhatsApp. Подстановки: {"{name}"} — имя, {"{gym}"} — зал, {"{date}"} — дата окончания.</p>
+      <p className="text-sm text-muted-foreground">{tr("Шаблоны сообщений для Telegram и WhatsApp. Подстановки: {name} — имя, {gym} — зал, {date} — дата окончания.", { name: "{name}", gym: "{gym}", date: "{date}" })}</p>
       <div className="grid gap-4 lg:grid-cols-2">
         {(["gone", "expiring", "declining", "not_renewed"] as RiskReason[]).map((k) => (
           <Field key={k} label={RISK_LABEL[k]}><Textarea name={`tpl_${k}`} rows={2} defaultValue={t[k] ?? ""} /></Field>
@@ -160,6 +163,7 @@ export function RiskForm({ settings, disabled }: { settings: GymSettings; disabl
 }
 
 export function ZonesEditor({ zones, disabled }: { zones: { id: string; name: string; capacity: number }[]; disabled?: boolean }) {
+  const tr = useT();
   const { pending, error, run } = useSave();
   const [name, setName] = useState("");
   const [capacity, setCapacity] = useState("10");
@@ -167,7 +171,7 @@ export function ZonesEditor({ zones, disabled }: { zones: { id: string; name: st
     <div className="grid gap-3">
       <div className="divide-y divide-separator/70 overflow-hidden rounded-2xl bg-surface-2">
         <div className="grid grid-cols-[1fr_88px_112px] gap-2 px-4 py-2 text-xs font-medium text-muted-foreground">
-          <span>Зона</span><span>Мест</span><span />
+          <span>{tr("Зона")}</span><span>{tr("Мест")}</span><span />
         </div>
         {zones.map((z) => (
           <form key={z.id} className="grid grid-cols-[1fr_88px_112px] items-center gap-2 px-4 py-2" action={(f) => run(() => saveZone(f))}>
@@ -177,7 +181,7 @@ export function ZonesEditor({ zones, disabled }: { zones: { id: string; name: st
             <div className="flex justify-end gap-0.5">
               <Button type="submit" variant="ghost" size="icon-sm" disabled={pending || disabled} aria-label="Сохранить зону" title="Сохранить"><Check /></Button>
               <Button type="button" variant="ghost" size="icon-sm" aria-label="Удалить зону" title="Удалить" disabled={pending || disabled}
-                onClick={() => confirm(`Удалить зону «${z.name}»?`) && run(() => deleteZone(z.id), "Зона удалена")}><Trash2 /></Button>
+                onClick={() => confirm(tr("Удалить зону «{name}»?", { name: z.name })) && run(() => deleteZone(z.id), "Зона удалена")}><Trash2 /></Button>
             </div>
           </form>
         ))}

@@ -1,15 +1,17 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Field, Input, NativeSelect } from "@/components/ui/input";
 import { SwitchRow } from "@/components/ui/switch";
 import { Alert } from "@/components/ui/misc";
 import { saveYookassa } from "@/app/actions/gym";
+import { useT } from "@/lib/i18n/client";
 
 export function YookassaForm({ status, disabled }: { status: { connected: boolean; shopId: string | null; sendReceipt: boolean; vatCode: number }; disabled?: boolean }) {
+  const t = useT();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -21,7 +23,7 @@ export function YookassaForm({ status, disabled }: { status: { connected: boolea
       toast.success("Ключи ЮKassa сохранены");
       router.refresh();
     })}>
-      <div>{status.connected ? <Badge variant="success">Подключено · магазин {status.shopId}</Badge> : <Badge variant="outline">Не подключено</Badge>}</div>
+      <div>{status.connected ? <Badge variant="success">{t("Подключено · магазин {shop}", { shop: status.shopId ?? "" })}</Badge> : <Badge variant="outline">Не подключено</Badge>}</div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="shopId"><Input name="shop_id" defaultValue={status.shopId ?? ""} required inputMode="numeric" /></Field>
         <Field label="Секретный ключ" hint={status.connected ? "Оставьте пустым, чтобы не менять" : "live_… из личного кабинета ЮKassa"}>
@@ -36,8 +38,8 @@ export function YookassaForm({ status, disabled }: { status: { connected: boolea
       </div>
       <SwitchRow name="send_receipt" defaultChecked={status.sendReceipt} title="Чеки по 54-ФЗ" description="ЮKassa отправит чек клиенту на телефон или email" />
       <Alert>
-        В личном кабинете ЮKassa укажите адрес для уведомлений: <code className="break-all text-xs">https://&lt;адрес API&gt;/functions/v1/payments/webhook</code>,
-        события payment.succeeded, payment.canceled, refund.succeeded.
+        {t("В личном кабинете ЮKassa укажите адрес для уведомлений:")} <code className="break-all text-xs">{`https://<${t("адрес API")}>/functions/v1/payments/webhook`}</code>,
+        {" "}{t("события")} payment.succeeded, payment.canceled, refund.succeeded.
       </Alert>
       {error ? <Alert variant="danger">{error}</Alert> : null}
       <div><Button type="submit" disabled={pending || disabled}>Сохранить</Button></div>

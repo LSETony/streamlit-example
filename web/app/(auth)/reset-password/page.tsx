@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/misc";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/lib/i18n/client";
 
 // Новый пароль после ссылки из письма (восстановление или приглашение сотрудника)
 export default function ResetPasswordPage() {
+  const t = useT();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -34,8 +36,8 @@ export default function ResetPasswordPage() {
   return (
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-1.5">
-        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Задайте пароль</h1>
-        <p className="text-sm text-muted-foreground">Не короче 8 символов</p>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">{t("Задайте пароль")}</h1>
+        <p className="text-sm text-muted-foreground">{t("Не короче 8 символов")}</p>
       </div>
       {error ? <Alert variant="danger">{error}</Alert> : null}
       <Field label="Новый пароль">

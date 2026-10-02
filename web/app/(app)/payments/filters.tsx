@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 import { Segmented, segmentClass } from "@/components/ui/tabs";
 import { addDays } from "@/lib/format";
 import { DateRangePicker } from "@/components/ui/date-picker";
+import { useT } from "@/lib/i18n/client";
 
 const pill = "h-9 shrink-0 rounded-full text-[15px] font-medium";
 const pillOn = "bg-tint-soft text-tint-text hover:bg-tint-soft";
 
 export function PaymentFilters({ from, to, method, status, today }: { from: string; to: string; method: string; status: string; today: string }) {
+  const tr = useT();
   const router = useRouter();
   const pathname = usePathname();
   const go = (patch: Record<string, string>) => {
@@ -23,7 +25,7 @@ export function PaymentFilters({ from, to, method, status, today }: { from: stri
       <Segmented className="self-start">
         {([["Сегодня", today, today], ["Вчера", addDays(today, -1), addDays(today, -1)], ["Этот месяц", monthStart, today]] as const).map(([label, f, t]) => (
           <button key={label} type="button" onClick={() => go({ from: f, to: t })} aria-pressed={from === f && to === t} className={segmentClass}>
-            {label}
+            {tr(label)}
           </button>
         ))}
       </Segmented>

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Ban, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,12 +13,14 @@ import { createClient } from "@/lib/supabase/client";
 import { bookClient, cancelBooking, cancelClass, markBooking, updateItem } from "@/app/actions/schedule";
 import { dateTime, time } from "@/lib/format";
 import type { Item } from "./schedule-view";
+import { useT } from "@/lib/i18n/client";
 
 interface B { id: string; status: "booked" | "cancelled" | "attended" | "no_show"; channel: "app" | "staff"; client_id: string; clients: { full_name: string } | null }
 
 export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, onClose }: {
   item: Item; zones: { id: string; name: string }[]; gymId: string; timezone: string; canEdit: boolean; readOnly: boolean; onClose: () => void;
 }) {
+  const t = useT();
   const [bookings, setBookings] = useState<B[]>([]);
   const [edit, setEdit] = useState(false);
   const [pending, start] = useTransition();
@@ -52,7 +54,7 @@ export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, on
           <DialogDescription>
             {dateTime(item.starts_at, timezone)}–{time(item.ends_at, timezone)}
             {item.trainer_name ? ` · ${item.trainer_name}` : ""}{zones.find((z) => z.id === item.zone_id) ? ` · ${zones.find((z) => z.id === item.zone_id)!.name}` : ""}
-            {` · записано ${active.length} из ${item.capacity}`}
+            {` · ${t("записано {n} из {cap}", { n: active.length, cap: item.capacity })}`}
           </DialogDescription>
         </DialogHeader>
 
@@ -61,10 +63,10 @@ export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, on
         ) : (
           <>
             {!item.cancelled && !past && !readOnly ? (
-              <ClientSearch gymId={gymId} placeholder="Записать клиента: ФИО или телефон" onSelect={(c) => run(() => bookClient(item.id, c.id), `${c.full_name} записан(а)`)} />
+              <ClientSearch gymId={gymId} placeholder="Записать клиента: ФИО или телефон" onSelect={(c) => run(() => bookClient(item.id, c.id), t("{name} записан(а)", { name: c.full_name }))} />
             ) : null}
             <div className="grid max-h-80 gap-1 overflow-y-auto">
-              {active.length === 0 ? <p className="py-4 text-center text-sm text-muted-foreground">Пока никто не записан</p> : active.map((b) => (
+              {active.length === 0 ? <p className="py-4 text-center text-sm text-muted-foreground">{t("Пока никто не записан")}</p> : active.map((b) => (
                 <div key={b.id} className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-muted/50">
                   <Link href={`/clients/${b.client_id}`} className="flex-1 truncate text-sm font-medium hover:underline">{b.clients?.full_name}</Link>
                   {b.channel === "app" ? <Badge variant="outline">приложение</Badge> : null}
@@ -83,11 +85,11 @@ export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, on
             {canEdit && !item.cancelled ? (
               <DialogFooter>
                 <Button variant="ghost" className="text-destructive sm:mr-auto" disabled={pending || past} onClick={() => {
-                  const reason = prompt("Причина отмены (увидят записавшиеся):") ;
+                  const reason = prompt(t("Причина отмены (увидят записавшиеся):"));
                   if (reason === null) return;
                   run(async () => {
                     const r = await cancelClass(item.id, reason || null);
-                    if (r.ok) toast.success(`Занятие отменено, уведомлено: ${r.data.notified}`);
+                    if (r.ok) toast.success("Занятие отменено, уведомлено: {n}", { n: r.data.notified });
                     return r;
                   });
                 }}>Отменить занятие</Button>

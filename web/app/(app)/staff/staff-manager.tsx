@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { changeStaffRole, inviteStaff, setStaffActive } from "@/app/actions/staff";
 import type { Role } from "@/lib/types";
 import { ROLE_LABEL } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 export const ROLE_HINT: Record<Role, string> = {
   owner: "Всё, включая тарифы, настройки, сотрудников и журнал",
@@ -28,7 +29,7 @@ export function InviteForm({ onDone, compact }: { onDone?: () => void; compact?:
       setError(null);
       const r = await inviteStaff(f);
       if (!r.ok) return setError(r.error.message);
-      toast.success(`Приглашение отправлено на ${f.get("email")}`);
+      toast.success("Приглашение отправлено на {email}", { email: String(f.get("email")) });
       onDone?.();
     })}>
       <div className={compact ? "grid gap-3 sm:grid-cols-[1fr_1fr_160px_auto] sm:items-end" : "grid gap-4"}>
@@ -52,6 +53,7 @@ export function InviteForm({ onDone, compact }: { onDone?: () => void; compact?:
 export function StaffManager({ staff, meId, readOnly }: {
   staff: { id: string; email: string; role: Role; full_name: string; active: boolean; user_id: string | null }[]; meId: string; readOnly: boolean;
 }) {
+  const t = useT();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [, start] = useTransition();
@@ -61,7 +63,7 @@ export function StaffManager({ staff, meId, readOnly }: {
   });
   return (
     <>
-      <div className="mb-3 flex items-center justify-between gap-3"><p className="pl-1 text-sm text-muted-foreground">В команде: <b className="text-foreground">{staff.filter((s) => s.active).length}</b></p><Button onClick={() => setOpen(true)} disabled={readOnly}><UserPlus /> Пригласить</Button></div>
+      <div className="mb-3 flex items-center justify-between gap-3"><p className="pl-1 text-sm text-muted-foreground">{t("В команде:")} <b className="text-foreground">{staff.filter((s) => s.active).length}</b></p><Button onClick={() => setOpen(true)} disabled={readOnly}><UserPlus /> Пригласить</Button></div>
       <Card>
         <Table>
           <THead><TR><TH>Сотрудник</TH><TH>Роль</TH><TH>Статус</TH><TH /></TR></THead>
@@ -71,11 +73,11 @@ export function StaffManager({ staff, meId, readOnly }: {
                 <TD>
                   <div className="flex items-center gap-3">
                     <Avatar name={s.full_name} className="size-8 text-xs" />
-                    <div><p className="font-medium">{s.full_name}{s.id === meId ? " (вы)" : ""}</p><p className="text-xs text-muted-foreground">{s.email}</p></div>
+                    <div><p className="font-medium">{s.full_name}{s.id === meId ? ` ${t("(вы)")}` : ""}</p><p className="text-xs text-muted-foreground">{s.email}</p></div>
                   </div>
                 </TD>
                 <TD>
-                  {s.id === meId || readOnly ? ROLE_LABEL[s.role] : (
+                  {s.id === meId || readOnly ? t(ROLE_LABEL[s.role]) : (
                     <NativeSelect value={s.role} onChange={(e) => act(() => changeStaffRole(s.id, e.target.value as Role))} className="h-8 w-44" aria-label="Роль">
                       {(Object.keys(ROLE_LABEL) as Role[]).map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
                     </NativeSelect>
@@ -93,7 +95,7 @@ export function StaffManager({ staff, meId, readOnly }: {
         </Table>
       </Card>
       <div className="mt-6 grid gap-2 text-sm text-muted-foreground sm:grid-cols-3">
-        {(Object.keys(ROLE_HINT) as Role[]).map((r) => <p key={r}><b className="text-foreground">{ROLE_LABEL[r]}:</b> {ROLE_HINT[r]}</p>)}
+        {(Object.keys(ROLE_HINT) as Role[]).map((r) => <p key={r}><b className="text-foreground">{t(ROLE_LABEL[r])}:</b> {t(ROLE_HINT[r])}</p>)}
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

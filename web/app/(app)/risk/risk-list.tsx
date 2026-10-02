@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Phone, Send, MessageCircle, BellRing, Check, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ import { date, dateTime, phone } from "@/lib/format";
 import type { RiskReason, RiskRow } from "@/lib/types";
 import { RISK_LABEL } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 const STEP = 20;
 const ORDER: RiskReason[] = ["not_renewed", "expiring", "gone", "declining"];
@@ -35,6 +36,7 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
   rows: RiskRow[]; initialReason: RiskReason | ""; gymName: string; templates?: Record<RiskReason, string>;
   timezone: string; stats: { contacted: number; returned: number }; readOnly: boolean;
 }) {
+  const t = useT();
   const [reason, setReason] = useState<RiskReason | "">(initialReason);
   const [hideContacted, setHideContacted] = useState(false);
   const [contactFor, setContactFor] = useState<{ row: RiskRow; channel: Channel } | null>(null);
@@ -47,15 +49,15 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
     <div className="grid gap-4">
       <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
-          <Chip active={!reason} onClick={() => { setReason(""); setLimit(STEP); }}>Все · {rows.length}</Chip>
-          {ORDER.map((r) => <Chip key={r} active={reason === r} onClick={() => { setReason(r); setLimit(STEP); }}>{RISK_LABEL[r]} · {counts[r] ?? 0}</Chip>)}
-          <Chip active={hideContacted} onClick={() => setHideContacted((v) => !v)}>Без контакта</Chip>
+          <Chip active={!reason} onClick={() => { setReason(""); setLimit(STEP); }}>{t("Все")} · {rows.length}</Chip>
+          {ORDER.map((r) => <Chip key={r} active={reason === r} onClick={() => { setReason(r); setLimit(STEP); }}>{t(RISK_LABEL[r])} · {counts[r] ?? 0}</Chip>)}
+          <Chip active={hideContacted} onClick={() => setHideContacted((v) => !v)}>{t("Без контакта")}</Chip>
         </div>
         <Card className="flex items-center gap-3 px-4 py-2.5">
           <ShieldCheck className="size-5 text-success" />
           <div className="text-sm">
-            <b className="tabular">{stats.returned}</b> из <b className="tabular">{stats.contacted}</b> вернулись после контакта
-            <span className="block text-xs text-muted-foreground">за 30 дней: пришли или продлили</span>
+            <b className="tabular">{stats.returned}</b> {t("из")} <b className="tabular">{stats.contacted}</b> {t("вернулись после контакта")}
+            <span className="block text-xs text-muted-foreground">{t("за 30 дней: пришли или продлили")}</span>
           </div>
         </Card>
       </div>
@@ -80,10 +82,10 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
                         <RiskBadge reason={r.reason} />
                         {r.contacted_at ? <Badge variant="success"><Check className="size-3" /> связались {dateTime(r.contacted_at, timezone).slice(0, 5)}</Badge> : null}
                       </div>
-                      <p className="text-sm text-foreground/85">{r.reason_text}</p>
+                      <p className="text-sm text-foreground/85">{t(r.reason_text)}</p>
                       <p className="text-xs text-muted-foreground tabular">
-                        {phone(r.phone)} · визит: {r.last_visit_at ? dateTime(r.last_visit_at, timezone) : "не было"}
-                        {r.reasons.length > 1 ? ` · ещё: ${r.reasons.filter((x) => x !== r.reason).map((x) => RISK_LABEL[x].toLowerCase()).join(", ")}` : ""}
+                        {phone(r.phone)} · {t("визит:")} {r.last_visit_at ? dateTime(r.last_visit_at, timezone) : t("не было")}
+                        {r.reasons.length > 1 ? ` · ${t("ещё:")} ${r.reasons.filter((x) => x !== r.reason).map((x) => t(RISK_LABEL[x]).toLowerCase()).join(", ")}` : ""}
                       </p>
                     </div>
                   </div>
@@ -93,7 +95,7 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
                     <IconLink label="Telegram" href={`https://t.me/+${digits}`} external
                       onClick={() => { navigator.clipboard?.writeText(decodeURIComponent(text)); toast.info("Текст сообщения скопирован"); setContactFor({ row: r, channel: "telegram" }); }}><Send /></IconLink>
                     {r.in_app ? (
-                      <Button size="icon-sm" variant="secondary" className="size-9 rounded-full" aria-label="Push в приложение" title={r.marketing_ok ? "Push в приложение" : "Нет согласия на рассылки"}
+                      <Button size="icon-sm" variant="secondary" className="size-9 rounded-full" aria-label="Push в приложение" title={r.marketing_ok ? t("Push в приложение") : t("Нет согласия на рассылки")}
                         disabled={!r.marketing_ok || readOnly} onClick={() => setContactFor({ row: r, channel: "push" })}>
                         <BellRing />
                       </Button>
@@ -106,7 +108,7 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
           </ul>
           {list.length > limit ? (
             <div className="flex items-center justify-between gap-3 border-t border-border px-5 py-3 text-sm">
-              <span className="text-muted-foreground">Показано {limit} из {list.length}</span>
+              <span className="text-muted-foreground">{t("Показано {n} из {total}", { n: limit, total: list.length })}</span>
               <Button variant="secondary" size="sm" onClick={() => setLimit((l) => l + STEP)}>Показать ещё</Button>
             </div>
           ) : null}
@@ -125,6 +127,7 @@ const CHANNEL_LABEL: Record<Channel, string> = { call: "Звонок", telegram:
 
 /** FR-8.2 Отметка «связались» (для push — отправка сообщения) */
 function ContactDialog({ row, channel: initial, text, onClose }: { row: RiskRow; channel: Channel; text: string; onClose: () => void }) {
+  const t = useT();
   const router = useRouter();
   const [channel, setChannel] = useState<Channel>(initial === "other" ? "call" : initial);
   const [note, setNote] = useState("");
@@ -135,7 +138,7 @@ function ContactDialog({ row, channel: initial, text, onClose }: { row: RiskRow;
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{channel === "push" ? "Отправить push" : "Отметить контакт"}</DialogTitle>
-          <DialogDescription>{row.full_name} · {RISK_LABEL[row.reason]}</DialogDescription>
+          <DialogDescription>{row.full_name} · {t(RISK_LABEL[row.reason])}</DialogDescription>
         </DialogHeader>
         <Field label="Канал">
           <NativeSelect value={channel} onChange={(e) => setChannel(e.target.value as Channel)}>
@@ -163,9 +166,10 @@ function ContactDialog({ row, channel: initial, text, onClose }: { row: RiskRow;
 }
 
 function IconLink({ label, href, external, onClick, children }: { label: string; href: string; external?: boolean; onClick: () => void; children: React.ReactNode }) {
+  const t = useT();
   return (
     <Button size="icon-sm" variant="secondary" className="size-9 rounded-full" asChild>
-      <a href={href} onClick={onClick} aria-label={label} title={label} {...(external ? { target: "_blank", rel: "noreferrer" } : {})}>{children}</a>
+      <a href={href} onClick={onClick} aria-label={t(label)} title={t(label)} {...(external ? { target: "_blank", rel: "noreferrer" } : {})}>{children}</a>
     </Button>
   );
 }

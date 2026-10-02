@@ -3,6 +3,8 @@ import * as React from "react";
 import { Popover } from "radix-ui";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
+import type { T } from "@/lib/i18n/core";
 
 /*
   Календарь в стиле iOS вместо браузерного input[type=date] (тот показывает формат ОС, например 09/01/2026).
@@ -25,27 +27,29 @@ const todayIso = () => {
 };
 
 /** «1 сент. 2026» */
-export function formatDay(s: string, withYear = true): string {
+export function formatDay(s: string, withYear = true, t?: T): string {
   if (!s) return "";
   const { y, m, d } = parts(s);
-  return withYear ? `${d} ${MONTHS_GEN_SHORT[m]} ${y}` : `${d} ${MONTHS_GEN_SHORT[m]}`;
+  const mon = t ? t(MONTHS_GEN_SHORT[m]) : MONTHS_GEN_SHORT[m];
+  return withYear ? `${d} ${mon} ${y}` : `${d} ${mon}`;
 }
 
 /** «1 – 29 сент. 2026», «28 сент. – 4 окт. 2026», «30 дек. 2025 – 5 янв. 2026» */
-export function formatRange(from: string, to: string): string {
+export function formatRange(from: string, to: string, t?: T): string {
   if (!from) return "";
-  if (!to || from === to) return formatDay(from);
+  if (!to || from === to) return formatDay(from, true, t);
   const a = parts(from);
   const b = parts(to);
-  if (a.y !== b.y) return `${formatDay(from)} – ${formatDay(to)}`;
-  if (a.m !== b.m) return `${formatDay(from, false)} – ${formatDay(to)}`;
-  return `${a.d} – ${formatDay(to)}`;
+  if (a.y !== b.y) return `${formatDay(from, true, t)} – ${formatDay(to, true, t)}`;
+  if (a.m !== b.m) return `${formatDay(from, false, t)} – ${formatDay(to, true, t)}`;
+  return `${a.d} – ${formatDay(to, true, t)}`;
 }
 
 function Calendar({ selected, rangeEnd, min, max, onPick, onToday, onClear }: {
   selected: string; rangeEnd?: string; min?: string; max?: string;
   onPick: (d: string) => void; onToday?: () => void; onClear?: () => void;
 }) {
+  const t = useT();
   const today = todayIso();
   const start = parts(selected || (max && max < today ? max : today));
   const [view, setView] = React.useState({ y: start.y, m: start.m });
@@ -77,16 +81,16 @@ function Calendar({ selected, rangeEnd, min, max, onPick, onToday, onClear }: {
       <div className="mb-2 flex items-center justify-between pl-2">
         <button type="button" onClick={() => setMode((m) => (m === "days" ? "months" : "days"))}
           className="flex cursor-pointer items-center gap-1 rounded-lg px-1 py-1 text-[17px] font-semibold active:opacity-60">
-          {MONTHS[view.m]} {view.y}
+          {t(MONTHS[view.m])} {view.y}
           <ChevronRight className={cn("size-[18px] text-tint-text transition-transform", mode === "months" && "rotate-90")} strokeWidth={2.5} />
         </button>
         {mode === "days" ? (
           <div className="flex">
-            <button type="button" onClick={() => shift(-1)} aria-label="Предыдущий месяц"
+            <button type="button" onClick={() => shift(-1)} aria-label={t("Предыдущий месяц")}
               className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field active:opacity-60">
               <ChevronLeft className="size-5" strokeWidth={2.5} />
             </button>
-            <button type="button" onClick={() => shift(1)} aria-label="Следующий месяц"
+            <button type="button" onClick={() => shift(1)} aria-label={t("Следующий месяц")}
               className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field active:opacity-60">
               <ChevronRight className="size-5" strokeWidth={2.5} />
             </button>
@@ -101,7 +105,7 @@ function Calendar({ selected, rangeEnd, min, max, onPick, onToday, onClear }: {
               <button key={name} type="button" onClick={() => { setView((v) => ({ ...v, m: i })); setMode("days"); }}
                 className={cn("h-10 cursor-pointer rounded-xl text-[13px] font-medium transition-colors",
                   i === view.m ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}>
-                {name.slice(0, 3)}
+                {t(name).slice(0, 3)}
               </button>
             ))}
           </div>
@@ -119,7 +123,7 @@ function Calendar({ selected, rangeEnd, min, max, onPick, onToday, onClear }: {
         <>
           <div className="grid grid-cols-7 pb-1">
             {WEEKDAYS.map((w, i) => (
-              <span key={w} className={cn("text-center text-[12px] font-semibold uppercase", i > 4 ? "text-label-3" : "text-muted-foreground")}>{w}</span>
+              <span key={w} className={cn("text-center text-[12px] font-semibold uppercase", i > 4 ? "text-label-3" : "text-muted-foreground")}>{t(w)}</span>
             ))}
           </div>
           <div className="grid grid-cols-7 gap-y-0.5" onMouseLeave={() => setHover(null)}>
@@ -136,7 +140,7 @@ function Calendar({ selected, rangeEnd, min, max, onPick, onToday, onClear }: {
                   band && "bg-tint-soft", isLo && "bg-[linear-gradient(90deg,transparent_50%,var(--tint-soft)_50%)]",
                   isHi && "bg-[linear-gradient(90deg,var(--tint-soft)_50%,transparent_50%)]")}>
                   <button type="button" disabled={!!disabled} onClick={() => onPick(d)} onMouseEnter={() => setHover(d)}
-                    aria-pressed={isSel} aria-label={formatDay(d)}
+                    aria-pressed={isSel} aria-label={formatDay(d, true, t)}
                     className={cn("relative grid size-10 cursor-pointer place-items-center rounded-full text-[17px] tabular transition-colors",
                       isSel ? "bg-tint font-semibold text-white" : isToday ? "font-semibold text-tint-text hover:bg-field" : "hover:bg-field",
                       disabled && "cursor-default opacity-30 hover:bg-transparent")}>
@@ -153,10 +157,10 @@ function Calendar({ selected, rangeEnd, min, max, onPick, onToday, onClear }: {
         <div className="mt-2 flex items-center justify-between border-t border-separator/70 px-1 pt-2">
           {onToday ? (
             <button type="button" onClick={onToday} disabled={!!out(today)}
-              className="cursor-pointer rounded-lg px-2 py-1.5 text-[15px] font-medium text-tint-text active:opacity-60 disabled:opacity-30">Сегодня</button>
+              className="cursor-pointer rounded-lg px-2 py-1.5 text-[15px] font-medium text-tint-text active:opacity-60 disabled:opacity-30">{t("Сегодня")}</button>
           ) : <span />}
           {onClear ? (
-            <button type="button" onClick={onClear} className="cursor-pointer rounded-lg px-2 py-1.5 text-[15px] text-destructive active:opacity-60">Очистить</button>
+            <button type="button" onClick={onClear} className="cursor-pointer rounded-lg px-2 py-1.5 text-[15px] text-destructive active:opacity-60">{t("Очистить")}</button>
           ) : null}
         </div>
       ) : null}
@@ -186,6 +190,7 @@ export function DatePicker({ value, defaultValue, onChange, name, min, max, plac
   value?: string; defaultValue?: string; onChange?: (v: string) => void; name?: string; min?: string; max?: string;
   placeholder?: string; clearable?: boolean; required?: boolean; disabled?: boolean; className?: string; "aria-label"?: string;
 }) {
+  const t = useT();
   const [inner, setInner] = React.useState(defaultValue ?? "");
   const current = value ?? inner;
   const [open, setOpen] = React.useState(false);
@@ -196,9 +201,9 @@ export function DatePicker({ value, defaultValue, onChange, name, min, max, plac
   };
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger disabled={disabled} aria-label={ariaLabel} className={cn(triggerClass, "w-full", className)}>
+      <Popover.Trigger disabled={disabled} aria-label={ariaLabel ? t(ariaLabel) : undefined} className={cn(triggerClass, "w-full", className)}>
         <CalendarDays className="size-[18px] shrink-0 text-tint-text" />
-        <span className={cn("truncate tabular", !current && "text-muted-foreground")}>{current ? formatDay(current) : placeholder}</span>
+        <span className={cn("truncate tabular", !current && "text-muted-foreground")}>{current ? formatDay(current, true, t) : t(placeholder)}</span>
       </Popover.Trigger>
       {name ? <input type="hidden" name={name} value={current} required={required} /> : null}
       <Panel>
@@ -213,6 +218,7 @@ export function DatePicker({ value, defaultValue, onChange, name, min, max, plac
 export function DateRangePicker({ from, to, onChange, min, max, className, "aria-label": ariaLabel }: {
   from: string; to: string; onChange: (from: string, to: string) => void; min?: string; max?: string; className?: string; "aria-label"?: string;
 }) {
+  const t = useT();
   const [open, setOpen] = React.useState(false);
   const [draft, setDraft] = React.useState<{ from: string; to: string } | null>(null);
   const cur = draft ?? { from, to };
@@ -228,13 +234,13 @@ export function DateRangePicker({ from, to, onChange, min, max, className, "aria
   };
   return (
     <Popover.Root open={open} onOpenChange={(v) => { setOpen(v); if (!v) setDraft(null); }}>
-      <Popover.Trigger aria-label={ariaLabel ?? "Период"} className={cn(triggerClass, className)}>
+      <Popover.Trigger aria-label={t(ariaLabel ?? "Период")} className={cn(triggerClass, className)}>
         <CalendarDays className="size-[18px] shrink-0 text-tint-text" />
-        <span className="truncate tabular">{formatRange(from, to)}</span>
+        <span className="truncate tabular">{formatRange(from, to, t)}</span>
       </Popover.Trigger>
       <Panel>
         <p className="mb-2 px-2 text-[13px] text-muted-foreground">
-          {draft && !draft.to ? "Выберите последний день" : "Выберите первый день периода"}
+          {draft && !draft.to ? t("Выберите последний день") : t("Выберите первый день периода")}
         </p>
         <Calendar selected={cur.from} rangeEnd={draft ? draft.to : cur.to} min={min} max={max} onPick={pick}
           onToday={() => { const t = todayIso(); setDraft(null); setOpen(false); onChange(t, t); }} />

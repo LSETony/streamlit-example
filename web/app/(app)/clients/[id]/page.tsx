@@ -4,8 +4,11 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Client, Membership, RiskRow } from "@/lib/types";
 import { ClientCard } from "./client-card";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Карточка клиента" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Карточка клиента") };
+}
 
 export default async function ClientPage({ params, searchParams }: PageProps<"/clients/[id]">) {
   const ctx = await requireStaff();

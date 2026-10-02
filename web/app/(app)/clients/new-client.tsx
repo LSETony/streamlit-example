@@ -3,18 +3,20 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox, Field, Input, NativeSelect } from "@/components/ui/input";
 import { Alert } from "@/components/ui/misc";
 import { createClientAction, findByPhone, type DuplicateClient } from "@/app/actions/clients";
 import { normalizePhone } from "@/lib/phone";
+import { useT } from "@/lib/i18n/client";
 
 export const SOURCES = ["Instagram", "ВКонтакте", "Яндекс Карты", "2ГИС", "Сайт", "Рекомендация", "Вывеска", "Другое"];
 
 /** FR-2.2 Создание клиента за 30 секунд */
 export function NewClientButton({ disabled, autoOpen, className }: { disabled?: boolean; autoOpen?: boolean; className?: string }) {
+  const t = useT();
   const router = useRouter();
   const [open, setOpenState] = useState(!!autoOpen && !disabled);
   // открыто по ссылке /clients?new=1 — после закрытия убираем параметр из адреса
@@ -57,7 +59,7 @@ export function NewClientButton({ disabled, autoOpen, className }: { disabled?: 
             <Field
               label="Телефон"
               error={dup ? undefined : null}
-              hint={dup ? <span className="text-warning-foreground">Уже есть клиент с этим телефоном: <Link className="font-medium underline" href={`/clients/${dup.id}`} onClick={() => setOpenState(false)}>{dup.full_name}</Link></span> : undefined}
+              hint={dup ? <span className="text-warning-foreground">{t("Уже есть клиент с этим телефоном:")} <Link className="font-medium underline" href={`/clients/${dup.id}`} onClick={() => setOpenState(false)}>{dup.full_name}</Link></span> : undefined}
             >
               <Input name="phone" type="tel" inputMode="tel" required placeholder="+7 900 000-00-00" onBlur={(e) => checkPhone(e.target.value)} />
             </Field>
