@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import { money } from "@/lib/format";
 import type { Gym, Plan } from "@/lib/types";
 import { PLAN_KIND_LABEL, ROLE_LABEL, type Role } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 const STEPS = ["Зал", "Часы работы", "Зоны", "Тарифы", "Сотрудники", "Готово"];
 
@@ -32,6 +33,7 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
   step: number; gym: Gym | null; zones: { id: string; name: string; capacity: number }[]; plans: Plan[];
   staff: { id: string; full_name: string; email: string; role: string }[]; email: string;
 }) {
+  const t = useT();
   const router = useRouter();
   const go = (s: number) => router.push(`/onboarding?step=${s}`);
   return (
@@ -42,7 +44,7 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
             <span className={cn("grid size-6 place-items-center rounded-full text-xs", i < step ? "bg-tint-soft text-tint-text" : i === step ? "bg-tint text-white" : "bg-field")}>
               {i < step ? <Check className="size-3.5" /> : i + 1}
             </span>
-            {s}
+            {t(s)}
           </li>
         ))}
       </ol>
@@ -68,7 +70,7 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
         <StepCard title="Пригласите сотрудников" description="Администраторы и ресепшен получат письмо со ссылкой. Можно сделать позже в разделе «Сотрудники».">
           <InviteForm compact onDone={() => router.refresh()} />
           <ul className="grid gap-1 text-sm">
-            {staff.map((s) => <li key={s.id} className="flex justify-between rounded-2xl bg-field px-3 py-2"><span>{s.full_name} · {s.email}</span><span className="text-muted-foreground">{ROLE_LABEL[s.role as Role]}</span></li>)}
+            {staff.map((s) => <li key={s.id} className="flex justify-between rounded-2xl bg-field px-3 py-2"><span>{s.full_name} · {s.email}</span><span className="text-muted-foreground">{t(ROLE_LABEL[s.role as Role])}</span></li>)}
           </ul>
           <Nav onBack={() => go(3)} onNext={() => go(5)} />
         </StepCard>
@@ -80,11 +82,12 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
 }
 
 function CreateGymStep({ email }: { email: string }) {
+  const t = useT();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   return (
-    <StepCard title="Расскажите о зале" description={`Вы входите как ${email}. Настройка займёт около 15 минут.`}>
+    <StepCard title="Расскажите о зале" description={t("Вы входите как {email}. Настройка займёт около 15 минут.", { email })}>
       <form className="grid gap-4" action={(f) => start(async () => {
         const r = await createGym(f);
         if (!r.ok) return setError(r.error.message);
@@ -97,17 +100,18 @@ function CreateGymStep({ email }: { email: string }) {
           <Field label="Адрес"><Input name="address" placeholder="Москва, ул. Спортивная, 1" /></Field>
           <Field label="Телефон зала"><Input name="phone" type="tel" /></Field>
           <Field label="Часовой пояс">
-            <NativeSelect name="timezone" defaultValue="Europe/Moscow">{TIMEZONES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</NativeSelect>
+            <NativeSelect name="timezone" defaultValue="Europe/Moscow">{TIMEZONES.map(([v, l]) => <option key={v} value={v}>{t(l)}</option>)}</NativeSelect>
           </Field>
         </div>
         {error ? <Alert variant="danger">{error}</Alert> : null}
-        <div><Button type="submit" size="lg" disabled={pending}>{pending ? "Создаём…" : "Создать зал"}</Button></div>
+        <div><Button type="submit" size="lg" disabled={pending}>{pending ? t("Создаём…") : t("Создать зал")}</Button></div>
       </form>
     </StepCard>
   );
 }
 
 function PlansStep({ plans, onBack, onNext }: { plans: Plan[]; onBack: () => void; onNext: () => void }) {
+  const tr = useT();
   const router = useRouter();
   const [dialog, setDialog] = useState(false);
   const [pending, start] = useTransition();
@@ -115,7 +119,7 @@ function PlansStep({ plans, onBack, onNext }: { plans: Plan[]; onBack: () => voi
   return (
     <StepCard title="Тарифы" description="Добавьте готовые шаблоны и поправьте цены или создайте свои. Цены можно менять в любой момент.">
       <div className="flex flex-wrap gap-2">
-        {TEMPLATES.filter((t) => !existing.has(t.name)).map((t) => (
+        {TEMPLATES.map((t) => ({ ...t, name: tr(t.name) })).filter((t) => !existing.has(t.name)).map((t) => (
           <Button key={t.name} variant="outline" size="sm" disabled={pending} onClick={() => start(async () => {
             const r = await createTemplatePlans([t]);
             if (!r.ok) toast.error(r.error.message); else router.refresh();
@@ -127,12 +131,12 @@ function PlansStep({ plans, onBack, onNext }: { plans: Plan[]; onBack: () => voi
         <ul className="grid gap-2">
           {plans.map((p) => (
             <li key={p.id} className="flex items-center justify-between rounded-2xl bg-field px-4 py-3">
-              <span><b>{p.name}</b> <span className="text-sm text-muted-foreground">· {PLAN_KIND_LABEL[p.kind]} · {p.duration_days} дн.{p.visits_limit ? ` · ${p.visits_limit} виз.` : ""}</span></span>
+              <span><b>{p.name}</b> <span className="text-sm text-muted-foreground">· {tr(PLAN_KIND_LABEL[p.kind])} · {p.duration_days} {tr("дн.")}{p.visits_limit ? ` · ${p.visits_limit} ${tr("виз.")}` : ""}</span></span>
               <span className="font-semibold tabular">{money(p.price)}</span>
             </li>
           ))}
         </ul>
-      ) : <p className="text-sm text-muted-foreground">Пока ни одного тарифа.</p>}
+      ) : <p className="text-sm text-muted-foreground">{tr("Пока ни одного тарифа.")}</p>}
       <Nav onBack={onBack} onNext={onNext} nextDisabled={plans.length === 0} nextHint={plans.length === 0 ? "Добавьте хотя бы один тариф" : undefined} />
       {dialog ? <PlanDialog plan={null} onClose={() => { setDialog(false); router.refresh(); }} /> : null}
     </StepCard>
@@ -140,6 +144,7 @@ function PlansStep({ plans, onBack, onNext }: { plans: Plan[]; onBack: () => voi
 }
 
 function FinishStep() {
+  const t = useT();
   const router = useRouter();
   const [pending, start] = useTransition();
   const finish = (to: string) => start(async () => {
@@ -154,7 +159,7 @@ function FinishStep() {
         <Button size="lg" onClick={() => finish("/clients/import")} disabled={pending}>Импортировать клиентов</Button>
         <Button size="lg" variant="outline" onClick={() => finish("/dashboard")} disabled={pending}>Перейти в кабинет</Button>
       </div>
-      <p className="text-sm text-muted-foreground">Позже всё можно изменить в разделе <Link href="/settings" className="underline">Настройки зала</Link>.</p>
+      <p className="text-sm text-muted-foreground">{t("Позже всё можно изменить в разделе")} <Link href="/settings" className="underline">{t("Настройки зала")}</Link>.</p>
     </StepCard>
   );
 }
@@ -169,11 +174,12 @@ function StepCard({ title, description, children }: { title: string; description
 }
 
 function Nav({ onBack, onNext, nextDisabled, nextHint }: { onBack: () => void; onNext: () => void; nextDisabled?: boolean; nextHint?: string }) {
+  const t = useT();
   return (
     <div className="flex items-center justify-between gap-2 border-t border-border pt-4">
       <Button variant="ghost" onClick={onBack}>Назад</Button>
       <div className="flex items-center gap-3">
-        {nextHint ? <span className="text-xs text-muted-foreground">{nextHint}</span> : null}
+        {nextHint ? <span className="text-xs text-muted-foreground">{t(nextHint)}</span> : null}
         <Button onClick={onNext} disabled={nextDisabled}>Дальше</Button>
       </div>
     </div>

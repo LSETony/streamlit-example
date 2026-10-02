@@ -1,20 +1,23 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { dateShort } from "@/lib/format";
 import type { MembershipState, MembershipStatus, PaymentStatus, RiskReason } from "@/lib/types";
 import { RISK_LABEL } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 export function MembershipStateBadge({ state, endsOn }: { state: MembershipState; endsOn?: string | null }) {
+  const t = useT();
   switch (state) {
     case "active":
-      return <Badge variant="success">до {dateShort(endsOn)}</Badge>;
+      return <Badge variant="success">{t("до {date}", { date: dateShort(endsOn, t.intl) })}</Badge>;
     case "frozen":
-      return <Badge variant="info">Заморожен</Badge>;
+      return <Badge variant="info">{t("Заморожен")}</Badge>;
     case "future":
-      return <Badge variant="outline">Начнётся</Badge>;
+      return <Badge variant="outline">{t("Начнётся")}</Badge>;
     case "expired":
-      return <Badge variant="danger">Закончился</Badge>;
+      return <Badge variant="danger">{t("Закончился")}</Badge>;
     default:
-      return <Badge variant="outline">Нет абонемента</Badge>;
+      return <Badge variant="outline">{t("Нет абонемента")}</Badge>;
   }
 }
 
@@ -27,8 +30,9 @@ const STATUS: Record<MembershipStatus, { label: string; variant: "success" | "in
 };
 
 export function MembershipStatusBadge({ status }: { status: MembershipStatus }) {
+  const t = useT();
   const s = STATUS[status];
-  return <Badge variant={s.variant}>{s.label}</Badge>;
+  return <Badge variant={s.variant}>{t(s.label)}</Badge>;
 }
 
 const PAY: Record<PaymentStatus, { label: string; variant: "success" | "warning" | "danger" | "outline" }> = {
@@ -39,13 +43,14 @@ const PAY: Record<PaymentStatus, { label: string; variant: "success" | "warning"
 };
 
 export function PaymentStatusBadge({ status, isRefund }: { status: PaymentStatus; isRefund?: boolean }) {
+  const t = useT();
   if (isRefund) {
-    return status === "refunded" ? <Badge variant="danger">Возврат</Badge>
-      : status === "pending" ? <Badge variant="warning">Возврат в процессе</Badge>
-      : <Badge variant="outline">Возврат не прошёл</Badge>;
+    return status === "refunded" ? <Badge variant="danger">{t("Возврат")}</Badge>
+      : status === "pending" ? <Badge variant="warning">{t("Возврат в процессе")}</Badge>
+      : <Badge variant="outline">{t("Возврат не прошёл")}</Badge>;
   }
   const s = PAY[status];
-  return <Badge variant={s.variant}>{s.label}</Badge>;
+  return <Badge variant={s.variant}>{t(s.label)}</Badge>;
 }
 
 const RISK_VARIANT: Record<RiskReason, "danger" | "warning" | "info" | "default"> = {
@@ -53,5 +58,6 @@ const RISK_VARIANT: Record<RiskReason, "danger" | "warning" | "info" | "default"
 };
 
 export function RiskBadge({ reason }: { reason: RiskReason }) {
-  return <Badge variant={RISK_VARIANT[reason]}>{RISK_LABEL[reason]}</Badge>;
+  const t = useT();
+  return <Badge variant={RISK_VARIANT[reason]}>{t(RISK_LABEL[reason])}</Badge>;
 }

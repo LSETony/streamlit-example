@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Archive, ArchiveRestore, Pencil, Plus, Smartphone, Tags } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
 import { cn } from "@/lib/utils";
@@ -12,11 +12,13 @@ import { Field, Input, NativeSelect, Textarea } from "@/components/ui/input";
 import { SwitchRow } from "@/components/ui/switch";
 import { Alert, EmptyState } from "@/components/ui/misc";
 import { savePlan, setPlanActive } from "@/app/actions/plans";
-import { money, plural } from "@/lib/format";
+import { money } from "@/lib/format";
 import type { Plan, PlanKind } from "@/lib/types";
 import { PLAN_KIND_LABEL } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 export function PlansManager({ plans, readOnly }: { plans: Plan[]; readOnly: boolean }) {
+  const t = useT();
   const router = useRouter();
   const [edit, setEdit] = useState<Plan | "new" | null>(null);
   const [, start] = useTransition();
@@ -27,18 +29,18 @@ export function PlansManager({ plans, readOnly }: { plans: Plan[]; readOnly: boo
       <div className="flex flex-1 flex-col gap-5 p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
-            <span className="text-xs font-medium uppercase tracking-[0.06em] text-muted-foreground">{PLAN_KIND_LABEL[p.kind]}</span>
+            <span className="text-xs font-medium uppercase tracking-[0.06em] text-muted-foreground">{t(PLAN_KIND_LABEL[p.kind])}</span>
             <p className="text-lg font-semibold leading-tight">{p.name}</p>
           </div>
           {p.sold_online ? (
-            <span title="Продаётся в приложении" className="grid size-8 place-items-center rounded-full bg-brand-soft text-brand-ink"><Smartphone className="size-4" /></span>
+            <span title={t("Продаётся в приложении")} className="grid size-8 place-items-center rounded-full bg-brand-soft text-brand-ink"><Smartphone className="size-4" /></span>
           ) : null}
         </div>
         <p className="text-[28px] font-semibold leading-none tracking-tight tabular">{money(p.price)}</p>
         <dl className="grid grid-cols-3 gap-2 text-sm">
-          <Meta label="Срок" value={`${p.duration_days} ${plural(p.duration_days, "день", "дня", "дней")}`} />
-          <Meta label="Визиты" value={p.visits_limit ? String(p.visits_limit) : "∞"} />
-          <Meta label="Заморозка" value={p.freeze_days_max ? `${p.freeze_days_max} дн.` : "—"} />
+          <Meta label={t("Срок")} value={`${p.duration_days} ${t.n(p.duration_days, "день|дня|дней")}`} />
+          <Meta label={t("Визиты")} value={p.visits_limit ? String(p.visits_limit) : "∞"} />
+          <Meta label={t("Заморозка")} value={p.freeze_days_max ? `${p.freeze_days_max} ${t("дн.")}` : "—"} />
         </dl>
       </div>
       <div className="flex items-center justify-between border-t border-border bg-surface-2 px-3 py-2">
@@ -59,14 +61,14 @@ export function PlansManager({ plans, readOnly }: { plans: Plan[]; readOnly: boo
       />
       {plans.length === 0 ? (
         <EmptyState icon={<Tags />} title="Тарифов пока нет" action={<Button onClick={() => setEdit("new")}><Plus /> Создать тариф</Button>}>
-          Тарифы трёх типов: на срок, на число визитов и безлимит.
+          {t("Тарифы трёх типов: на срок, на число визитов и безлимит.")}
         </EmptyState>
       ) : (
         <div className="grid gap-8">
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{active.map(card)}</div>
           {archived.length ? (
             <div className="grid gap-3">
-              <h2 className="text-sm font-medium text-muted-foreground">Архив · не продаются</h2>
+              <h2 className="text-sm font-medium text-muted-foreground">{t("Архив · не продаются")}</h2>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{archived.map(card)}</div>
             </div>
           ) : null}

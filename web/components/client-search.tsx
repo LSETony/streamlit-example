@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { phone as fmtPhone } from "@/lib/format";
 import type { ClientRow } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 /** Поиск клиента по ФИО или телефону (FR-2.1, FR-4.3) */
 export function ClientSearch({ gymId, onSelect, autoFocus, placeholder = "ФИО или телефон", className, size = "default", inline, onQueryChange }: {
@@ -16,6 +17,7 @@ export function ClientSearch({ gymId, onSelect, autoFocus, placeholder = "ФИО
   inline?: boolean;
   onQueryChange?: (q: string) => void;
 }) {
+  const t = useT();
   const [q, setQ] = useState("");
   const [items, setItems] = useState<ClientRow[]>([]);
   const [active, setActive] = useState(0);
@@ -76,7 +78,7 @@ export function ClientSearch({ gymId, onSelect, autoFocus, placeholder = "ФИО
       {q.trim().length >= 2 && (items.length > 0 || !loading) ? (
         <div className={cn(inline ? "mt-2 grid gap-0.5" : "glass-strong glass-rim absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl p-1.5")} role="listbox">
           {items.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-muted-foreground">Никого не нашли</p>
+            <p className="px-4 py-3 text-sm text-muted-foreground">{t("Никого не нашли")}</p>
           ) : items.map((c, i) => (
             <button
               key={c.id}
@@ -91,7 +93,7 @@ export function ClientSearch({ gymId, onSelect, autoFocus, placeholder = "ФИО
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-1.5 truncate font-medium">
                   {c.full_name}
-                  {c.in_app ? <Smartphone className="size-3.5 text-muted-foreground" aria-label="В приложении" /> : null}
+                  {c.in_app ? <Smartphone className="size-3.5 text-muted-foreground" aria-label={t("В приложении")} /> : null}
                 </span>
                 <span className="block text-xs text-muted-foreground tabular">{fmtPhone(c.phone)}</span>
               </span>

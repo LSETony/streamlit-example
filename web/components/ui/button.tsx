@@ -1,7 +1,9 @@
+"use client";
 import * as React from "react";
 import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { useTx } from "@/lib/i18n/client";
 
 /**
  * Кнопки в стиле iOS: капсула, высота 44 pt (минимальная зона касания), нажатие — лёгкое сжатие.
@@ -41,8 +43,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 export function Button({ className, variant, size, asChild = false, ...props }: ButtonProps) {
+  const tx = useTx();
   const Comp = asChild ? Slot.Root : "button";
-  return <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+  const { children, title, "aria-label": ariaLabel, ...rest } = props;
+  return (
+    <Comp className={cn(buttonVariants({ variant, size, className }))} title={tx(title) as string | undefined} aria-label={tx(ariaLabel) as string | undefined} {...rest}>
+      {tx(children)}
+    </Comp>
+  );
 }
 
 export { buttonVariants };

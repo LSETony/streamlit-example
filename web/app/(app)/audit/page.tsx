@@ -8,8 +8,12 @@ import { Button } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { dateTime, money } from "@/lib/format";
+import { getT } from "@/lib/i18n/server";
+import type { T } from "@/lib/i18n/core";
 
-export const metadata: Metadata = { title: "Журнал действий" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Журнал действий") };
+}
 
 const ENTITY: Record<string, string> = { memberships: "Абонемент", payments: "Оплата", freezes: "Заморозка", membership_plans: "Тариф", staff: "Сотрудник", gyms: "Настройки зала" };
 const ACTION: Record<string, string> = { insert: "создал(а)", update: "изменил(а)", delete: "удалил(а)" };
@@ -18,16 +22,16 @@ const FIELD: Record<string, string> = {
   freeze_days_used: "дни заморозки", active: "активен", role: "роль", name: "название", settings: "настройки", method: "способ",
 };
 
-function describe(entity: string, action: string, diff: Record<string, unknown> | null): string {
+function describe(t: T, entity: string, action: string, diff: Record<string, unknown> | null): string {
   if (!diff) return "";
   if (action === "update") {
     return Object.entries(diff).filter(([k]) => FIELD[k]).map(([k, v]) => {
       const [a, b] = v as [unknown, unknown];
       const f = (x: unknown) => (k === "price" || k === "price_paid" || k === "amount") && typeof x === "number" ? money(x) : k === "settings" ? "…" : String(x);
-      return `${FIELD[k]}: ${f(a)} → ${f(b)}`;
+      return `${t(FIELD[k])}: ${f(a)} → ${f(b)}`;
     }).join("; ");
   }
-  if (entity === "payments") return `${diff.refund_of_id ? "возврат" : "оплата"} ${money(diff.amount as number)} (${diff.method})`;
+  if (entity === "payments") return `${t(diff.refund_of_id ? "возврат" : "оплата")} ${money(diff.amount as number)} (${diff.method})`;
   if (entity === "memberships") return `«${diff.plan_name}» ${diff.starts_on} – ${diff.ends_on}`;
   if (entity === "freezes") return `${diff.from_date} – ${diff.to_date}`;
   if (entity === "membership_plans") return `«${diff.name}» ${money(diff.price as number)}`;
@@ -38,6 +42,7 @@ function describe(entity: string, action: string, diff: Record<string, unknown> 
 /** FR-1.4 Журнал действий: кто, когда и что изменил в абонементах и оплатах */
 export default async function AuditPage({ searchParams }: PageProps<"/audit">) {
   const ctx = await requireStaff(["owner"]);
+  const t = await getT();
   const sp = await searchParams;
   const page = Math.max(1, Number(sp.page) || 1);
   const entity = typeof sp.entity === "string" ? sp.entity : "";
@@ -64,9 +69,9 @@ export default async function AuditPage({ searchParams }: PageProps<"/audit">) {
               {rows.map((r) => (
                 <TR key={r.id}>
                   <TD className="whitespace-nowrap tabular">{dateTime(r.at, ctx.gym.timezone)}</TD>
-                  <TD>{r.actor_user_id ? names.get(r.actor_user_id) ?? "клиент (приложение)" : "система"}</TD>
-                  <TD className="whitespace-nowrap">{ACTION[r.action]} · {ENTITY[r.entity] ?? r.entity}</TD>
-                  <TD className="text-muted-foreground">{describe(r.entity, r.action, r.diff)}</TD>
+                  <TD>{r.actor_user_id ? names.get(r.actor_user_id) ?? t("клиент (приложение)") : t("система")}</TD>
+                  <TD className="whitespace-nowrap">{ACTION[r.action] ? t(ACTION[r.action]) : r.action} · {ENTITY[r.entity] ? t(ENTITY[r.entity]) : r.entity}</TD>
+                  <TD className="text-muted-foreground">{describe(t, r.entity, r.action, r.diff)}</TD>
                 </TR>
               ))}
             </TBody>

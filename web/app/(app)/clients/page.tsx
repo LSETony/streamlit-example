@@ -14,12 +14,16 @@ import type { ClientRow } from "@/lib/types";
 import { ClientFilters } from "./client-filters";
 import { NewClientButton } from "./new-client";
 import { ExportClientsButton } from "./export-button";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Клиенты" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Клиенты") };
+}
 const PAGE = 50;
 
 export default async function ClientsPage({ searchParams }: PageProps<"/clients">) {
   const ctx = await requireStaff();
+  const t = await getT();
   const sp = await searchParams;
   const q = typeof sp.q === "string" ? sp.q.trim() : "";
   const state = typeof sp.state === "string" ? sp.state : "";
@@ -61,7 +65,7 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
     <>
       <PageHeader
         title="Клиенты"
-        description={`${total} ${total === 1 ? "клиент" : "клиентов"}${q || state || tag || risk ? " по фильтру" : ""}`}
+        description={`${total} ${t.n(total, "клиент|клиента|клиентов")}${q || state || tag || risk ? ` ${t("по фильтру")}` : ""}`}
         actions={
           <>
             {/* на телефоне импорт и выгрузка не нужны, а «Новый клиент» — кнопка «+» в навигационной панели */}
@@ -93,7 +97,7 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-1.5 truncate text-[17px] font-medium leading-[22px]">
                       <span className="truncate">{c.full_name}</span>
-                      {c.in_app ? <Smartphone className="size-3.5 shrink-0 text-muted-foreground" aria-label="Подключён к приложению" /> : null}
+                      {c.in_app ? <Smartphone className="size-3.5 shrink-0 text-muted-foreground" aria-label={t("Подключён к приложению")} /> : null}
                     </span>
                     <span className="block truncate text-[15px] leading-5 text-muted-foreground tabular">{phone(c.phone)}</span>
                   </span>
@@ -120,25 +124,25 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
                     <Link href={`/clients/${c.id}`} className="flex items-center gap-3 after:absolute after:inset-0">
                       <Avatar name={c.full_name} className="size-8 text-xs" />
                       <span className="font-medium">{c.full_name}</span>
-                      {c.in_app ? <Smartphone className="size-3.5 text-muted-foreground" aria-label="Подключён к приложению" /> : null}
+                      {c.in_app ? <Smartphone className="size-3.5 text-muted-foreground" aria-label={t("Подключён к приложению")} /> : null}
                     </Link>
                   </TD>
                   <TD className="tabular whitespace-nowrap text-muted-foreground">{phone(c.phone)}</TD>
                   <TD>
                     <div className="flex flex-wrap items-center gap-2">
                       <MembershipStateBadge state={c.membership_state} endsOn={c.membership_ends_on} />
-                      {c.plan_name ? <span className="hidden text-xs text-muted-foreground sm:inline">{c.plan_name}{c.visits_left !== null ? ` · ${c.visits_left} виз.` : ""}</span> : null}
+                      {c.plan_name ? <span className="hidden text-xs text-muted-foreground sm:inline">{c.plan_name}{c.visits_left !== null ? ` · ${c.visits_left} ${t("виз.")}` : ""}</span> : null}
                     </div>
                   </TD>
                   <TD className="hidden whitespace-nowrap text-muted-foreground md:table-cell">{c.last_visit_at ? dateTime(c.last_visit_at, ctx.gym.timezone) : "—"}</TD>
-                  <TD className="hidden text-muted-foreground lg:table-cell">{c.source ?? "—"}</TD>
+                  <TD className="hidden text-muted-foreground lg:table-cell">{c.source ? t(c.source) : "—"}</TD>
                 </TR>
               ))}
             </TBody>
           </Table>
           {total > PAGE ? (
             <div className="flex items-center justify-between border-t border-border px-4 py-3 text-sm">
-              <span className="text-muted-foreground">{(page - 1) * PAGE + 1}–{Math.min(page * PAGE, total)} из {total}</span>
+              <span className="text-muted-foreground">{(page - 1) * PAGE + 1}–{Math.min(page * PAGE, total)} {t("из")} {total}</span>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" asChild disabled={page <= 1}>
                   {page > 1 ? <Link href={pageHref(page - 1)}>Назад</Link> : <span>Назад</span>}

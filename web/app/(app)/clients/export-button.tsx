@@ -1,16 +1,18 @@
 "use client";
 import { useState } from "react";
 import { Download } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { downloadXlsx } from "@/lib/excel";
 import type { ClientRow } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 const STATE: Record<string, string> = { active: "Действует", frozen: "Заморожен", future: "Начнётся", expired: "Закончился", none: "Нет" };
 
 /** FR-2.5 Экспорт списка клиентов в Excel (с текущими фильтрами) */
 export function ExportClientsButton({ gymId, filters }: { gymId: string; filters: { q: string; state: string; tag: string; risk: boolean } }) {
+  const t = useT();
   const [busy, setBusy] = useState(false);
   async function run() {
     setBusy(true);
@@ -34,11 +36,11 @@ export function ExportClientsButton({ gymId, filters }: { gymId: string; filters
         if (!data || data.length < 1000) break;
       }
       await downloadXlsx(
-        `клиенты-${new Date().toISOString().slice(0, 10)}.xlsx`,
-        ["ФИО", "Телефон", "Email", "Абонемент", "Статус", "Действует до", "Осталось визитов", "Последний визит", "Источник", "Теги", "В приложении"],
+        `${t("клиенты")}-${new Date().toISOString().slice(0, 10)}.xlsx`,
+        ["ФИО", "Телефон", "Email", "Абонемент", "Статус", "Действует до", "Осталось визитов", "Последний визит", "Источник", "Теги", "В приложении"].map((h) => t(h)),
         all.map((c) => [
-          c.full_name, c.phone, c.email, c.plan_name, STATE[c.membership_state], c.membership_ends_on,
-          c.visits_left, c.last_visit_at ? new Date(c.last_visit_at) : null, c.source, c.tags.join(", "), c.in_app ? "да" : "нет",
+          c.full_name, c.phone, c.email, c.plan_name, t(STATE[c.membership_state]), c.membership_ends_on,
+          c.visits_left, c.last_visit_at ? new Date(c.last_visit_at) : null, c.source, c.tags.join(", "), c.in_app ? t("да") : t("нет"),
         ]),
         [28, 16, 24, 20, 14, 14, 10, 16, 16, 20, 12],
       );

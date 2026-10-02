@@ -5,8 +5,11 @@ import { getStaffContext, getUser, homeFor } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Plan } from "@/lib/types";
 import { Wizard } from "./wizard";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Настройка зала" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Настройка зала") };
+}
 
 /** FR-1.2 Мастер первой настройки: зал, часы, зоны, тарифы, сотрудники */
 export default async function OnboardingPage({ searchParams }: PageProps<"/onboarding">) {

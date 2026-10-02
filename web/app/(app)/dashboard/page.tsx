@@ -7,15 +7,18 @@ import { Alert } from "@/components/ui/misc";
 import { RiskBadge } from "@/components/status";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { addDays, date, money, plural } from "@/lib/format";
+import { addDays, date, money } from "@/lib/format";
 import type { Dashboard, RiskReason } from "@/lib/types";
 import { PeriodPicker } from "./period-picker";
 import { Heatmap } from "@/components/charts/heatmap";
 import { ColumnChart } from "@/components/charts/column-chart";
 import { BarList } from "@/components/charts/bar-list";
 import { Delta } from "@/components/charts/delta";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Дашборд" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Дашборд") };
+}
 
 function resolvePeriod(p: string | undefined, today: string, from?: string, to?: string): { from: string | null; to: string | null; key: string } {
   const monthStart = today.slice(0, 8) + "01";
@@ -35,6 +38,7 @@ function resolvePeriod(p: string | undefined, today: string, from?: string, to?:
 
 export default async function DashboardPage({ searchParams }: PageProps<"/dashboard">) {
   const ctx = await requireStaff(["owner", "admin"]);
+  const t = await getT();
   const sp = await searchParams;
   const period = resolvePeriod(sp.p as string | undefined, ctx.today, sp.from as string | undefined, sp.to as string | undefined);
   const supabase = await createClient();
@@ -44,7 +48,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
     supabase.from("v_client_risk").select("reason").eq("gym_id", ctx.gym.id),
     supabase.rpc("risk_returned_stats", { p_gym: ctx.gym.id }),
   ]);
-  if (kpiRes.error) return <Alert variant="danger">Не удалось загрузить дашборд: {kpiRes.error.message}</Alert>;
+  if (kpiRes.error) return <Alert variant="danger">{t("Не удалось загрузить дашборд:")} {kpiRes.error.message}</Alert>;
   const k = kpiRes.data as Dashboard;
   const c = k.current;
   const pv = k.previous;
@@ -58,23 +62,23 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
     <>
       <PageHeader
         title="Дашборд"
-        description={`${date(k.period.from)} – ${date(k.period.to)} · сравнение с ${prevLabel}`}
+        description={`${date(k.period.from)} – ${date(k.period.to)} · ${t("сравнение с {period}", { period: prevLabel })}`}
         actions={<PeriodPicker current={period.key} from={period.from ?? k.period.from} to={period.to ?? k.period.to} />}
       />
 
       <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
         <Card variant="hero" className="flex flex-col justify-between gap-6 p-7">
           <div className="grid gap-2">
-            <span className="text-sm text-muted-foreground">Выручка</span>
+            <span className="text-sm text-muted-foreground">{t("Выручка")}</span>
             <span className="whitespace-nowrap text-[clamp(2.25rem,10.5vw,3.75rem)] font-semibold leading-none tracking-tight">{money(c.revenue)}</span>
-            <Delta current={c.revenue} previous={pv.revenue} format={money} goodWhenUp label="к прошлому периоду" />
+            <Delta current={c.revenue} previous={pv.revenue} money goodWhenUp label={t("к прошлому периоду")} />
           </div>
           <div>
-            <p className="mb-2 text-xs text-muted-foreground">Выручка по месяцам, ₽</p>
+            <p className="mb-2 text-xs text-muted-foreground">{t("Выручка по месяцам, ₽")}</p>
             <ColumnChart
               data={((monthly.data ?? []) as { month: string; revenue: number }[]).map((m) => ({
                 key: m.month,
-                label: new Intl.DateTimeFormat("ru-RU", { month: "short", timeZone: "UTC" }).format(new Date(m.month.slice(0, 10) + "T00:00:00Z")).replace(".", ""),
+                label: new Intl.DateTimeFormat(t.intl, { month: "short", timeZone: "UTC" }).format(new Date(m.month.slice(0, 10) + "T00:00:00Z")).replace(".", ""),
                 value: m.revenue / 100,
               }))}
               unit="₽"
@@ -84,18 +88,18 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
         </Card>
 
         <div className="grid grid-cols-2 gap-4">
-          <Tile label="Активные клиенты" value={c.active_clients.toLocaleString("ru-RU")}
+          <Tile label={t("Активные клиенты")} value={c.active_clients.toLocaleString(t.intl)}
             delta={<Delta current={c.active_clients} previous={pv.active_clients} goodWhenUp />}
-            hint="Абонемент действует или заморожен на конец периода" />
-          <Tile label="Процент продления" value={c.renewal_rate === null ? "—" : `${Number(c.renewal_rate).toLocaleString("ru-RU")}%`}
+            hint={t("Абонемент действует или заморожен на конец периода")} />
+          <Tile label={t("Процент продления")} value={c.renewal_rate === null ? "—" : `${Number(c.renewal_rate).toLocaleString(t.intl)}%`}
             delta={c.renewal_rate !== null && pv.renewal_rate !== null ? <Delta current={c.renewal_rate} previous={pv.renewal_rate} goodWhenUp points /> : null}
-            hint={`Продлили ${c.renewal_renewed} из ${c.renewal_ended} закончившихся`} />
-          <Tile label="Отток" value={c.churn.toLocaleString("ru-RU")}
+            hint={t("Продлили {a} из {b} закончившихся", { a: c.renewal_renewed, b: c.renewal_ended })} />
+          <Tile label={t("Отток")} value={c.churn.toLocaleString(t.intl)}
             delta={<Delta current={c.churn} previous={pv.churn} goodWhenUp={false} />}
-            hint="Не продлили абонемент 14 дней" />
-          <Tile label="Новые клиенты" value={c.new_clients.toLocaleString("ru-RU")}
+            hint={t("Не продлили абонемент 14 дней")} />
+          <Tile label={t("Новые клиенты")} value={c.new_clients.toLocaleString(t.intl)}
             delta={<Delta current={c.new_clients} previous={pv.new_clients} goodWhenUp />}
-            hint="Купили первый абонемент" />
+            hint={t("Купили первый абонемент")} />
         </div>
       </div>
 
@@ -108,7 +112,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
             </div>
             <div className="shrink-0 text-right">
               <p className="whitespace-nowrap text-3xl font-semibold tabular">{occ.now}{occ.capacity ? <span className="text-base font-normal text-muted-foreground"> / {occ.capacity}</span> : null}</p>
-              <p className="text-xs text-muted-foreground">сейчас в зале{occ.load_pct !== null ? ` · ${occ.load_pct}%` : ""}</p>
+              <p className="text-xs text-muted-foreground">{t("сейчас в зале")}{occ.load_pct !== null ? ` · ${occ.load_pct}%` : ""}</p>
             </div>
           </CardHeader>
           <CardContent>
@@ -120,7 +124,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
           <Card>
             <CardHeader className="flex-row items-center justify-between">
               <CardTitle>В зоне риска</CardTitle>
-              <Link href="/risk" className="flex items-center gap-1 text-sm font-medium hover:underline">{riskTotal} {plural(riskTotal, "клиент", "клиента", "клиентов")} <ArrowRight className="size-4" /></Link>
+              <Link href="/risk" className="flex items-center gap-1 text-sm font-medium hover:underline">{riskTotal} {t.n(riskTotal, "клиент|клиента|клиентов")} <ArrowRight className="size-4" /></Link>
             </CardHeader>
             <CardContent className="grid gap-3">
               <div className="flex flex-wrap gap-2">
@@ -131,7 +135,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
                 ))}
               </div>
               <p className="text-sm text-muted-foreground">
-                За 30 дней связались с <b className="text-foreground">{ret.contacted}</b>, вернулись{" "}
+                {t("За 30 дней связались с")} <b className="text-foreground">{ret.contacted}</b>, {t("вернулись")}{" "}
                 <b className="text-foreground">{ret.returned}</b>{ret.contacted ? ` (${Math.round((ret.returned / ret.contacted) * 100)}%)` : ""}.
               </p>
             </CardContent>
@@ -140,8 +144,8 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
             <CardHeader><CardTitle>Новые клиенты по источникам</CardTitle></CardHeader>
             <CardContent>
               {c.new_by_source.length ? (
-                <BarList items={c.new_by_source.map((s) => ({ label: s.source, value: s.count }))} />
-              ) : <p className="text-sm text-muted-foreground">За период новых клиентов нет</p>}
+                <BarList items={c.new_by_source.map((s) => ({ label: t(s.source), value: s.count }))} />
+              ) : <p className="text-sm text-muted-foreground">{t("За период новых клиентов нет")}</p>}
             </CardContent>
           </Card>
         </div>

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { requireStaff } from "@/lib/auth";
 import { ReceptionScreen } from "./reception-screen";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Ресепшен" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Ресепшен") };
+}
 
 export default async function ReceptionPage() {
   const ctx = await requireStaff();

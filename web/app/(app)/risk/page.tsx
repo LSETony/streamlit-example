@@ -4,8 +4,11 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { RiskReason, RiskRow } from "@/lib/types";
 import { RiskList } from "./risk-list";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "В зоне риска" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("В зоне риска") };
+}
 
 export default async function RiskPage({ searchParams }: PageProps<"/risk">) {
   const ctx = await requireStaff();

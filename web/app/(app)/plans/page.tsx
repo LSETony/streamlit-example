@@ -3,8 +3,11 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Plan } from "@/lib/types";
 import { PlansManager } from "./plans-manager";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Тарифы" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Тарифы") };
+}
 
 export default async function PlansPage() {
   const ctx = await requireStaff(["owner"]);

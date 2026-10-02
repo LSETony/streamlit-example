@@ -4,8 +4,11 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Role } from "@/lib/types";
 import { StaffManager } from "./staff-manager";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Сотрудники" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Сотрудники") };
+}
 
 export default async function StaffPage() {
   const ctx = await requireStaff(["owner"]);

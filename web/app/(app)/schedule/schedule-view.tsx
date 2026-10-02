@@ -12,6 +12,7 @@ import { addDays, time, todayIn } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { CreateItemDialog } from "./create-item";
 import { ItemDialog } from "./item-dialog";
+import { useT } from "@/lib/i18n/client";
 
 export interface Item {
   id: string; title: string; kind: "class" | "personal" | "zone_slot"; zone_id: string | null; trainer_name: string | null;
@@ -36,6 +37,7 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
   view: "week" | "day"; viewChosen?: boolean; from: string; days: number; today: string; items: Item[]; zones: { id: string; name: string; capacity: number }[];
   gymId: string; timezone: string; canEdit: boolean; readOnly: boolean; hours?: Record<string, [string, string] | null>;
 }) {
+  const t = useT();
   const router = useRouter();
   const [create, setCreate] = useState<{ date: string; time: string } | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -78,8 +80,8 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
   const zoneName = (id: string | null) => zones.find((z) => z.id === id)?.name;
   const nowMin = minutesOfDay(new Date().toISOString(), timezone);
   const title = view === "week"
-    ? `${new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(from + "T00:00:00Z"))} – ${new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(addDays(from, 6) + "T00:00:00Z"))}`
-    : new Intl.DateTimeFormat("ru-RU", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(from + "T00:00:00Z"));
+    ? `${new Intl.DateTimeFormat(t.intl, { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(from + "T00:00:00Z"))} – ${new Intl.DateTimeFormat(t.intl, { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(addDays(from, 6) + "T00:00:00Z"))}`
+    : new Intl.DateTimeFormat(t.intl, { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(from + "T00:00:00Z"));
 
   return (
     <>
@@ -92,13 +94,13 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
               {(["day", "week"] as const).map((v) => (
                 <Link key={v} href={`/schedule?view=${v}&date=${v === "day" && view === "week" ? (dayList.includes(today) ? today : from) : from}`}
                   aria-current={view === v ? "page" : undefined} className={segmentClass}>
-                  {v === "day" ? "День" : "Неделя"}
+                  {v === "day" ? t("День") : t("Неделя")}
                 </Link>
               ))}
             </Segmented>
-            <Button variant="outline" size="icon" asChild><Link href={nav(-1)} aria-label="Назад"><ChevronLeft /></Link></Button>
+            <Button variant="outline" size="icon" asChild><Link href={nav(-1)} aria-label={t("Назад")}><ChevronLeft /></Link></Button>
             <Button variant="outline" asChild><Link href={`/schedule?view=${view}&date=${today}`}>Сегодня</Link></Button>
-            <Button variant="outline" size="icon" asChild><Link href={nav(1)} aria-label="Вперёд"><ChevronRight /></Link></Button>
+            <Button variant="outline" size="icon" asChild><Link href={nav(1)} aria-label={t("Вперёд")}><ChevronRight /></Link></Button>
             {canEdit ? <Button onClick={() => setCreate({ date: dayList.includes(today) ? today : from, time: "19:00" })}><Plus /> Занятие</Button> : null}
           </>
         }
@@ -111,7 +113,7 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
             {dayList.map((d, i) => (
               <Link key={d} href={`/schedule?view=day&date=${d}`}
                 className={cn("border-b border-l border-border px-3 py-2 text-sm hover:bg-muted/40", d === today && "bg-muted/60")}>
-                <span className="text-muted-foreground">{WEEKDAYS[(new Date(d + "T00:00:00Z").getUTCDay() + 6) % 7] ?? WEEKDAYS[i]}</span>{" "}
+                <span className="text-muted-foreground">{t(WEEKDAYS[(new Date(d + "T00:00:00Z").getUTCDay() + 6) % 7] ?? WEEKDAYS[i])}</span>{" "}
                 <span className={cn("font-semibold", d === today && "rounded-full bg-brand px-2 text-brand-foreground")}>{Number(d.slice(8))}</span>
               </Link>
             ))}
@@ -171,7 +173,7 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
         </div>
       </Card>
       <p className="mt-2 text-xs text-muted-foreground">
-        {canEdit ? "Двойной клик по сетке — новое занятие в это время. " : ""}Записи из приложения появляются автоматически.
+        {canEdit ? `${t("Двойной клик по сетке — новое занятие в это время.")} ` : ""}{t("Записи из приложения появляются автоматически.")}
       </p>
 
       {create ? (

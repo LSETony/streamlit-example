@@ -3,9 +3,11 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { date } from "@/lib/format";
 import { redirect } from "next/navigation";
+import { getT } from "@/lib/i18n/server";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
   const ctx = await requireStaff();
+  const t = await getT();
   if (!ctx.gym.onboarded_at && ctx.staff.role === "owner") redirect("/onboarding");
   const supabase = await createClient();
   const { count } = ctx.features.risk === false
@@ -14,8 +16,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
 
   const banner = ctx.readOnly ? (
     <div className="mx-4 mt-3 rounded-2xl border border-warning/40 bg-warning/15 px-4 py-2.5 text-center text-sm backdrop-blur-xl sm:mx-6 lg:mx-8">
-      Пробный период закончился {date(ctx.gym.trial_until)}. Кабинет работает в режиме «только чтение» — данные сохранены.
-      Чтобы продолжить работу, свяжитесь с командой core.
+      {t("Пробный период закончился {date}. Кабинет работает в режиме «только чтение» — данные сохранены. Чтобы продолжить работу, свяжитесь с командой core.", { date: date(ctx.gym.trial_until) })}
     </div>
   ) : null;
 

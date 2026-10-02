@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { signOut } from "@/app/actions/auth";
 import type { Role } from "@/lib/types";
 import { ROLE_LABEL } from "@/lib/types";
+import { useT, useTx } from "@/lib/i18n/client";
+import { LanguageSwitch } from "@/components/language-switch";
 
 const noSubscribe = () => () => {};
 
@@ -66,6 +68,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
   role: Role; features: Record<string, boolean>; gymId: string; gymName: string; userName: string; riskCount: number | null;
   readOnly: boolean; children: React.ReactNode; banner?: React.ReactNode;
 }) {
+  const tr = useT();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState(false);
@@ -124,10 +127,10 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
 
   // Боковая панель iPadOS: иконки цветом акцента, выбранный раздел залит акцентом
   const nav = (
-    <nav className="-mx-1 flex flex-1 flex-col gap-4 overflow-y-auto px-1" aria-label="Разделы">
+    <nav className="-mx-1 flex flex-1 flex-col gap-4 overflow-y-auto px-1" aria-label={tr("Разделы")}>
       {groups.map((g) => (
         <div key={g.title} className="grid gap-0.5">
-          <p className="px-3 pb-1 text-[13px] font-semibold text-muted-foreground">{g.title}</p>
+          <p className="px-3 pb-1 text-[13px] font-semibold text-muted-foreground">{tr(g.title)}</p>
           {g.items.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -143,7 +146,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
                 )}
               >
                 <Icon className={cn("size-5 shrink-0", active ? "text-white" : "text-tint-text")} strokeWidth={2} />
-                <span className="flex-1 truncate">{item.label}</span>
+                <span className="flex-1 truncate">{tr(item.label)}</span>
                 {badge(item.href, active)}
               </Link>
             );
@@ -160,26 +163,32 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
       </span>
       <span className="min-w-0">
         <span className="block truncate text-[15px] font-semibold">{gymName}</span>
-        <span className="block text-[13px] text-muted-foreground">Кабинет зала</span>
+        <span className="block text-[13px] text-muted-foreground">{tr("Кабинет зала")}</span>
       </span>
     </div>
   );
 
   const footer = (
-    <div className="flex items-center gap-2.5 rounded-2xl bg-field p-2">
+    <div className="grid gap-2 rounded-2xl bg-field p-2">
+    <div className="flex items-center gap-2.5">
       <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,#a5a5ab,#86868c)] text-[13px] font-semibold text-white">
         {userName.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-[15px] font-medium">{userName}</p>
-        <p className="text-[13px] text-muted-foreground">{ROLE_LABEL[role]}</p>
+        <p className="text-[13px] text-muted-foreground">{tr(ROLE_LABEL[role])}</p>
       </div>
       <ThemeToggle />
       <form action={signOut}>
-        <button className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field-hover active:opacity-60" aria-label="Выйти" title="Выйти">
+        <button className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field-hover active:opacity-60" aria-label={tr("Выйти")} title={tr("Выйти")}>
           <LogOut className="size-[18px]" />
         </button>
       </form>
+    </div>
+    <div className="flex items-center justify-between gap-2 border-t border-separator/60 px-1 pt-2">
+      <span className="text-[13px] text-muted-foreground">{tr("Язык")}</span>
+      <LanguageSwitch />
+    </div>
     </div>
   );
 
@@ -188,7 +197,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
       <div className="flex min-h-dvh">
         <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] lg:block">
           <div className="glass glass-rim relative flex h-full flex-col gap-5 rounded-[28px] px-3 pb-3 pt-6">
-            <Link href="/" className="px-3 text-foreground" aria-label="core. — на главную">
+            <Link href="/" className="px-3 text-foreground" aria-label={tr("core. — на главную")}>
               <Logo className="h-6" />
             </Link>
             {gymCard}
@@ -206,13 +215,13 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
         </main>
 
         {open ? (
-          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Меню">
+          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label={tr("Меню")}>
             <div className="absolute inset-0 bg-black/30 animate-in fade-in-0" onClick={() => setOpen(false)} />
             <div className="absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col gap-4 rounded-t-[32px] bg-popover px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-7 shadow-pop animate-in slide-in-from-bottom duration-300">
               <span aria-hidden className="absolute left-1/2 top-2 h-[5px] w-9 -translate-x-1/2 rounded-full bg-label-3" />
               <div className="flex items-center justify-between pl-2">
                 <span className="text-foreground"><Logo className="h-5" /></span>
-                <button onClick={() => setOpen(false)} className="grid size-[30px] place-items-center rounded-full bg-field text-muted-foreground" aria-label="Закрыть меню">
+                <button onClick={() => setOpen(false)} className="grid size-[30px] place-items-center rounded-full bg-field text-muted-foreground" aria-label={tr("Закрыть меню")}>
                   <X className="size-4" strokeWidth={2.5} />
                 </button>
               </div>
@@ -229,7 +238,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
         <div className={cn("glass glass-rim fixed left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full pl-5 pr-1.5 transition-transform duration-300 short:top-[max(0.5rem,env(safe-area-inset-top))] short:h-12 lg:hidden",
           barHidden && "-translate-y-[calc(100%+env(safe-area-inset-top)+1rem)]")}>
           <div className="relative min-w-0 flex-1">
-            <Link href="/" aria-label="core. — на главную"
+            <Link href="/" aria-label={tr("core. — на главную")}
               className={cn("block w-fit text-foreground transition-all duration-300", inlineTitle && "pointer-events-none -translate-y-2 opacity-0")}>
               <Logo className="h-5" />
             </Link>
@@ -239,25 +248,25 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
               {title}
             </p>
           </div>
-          <button onClick={() => setSearch(true)} className="grid size-11 place-items-center rounded-full text-tint-text hover:bg-field active:opacity-60" aria-label="Поиск">
+          <button onClick={() => setSearch(true)} className="grid size-11 place-items-center rounded-full text-tint-text hover:bg-field active:opacity-60" aria-label={tr("Поиск")}>
             <Search className="size-[22px]" />
           </button>
           {canAddClient ? (
-            <Link href="/clients?new=1" className="grid size-11 place-items-center rounded-full bg-tint text-white active:opacity-80" aria-label="Новый клиент">
+            <Link href="/clients?new=1" className="grid size-11 place-items-center rounded-full bg-tint text-white active:opacity-80" aria-label={tr("Новый клиент")}>
               <Plus className="size-6" />
             </Link>
           ) : null}
         </div>
-        <nav className="glass glass-rim fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] z-40 grid h-16 grid-flow-col auto-cols-fr items-center gap-1 rounded-full p-1 short:bottom-[max(0.5rem,env(safe-area-inset-bottom))] md:left-1/2 md:right-auto md:h-14 md:-translate-x-1/2 md:auto-cols-max md:p-1.5 short:left-1/2 short:right-auto short:h-12 short:-translate-x-1/2 short:auto-cols-max short:p-1 lg:hidden" aria-label="Основные разделы">
-          {tabs.map((t) => {
-            const active = isActive(t.href);
+        <nav className="glass glass-rim fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] z-40 grid h-16 grid-flow-col auto-cols-fr items-center gap-1 rounded-full p-1 short:bottom-[max(0.5rem,env(safe-area-inset-bottom))] md:left-1/2 md:right-auto md:h-14 md:-translate-x-1/2 md:auto-cols-max md:p-1.5 short:left-1/2 short:right-auto short:h-12 short:-translate-x-1/2 short:auto-cols-max short:p-1 lg:hidden" aria-label={tr("Основные разделы")}>
+          {tabs.map((tab) => {
+            const active = isActive(tab.href);
             return (
-              <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined}
+              <Link key={tab.href} href={tab.href} aria-current={active ? "page" : undefined}
                 className={cn("relative flex h-full flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold transition-colors active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px] short:flex-row short:gap-1.5 short:px-4 short:text-[13px]",
                   active ? "bg-field text-tint-text" : "text-foreground/80")}>
-                <t.icon className="size-[22px]" strokeWidth={active ? 2.25 : 1.9} />
-                {t.short ?? t.label}
-                {t.href === "/risk" && riskCount ? <span className="absolute right-[22%] top-2 size-2 rounded-full bg-brand md:right-2" aria-hidden /> : null}
+                <tab.icon className="size-[22px]" strokeWidth={active ? 2.25 : 1.9} />
+                {tr(tab.short ?? tab.label)}
+                {tab.href === "/risk" && riskCount ? <span className="absolute right-[22%] top-2 size-2 rounded-full bg-brand md:right-2" aria-hidden /> : null}
               </Link>
             );
           })}
@@ -265,7 +274,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
             className={cn("flex h-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-semibold active:opacity-60 md:flex-row md:gap-2 md:px-5 md:text-[15px] short:flex-row short:gap-1.5 short:px-4 short:text-[13px]",
               moreActive ? "bg-field text-tint-text" : "text-foreground/80")}>
             <LayoutGrid className="size-[22px]" strokeWidth={moreActive ? 2.25 : 1.9} />
-            Ещё
+            {tr("Ещё")}
           </button>
         </nav>
 
@@ -279,14 +288,14 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
           <button onClick={() => setSearch(true)}
             className="flex h-10 w-72 shrink-0 cursor-pointer items-center gap-2 rounded-full bg-field pl-3.5 pr-2 text-[15px] text-muted-foreground transition-colors hover:bg-field-hover">
             <Search className="size-[18px]" />
-            <span className="flex-1 text-left">Поиск</span>
+            <span className="flex-1 text-left">{tr("Поиск")}</span>
             <ShortcutHint />
           </button>
           {canCheckIn && !isActive("/reception") ? (
-            <Button variant="secondary" asChild className="h-10"><Link href="/reception"><ScanLine /> Отметить визит</Link></Button>
+            <Button variant="secondary" asChild className="h-10"><Link href="/reception"><ScanLine /> {tr("Отметить визит")}</Link></Button>
           ) : null}
           {canAddClient ? (
-            <Button asChild className="h-10"><Link href="/clients?new=1"><Plus /> Клиент</Link></Button>
+            <Button asChild className="h-10"><Link href="/clients?new=1"><Plus /> {tr("Клиент")}</Link></Button>
           ) : null}
         </div>
 
@@ -303,6 +312,7 @@ function ShortcutHint() {
 }
 
 function ThemeToggle() {
+  const tr = useT();
   const toggle = () => {
     const root = document.documentElement;
     const isDark = root.dataset.theme
@@ -317,7 +327,7 @@ function ThemeToggle() {
     }
   };
   return (
-    <button onClick={toggle} className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field-hover active:opacity-60" aria-label="Сменить тему" title="Сменить тему">
+    <button onClick={toggle} className="grid size-9 cursor-pointer place-items-center rounded-full text-tint-text hover:bg-field-hover active:opacity-60" aria-label={tr("Сменить тему")} title={tr("Сменить тему")}>
       <Sun className="hidden size-[18px] dark:block" />
       <Moon className="size-[18px] dark:hidden" />
     </button>
@@ -330,6 +340,10 @@ export function PageHeader({ title, description, actions, back }: {
 }) {
   const nav = useContext(NavTitleContext);
   const ref = useRef<HTMLHeadingElement>(null);
+  const tr = useT();
+  const tx = useTx();
+  title = tx(title);
+  description = tx(description);
   const text = typeof title === "string" ? title : null;
 
   useEffect(() => {
@@ -352,7 +366,7 @@ export function PageHeader({ title, description, actions, back }: {
       <div className="grid min-w-[min(100%,18rem)] flex-1 gap-1">
         {back ? (
           <Link href={back.href} className="-ml-1.5 inline-flex w-fit items-center gap-0.5 text-[17px] text-tint-text active:opacity-60">
-            <ChevronLeft className="size-6" strokeWidth={2.25} /> {back.label}
+            <ChevronLeft className="size-6" strokeWidth={2.25} /> {tr(back.label)}
           </Link>
         ) : null}
         <h1 ref={ref} className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">{title}</h1>

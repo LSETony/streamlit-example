@@ -1,5 +1,7 @@
+"use client";
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { useTx } from "@/lib/i18n/client";
 
 export function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("animate-pulse rounded-xl bg-field", className)} {...props} />;
@@ -16,18 +18,21 @@ export function Alert({ className, variant = "default", ...props }: React.Compon
     danger: "bg-destructive/10 text-destructive",
     success: "bg-success-fill/12",
   }[variant];
-  return <div role="status" className={cn("rounded-2xl px-4 py-3 text-sm", styles, className)} {...props} />;
+  const tx = useTx();
+  const { children, ...rest } = props;
+  return <div role="status" className={cn("rounded-2xl px-4 py-3 text-sm", styles, className)} {...rest}>{tx(children)}</div>;
 }
 
 export function EmptyState({ icon, title, children, action, className }: {
   icon?: React.ReactNode; title: string; children?: React.ReactNode; action?: React.ReactNode; className?: string;
 }) {
+  const tx = useTx();
   return (
     <div className={cn("flex flex-col items-center justify-center gap-3 glass-card rounded-[24px] px-6 py-14 text-center", className)}>
       {icon ? <div className="grid size-14 place-items-center rounded-full bg-tint-soft text-tint-text [&_svg]:size-7">{icon}</div> : null}
       <div className="grid gap-1">
-        <p className="font-semibold">{title}</p>
-        {children ? <div className="max-w-md text-sm text-muted-foreground">{children}</div> : null}
+        <p className="font-semibold">{tx(title)}</p>
+        {children ? <div className="max-w-md text-sm text-muted-foreground">{tx(children)}</div> : null}
       </div>
       {action}
     </div>

@@ -13,8 +13,12 @@ import { METHOD_LABEL, type PaymentMethod, type PaymentStatus } from "@/lib/type
 import { PaymentFilters } from "./filters";
 import { ExportPayments } from "./export";
 import { RefundButton } from "./refund-button";
+import { getT } from "@/lib/i18n/server";
+import { paymentDescription } from "@/lib/i18n/core";
 
-export const metadata: Metadata = { title: "Оплаты" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Оплаты") };
+}
 const PAGE = 50;
 
 export interface PaymentListRow {
@@ -25,6 +29,7 @@ export interface PaymentListRow {
 
 export default async function PaymentsPage({ searchParams }: PageProps<"/payments">) {
   const ctx = await requireStaff(["owner", "admin"]);
+  const t = await getT();
   const sp = await searchParams;
   const from = typeof sp.from === "string" ? sp.from : ctx.today;
   const to = typeof sp.to === "string" ? sp.to : ctx.today;
@@ -62,11 +67,11 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
       <PaymentFilters from={from} to={to} method={method} status={status} today={ctx.today} />
 
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5 [&>*:first-child]:col-span-2 md:[&>*:first-child]:col-span-1">
-        <Sum label="Итого" value={money(s.net)} strong />
-        <Sum label="Наличные" value={money(s.cash)} />
-        <Sum label="Карта" value={money(s.card)} />
-        <Sum label="Онлайн" value={money(s.online)} />
-        <Sum label="Возвраты" value={s.refunds ? `−${money(s.refunds)}` : money(0)} />
+        <Sum label={t("Итого")} value={money(s.net)} strong />
+        <Sum label={t("Наличные")} value={money(s.cash)} />
+        <Sum label={t("Карта")} value={money(s.card)} />
+        <Sum label={t("Онлайн")} value={money(s.online)} />
+        <Sum label={t("Возвраты")} value={s.refunds ? `−${money(s.refunds)}` : money(0)} />
       </div>
 
       {rows.length === 0 ? <EmptyState title="Оплат за период нет" /> : (
@@ -81,7 +86,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
                       {p.client_id ? <Link className="font-medium active:opacity-60" href={`/clients/${p.client_id}`}>{p.clients?.full_name}</Link> : "—"}
                     </span>
                     <span className="block truncate text-[13px] leading-[18px] text-muted-foreground tabular">
-                      {dateTime(p.paid_at ?? p.created_at, tz)} · {METHOD_LABEL[p.method]}
+                      {dateTime(p.paid_at ?? p.created_at, tz)} · {t(METHOD_LABEL[p.method])}
                     </span>
                   </span>
                   <span className="grid justify-items-end gap-1">
@@ -100,10 +105,10 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
                   <TD className="whitespace-nowrap tabular">{dateTime(p.paid_at ?? p.created_at, tz)}</TD>
                   <TD>{p.client_id ? <Link className="font-medium hover:underline" href={`/clients/${p.client_id}`}>{p.clients?.full_name}</Link> : "—"}</TD>
                   <TD className={p.refund_of_id ? "whitespace-nowrap tabular text-destructive" : "whitespace-nowrap font-medium tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount)}</TD>
-                  <TD>{METHOD_LABEL[p.method]}</TD>
+                  <TD>{t(METHOD_LABEL[p.method])}</TD>
                   <TD><PaymentStatusBadge status={p.status} isRefund={!!p.refund_of_id} /></TD>
-                  <TD className="hidden text-muted-foreground lg:table-cell">{p.description}</TD>
-                  <TD className="hidden text-muted-foreground xl:table-cell">{p.staff?.full_name ?? (p.method === "online" ? "приложение" : "—")}</TD>
+                  <TD className="hidden text-muted-foreground lg:table-cell">{paymentDescription(t, p.description)}</TD>
+                  <TD className="hidden text-muted-foreground xl:table-cell">{p.staff?.full_name ?? (p.method === "online" ? t("приложение") : "—")}</TD>
                   <TD className="text-right">
                     {!p.refund_of_id && p.status === "succeeded" && !ctx.readOnly ? <RefundButton payment={p} /> : null}
                   </TD>
@@ -113,7 +118,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
           </Table>
           {rows.length > PAGE ? (
             <div className="flex items-center justify-between border-t border-border px-4 py-3 text-sm">
-              <span className="text-muted-foreground">{(page - 1) * PAGE + 1}–{Math.min(page * PAGE, rows.length)} из {rows.length}</span>
+              <span className="text-muted-foreground">{(page - 1) * PAGE + 1}–{Math.min(page * PAGE, rows.length)} {t("из")} {rows.length}</span>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" asChild disabled={page <= 1}>
                   {page > 1 ? <Link href={pageHref(page - 1)}>Назад</Link> : <span>Назад</span>}

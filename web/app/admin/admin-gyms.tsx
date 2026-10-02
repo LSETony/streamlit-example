@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import { TIMEZONES } from "@/components/gym-settings-forms";
 import { adminCreateGym, adminUpdateGym } from "@/app/actions/admin";
 import { date } from "@/lib/format";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useT } from "@/lib/i18n/client";
 
 export interface AdminGym {
   id: string; name: string; address: string | null; core_plan: "start" | "business" | "network"; trial_until: string; paid_until: string | null;
@@ -27,6 +28,7 @@ const FEATURES: [string, string][] = [
 ];
 
 export function AdminGyms({ gyms }: { gyms: AdminGym[] }) {
+  const t = useT();
   const router = useRouter();
   const [edit, setEdit] = useState<AdminGym | null>(null);
   const [create, setCreate] = useState(false);
@@ -34,8 +36,8 @@ export function AdminGyms({ gyms }: { gyms: AdminGym[] }) {
     <>
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <h1 className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">Залы</h1>
-          <p className="text-sm text-muted-foreground">{gyms.length} · персональные данные клиентов недоступны без запроса поддержки</p>
+          <h1 className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">{t("Залы")}</h1>
+          <p className="text-sm text-muted-foreground">{gyms.length} · {t("персональные данные клиентов недоступны без запроса поддержки")}</p>
         </div>
         <Button onClick={() => setCreate(true)}><Plus /> Новый зал</Button>
       </div>
@@ -46,11 +48,11 @@ export function AdminGyms({ gyms }: { gyms: AdminGym[] }) {
             {gyms.map((g) => (
               <TR key={g.id}>
                 <TD><p className="font-medium">{g.name}</p><p className="text-xs text-muted-foreground">{g.owner_email ?? "—"}{g.address ? ` · ${g.address}` : ""}</p></TD>
-                <TD>{PLAN[g.core_plan]}</TD>
+                <TD>{t(PLAN[g.core_plan])}</TD>
                 <TD>
                   {g.read_only ? <Badge variant="danger">Только чтение</Badge>
-                    : g.paid_until ? <Badge variant="success">Оплачено до {date(g.paid_until)}</Badge>
-                    : <Badge variant="warning">Пробный до {date(g.trial_until)}</Badge>}
+                    : g.paid_until ? <Badge variant="success">{t("Оплачено до {date}", { date: date(g.paid_until) })}</Badge>
+                    : <Badge variant="warning">{t("Пробный до {date}", { date: date(g.trial_until) })}</Badge>}
                 </TD>
                 <TD className="tabular">{g.clients_count}</TD>
                 <TD className="tabular">{g.visits_week}</TD>

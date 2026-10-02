@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CalendarPlus, ScanLine, UserPlus, CornerDownLeft } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ClientSearch } from "@/components/client-search";
+import { useT } from "@/lib/i18n/client";
 
 export interface CommandSection {
   href: string;
@@ -15,6 +16,7 @@ export interface CommandSection {
 export function CommandMenu({ open, onOpenChange, gymId, sections, readOnly }: {
   open: boolean; onOpenChange: (v: boolean) => void; gymId: string; sections: CommandSection[]; readOnly: boolean;
 }) {
+  const t = useT();
   const router = useRouter();
   const [q, setQ] = useState("");
   const go = (href: string) => {
@@ -29,7 +31,7 @@ export function CommandMenu({ open, onOpenChange, gymId, sections, readOnly }: {
     has("/schedule") ? { href: "/schedule", label: "Записать на занятие", hint: "Расписание на неделю", icon: CalendarPlus } : null,
   ].filter((a) => a !== null);
   const term = q.trim().toLowerCase();
-  const matched = term ? sections.filter((s) => s.label.toLowerCase().includes(term)) : sections;
+  const matched = term ? sections.filter((s) => t(s.label).toLowerCase().includes(term) || s.label.toLowerCase().includes(term)) : sections;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setQ(""); }}>
@@ -53,8 +55,8 @@ export function CommandMenu({ open, onOpenChange, gymId, sections, readOnly }: {
                   <a.icon className="size-[18px]" />
                 </span>
                 <span className="grid gap-0.5">
-                  <span className="text-sm font-semibold">{a.label}</span>
-                  <span className="text-xs text-muted-foreground">{a.hint}</span>
+                  <span className="text-sm font-semibold">{t(a.label)}</span>
+                  <span className="text-xs text-muted-foreground">{t(a.hint)}</span>
                 </span>
               </button>
             ))}
@@ -62,21 +64,21 @@ export function CommandMenu({ open, onOpenChange, gymId, sections, readOnly }: {
         ) : null}
         {matched.length ? (
           <div className="grid gap-0.5">
-            <p className="px-3 pb-1 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Разделы</p>
+            <p className="px-3 pb-1 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">{t("Разделы")}</p>
             {matched.map((s) => (
               <button key={s.href} type="button" onClick={() => go(s.href)}
                 className="group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm hover:bg-field-hover">
                 <s.icon className="size-4 text-muted-foreground" />
-                <span className="flex-1">{s.label}</span>
+                <span className="flex-1">{t(s.label)}</span>
                 <CornerDownLeft className="size-3.5 text-muted-foreground opacity-0 group-hover:opacity-100" />
               </button>
             ))}
           </div>
         ) : null}
         <p className="hidden items-center justify-end gap-3 px-2 text-[11px] text-muted-foreground sm:flex">
-          <span><Kbd>↑</Kbd> <Kbd>↓</Kbd> выбор</span>
-          <span><Kbd>Enter</Kbd> открыть</span>
-          <span><Kbd>Esc</Kbd> закрыть</span>
+          <span><Kbd>↑</Kbd> <Kbd>↓</Kbd> {t("выбор")}</span>
+          <span><Kbd>Enter</Kbd> {t("открыть")}</span>
+          <span><Kbd>Esc</Kbd> {t("закрыть")}</span>
         </p>
       </DialogContent>
     </Dialog>

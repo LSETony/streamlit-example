@@ -3,8 +3,11 @@ import { PageHeader } from "@/components/app-shell";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ImportWizard } from "./import-wizard";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Импорт клиентов" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Импорт клиентов") };
+}
 
 export default async function ImportPage() {
   const ctx = await requireStaff(["owner", "admin"]);

@@ -32,11 +32,11 @@ export function date(d: string | null | undefined): string {
   return `${day}.${m}.${y}`;
 }
 
-/** Дата YYYY-MM-DD → «28 сент.» */
-export function dateShort(d: string | null | undefined): string {
+/** Дата YYYY-MM-DD → «28 сент.» / «28 Sept» (intl — локаль языка кабинета) */
+export function dateShort(d: string | null | undefined, intl = "ru-RU"): string {
   if (!d) return "—";
   const [y, m, day] = d.slice(0, 10).split("-").map(Number);
-  return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "short", timeZone: "UTC" }).format(Date.UTC(y, m - 1, day));
+  return new Intl.DateTimeFormat(intl, { day: "numeric", month: "short", timeZone: "UTC" }).format(Date.UTC(y, m - 1, day));
 }
 
 /** timestamptz → «28.09.2026, 19:05» в часовом поясе зала */

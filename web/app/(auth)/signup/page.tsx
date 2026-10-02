@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Checkbox, Field, Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/misc";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/lib/i18n/client";
 
 export default function SignupPage() {
+  const t = useT();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState<string | null>(null);
@@ -40,9 +42,9 @@ export default function SignupPage() {
   if (sent) {
     return (
       <div className="grid gap-3">
-        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Проверьте почту</h1>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">{t("Проверьте почту")}</h1>
         <p className="text-sm text-muted-foreground">
-          Мы отправили письмо на <b className="text-foreground">{sent}</b>. Перейдите по ссылке, чтобы продолжить настройку зала.
+          {t("Мы отправили письмо на")} <b className="text-foreground">{sent}</b>. {t("Перейдите по ссылке, чтобы продолжить настройку зала.")}
         </p>
       </div>
     );
@@ -51,8 +53,8 @@ export default function SignupPage() {
   return (
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-1.5">
-        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">Подключить зал</h1>
-        <p className="text-sm text-muted-foreground">14 дней бесплатно. Настройка — около 15 минут.</p>
+        <h1 className="text-[28px] font-bold leading-[34px] tracking-[-0.02em]">{t("Подключить зал")}</h1>
+        <p className="text-sm text-muted-foreground">{t("14 дней бесплатно. Настройка — около 15 минут.")}</p>
       </div>
       {error ? <Alert variant="danger">{error}</Alert> : null}
       <Field label="Email владельца">
@@ -68,7 +70,7 @@ export default function SignupPage() {
       />
       <Button type="submit" size="lg" disabled={pending}>{pending ? "Создаём…" : "Создать кабинет"}</Button>
       <p className="text-center text-sm text-muted-foreground">
-        Уже есть кабинет? <Link href="/login" className="font-medium text-foreground hover:underline">Войти</Link>
+        {t("Уже есть кабинет?")} <Link href="/login" className="font-medium text-foreground hover:underline">{t("Войти")}</Link>
       </p>
     </form>
   );

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Banknote, CreditCard, Link2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -8,11 +8,12 @@ import { Field, Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/misc";
 import { createClient } from "@/lib/supabase/client";
 import { sellMembership, createPaymentLink } from "@/app/actions/memberships";
-import { addDays, date, money, plural } from "@/lib/format";
+import { addDays, date, money } from "@/lib/format";
 import type { Plan } from "@/lib/types";
 import { PLAN_KIND_LABEL } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useT } from "@/lib/i18n/client";
 
 type Method = "cash" | "card" | "online";
 
@@ -27,6 +28,7 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
   onDone?: () => void;
 }) {
   // диалог монтируется заново при каждом открытии, поэтому начальное состояние берём из пропсов
+  const t = useT();
   const [plans, setPlans] = useState<Plan[] | null>(null);
   const [planId, setPlanId] = useState<string>("");
   const [startsOn, setStartsOn] = useState(renew ? (renew.ends_on >= today ? addDays(renew.ends_on, 1) : today) : today);
@@ -60,7 +62,7 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
       }
       const res = await sellMembership({ clientId: client.id, planId: plan.id, method, startsOn: renew ? null : startsOn, renewFrom: renew?.id });
       if (!res.ok) return setError(res.error.message);
-      toast.success(`${renew ? "Продлено" : "Продано"}: «${plan.name}» до ${date(res.data.membership.ends_on)}`);
+      toast.success(renew ? "Продлено: «{plan}» до {date}" : "Продано: «{plan}» до {date}", { plan: plan.name, date: date(res.data.membership.ends_on) });
       onOpenChange(false);
       onDone?.();
     });
@@ -88,12 +90,12 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
             <DialogFooter><Button onClick={() => { onOpenChange(false); onDone?.(); }}>Готово</Button></DialogFooter>
           </div>
         ) : plans === null ? (
-          <p className="text-sm text-muted-foreground">Загружаем тарифы…</p>
+          <p className="text-sm text-muted-foreground">{t("Загружаем тарифы…")}</p>
         ) : plans.length === 0 ? (
           <Alert variant="warning">В зале нет активных тарифов. Владелец может создать их в разделе «Тарифы».</Alert>
         ) : (
           <div className="grid gap-4">
-            <div className="grid gap-2" role="radiogroup" aria-label="Тариф">
+            <div className="grid gap-2" role="radiogroup" aria-label={t("Тариф")}>
               {plans.map((p) => (
                 <button
                   key={p.id}
@@ -109,8 +111,8 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
                   <span>
                     <span className="block font-medium">{p.name}</span>
                     <span className="text-xs text-muted-foreground">
-                      {PLAN_KIND_LABEL[p.kind]} · {p.duration_days} {plural(p.duration_days, "день", "дня", "дней")}
-                      {p.visits_limit ? ` · ${p.visits_limit} ${plural(p.visits_limit, "визит", "визита", "визитов")}` : ""}
+                      {t(PLAN_KIND_LABEL[p.kind])} · {p.duration_days} {t.n(p.duration_days, "день|дня|дней")}
+                      {p.visits_limit ? ` · ${p.visits_limit} ${t.n(p.visits_limit, "визит|визита|визитов")}` : ""}
                     </span>
                   </span>
                   <span className="font-semibold tabular">{money(p.price)}</span>
@@ -119,17 +121,17 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
             </div>
 
             {!renew ? (
-              <Field label="Дата начала" hint={endsOn ? `Действует до ${date(endsOn)}` : undefined}>
+              <Field label="Дата начала" hint={endsOn ? t("Действует до {date}", { date: date(endsOn) }) : undefined}>
                 <DatePicker value={startsOn} min={addDays(today, -30)} onChange={setStartsOn} aria-label="Начало" />
               </Field>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Новый абонемент начнётся {date(startsOn)}{endsOn ? ` и будет действовать до ${date(endsOn)}` : ""}.
+                {endsOn ? t("Новый абонемент начнётся {start} и будет действовать до {end}.", { start: date(startsOn), end: date(endsOn) }) : t("Новый абонемент начнётся {start}.", { start: date(startsOn) })}
               </p>
             )}
 
             <div className="grid gap-1.5">
-              <span className="text-sm font-medium">Оплата</span>
+              <span className="text-sm font-medium">{t("Оплата")}</span>
               <div className="grid grid-cols-3 gap-2">
                 {([
                   ["card", "Карта", CreditCard],
@@ -147,12 +149,12 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
                     aria-pressed={method === m}
                   >
                     <Icon className="size-5" />
-                    {label}
+                    {t(label)}
                   </button>
                 ))}
               </div>
               {method === "online" ? (
-                <p className="text-xs text-muted-foreground">Клиент оплатит картой или через СБП по ссылке ЮKassa, чек придёт автоматически.</p>
+                <p className="text-xs text-muted-foreground">{t("Клиент оплатит картой или через СБП по ссылке ЮKassa, чек придёт автоматически.")}</p>
               ) : null}
             </div>
 
@@ -160,7 +162,7 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
             <DialogFooter>
               <Button variant="outline" onClick={() => onOpenChange(false)}>Отмена</Button>
               <Button onClick={submit} disabled={pending || !plan}>
-                {pending ? "Оформляем…" : method === "online" ? "Создать ссылку" : `Принять ${plan ? money(plan.price) : ""}`}
+                {pending ? "Оформляем…" : method === "online" ? "Создать ссылку" : t("Принять {sum}", { sum: plan ? money(plan.price) : "" })}
               </Button>
             </DialogFooter>
           </div>

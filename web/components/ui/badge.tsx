@@ -1,6 +1,8 @@
+"use client";
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { useTx } from "@/lib/i18n/client";
 
 const badgeVariants = cva("inline-flex items-center gap-1 rounded-full px-2 py-[3px] text-[12px] leading-4 font-semibold whitespace-nowrap", {
   variants: {
@@ -18,6 +20,7 @@ const badgeVariants = cva("inline-flex items-center gap-1 rounded-full px-2 py-[
   defaultVariants: { variant: "default" },
 });
 
-export function Badge({ className, variant, ...props }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
-  return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
+export function Badge({ className, variant, children, ...props }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
+  const tx = useTx();
+  return <span className={cn(badgeVariants({ variant }), className)} {...props}>{tx(children)}</span>;
 }

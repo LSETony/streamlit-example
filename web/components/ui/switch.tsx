@@ -2,6 +2,7 @@
 import * as React from "react";
 import { Switch as S } from "radix-ui";
 import { cn } from "@/lib/utils";
+import { useTx } from "@/lib/i18n/client";
 
 export function Switch({ className, ...props }: React.ComponentProps<typeof S.Root>) {
   return (
@@ -25,11 +26,12 @@ export function SwitchRow({ title, description, name, defaultChecked, checked, o
   onCheckedChange?: (v: boolean) => void; disabled?: boolean;
 }) {
   const id = React.useId();
+  const tx = useTx();
   return (
     <div className="flex items-center justify-between gap-6 py-1">
       <label htmlFor={id} className="grid cursor-pointer gap-0.5">
-        <span className="text-sm font-medium">{title}</span>
-        {description ? <span className="text-xs text-muted-foreground">{description}</span> : null}
+        <span className="text-sm font-medium">{tx(title)}</span>
+        {description ? <span className="text-xs text-muted-foreground">{tx(description)}</span> : null}
       </label>
       <Switch id={id} name={name} value="on" defaultChecked={defaultChecked} checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} />
     </div>
