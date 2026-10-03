@@ -84,15 +84,10 @@ private struct RecipeTile: View {
         ZStack(alignment: .bottomLeading) {
             recipePhoto
             LinearGradient(colors: [.black.opacity(0.55), .clear], startPoint: .bottom, endPoint: .center)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(recipe.name)
-                    .font(.brand(16))
-                    .foregroundStyle(.white)
-                Text("\(recipe.price)$")
-                    .font(.digitalTimer(14))
-                    .foregroundStyle(Color.appAccent)
-            }
-            .padding(14)
+            Text(recipe.name)
+                .font(.brand(16))
+                .foregroundStyle(.white)
+                .padding(14)
         }
         .frame(height: 190)
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))

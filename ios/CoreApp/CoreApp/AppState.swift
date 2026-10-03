@@ -58,22 +58,27 @@ final class AppState: ObservableObject {
     @Published var gymPhotoURLs: [URL] = []
     @Published var trainingProgressPercent: Int = 67
     @Published var trainingDay: Int = 1
-    @Published var trainingMinutesToday: Int = 38
-    @Published var trainingSetsToday: Int = 14
-    @Published var trainingCaloriesToday: Int = 312
 
     /// Behind the Home "Your Progress" card — total sets/time/calories and
-    /// a session-by-session history.
+    /// a session-by-session history. Starts with past-day sample history
+    /// only; "Today" entries only appear once a real workout is completed
+    /// (WorkoutDetailView.recordCompletion), so these stay real counts.
     @Published var workoutHistory: [WorkoutHistoryEntry] = [
-        WorkoutHistoryEntry(date: "Today", title: "Chest and Triceps", sets: 14, minutes: 38, calories: 312, completedAt: Date()),
         WorkoutHistoryEntry(date: "Yesterday", title: "Beginner Body Weight Plan", sets: 10, minutes: 27, calories: 205, completedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()),
         WorkoutHistoryEntry(date: "Mon", title: "Sam's Prental Flow", sets: 12, minutes: 22, calories: 168, completedAt: Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date()),
         WorkoutHistoryEntry(date: "Sat", title: "Beginner Female Aesthetics", sets: 16, minutes: 41, calories: 289, completedAt: Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date()),
     ]
+    /// Today's entries, summed — a member can complete more than one
+    /// session in a day, so Home's Sets/Time/Calories tiles reflect all of
+    /// them, not just the most recent.
+    private var todaysEntries: [WorkoutHistoryEntry] { workoutHistory.filter { Calendar.current.isDateInToday($0.completedAt) } }
+    var trainingSetsToday: Int { todaysEntries.reduce(0) { $0 + $1.sets } }
+    var trainingMinutesToday: Int { todaysEntries.reduce(0) { $0 + $1.minutes } }
+    var trainingCaloriesToday: Int { todaysEntries.reduce(0) { $0 + $1.calories } }
     var totalSetsThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.sets } }
     var totalMinutesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.minutes } }
     var totalCaloriesThisWeek: Int { workoutHistory.reduce(0) { $0 + $1.calories } }
-    var todayCalories: Int { workoutHistory.first(where: { $0.date == "Today" })?.calories ?? 0 }
+    var todayCalories: Int { trainingCaloriesToday }
 
     /// Muscle mass growth chart (Progress screen).
     @Published var muscleMassHistory: [MuscleMassEntry] = [

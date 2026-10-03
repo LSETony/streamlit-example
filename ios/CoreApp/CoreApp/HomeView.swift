@@ -154,7 +154,7 @@ struct HomeView: View {
                         .foregroundStyle(.white.opacity(0.75))
                 }
                 Spacer(minLength: 8)
-                glassPillLabel("Check out", tint: .appAccentPurple)
+                glassPillLabel("Check out", tint: .appAccent, bold: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(18)
@@ -174,13 +174,17 @@ struct HomeView: View {
             .clipShape(Capsule())
     }
 
-    private func glassPillLabel(_ text: String, tint: Color) -> some View {
+    private func glassPillLabel(_ text: String, tint: Color, bold: Bool = false) -> some View {
         Text(text)
-            .font(.brand(10))
+            .font(.brand(bold ? 12 : 10))
+            .fontWeight(bold ? .bold : .regular)
             .foregroundStyle(.white)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .glassEffect(.regular.tint(tint), in: Capsule())
+            .padding(.horizontal, bold ? 16 : 14)
+            .padding(.vertical, bold ? 10 : 8)
+            .glassEffect(.regular.tint(tint).interactive(), in: Capsule())
+            .overlay(
+                Capsule().stroke(.white.opacity(bold ? 0.6 : 0), lineWidth: 1)
+            )
     }
 
     /// A quick, dynamic read on how busy the club is right now — same

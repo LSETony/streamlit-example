@@ -16,12 +16,12 @@ struct ProgressDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     streakSection
+                    todayStatsSection
+                    historySection
                     achievementsSection
                     muscleMassCard
                     bodyCompositionSection
                     vitaminRecommendationsSection
-                    todayStatsSection
-                    historySection
                 }
                 .screenPadding()
                 .padding(.top, 12)
