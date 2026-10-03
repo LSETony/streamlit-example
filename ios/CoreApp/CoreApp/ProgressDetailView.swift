@@ -10,6 +10,7 @@ struct ProgressDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedProduct: Product?
     @State private var isShowingProgressPhotos = false
+    @State private var isShowingLogScan = false
 
     var body: some View {
         NavigationStack {
@@ -40,6 +41,9 @@ struct ProgressDetailView: View {
             }
             .sheet(isPresented: $isShowingProgressPhotos) {
                 ProgressPhotosView()
+            }
+            .sheet(isPresented: $isShowingLogScan) {
+                LogInBodyScanView()
             }
         }
     }
@@ -158,14 +162,94 @@ struct ProgressDetailView: View {
 
     private var bodyCompositionSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            EyebrowLabel(text: "Body Composition")
+            HStack {
+                EyebrowLabel(text: "Body Composition")
+                Spacer()
+                Button { isShowingLogScan = true } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "plus")
+                        Text("Log scan")
+                    }
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                }
+                .buttonStyle(.plain)
+                .glassEffect(.regular.tint(.appAccentPurple).interactive(), in: Capsule())
+            }
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                 statTile(value: String(format: "%.1f%%", appState.bodyFatPercent), label: "Body Fat")
                 statTile(value: String(format: "%.1f%%", appState.totalBodyWaterPercent), label: "Total Body Water")
                 statTile(value: "\(appState.visceralFatIndex)", label: "Visceral Fat Index")
                 statTile(value: "\(appState.basalMetabolicRate)", label: "Basal Metabolic Rate")
             }
+
+            if appState.inBodyHistory.count > 1 {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Body fat trend")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Chart(appState.inBodyHistory.sorted(by: { $0.scannedAt < $1.scannedAt })) { entry in
+                        AreaMark(x: .value("Date", entry.scannedAt), y: .value("Body Fat %", entry.bodyFatPercent))
+                            .interpolationMethod(.catmullRom)
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color.appAccentPurple.opacity(0.35), Color.appAccentPurple.opacity(0)], startPoint: .top, endPoint: .bottom)
+                            )
+                        LineMark(x: .value("Date", entry.scannedAt), y: .value("Body Fat %", entry.bodyFatPercent))
+                            .interpolationMethod(.catmullRom)
+                            .foregroundStyle(Color.appAccentPurple)
+                            .lineStyle(StrokeStyle(lineWidth: 2.5))
+                        PointMark(x: .value("Date", entry.scannedAt), y: .value("Body Fat %", entry.bodyFatPercent))
+                            .foregroundStyle(Color.appAccentPurple)
+                    }
+                    .frame(height: 140)
+                    .chartYAxis {
+                        AxisMarks(position: .trailing) { _ in
+                            AxisGridLine().foregroundStyle(Color.appDivider)
+                            AxisValueLabel().foregroundStyle(Color.appTextSecondary)
+                        }
+                    }
+                    .chartXAxis {
+                        AxisMarks(values: .stride(by: .day, count: 7)) { _ in
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day()).foregroundStyle(Color.appTextSecondary)
+                        }
+                    }
+                }
+                .appCard(padding: 20)
+            }
+
+            VStack(spacing: 10) {
+                ForEach(appState.inBodyHistory.sorted(by: { $0.scannedAt > $1.scannedAt })) { entry in
+                    inBodyScanRow(entry)
+                }
+            }
         }
+    }
+
+    private func inBodyScanRow(_ entry: InBodyEntry) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(entry.scannedAt.formatted(.dateTime.month(.abbreviated).day().year()))
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
+                Text("BMR \(entry.basalMetabolicRate) · VFI \(entry.visceralFatIndex)")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.appTextSecondary)
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(String(format: "%.1f%% fat", entry.bodyFatPercent))
+                    .font(.system(size: 12))
+                    .foregroundStyle(.white.opacity(0.85))
+                Text(String(format: "%.1f%% water", entry.totalBodyWaterPercent))
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.appAccentPurple)
+            }
+        }
+        .padding(14)
+        .background(Color.appSurface)
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
     }
 
     // MARK: Vitamin recommendations

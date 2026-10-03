@@ -12,6 +12,7 @@
 		018878DA21ABEBB04B9D2F5F /* CoreAIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E493C65B6E18E3804875719D /* CoreAIChatView.swift */; };
 		09422EB1A147FD2B71D1B035 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C03BFD588F38513C3464E2 /* Foundation.framework */; };
 		09F5DB40DAE9A527BC3E2532 /* AuthWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */; };
+		0A1A1E8118DA1AF02F910900 /* LogInBodyScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B6551AE2831475D8A342D /* LogInBodyScanView.swift */; };
 		0A684AEED47A45E7811403F0 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F0FD454D2243F9954D55DC /* HomeView.swift */; };
 		0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2039733A32D3965970AD290D /* LiveActivityService.swift */; };
 		13665979218917FFC4BCE58C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2360973C0FF59F76A261826 /* OnboardingView.swift */; };
@@ -160,6 +161,7 @@
 		F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F7767DFABE3FC38A17C249E0 /* ScanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		F7F173CD46DBE0612AD9D873 /* AuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		FB2B6551AE2831475D8A342D /* LogInBodyScanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LogInBodyScanView.swift; sourceTree = "<group>"; };
 		FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DynamicIslandNotifier.swift; sourceTree = "<group>"; };
 		FF518BECB85AFB2EC8F75527 /* EventsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -296,6 +298,7 @@
 				3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */,
 				2039733A32D3965970AD290D /* LiveActivityService.swift */,
 				69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */,
+				FB2B6551AE2831475D8A342D /* LogInBodyScanView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -489,6 +492,7 @@
 				84A8770FE10326533B8AF26E /* WorkoutActivityAttributes.swift in Sources */,
 				0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */,
 				75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */,
+				0A1A1E8118DA1AF02F910900 /* LogInBodyScanView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

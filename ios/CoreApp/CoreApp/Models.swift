@@ -144,6 +144,17 @@ struct MuscleMassEntry: Identifiable {
     let kg: Double
 }
 
+/// One InBody-style body composition scan — a timestamped snapshot, not a
+/// single live reading, so Progress can show how it changes scan to scan.
+struct InBodyEntry: Identifiable {
+    let id = UUID()
+    let scannedAt: Date
+    let bodyFatPercent: Double
+    let totalBodyWaterPercent: Double
+    let visceralFatIndex: Int
+    let basalMetabolicRate: Int
+}
+
 // MARK: - Club subscriptions (behind Home's wallet icon)
 
 struct SubscriptionPlan: Identifiable {

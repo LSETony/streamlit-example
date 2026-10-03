@@ -90,11 +90,29 @@ final class AppState: ObservableObject {
         MuscleMassEntry(label: "W6", kg: 34.5),
     ]
 
-    /// Body composition (InBody-style scan readout, Progress screen).
-    @Published var bodyFatPercent: Double = 16.2
-    @Published var totalBodyWaterPercent: Double = 58.4
-    @Published var visceralFatIndex: Int = 7
-    @Published var basalMetabolicRate: Int = 1720
+    /// Body composition (InBody-style scan history, Progress screen) —
+    /// each entry is one scan at the gym's InBody machine; oldest first.
+    /// The stat tiles elsewhere show the latest scan via the computed
+    /// properties below.
+    @Published var inBodyHistory: [InBodyEntry] = [
+        InBodyEntry(scannedAt: Calendar.current.date(byAdding: .day, value: -42, to: Date()) ?? Date(), bodyFatPercent: 19.1, totalBodyWaterPercent: 55.8, visceralFatIndex: 9, basalMetabolicRate: 1650),
+        InBodyEntry(scannedAt: Calendar.current.date(byAdding: .day, value: -21, to: Date()) ?? Date(), bodyFatPercent: 17.6, totalBodyWaterPercent: 57.0, visceralFatIndex: 8, basalMetabolicRate: 1685),
+        InBodyEntry(scannedAt: Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date(), bodyFatPercent: 16.2, totalBodyWaterPercent: 58.4, visceralFatIndex: 7, basalMetabolicRate: 1720),
+    ]
+    var latestInBodyScan: InBodyEntry? { inBodyHistory.max(by: { $0.scannedAt < $1.scannedAt }) }
+    var bodyFatPercent: Double { latestInBodyScan?.bodyFatPercent ?? 0 }
+    var totalBodyWaterPercent: Double { latestInBodyScan?.totalBodyWaterPercent ?? 0 }
+    var visceralFatIndex: Int { latestInBodyScan?.visceralFatIndex ?? 0 }
+    var basalMetabolicRate: Int { latestInBodyScan?.basalMetabolicRate ?? 0 }
+
+    func logInBodyScan(bodyFatPercent: Double, totalBodyWaterPercent: Double, visceralFatIndex: Int, basalMetabolicRate: Int) {
+        inBodyHistory.append(
+            InBodyEntry(
+                scannedAt: Date(), bodyFatPercent: bodyFatPercent, totalBodyWaterPercent: totalBodyWaterPercent,
+                visceralFatIndex: visceralFatIndex, basalMetabolicRate: basalMetabolicRate
+            )
+        )
+    }
 
     // MARK: Club occupancy
 
