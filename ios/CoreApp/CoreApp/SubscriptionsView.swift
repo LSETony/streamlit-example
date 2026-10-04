@@ -217,15 +217,8 @@ private struct PlanFlipCard: View {
                 Text("core.")
                     .font(.brand(26))
                     .foregroundStyle(.white)
-                Spacer()
-                PrimaryButton(
-                    title: isCurrent ? "current plan" : "pay \(plan.price)$ and switch",
-                    isEnabled: !isCurrent,
-                    isLoading: isLoading,
-                    color: .appAccentPurple,
-                    action: onPay
-                )
-                .frame(width: 190)
+                Spacer(minLength: 12)
+                payButton
             }
         }
         .padding(24)
@@ -236,9 +229,33 @@ private struct PlanFlipCard: View {
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
-                .stroke(plan.recommended ? Color.appAccentPurple : .white.opacity(0.08), lineWidth: plan.recommended ? 2 : 1)
+                .stroke(plan.recommended ? Color.appAccentPurple : .white.opacity(0.08), lineWidth: 1.5)
         )
         .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
+    }
+
+    /// Sized to its own content (not a shared fixed width) so "pay 39$"
+    /// and "pay 129$" both render on one line at the same height instead
+    /// of one wrapping while the others don't — that's what made the 3
+    /// cards look uneven next to each other.
+    private var payButton: some View {
+        Button(action: onPay) {
+            Group {
+                if isLoading {
+                    ProgressView().tint(.white)
+                } else {
+                    Text(isCurrent ? "current plan" : "pay \(plan.price)$ and switch")
+                }
+            }
+            .font(.system(size: 14, weight: .semibold))
+            .lineLimit(1)
+            .padding(.horizontal, 18)
+            .padding(.vertical, 13)
+        }
+        .buttonStyle(.glassProminent)
+        .tint(.appAccentPurple)
+        .disabled(isCurrent || isLoading)
+        .opacity(isCurrent ? 0.5 : 1)
     }
 
     private var backFace: some View {
