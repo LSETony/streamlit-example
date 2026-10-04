@@ -76,13 +76,9 @@ final class AppState: ObservableObject {
     var clubAddress: String { currentLocation.address }
     var clubHoursLabel: String { currentLocation.hoursLabel }
     var clubDescription: String { currentLocation.description }
-    /// Uploaded gym clips that don't belong to one specific workout card —
-    /// the Home hero plays through this whole set in order, looping back
-    /// to the start once the last one finishes (shuffled once per launch
-    /// for variety).
-    @Published var heroVideoURLs: [URL] = []
-    /// Starts buffering the hero videos as soon as heroVideoURLs loads,
-    /// not only once HomeView's hero view appears — see its doc comment.
+    /// Plays Home's bundled hero video (HeroVideo.mp4) on a loop — created
+    /// here, not inside HomeView, so it starts immediately at launch
+    /// instead of only once HomeView's hero view first appears.
     let heroVideoPlayer = HeroVideoPlayerService()
     /// Extra real gym photos for the photo strip in GymPhotoViewer.
     @Published var gymPhotoURLs: [URL] = []

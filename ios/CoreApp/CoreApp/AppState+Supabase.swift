@@ -38,11 +38,6 @@ extension AppState {
         cart = cartRows.map { $0.toModel() }
 
         let settings = Dictionary(uniqueKeysWithValues: settingRows.map { ($0.key, $0.value) })
-        heroVideoURLs = settings["hero_video_urls"]?
-            .split(separator: ",")
-            .compactMap { URL(string: $0.trimmingCharacters(in: .whitespaces)) }
-            .shuffled() ?? []
-        heroVideoPlayer.configure(urls: heroVideoURLs)
         gymPhotoURLs = settings["gym_photo_urls"]?
             .split(separator: ",")
             .compactMap { URL(string: $0.trimmingCharacters(in: .whitespaces)) } ?? []

@@ -1,7 +1,6 @@
 import SwiftUI
 import AVKit
 import UIKit
-import Combine
 
 extension Image {
     /// A custom vector icon from the design's SVG export, sized and tinted
@@ -77,95 +76,42 @@ struct WorkoutHeroVideo: UIViewRepresentable {
 }
 
 /// Owns the Home hero's AVQueuePlayer independently of whether HomeView is
-/// currently on screen. AppState creates this once and calls `configure`
-/// right after `heroVideoURLs` loads (during the splash/auth/onboarding
-/// screens) — so buffering starts well before the member ever reaches
-/// Home, instead of only starting when HeroVideoQueue's makeUIView first
-/// runs, which was the source of the visible startup delay.
+/// currently on screen. AppState creates this once at launch, so buffering
+/// (such as it is — see below) starts well before the member ever reaches
+/// Home.
 ///
-/// Plays a single clip from the pool, looping it manually via
-/// AVPlayerItemDidPlayToEndTime + seek-to-zero — the same proven pattern
-/// WorkoutHeroVideo above uses. An earlier version used AVPlayerLooper for
-/// a gapless loop, but it silently fails to ever insert the item (so the
-/// hero shows nothing at all) for a remote clip whose duration isn't known
-/// synchronously, which is common for a progressively-downloaded Supabase
-/// Storage URL — worse than the rare transition flash it was meant to fix.
+/// Plays HeroVideo.mp4, bundled in the app, on a manual loop
+/// (AVPlayerItemDidPlayToEndTime + seek-to-zero, same pattern
+/// WorkoutHeroVideo above uses). Earlier versions pulled from a
+/// Supabase-Storage-hosted pool of multiple 4K clips (20-30MB apiece);
+/// that pool was a repeated source of the hero going blank — AVPlayerLooper
+/// silently never inserted an item whose duration wasn't known
+/// synchronously, and even with a manual loop, large remote clips just
+/// took longer to buffer than made sense for a background loop. A video
+/// shipped in the app bundle can't 404, can't be slow to load, and can't
+/// depend on the gym's media bucket being configured — it's always there.
 @MainActor
 final class HeroVideoPlayerService: ObservableObject {
     let player = AVQueuePlayer()
-    private var pool: [URL] = []
-    private var currentIndex = 0
     private var endObserver: NSObjectProtocol?
-    /// AVPlayerItemFailedToPlayToEndTime only fires for a failure *during*
-    /// playback — an item whose asset never loads in the first place (bad
-    /// URL, network hiccup, storage permissions) just sits there silently
-    /// with no notification at all, which is what made the hero look like
-    /// it "disappeared" even after switching off AVPlayerLooper. status
-    /// and the watchdog below catch that case too.
-    private var failureObserver: NSObjectProtocol?
-    private var statusCancellable: AnyCancellable?
-    private var watchdogTask: Task<Void, Never>?
 
     init() {
         player.isMuted = true
         player.automaticallyWaitsToMinimizeStalling = false
-    }
-
-    func configure(urls: [URL]) {
-        guard urls != pool else { return }
-        pool = urls
-        currentIndex = 0
-        playCurrent()
-    }
-
-    private func playCurrent() {
-        watchdogTask?.cancel()
-        statusCancellable?.cancel()
-        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
-        if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
-
-        guard currentIndex < pool.count else { return }
-        let item = AVPlayerItem(url: pool[currentIndex])
-        player.removeAllItems()
+        guard let url = Bundle.main.url(forResource: "HeroVideo", withExtension: "mp4") else { return }
+        let item = AVPlayerItem(url: url)
         player.insert(item, after: nil)
-
         endObserver = NotificationCenter.default.addObserver(
             forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
         ) { [weak self] _ in
             self?.player.seek(to: .zero)
             self?.player.play()
         }
-
-        failureObserver = NotificationCenter.default.addObserver(
-            forName: .AVPlayerItemFailedToPlayToEndTime, object: item, queue: .main
-        ) { [weak self] _ in
-            self?.advanceOnFailure()
-        }
-
-        statusCancellable = item.publisher(for: \.status).sink { [weak self] status in
-            if status == .failed { self?.advanceOnFailure() }
-        }
-
-        // Belt-and-braces: if the item never reaches readyToPlay (hung
-        // load, no error ever fired) within 8s, treat it as failed too.
-        watchdogTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 8_000_000_000)
-            guard !Task.isCancelled, item.status != .readyToPlay else { return }
-            self?.advanceOnFailure()
-        }
-
         player.play()
-    }
-
-    private func advanceOnFailure() {
-        currentIndex += 1
-        playCurrent()
     }
 
     deinit {
         if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
-        if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
-        watchdogTask?.cancel()
     }
 }
 

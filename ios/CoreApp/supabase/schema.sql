@@ -105,11 +105,12 @@ create table if not exists public.gym_zones (
   capacity integer not null
 );
 
--- Small global key/value config table. Currently just holds
--- 'hero_video_urls' — a comma-separated list of Supabase Storage video
--- URLs the Home screen picks one from at random to loop behind the hero
--- photo, so extra uploaded gym clips that don't map to a specific
--- workout card still get used somewhere.
+-- Small global key/value config table. 'gym_photo_urls' feeds the photo
+-- strip in GymPhotoViewer. 'hero_video_urls' is no longer read by the app
+-- — Home's hero video is now HeroVideo.mp4, bundled in the app, since a
+-- remote 4K clip was an unreliable source for a background loop (see
+-- HeroVideoPlayerService's doc comment) — any row left under that key is
+-- inert and can be deleted.
 create table if not exists public.app_settings (
   key text primary key,
   value text not null

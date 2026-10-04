@@ -64,16 +64,14 @@ struct HomeView: View {
         GeometryReader { geo in
             ZStack(alignment: .topLeading) {
                 ZStack {
-                    // Always-visible backdrop so the hero never goes blank —
-                    // the video plays on top once it's loaded, but if it's
-                    // still buffering, failed, or heroVideoURLs is empty,
-                    // this photo is what's underneath instead of nothing.
+                    // Backdrop photo stays underneath at all times — bundled
+                    // HeroVideo.mp4 plays on top of it, not instead of it,
+                    // so there's always something here even in the single
+                    // frame before the video's first draw.
                     Image("HomeHero")
                         .resizable()
                         .scaledToFill()
-                    if !appState.heroVideoURLs.isEmpty {
-                        HeroVideoQueue(player: appState.heroVideoPlayer.player)
-                    }
+                    HeroVideoQueue(player: appState.heroVideoPlayer.player)
                 }
                 .frame(width: geo.size.width, height: geo.size.height)
                 .clipShape(
