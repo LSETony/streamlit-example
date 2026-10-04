@@ -17,35 +17,11 @@ struct LocationPickerView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 10) {
-                    ForEach(appState.clubLocations, id: \.self) { location in
-                        let isSelected = location == appState.clubName
-                        Button {
-                            appState.clubName = location
-                            onSelect()
-                            dismiss()
-                        } label: {
-                            HStack {
-                                Text(location)
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(.white)
-                                Spacer()
-                                if isSelected {
-                                    Image(systemName: "checkmark")
-                                        .font(.system(size: 14, weight: .bold))
-                                        .foregroundStyle(Color.appAccent)
-                                }
-                            }
-                            .padding(.horizontal, 18)
-                            .padding(.vertical, 16)
-                            .background(Color.appSurface)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                                    .stroke(isSelected ? Color.appAccent : Color.appDivider, lineWidth: isSelected ? 2 : 1)
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+                GlassEffectContainer(spacing: 10) {
+                    VStack(spacing: 10) {
+                        ForEach(appState.clubLocations, id: \.self) { location in
+                            locationRow(location)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
                 .screenPadding()
@@ -62,6 +38,46 @@ struct LocationPickerView: View {
             }
         }
         .presentationDetents([.medium])
+    }
+
+    private func locationRow(_ location: String) -> some View {
+        let isSelected = location == appState.clubName
+        return Button {
+            appState.clubName = location
+            onSelect()
+            dismiss()
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "building.2.fill")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 38, height: 38)
+                    .glassEffect(.regular.tint(isSelected ? .appAccent : .clear), in: Circle())
+
+                Text(location)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.white)
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 20))
+                        .foregroundStyle(Color.appAccent)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .glassEffect(
+                isSelected ? .regular.tint(.appAccent.opacity(0.35)).interactive() : .regular.interactive(),
+                in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                    .stroke(.white.opacity(isSelected ? 0.3 : 0.08), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
 
