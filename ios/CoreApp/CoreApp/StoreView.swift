@@ -116,7 +116,11 @@ private struct ProductTile: View {
     var body: some View {
         Button(action: onOpen) {
             VStack(alignment: .leading, spacing: 10) {
-                Spacer(minLength: 60)
+                Text(product.abbr)
+                    .font(.digitalTimer(40))
+                    .foregroundStyle(Color.appTextSecondary)
+                    .padding(.top, 14)
+                Spacer(minLength: 46)
                 Text(product.name)
                     .font(.brand(16))
                     .foregroundStyle(.white)
