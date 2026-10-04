@@ -164,19 +164,30 @@ struct ProgressBarView: View {
 struct PrimaryButton: View {
     let title: String
     var isEnabled: Bool = true
+    /// Shows a spinner in place of the title and blocks taps — for an
+    /// action with a real network step (e.g. starting a Stripe payment)
+    /// before anything visibly changes, so the button doesn't just sit
+    /// there looking unresponsive while it's in flight.
+    var isLoading: Bool = false
     var color: Color = .appAccent
     var action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.brand(20))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
+            Group {
+                if isLoading {
+                    ProgressView().tint(.white)
+                } else {
+                    Text(title)
+                }
+            }
+            .font(.brand(20))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
         }
         .buttonStyle(.glassProminent)
         .tint(color)
-        .disabled(!isEnabled)
+        .disabled(!isEnabled || isLoading)
         .opacity(isEnabled ? 1 : 0.4)
     }
 }

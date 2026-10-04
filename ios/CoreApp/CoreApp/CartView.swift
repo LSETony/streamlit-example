@@ -71,7 +71,11 @@ struct CartView: View {
                         .font(.digitalTimer(24))
                         .foregroundStyle(.white)
                 }
-                PrimaryButton(title: didCheckOut ? "✓ Order placed" : "Pay $\(appState.cartTotal) & checkout", isEnabled: !didCheckOut) {
+                PrimaryButton(
+                    title: didCheckOut ? "✓ Order placed" : "Pay $\(appState.cartTotal) & checkout",
+                    isEnabled: !didCheckOut,
+                    isLoading: paymentService.isStartingPayment
+                ) {
                     Task { await paymentService.startPayment(amountDollars: appState.cartTotal, description: "core. store order") }
                 }
             }

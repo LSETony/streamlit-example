@@ -182,7 +182,12 @@ struct SubscriptionsView: View {
                 }
             }
 
-            PrimaryButton(title: isCurrent ? "Current plan" : "Pay $\(plan.price) & switch", isEnabled: !isCurrent, color: .appAccentPurple) {
+            PrimaryButton(
+                title: isCurrent ? "Current plan" : "Pay $\(plan.price) & switch",
+                isEnabled: !isCurrent,
+                isLoading: paymentService.isStartingPayment && payingPlanName == plan.name,
+                color: .appAccentPurple
+            ) {
                 payingPlanName = plan.name
                 Task { await paymentService.startPayment(amountDollars: plan.price, description: "\(plan.name) subscription") }
             }

@@ -15,6 +15,13 @@ final class PaymentService: ObservableObject {
     @Published var paymentSheet = PaymentSheet(paymentIntentClientSecret: "unset", configuration: PaymentSheet.Configuration())
     @Published var isPresenting = false
     @Published var errorMessage: String?
+    /// True from the moment a Pay button is tapped until PaymentSheet is
+    /// actually on screen (or the attempt fails) — the create-payment-intent
+    /// call is a real network round trip, so without this the button just
+    /// sits there looking unresponsive ("stuck") for however long that
+    /// takes. Callers show a spinner on the tapped button while this is
+    /// true instead of leaving it static.
+    @Published var isStartingPayment = false
 
     /// Starts a payment for `amountDollars`. Presents PaymentSheet once the
     /// server has created the PaymentIntent; call `handleCompletion` from
@@ -25,6 +32,8 @@ final class PaymentService: ObservableObject {
             errorMessage = "Payments aren't configured yet — add a real Stripe publishable key in StripeConfig.swift."
             return
         }
+        isStartingPayment = true
+        defer { isStartingPayment = false }
         do {
             let clientSecret = try await Self.fetchClientSecret(amountCents: amountDollars * 100, description: description)
             var configuration = PaymentSheet.Configuration()
