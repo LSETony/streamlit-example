@@ -11,14 +11,19 @@ struct SubscriptionsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 22) {
                     Text("Subscriptions")
                         .font(.brand(32))
                         .foregroundStyle(.white)
 
-                    VStack(spacing: 14) {
-                        ForEach(appState.subscriptionPlans) { plan in
-                            planCard(plan)
+                    membershipCard
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        EyebrowLabel(text: "Change plan")
+                        VStack(spacing: 14) {
+                            ForEach(appState.subscriptionPlans) { plan in
+                                planCard(plan)
+                            }
                         }
                     }
                 }
@@ -56,6 +61,95 @@ struct SubscriptionsView: View {
         formatter.dateFormat = "d MMM yyyy"
         return formatter
     }()
+
+    /// Masked "card number" look — the last group is real, derived from this
+    /// device's stable DeviceUser.id (same id every other real-data write in
+    /// the app keys off), not a random placeholder.
+    private var cardNumberGroups: [String] {
+        let hex = DeviceUser.id.replacingOccurrences(of: "-", with: "").uppercased()
+        return ["••••", "••••", "••••", String(hex.suffix(4))]
+    }
+
+    // MARK: Membership card (a real "core." membership/bank card look)
+
+    private var membershipCard: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .top) {
+                Text("core.")
+                    .font(.brand(24))
+                    .foregroundStyle(.white)
+                Spacer()
+                Image(systemName: "wave.3.right")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.85))
+            }
+
+            Spacer(minLength: 30)
+
+            Text(appState.membershipPlanName.uppercased())
+                .font(.system(size: 11, weight: .bold))
+                .tracking(1.4)
+                .foregroundStyle(.white.opacity(0.8))
+            HStack(spacing: 12) {
+                ForEach(Array(cardNumberGroups.enumerated()), id: \.offset) { _, group in
+                    Text(group)
+                        .font(.digitalTimer(20))
+                        .foregroundStyle(.white)
+                }
+            }
+            .padding(.top, 6)
+
+            Spacer(minLength: 20)
+
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("MEMBER SINCE")
+                        .font(.system(size: 9, weight: .semibold))
+                        .tracking(0.6)
+                        .foregroundStyle(.white.opacity(0.6))
+                    Text(appState.memberSince)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("VALID THRU")
+                        .font(.system(size: 9, weight: .semibold))
+                        .tracking(0.6)
+                        .foregroundStyle(.white.opacity(0.6))
+                    Text(appState.membershipRenewDate)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+            }
+            .padding(.bottom, 10)
+
+            Text(appState.fullName.uppercased())
+                .font(.brand(17))
+                .foregroundStyle(.white)
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 220)
+        .glassEffect(.regular.tint(.appAccentPurple), in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .overlay(
+            LinearGradient(
+                colors: [Color.appAccentPurple.opacity(0.55), Color.appAccent.opacity(0.35), .clear],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+            .allowsHitTesting(false)
+        )
+        .overlay(
+            LinearGradient(colors: [.white.opacity(0.22), .clear], startPoint: .top, endPoint: .center)
+                .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+                .allowsHitTesting(false)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                .stroke(.white.opacity(0.18), lineWidth: 1)
+        )
+    }
 
     private func planCard(_ plan: SubscriptionPlan) -> some View {
         let isCurrent = plan.name == appState.membershipPlanName
