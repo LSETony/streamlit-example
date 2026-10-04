@@ -1,6 +1,7 @@
 import SwiftUI
 import AVKit
 import UIKit
+import Combine
 
 extension Image {
     /// A custom vector icon from the design's SVG export, sized and tinted
@@ -95,9 +96,15 @@ final class HeroVideoPlayerService: ObservableObject {
     private var pool: [URL] = []
     private var currentIndex = 0
     private var endObserver: NSObjectProtocol?
-    /// If the one clip being looped fails outright, falls forward to the
-    /// next clip in the pool once rather than leaving the hero blank.
+    /// AVPlayerItemFailedToPlayToEndTime only fires for a failure *during*
+    /// playback — an item whose asset never loads in the first place (bad
+    /// URL, network hiccup, storage permissions) just sits there silently
+    /// with no notification at all, which is what made the hero look like
+    /// it "disappeared" even after switching off AVPlayerLooper. status
+    /// and the watchdog below catch that case too.
     private var failureObserver: NSObjectProtocol?
+    private var statusCancellable: AnyCancellable?
+    private var watchdogTask: Task<Void, Never>?
 
     init() {
         player.isMuted = true
@@ -112,12 +119,16 @@ final class HeroVideoPlayerService: ObservableObject {
     }
 
     private func playCurrent() {
+        watchdogTask?.cancel()
+        statusCancellable?.cancel()
+        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+        if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
+
         guard currentIndex < pool.count else { return }
         let item = AVPlayerItem(url: pool[currentIndex])
         player.removeAllItems()
         player.insert(item, after: nil)
 
-        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
         endObserver = NotificationCenter.default.addObserver(
             forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
         ) { [weak self] _ in
@@ -125,21 +136,36 @@ final class HeroVideoPlayerService: ObservableObject {
             self?.player.play()
         }
 
-        if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
         failureObserver = NotificationCenter.default.addObserver(
             forName: .AVPlayerItemFailedToPlayToEndTime, object: item, queue: .main
         ) { [weak self] _ in
-            guard let self else { return }
-            self.currentIndex += 1
-            self.playCurrent()
+            self?.advanceOnFailure()
+        }
+
+        statusCancellable = item.publisher(for: \.status).sink { [weak self] status in
+            if status == .failed { self?.advanceOnFailure() }
+        }
+
+        // Belt-and-braces: if the item never reaches readyToPlay (hung
+        // load, no error ever fired) within 8s, treat it as failed too.
+        watchdogTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 8_000_000_000)
+            guard !Task.isCancelled, item.status != .readyToPlay else { return }
+            self?.advanceOnFailure()
         }
 
         player.play()
     }
 
+    private func advanceOnFailure() {
+        currentIndex += 1
+        playCurrent()
+    }
+
     deinit {
         if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
         if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
+        watchdogTask?.cancel()
     }
 }
 
