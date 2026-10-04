@@ -113,6 +113,18 @@ struct ActiveWorkoutView: View {
     @State private var exerciseIndex = 0
     @State private var currentSet = 1
     @State private var hasRecordedCompletion = false
+    @State private var isPaused = false
+    /// When the current pause began — nil while not paused. Time spent in
+    /// an open pause isn't counted until it's added to
+    /// accumulatedPausedDuration on resume (or read live via activeElapsed
+    /// while still paused).
+    @State private var pauseStartedAt: Date?
+    /// Total seconds spent paused so far, across every pause/resume this
+    /// session — subtracted from wall-clock time everywhere "how long has
+    /// this workout taken" matters (the live timer, the finish screen, and
+    /// the logged workoutHistory entry), so pausing doesn't inflate the
+    /// real time worked out.
+    @State private var accumulatedPausedDuration: TimeInterval = 0
     private let startedAt = Date()
 
     private var isFinished: Bool { exerciseIndex >= card.exercises.count }
@@ -154,13 +166,55 @@ struct ActiveWorkoutView: View {
             exerciseIndex: exerciseIndex,
             totalExercises: card.exercises.count,
             currentSet: currentSet,
-            totalSets: currentExercise?.sets ?? 0
+            totalSets: currentExercise?.sets ?? 0,
+            isPaused: isPaused
         )
+    }
+
+    /// Real elapsed working time as of `referenceDate` — wall-clock time
+    /// since start, minus every second spent paused (including the
+    /// currently open pause, if any). While paused this naturally stays
+    /// constant as referenceDate advances, which is what freezes the
+    /// on-screen timer without any special-casing in the TimelineViews
+    /// that call this.
+    private func activeElapsed(at referenceDate: Date) -> TimeInterval {
+        let openPause = isPaused ? referenceDate.timeIntervalSince(pauseStartedAt ?? referenceDate) : 0
+        return max(0, referenceDate.timeIntervalSince(startedAt) - accumulatedPausedDuration - openPause)
+    }
+
+    private func togglePause() {
+        if isPaused {
+            if let pauseStartedAt {
+                accumulatedPausedDuration += Date().timeIntervalSince(pauseStartedAt)
+            }
+            pauseStartedAt = nil
+            isPaused = false
+        } else {
+            pauseStartedAt = Date()
+            isPaused = true
+        }
+        LiveActivityService.update(currentActivityState)
     }
 
     @ViewBuilder
     private func inProgressContent(exercise: Exercise) -> some View {
-        EyebrowLabel(text: "Exercise \(exerciseIndex + 1) of \(card.exercises.count)")
+        HStack {
+            EyebrowLabel(text: "Exercise \(exerciseIndex + 1) of \(card.exercises.count)")
+            Spacer()
+            TimelineView(.periodic(from: startedAt, by: 1)) { context in
+                HStack(spacing: 6) {
+                    if isPaused {
+                        Text("PAUSED")
+                            .font(.system(size: 10, weight: .bold))
+                            .tracking(0.6)
+                            .foregroundStyle(Color.appTextSecondary)
+                    }
+                    Text(elapsedString(activeElapsed(at: context.date)))
+                        .font(.digitalTimer(18))
+                        .foregroundStyle(isPaused ? Color.appTextSecondary : Color.appAccent)
+                }
+            }
+        }
         ProgressBarView(value: Double(exerciseIndex) / Double(max(card.exercises.count, 1)))
 
         Spacer(minLength: 0)
@@ -189,8 +243,24 @@ struct ActiveWorkoutView: View {
 
         Spacer(minLength: 0)
 
-        PrimaryButton(title: currentSet < exercise.sets ? "Complete Set" : "Next Exercise") {
-            advance(exercise: exercise)
+        HStack(spacing: 12) {
+            Button {
+                togglePause()
+            } label: {
+                Image(systemName: isPaused ? "play.fill" : "pause.fill")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 52, height: 52)
+            }
+            .buttonStyle(.plain)
+            .glassCircleButton()
+
+            PrimaryButton(
+                title: isPaused ? "Paused — resume to continue" : (currentSet < exercise.sets ? "Complete Set" : "Next Exercise"),
+                isEnabled: !isPaused
+            ) {
+                advance(exercise: exercise)
+            }
         }
     }
 
@@ -204,7 +274,7 @@ struct ActiveWorkoutView: View {
                 .font(.brand(26))
                 .foregroundStyle(.white)
             TimelineView(.periodic(from: startedAt, by: 1)) { context in
-                Text(elapsedString(from: startedAt, to: context.date))
+                Text(elapsedString(activeElapsed(at: context.date)))
                     .font(.digitalTimer(36))
                     .foregroundStyle(Color.appAccent)
             }
@@ -238,7 +308,7 @@ struct ActiveWorkoutView: View {
     private func recordCompletion() {
         let endedAt = Date()
         let totalSets = card.exercises.reduce(0) { $0 + $1.sets }
-        let minutes = max(1, Int(endedAt.timeIntervalSince(startedAt) / 60))
+        let minutes = max(1, Int(activeElapsed(at: endedAt) / 60))
         let calories = Int(Double(minutes) * 7) // rough strength-training estimate, ~7 kcal/min
         appState.workoutHistory.insert(
             WorkoutHistoryEntry(date: "Today", title: card.title, sets: totalSets, minutes: minutes, calories: calories, completedAt: endedAt),
@@ -259,8 +329,8 @@ struct ActiveWorkoutView: View {
         }
     }
 
-    private func elapsedString(from start: Date, to now: Date) -> String {
-        let seconds = max(0, Int(now.timeIntervalSince(start)))
+    private func elapsedString(_ interval: TimeInterval) -> String {
+        let seconds = max(0, Int(interval))
         return String(format: "%02d:%02d", seconds / 60, seconds % 60)
     }
 }

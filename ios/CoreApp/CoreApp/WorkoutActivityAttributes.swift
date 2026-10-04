@@ -18,6 +18,7 @@ struct WorkoutActivityAttributes: ActivityAttributes {
         var totalExercises: Int
         var currentSet: Int
         var totalSets: Int
+        var isPaused: Bool
     }
 
     var workoutTitle: String

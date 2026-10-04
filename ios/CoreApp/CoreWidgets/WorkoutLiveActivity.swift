@@ -14,8 +14,8 @@ struct WorkoutLiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Image(systemName: "flame.fill")
-                        .foregroundStyle(Color.appAccent)
+                    Image(systemName: context.state.isPaused ? "pause.fill" : "flame.fill")
+                        .foregroundStyle(context.state.isPaused ? Color.appTextSecondary : Color.appAccent)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     Text("\(context.state.currentSet)/\(context.state.totalSets)")
@@ -24,9 +24,9 @@ struct WorkoutLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.center) {
                     VStack(spacing: 2) {
-                        Text(context.state.exerciseName)
+                        Text(context.state.isPaused ? "Paused" : context.state.exerciseName)
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(context.state.isPaused ? Color.appTextSecondary : .white)
                             .lineLimit(1)
                         Text("Exercise \(context.state.exerciseIndex + 1) of \(context.state.totalExercises)")
                             .font(.system(size: 10))
@@ -34,29 +34,41 @@ struct WorkoutLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                Image(systemName: "flame.fill")
-                    .foregroundStyle(Color.appAccent)
+                Image(systemName: context.state.isPaused ? "pause.fill" : "flame.fill")
+                    .foregroundStyle(context.state.isPaused ? Color.appTextSecondary : Color.appAccent)
             } compactTrailing: {
                 Text("\(context.state.currentSet)/\(context.state.totalSets)")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.white)
             } minimal: {
-                Image(systemName: "flame.fill")
-                    .foregroundStyle(Color.appAccent)
+                Image(systemName: context.state.isPaused ? "pause.fill" : "flame.fill")
+                    .foregroundStyle(context.state.isPaused ? Color.appTextSecondary : Color.appAccent)
             }
         }
     }
 
     private func lockScreenView(context: ActivityViewContext<WorkoutActivityAttributes>) -> some View {
         HStack(spacing: 14) {
-            Image(systemName: "flame.fill")
+            Image(systemName: context.state.isPaused ? "pause.fill" : "flame.fill")
                 .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(Color.appAccent)
+                .foregroundStyle(context.state.isPaused ? Color.appTextSecondary : Color.appAccent)
             VStack(alignment: .leading, spacing: 2) {
-                Text(context.attributes.workoutTitle)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(context.attributes.workoutTitle)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                    if context.state.isPaused {
+                        Text("PAUSED")
+                            .font(.system(size: 9, weight: .bold))
+                            .tracking(0.4)
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.appTextSecondary)
+                            .clipShape(Capsule())
+                    }
+                }
                 Text(context.state.exerciseName)
                     .font(.system(size: 12))
                     .foregroundStyle(.white.opacity(0.7))
