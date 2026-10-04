@@ -20,9 +20,20 @@ struct SubscriptionsView: View {
 
                     VStack(alignment: .leading, spacing: 10) {
                         EyebrowLabel(text: "Change plan")
-                        VStack(spacing: 14) {
+                        Text("Tap a card to flip it and see what's included.")
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color.appTextSecondary)
+                        VStack(spacing: 18) {
                             ForEach(appState.subscriptionPlans) { plan in
-                                planCard(plan)
+                                let isCurrent = plan.name == appState.membershipPlanName
+                                PlanFlipCard(
+                                    plan: plan,
+                                    isCurrent: isCurrent,
+                                    isLoading: paymentService.isStartingPayment && payingPlanName == plan.name
+                                ) {
+                                    payingPlanName = plan.name
+                                    Task { await paymentService.startPayment(amountDollars: plan.price, description: "\(plan.name) subscription") }
+                                }
                             }
                         }
                     }
@@ -150,14 +161,41 @@ struct SubscriptionsView: View {
                 .stroke(.white.opacity(0.18), lineWidth: 1)
         )
     }
+}
 
-    private func planCard(_ plan: SubscriptionPlan) -> some View {
-        let isCurrent = plan.name == appState.membershipPlanName
-        return VStack(alignment: .leading, spacing: 14) {
+/// A subscription tier's card — front face shows just name/price/the
+/// "core." mark and the pay button (matching the reference layout);
+/// tapping the card (not the button) flips it 3D to a back face listing
+/// what's actually included. Owns its own flip state so each of the 3
+/// cards flips independently.
+private struct PlanFlipCard: View {
+    let plan: SubscriptionPlan
+    let isCurrent: Bool
+    let isLoading: Bool
+    var onPay: () -> Void
+
+    @State private var isFlipped = false
+    private let cardHeight: CGFloat = 300
+
+    var body: some View {
+        ZStack {
+            frontFace.opacity(isFlipped ? 0 : 1)
+            backFace
+                .opacity(isFlipped ? 1 : 0)
+                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+        }
+        .frame(height: cardHeight)
+        .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0), perspective: 0.3)
+        .animation(.spring(response: 0.55, dampingFraction: 0.78), value: isFlipped)
+        .onTapGesture { isFlipped.toggle() }
+    }
+
+    private var frontFace: some View {
+        VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(plan.name)
-                        .font(.brand(20))
+                        .font(.brand(30))
                         .foregroundStyle(.white)
                     if plan.recommended {
                         Text("RECOMMENDED")
@@ -168,12 +206,48 @@ struct SubscriptionsView: View {
                 }
                 Spacer()
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text("$\(plan.price)").font(.digitalTimer(28)).foregroundStyle(.white)
+                    Text("\(plan.price)$").font(.digitalTimer(24)).foregroundStyle(.white)
                     Text("/\(plan.period)").font(.brand(14)).foregroundStyle(Color.appTextSecondary)
                 }
             }
 
-            VStack(alignment: .leading, spacing: 8) {
+            Spacer()
+
+            HStack(alignment: .bottom) {
+                Text("core.")
+                    .font(.brand(26))
+                    .foregroundStyle(.white)
+                Spacer()
+                PrimaryButton(
+                    title: isCurrent ? "current plan" : "pay \(plan.price)$ and switch",
+                    isEnabled: !isCurrent,
+                    isLoading: isLoading,
+                    color: .appAccentPurple,
+                    action: onPay
+                )
+                .frame(width: 190)
+            }
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(
+            LinearGradient(colors: [Color.appSurfaceElevated, Color.appSurface], startPoint: .top, endPoint: .bottom)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                .stroke(plan.recommended ? Color.appAccentPurple : .white.opacity(0.08), lineWidth: plan.recommended ? 2 : 1)
+        )
+        .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
+    }
+
+    private var backFace: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Details")
+                .font(.brand(24))
+                .foregroundStyle(.white)
+
+            VStack(alignment: .leading, spacing: 10) {
                 ForEach(plan.perks, id: \.self) { perk in
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.appAccent)
@@ -182,23 +256,27 @@ struct SubscriptionsView: View {
                 }
             }
 
-            PrimaryButton(
-                title: isCurrent ? "Current plan" : "Pay $\(plan.price) & switch",
-                isEnabled: !isCurrent,
-                isLoading: paymentService.isStartingPayment && payingPlanName == plan.name,
-                color: .appAccentPurple
-            ) {
-                payingPlanName = plan.name
-                Task { await paymentService.startPayment(amountDollars: plan.price, description: "\(plan.name) subscription") }
+            Spacer()
+
+            HStack {
+                Text("core.")
+                    .font(.brand(18))
+                    .foregroundStyle(.white.opacity(0.6))
+                Spacer()
+                Text("tap to flip back")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.appTextSecondary)
             }
         }
-        .padding(20)
-        .background(plan.recommended ? Color.appAccentPurple.opacity(0.18) : Color.appSurface)
+        .padding(24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color.appSurface)
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
-                .stroke(plan.recommended ? Color.appAccentPurple : Color.appDivider, lineWidth: plan.recommended ? 2 : 1)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
     }
 }
 
