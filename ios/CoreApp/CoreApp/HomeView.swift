@@ -130,7 +130,7 @@ struct HomeView: View {
                     .font(.digitalTimer(13))
                     .foregroundStyle(.white)
                 Spacer(minLength: 8)
-                pillLabel("View more", background: .appAccent)
+                glassPillLabel("View more", tint: .appAccent, bold: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(18)
@@ -162,16 +162,6 @@ struct HomeView: View {
             .glassEffect(.regular.tint(.appAccentPurple), in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         }
         .buttonStyle(.plain)
-    }
-
-    private func pillLabel(_ text: String, background: Color) -> some View {
-        Text(text)
-            .font(.brand(10))
-            .foregroundStyle(.white)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(background)
-            .clipShape(Capsule())
     }
 
     private func glassPillLabel(_ text: String, tint: Color, bold: Bool = false) -> some View {
