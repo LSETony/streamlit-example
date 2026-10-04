@@ -16,15 +16,12 @@ struct SubscriptionsView: View {
                         .font(.brand(32))
                         .foregroundStyle(.white)
 
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 14) {
                         EyebrowLabel(text: "Change plan")
-                        Text("Tap a card to flip it and see what's included.")
-                            .font(.system(size: 12))
-                            .foregroundStyle(Color.appTextSecondary)
                         VStack(spacing: 18) {
                             ForEach(appState.subscriptionPlans) { plan in
                                 let isCurrent = plan.name == appState.membershipPlanName
-                                PlanFlipCard(
+                                PlanCard(
                                     plan: plan,
                                     isCurrent: isCurrent,
                                     isLoading: paymentService.isStartingPayment && payingPlanName == plan.name
@@ -72,137 +69,76 @@ struct SubscriptionsView: View {
     }()
 }
 
-/// A subscription tier's card — front face shows just name/price/the
-/// "core." mark and the pay button (matching the reference layout);
-/// tapping the card (not the button) flips it 3D to a back face listing
-/// what's actually included. Owns its own flip state so each of the 3
-/// cards flips independently.
-private struct PlanFlipCard: View {
+/// A subscription tier's card — everything a member needs to decide (name,
+/// price, every perk) is visible at once, no tap-to-reveal: a pricing
+/// decision is exactly the moment you don't want to hide information
+/// behind an interaction. The recommended plan gets a badge, a tinted
+/// glass background and a soft glow so it reads as the suggested pick at
+/// a glance.
+private struct PlanCard: View {
     let plan: SubscriptionPlan
     let isCurrent: Bool
     let isLoading: Bool
     var onPay: () -> Void
 
-    @State private var isFlipped = false
-    private let cardHeight: CGFloat = 300
-
     var body: some View {
-        ZStack {
-            frontFace.opacity(isFlipped ? 0 : 1)
-            backFace
-                .opacity(isFlipped ? 1 : 0)
-                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
-        }
-        .frame(height: cardHeight)
-        .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0), perspective: 0.3)
-        .animation(.spring(response: 0.55, dampingFraction: 0.78), value: isFlipped)
-        .onTapGesture { isFlipped.toggle() }
-    }
+        VStack(alignment: .leading, spacing: 18) {
+            if plan.recommended {
+                Text("MOST POPULAR")
+                    .font(.system(size: 10, weight: .bold))
+                    .tracking(0.6)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .glassEffect(.regular.tint(.appAccentPurple), in: Capsule())
+            }
 
-    private var frontFace: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(plan.name)
-                        .font(.brand(30))
-                        .foregroundStyle(.white)
-                    if plan.recommended {
-                        Text("RECOMMENDED")
-                            .font(.system(size: 10, weight: .semibold))
-                            .tracking(0.4)
-                            .foregroundStyle(Color.appAccent)
-                    }
-                }
+            HStack(alignment: .firstTextBaseline) {
+                Text(plan.name)
+                    .font(.brand(24))
+                    .foregroundStyle(.white)
                 Spacer()
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text("\(plan.price)$").font(.digitalTimer(24)).foregroundStyle(.white)
+                    Text("$\(plan.price)").font(.digitalTimer(30)).foregroundStyle(.white)
                     Text("/\(plan.period)").font(.brand(14)).foregroundStyle(Color.appTextSecondary)
                 }
             }
 
-            Spacer()
+            AppDivider()
 
-            HStack(alignment: .bottom) {
-                Text("core.")
-                    .font(.brand(26))
-                    .foregroundStyle(.white)
-                Spacer(minLength: 12)
-                payButton
-            }
-        }
-        .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(
-            LinearGradient(colors: [Color.appSurfaceElevated, Color.appSurface], startPoint: .top, endPoint: .bottom)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
-                .stroke(plan.recommended ? Color.appAccentPurple : .white.opacity(0.08), lineWidth: 1.5)
-        )
-        .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
-    }
-
-    /// Sized to its own content (not a shared fixed width) so "pay 39$"
-    /// and "pay 129$" both render on one line at the same height instead
-    /// of one wrapping while the others don't — that's what made the 3
-    /// cards look uneven next to each other.
-    private var payButton: some View {
-        Button(action: onPay) {
-            Group {
-                if isLoading {
-                    ProgressView().tint(.white)
-                } else {
-                    Text(isCurrent ? "current plan" : "pay \(plan.price)$ and switch")
-                }
-            }
-            .font(.system(size: 14, weight: .semibold))
-            .lineLimit(1)
-            .padding(.horizontal, 18)
-            .padding(.vertical, 13)
-        }
-        .buttonStyle(.glassProminent)
-        .tint(.appAccentPurple)
-        .disabled(isCurrent || isLoading)
-        .opacity(isCurrent ? 0.5 : 1)
-    }
-
-    private var backFace: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Details")
-                .font(.brand(24))
-                .foregroundStyle(.white)
-
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(plan.perks, id: \.self) { perk in
-                    HStack(spacing: 8) {
-                        Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.appAccent)
-                        Text(perk).font(.brand(14)).foregroundStyle(Color.appTextSecondary)
+                    HStack(spacing: 10) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 16))
+                            .foregroundStyle(plan.recommended ? Color.appAccentPurple : Color.appAccent)
+                        Text(perk)
+                            .font(.system(size: 14))
+                            .foregroundStyle(.white.opacity(0.9))
                     }
                 }
             }
 
-            Spacer()
-
-            HStack {
-                Text("core.")
-                    .font(.brand(18))
-                    .foregroundStyle(.white.opacity(0.6))
-                Spacer()
-                Text("tap to flip back")
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color.appTextSecondary)
-            }
+            PrimaryButton(
+                title: isCurrent ? "Current plan" : "Pay $\(plan.price) & switch",
+                isEnabled: !isCurrent,
+                isLoading: isLoading,
+                color: .appAccentPurple,
+                action: onPay
+            )
         }
-        .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .glassEffect(
+            plan.recommended ? .regular.tint(.appAccentPurple.opacity(0.35)) : .regular,
+            in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+        )
         .overlay(
             RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
-                .stroke(.white.opacity(0.08), lineWidth: 1)
+                .stroke(plan.recommended ? Color.appAccentPurple : .white.opacity(0.08), lineWidth: plan.recommended ? 1.5 : 1)
         )
-        .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
+        .shadow(color: plan.recommended ? Color.appAccentPurple.opacity(0.3) : .black.opacity(0.25), radius: plan.recommended ? 22 : 12, y: 8)
+        .scaleEffect(plan.recommended ? 1.02 : 1)
     }
 }
 
