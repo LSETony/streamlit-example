@@ -94,6 +94,14 @@ struct WorkoutHeroVideo: UIViewRepresentable {
 final class HeroVideoPlayerService: ObservableObject {
     let player = AVQueuePlayer()
     private var endObserver: NSObjectProtocol?
+    /// iOS pauses video playback whenever the app backgrounds (screen
+    /// locks, a system sheet takes over, the member switches apps) and
+    /// does NOT resume it automatically — without this, returning to the
+    /// app left the hero frozen on the backdrop photo for good, regardless
+    /// of which screen was showing. didBecomeActive fires on every return
+    /// to foreground, so this covers all of those cases, not just app
+    /// launch.
+    private var foregroundObserver: NSObjectProtocol?
 
     init() {
         player.isMuted = true
@@ -107,11 +115,17 @@ final class HeroVideoPlayerService: ObservableObject {
             self?.player.seek(to: .zero)
             self?.player.play()
         }
+        foregroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.player.play()
+        }
         player.play()
     }
 
     deinit {
         if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+        if let foregroundObserver { NotificationCenter.default.removeObserver(foregroundObserver) }
     }
 }
 

@@ -56,6 +56,13 @@ struct HomeView: View {
         .fullScreenCover(isPresented: $isShowingScan) {
             ScanView()
         }
+        .onAppear {
+            // Extra safety net alongside HeroVideoPlayerService's own
+            // didBecomeActive resume — covers Home reappearing after a
+            // full-screen cover (Scan) dismisses, not just the app itself
+            // backgrounding/foregrounding.
+            appState.heroVideoPlayer.player.play()
+        }
     }
 
     // MARK: Hero (photo header + store icon)
