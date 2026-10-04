@@ -38,8 +38,9 @@ struct OccupancyDetailView: View {
                         HStack(alignment: .bottom, spacing: 6) {
                             ForEach(appState.occupancyHourly.indices, id: \.self) { i in
                                 let entry = appState.occupancyHourly[i]
-                                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                    .fill(entry.hour == appState.occupancyNowHour ? Color.appAccent : .white.opacity(0.7))
+                                let isNow = entry.hour == appState.occupancyNowHour
+                                UnevenRoundedRectangle(topLeadingRadius: 6, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 6, style: .continuous)
+                                    .fill(isNow ? AnyShapeStyle(Color.appAccent.gradient) : AnyShapeStyle(.white.opacity(0.7)))
                                     .frame(height: max(4, entry.value * 100))
                             }
                         }
@@ -55,10 +56,16 @@ struct OccupancyDetailView: View {
                         }
                     }
                     .glassCard(padding: 18)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                            .stroke(.white.opacity(0.08), lineWidth: 1)
+                    )
 
-                    HStack(spacing: 10) {
-                        infoTile(title: "Quietest", value: quietestHour, color: .appSuccess)
-                        infoTile(title: "Busiest", value: busiestHour, color: .appAccent)
+                    GlassEffectContainer(spacing: 10) {
+                        HStack(spacing: 10) {
+                            infoTile(icon: "moon.stars.fill", title: "Quietest", value: quietestHour, color: .appSuccess)
+                            infoTile(icon: "flame.fill", title: "Busiest", value: busiestHour, color: .appAccent)
+                        }
                     }
                 }
                 .screenPadding()
@@ -76,15 +83,21 @@ struct OccupancyDetailView: View {
         }
     }
 
-    private func infoTile(title: String, value: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(value).font(.digitalTimer(28)).foregroundStyle(color)
+    private func infoTile(icon: String, title: String, value: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Image(systemName: icon)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(color)
+            Text(value).font(.digitalTimer(28)).foregroundStyle(.white)
             Text(title.uppercased()).font(.system(size: 10, weight: .semibold)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .glassEffect(.regular.tint(color.opacity(0.5)), in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 }
 
