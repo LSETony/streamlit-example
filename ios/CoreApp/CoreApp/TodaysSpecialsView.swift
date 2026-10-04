@@ -28,9 +28,11 @@ struct TodaysSpecialsView: View {
                             .font(.system(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     } else {
-                        VStack(spacing: 12) {
-                            ForEach(appState.todaysSpecials) { special in
-                                specialRow(special)
+                        GlassEffectContainer(spacing: 12) {
+                            VStack(spacing: 12) {
+                                ForEach(appState.todaysSpecials) { special in
+                                    specialRow(special)
+                                }
                             }
                         }
                     }
@@ -51,55 +53,68 @@ struct TodaysSpecialsView: View {
 
     private func specialRow(_ special: AppState.TrainerSpecial) -> some View {
         let isBooked = bookedSpecialIDs.contains(special.id)
-        return HStack(spacing: 14) {
-            Image(special.trainer.imageName)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 52, height: 52)
-                .clipShape(Circle())
+        return VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 14) {
+                Image(special.trainer.imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 52, height: 52)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(.white.opacity(0.15), lineWidth: 1))
 
-            VStack(alignment: .leading, spacing: 3) {
-                Text(special.trainer.name)
-                    .font(.system(size: 15, weight: .semibold))
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(special.trainer.name)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text("\(special.trainer.specialty) · Today \(special.time)")
+                        .font(.system(size: 12))
+                        .foregroundStyle(Color.appTextSecondary)
+                }
+
+                Spacer(minLength: 8)
+
+                Text("-\(special.discountPercent)%")
+                    .font(.system(size: 11, weight: .bold))
                     .foregroundStyle(.white)
-                Text("\(special.trainer.specialty) · Today \(special.time)")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color.appTextSecondary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .glassEffect(.regular.tint(.appAccent), in: Capsule())
             }
 
-            Spacer(minLength: 8)
+            HStack(alignment: .firstTextBaseline) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text("$\(special.originalPrice)")
+                        .font(.system(size: 13))
+                        .foregroundStyle(Color.appTextSecondary)
+                        .strikethrough()
+                    Text("$\(special.discountedPrice)")
+                        .font(.digitalTimer(22))
+                        .foregroundStyle(.white)
+                }
 
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("$\(special.originalPrice)")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color.appTextSecondary)
-                    .strikethrough()
-                Text("$\(special.discountedPrice)")
-                    .font(.digitalTimer(18))
-                    .foregroundStyle(Color.appAccent)
-            }
+                Spacer()
 
-            Button {
-                appState.bookTrainerSpecial(special)
-                bookedSpecialIDs.insert(special.id)
-            } label: {
-                Text(isBooked ? "✓" : "Book")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, isBooked ? 12 : 16)
-                    .padding(.vertical, 9)
+                Button {
+                    appState.bookTrainerSpecial(special)
+                    bookedSpecialIDs.insert(special.id)
+                } label: {
+                    Text(isBooked ? "✓ Booked" : "Book")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, isBooked ? 14 : 20)
+                        .padding(.vertical, 9)
+                }
+                .buttonStyle(.plain)
+                .glassEffect(isBooked ? .regular.tint(.appSuccess) : .regular.tint(.appAccentPurple).interactive(), in: Capsule())
+                .disabled(isBooked)
             }
-            .buttonStyle(.plain)
-            .glassEffect(isBooked ? .regular.tint(.appSuccess) : .regular.tint(.appAccentPurple).interactive(), in: Capsule())
-            .disabled(isBooked)
         }
-        .padding(14)
-        .background(Color.appSurface)
+        .padding(16)
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                .stroke(Color.appAccent.opacity(0.4), lineWidth: 1)
+            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
     }
 }
 
