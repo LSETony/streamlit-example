@@ -1,10 +1,13 @@
 import SwiftUI
+import MapKit
 
-/// Opened by tapping the club name on Home. Lets the member switch which
-/// club location the app is showing. Only one location has real data in
-/// this build — the source hasn't designed a multi-location Home yet — so
-/// picking another just renames the header, honestly, rather than faking
-/// content that doesn't exist.
+/// Opened by tapping the club name on Home. Shows every real club location
+/// as a pin on an actual map (6 locations: Moscow, 2 in Dubai, 3 in the
+/// US), plus a quick-pick strip underneath for exact selection when pins
+/// overlap at a world-zoomed-out camera. Picking one updates appState's
+/// current location (real address/coordinates/hours/description per
+/// location — see AppState.gymLocations) and chains into GymPhotoViewer,
+/// same flow as before.
 struct LocationPickerView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
@@ -14,21 +17,33 @@ struct LocationPickerView: View {
     /// its detail card opens" reference flow.
     var onSelect: () -> Void = {}
 
+    @State private var cameraPosition: MapCameraPosition = .automatic
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                GlassEffectContainer(spacing: 10) {
-                    VStack(spacing: 10) {
-                        ForEach(appState.clubLocations, id: \.self) { location in
-                            locationRow(location)
+            ZStack(alignment: .bottom) {
+                Map(position: $cameraPosition) {
+                    ForEach(appState.gymLocations) { location in
+                        Annotation(location.name, coordinate: location.coordinate) {
+                            pin(for: location)
                         }
                     }
                 }
-                .screenPadding()
-                .padding(.top, 12)
-                .padding(.bottom, 24)
+                .mapStyle(.standard(pointsOfInterest: .excludingAll))
+                .ignoresSafeArea(edges: .bottom)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    GlassEffectContainer(spacing: 10) {
+                        HStack(spacing: 10) {
+                            ForEach(appState.gymLocations) { location in
+                                locationChip(location)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, AppMetrics.screenPadding)
+                }
+                .padding(.bottom, 18)
             }
-            .background(Color.appBackground.ignoresSafeArea())
             .navigationTitle("Choose Location")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -37,47 +52,51 @@ struct LocationPickerView: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .preferredColorScheme(.dark)
+        .presentationDetents([.large])
     }
 
-    private func locationRow(_ location: String) -> some View {
-        let isSelected = location == appState.clubName
-        return Button {
-            appState.clubName = location
-            onSelect()
-            dismiss()
-        } label: {
-            HStack(spacing: 14) {
-                Image(systemName: "building.2.fill")
-                    .font(.system(size: 15, weight: .semibold))
+    private func pin(for location: GymLocation) -> some View {
+        let isSelected = location.name == appState.clubName
+        return Button { choose(location) } label: {
+            VStack(spacing: 2) {
+                Image(systemName: "dumbbell.fill")
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(.white)
-                    .frame(width: 38, height: 38)
-                    .glassEffect(.regular.tint(isSelected ? .appAccent : .clear), in: Circle())
-
-                Text(location)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
-
-                Spacer()
-
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20))
-                        .foregroundStyle(Color.appAccent)
-                }
+                    .frame(width: 42, height: 42)
+                    .glassEffect(.regular.tint(isSelected ? .appAccent : .appAccentPurple), in: Circle())
+                    .overlay(Circle().stroke(.white.opacity(0.8), lineWidth: 2))
+                Image(systemName: "triangle.fill")
+                    .font(.system(size: 9))
+                    .foregroundStyle(isSelected ? Color.appAccent : Color.appAccentPurple)
+                    .rotationEffect(.degrees(180))
+                    .offset(y: -6)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-            .glassEffect(
-                isSelected ? .regular.tint(.appAccent.opacity(0.35)).interactive() : .regular.interactive(),
-                in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                    .stroke(.white.opacity(isSelected ? 0.3 : 0.08), lineWidth: 1)
-            )
         }
         .buttonStyle(.plain)
+    }
+
+    private func locationChip(_ location: GymLocation) -> some View {
+        let isSelected = location.name == appState.clubName
+        return Button { choose(location) } label: {
+            Text(location.name)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .glassEffect(
+                    isSelected ? .regular.tint(.appAccent).interactive() : .regular.interactive(),
+                    in: Capsule()
+                )
+                .overlay(Capsule().stroke(.white.opacity(isSelected ? 0.3 : 0.08), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func choose(_ location: GymLocation) {
+        appState.clubName = location.name
+        onSelect()
+        dismiss()
     }
 }
 

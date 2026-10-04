@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 // MARK: - Trainers
 
@@ -153,6 +154,22 @@ struct InBodyEntry: Identifiable {
     let totalBodyWaterPercent: Double
     let visceralFatIndex: Int
     let basalMetabolicRate: Int
+}
+
+// MARK: - Club locations (behind Home's club-name picker)
+
+/// One real club location, shown as a pin on LocationPickerView's map and
+/// as the detail sheet GymPhotoViewer renders once picked.
+struct GymLocation: Identifiable {
+    let id = UUID()
+    let name: String
+    let address: String
+    let latitude: Double
+    let longitude: Double
+    let hoursLabel: String
+    let description: String
+
+    var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: latitude, longitude: longitude) }
 }
 
 // MARK: - Club subscriptions (behind Home's wallet icon)

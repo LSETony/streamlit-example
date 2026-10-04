@@ -34,18 +34,48 @@ final class AppState: ObservableObject {
     // MARK: Home hero + progress card
 
     @Published var clubName: String = "RC Rezindtsii Arhitektorov"
-    /// Other club locations the member can switch to. Only the current one
-    /// has real data in this build — picking another just renames the
-    /// header, since no per-location content exists in the source yet.
-    @Published var clubLocations: [String] = [
-        "RC Rezindtsii Arhitektorov",
-        "RC Nagatino i-Land",
-        "RC Символ",
+    /// Every real club location the member can switch to — each pinned on
+    /// LocationPickerView's map with its own real address/coordinates/
+    /// hours/description, not just a renamed header.
+    @Published var gymLocations: [GymLocation] = [
+        GymLocation(
+            name: "RC Rezindtsii Arhitektorov", address: "1-ya Tverskaya-Yamskaya, 2/1, Moscow",
+            latitude: 55.7766, longitude: 37.5926, hoursLabel: "until 22:00",
+            description: "A full strength floor, free weights, cardio and a group class studio — steps from the metro, open daily."
+        ),
+        GymLocation(
+            name: "RC Dubai Marina", address: "Marina Walk, Dubai Marina, Dubai",
+            latitude: 25.0805, longitude: 55.1403, hoursLabel: "until 23:00",
+            description: "Floor-to-ceiling marina views, a full free-weight floor and a rooftop studio — steps from Dubai Marina Mall."
+        ),
+        GymLocation(
+            name: "RC Downtown Dubai", address: "Sheikh Mohammed bin Rashid Blvd, Downtown Dubai, Dubai",
+            latitude: 25.1972, longitude: 55.2744, hoursLabel: "until 23:00",
+            description: "In the shadow of Burj Khalifa — a premium strength floor, sauna and recovery suite for the downtown crowd."
+        ),
+        GymLocation(
+            name: "RC New York", address: "5th Avenue, Flatiron District, New York",
+            latitude: 40.7410, longitude: -73.9896, hoursLabel: "until 23:00",
+            description: "A Flatiron fixture — free weights, a run club meeting point and the city's best post-workout matcha bar next door."
+        ),
+        GymLocation(
+            name: "RC Los Angeles", address: "Melrose Avenue, West Hollywood, Los Angeles",
+            latitude: 34.0836, longitude: -118.3617, hoursLabel: "until 22:00",
+            description: "West Hollywood's go-to strength floor — outdoor turf area, cold plunge and a juice bar on Melrose."
+        ),
+        GymLocation(
+            name: "RC Miami", address: "Ocean Drive, South Beach, Miami",
+            latitude: 25.7826, longitude: -80.1300, hoursLabel: "until 23:00",
+            description: "Steps from the sand on Ocean Drive — open-air cardio deck, beach bootcamp classes and an on-site smoothie bar."
+        ),
     ]
+    /// The currently selected location's full record — falls back to the
+    /// first one if clubName somehow doesn't match (shouldn't happen).
+    var currentLocation: GymLocation { gymLocations.first(where: { $0.name == clubName }) ?? gymLocations[0] }
     /// Backs the gym photo sheet opened from Home.
-    @Published var clubAddress: String = "1-ya Tverskaya-Yamskaya, 2/1"
-    @Published var clubHoursLabel: String = "until 22:00"
-    @Published var clubDescription: String = "A full strength floor, free weights, cardio and a group class studio — steps from the metro, open daily."
+    var clubAddress: String { currentLocation.address }
+    var clubHoursLabel: String { currentLocation.hoursLabel }
+    var clubDescription: String { currentLocation.description }
     /// Uploaded gym clips that don't belong to one specific workout card —
     /// the Home hero plays through this whole set in order, looping back
     /// to the start once the last one finishes (shuffled once per launch
