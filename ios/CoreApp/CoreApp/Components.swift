@@ -81,59 +81,52 @@ struct WorkoutHeroVideo: UIViewRepresentable {
 /// screens) — so buffering starts well before the member ever reaches
 /// Home, instead of only starting when HeroVideoQueue's makeUIView first
 /// runs, which was the source of the visible startup delay.
+///
+/// Plays a single clip from the pool on a seamless, gapless loop
+/// (AVPlayerLooper) rather than cycling through every clip in the queue —
+/// each item-to-item transition was a chance for a black flash, and a
+/// single broken/404 clip anywhere in the pool could stall the whole
+/// queue, which looked like the hero video just vanishing.
 @MainActor
 final class HeroVideoPlayerService: ObservableObject {
     let player = AVQueuePlayer()
-    private var urls: [URL] = []
-    private var endObserver: NSObjectProtocol?
-    /// Without this, a single broken/404 clip in the pool (exactly what
-    /// happens mid-way through swapping files in Supabase Storage) leaves
-    /// that AVPlayerItem stuck — it never reaches "did play to end", so the
-    /// queue silently stalls forever and the hero looks like the video just
-    /// vanished. This skips straight to the next item whenever one fails.
+    private var looper: AVPlayerLooper?
+    private var pool: [URL] = []
+    private var currentIndex = 0
+    /// If the one clip being looped fails outright, falls forward to the
+    /// next clip in the pool once rather than leaving the hero blank.
     private var failureObserver: NSObjectProtocol?
 
     init() {
         player.isMuted = true
         player.automaticallyWaitsToMinimizeStalling = false
-        failureObserver = NotificationCenter.default.addObserver(
-            forName: .AVPlayerItemFailedToPlayToEndTime, object: nil, queue: .main
-        ) { [weak self] note in
-            guard let self, let failedItem = note.object as? AVPlayerItem, self.player.items().contains(failedItem) else { return }
-            self.player.advanceToNextItem()
-            // If the failed item was also the last one queued, restart the
-            // whole pool instead of leaving playback stuck empty.
-            if self.player.items().isEmpty {
-                self.enqueueAll()
-                self.player.play()
-            }
-        }
     }
 
     func configure(urls: [URL]) {
-        guard urls != self.urls else { return }
-        self.urls = urls
-        enqueueAll()
+        guard urls != pool else { return }
+        pool = urls
+        currentIndex = 0
+        playCurrent()
+    }
+
+    private func playCurrent() {
+        guard currentIndex < pool.count else { return }
+        let item = AVPlayerItem(url: pool[currentIndex])
+
+        if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
+        failureObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemFailedToPlayToEndTime, object: item, queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            self.currentIndex += 1
+            self.playCurrent()
+        }
+
+        looper = AVPlayerLooper(player: player, templateItem: item)
         player.play()
     }
 
-    private func enqueueAll() {
-        guard !urls.isEmpty else { return }
-        player.removeAllItems()
-        let items = urls.map { AVPlayerItem(url: $0) }
-        for item in items { player.insert(item, after: player.items().last) }
-
-        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
-        endObserver = NotificationCenter.default.addObserver(
-            forName: .AVPlayerItemDidPlayToEndTime, object: items.last, queue: .main
-        ) { [weak self] _ in
-            self?.enqueueAll()
-            self?.player.play()
-        }
-    }
-
     deinit {
-        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
         if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
     }
 }
