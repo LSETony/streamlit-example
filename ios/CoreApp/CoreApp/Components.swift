@@ -82,17 +82,19 @@ struct WorkoutHeroVideo: UIViewRepresentable {
 /// Home, instead of only starting when HeroVideoQueue's makeUIView first
 /// runs, which was the source of the visible startup delay.
 ///
-/// Plays a single clip from the pool on a seamless, gapless loop
-/// (AVPlayerLooper) rather than cycling through every clip in the queue —
-/// each item-to-item transition was a chance for a black flash, and a
-/// single broken/404 clip anywhere in the pool could stall the whole
-/// queue, which looked like the hero video just vanishing.
+/// Plays a single clip from the pool, looping it manually via
+/// AVPlayerItemDidPlayToEndTime + seek-to-zero — the same proven pattern
+/// WorkoutHeroVideo above uses. An earlier version used AVPlayerLooper for
+/// a gapless loop, but it silently fails to ever insert the item (so the
+/// hero shows nothing at all) for a remote clip whose duration isn't known
+/// synchronously, which is common for a progressively-downloaded Supabase
+/// Storage URL — worse than the rare transition flash it was meant to fix.
 @MainActor
 final class HeroVideoPlayerService: ObservableObject {
     let player = AVQueuePlayer()
-    private var looper: AVPlayerLooper?
     private var pool: [URL] = []
     private var currentIndex = 0
+    private var endObserver: NSObjectProtocol?
     /// If the one clip being looped fails outright, falls forward to the
     /// next clip in the pool once rather than leaving the hero blank.
     private var failureObserver: NSObjectProtocol?
@@ -112,6 +114,16 @@ final class HeroVideoPlayerService: ObservableObject {
     private func playCurrent() {
         guard currentIndex < pool.count else { return }
         let item = AVPlayerItem(url: pool[currentIndex])
+        player.removeAllItems()
+        player.insert(item, after: nil)
+
+        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+        endObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
+        ) { [weak self] _ in
+            self?.player.seek(to: .zero)
+            self?.player.play()
+        }
 
         if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
         failureObserver = NotificationCenter.default.addObserver(
@@ -122,11 +134,11 @@ final class HeroVideoPlayerService: ObservableObject {
             self.playCurrent()
         }
 
-        looper = AVPlayerLooper(player: player, templateItem: item)
         player.play()
     }
 
     deinit {
+        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
         if let failureObserver { NotificationCenter.default.removeObserver(failureObserver) }
     }
 }
