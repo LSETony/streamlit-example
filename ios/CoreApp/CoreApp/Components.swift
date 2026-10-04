@@ -80,20 +80,23 @@ struct WorkoutHeroVideo: UIViewRepresentable {
 /// (such as it is — see below) starts well before the member ever reaches
 /// Home.
 ///
-/// Plays HeroVideo.mp4, bundled in the app, on a manual loop
-/// (AVPlayerItemDidPlayToEndTime + seek-to-zero, same pattern
-/// WorkoutHeroVideo above uses). Earlier versions pulled from a
-/// Supabase-Storage-hosted pool of multiple 4K clips (20-30MB apiece);
-/// that pool was a repeated source of the hero going blank — AVPlayerLooper
-/// silently never inserted an item whose duration wasn't known
-/// synchronously, and even with a manual loop, large remote clips just
-/// took longer to buffer than made sense for a background loop. A video
-/// shipped in the app bundle can't 404, can't be slow to load, and can't
-/// depend on the gym's media bucket being configured — it's always there.
+/// Plays HeroVideo.mp4, bundled in the app, on a gapless infinite loop via
+/// AVPlayerLooper. A manual loop (seek-to-zero on
+/// AVPlayerItemDidPlayToEndTime) was tried first, but it's fragile exactly
+/// around backgrounding: if the app is suspended near the end of the clip,
+/// the notification/seek/play sequence can miss its chance to run, leaving
+/// the item stuck at .ended — and calling play() again on an ended item
+/// does nothing without an explicit seek first. AVPlayerLooper avoids this
+/// entirely by queuing the next loop ahead of time instead of reacting
+/// after the fact. (An earlier attempt at AVPlayerLooper failed for a
+/// different reason — it silently never inserts an item whose duration
+/// isn't known synchronously, which was true for the old remote 4K clips;
+/// a bundled local file's duration is known immediately, so that failure
+/// mode doesn't apply here.)
 @MainActor
 final class HeroVideoPlayerService: ObservableObject {
     let player = AVQueuePlayer()
-    private var endObserver: NSObjectProtocol?
+    private var looper: AVPlayerLooper?
     /// iOS pauses video playback whenever the app backgrounds (screen
     /// locks, a system sheet takes over, the member switches apps) and
     /// does NOT resume it automatically — without this, returning to the
@@ -106,14 +109,9 @@ final class HeroVideoPlayerService: ObservableObject {
     init() {
         player.isMuted = true
         player.automaticallyWaitsToMinimizeStalling = false
-        guard let url = Bundle.main.url(forResource: "HeroVideo", withExtension: "mp4") else { return }
-        let item = AVPlayerItem(url: url)
-        player.insert(item, after: nil)
-        endObserver = NotificationCenter.default.addObserver(
-            forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
-        ) { [weak self] _ in
-            self?.player.seek(to: .zero)
-            self?.player.play()
+        if let url = Bundle.main.url(forResource: "HeroVideo", withExtension: "mp4") {
+            let item = AVPlayerItem(url: url)
+            looper = AVPlayerLooper(player: player, templateItem: item)
         }
         foregroundObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main
@@ -124,7 +122,6 @@ final class HeroVideoPlayerService: ObservableObject {
     }
 
     deinit {
-        if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
         if let foregroundObserver { NotificationCenter.default.removeObserver(foregroundObserver) }
     }
 }
