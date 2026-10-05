@@ -9,10 +9,12 @@ import { Alert } from "@/components/ui/misc";
 import { anonymizeClient, updateClientAction } from "@/app/actions/clients";
 import type { Client } from "@/lib/types";
 import { SOURCES } from "../new-client";
+import { useRegion } from "@/lib/region-context";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useT } from "@/lib/i18n/client";
 
 export function EditClientDialog({ client, onClose }: { client: Client; onClose: () => void }) {
+  const { region } = useRegion();
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   return (
@@ -38,7 +40,7 @@ export function EditClientDialog({ client, onClose }: { client: Client; onClose:
             <Field label="Источник">
               <NativeSelect name="source" defaultValue={client.source ?? ""}>
                 <option value="">Не указан</option>
-                {Array.from(new Set([...SOURCES, ...(client.source ? [client.source] : [])])).map((s) => <option key={s} value={s}>{s}</option>)}
+                {Array.from(new Set([...SOURCES[region], ...(client.source ? [client.source] : [])])).map((s) => <option key={s} value={s}>{s}</option>)}
               </NativeSelect>
             </Field>
           </div>

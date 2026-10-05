@@ -5,6 +5,7 @@ import { callRpc } from "@/lib/actions";
 import { fail, ok, type ActionResult } from "@/lib/errors";
 import { requireStaff } from "@/lib/auth";
 import type { PaymentMethod } from "@/lib/types";
+import { REGIONS } from "@/lib/region";
 
 function touch(clientId?: string) {
   if (clientId) revalidatePath(`/clients/${clientId}`);
@@ -32,7 +33,10 @@ export async function sellMembership(input: {
 export async function createPaymentLink(input: {
   clientId: string; planId: string; startsOn?: string | null; renewFrom?: string | null;
 }): Promise<ActionResult<{ confirmation_url: string | null; payment_id: string }>> {
-  await requireStaff();
+  const ctx = await requireStaff();
+  if (!REGIONS[ctx.gym.region ?? "RU"].onlinePayments) {
+    return { ok: false, error: { code: "FEATURE_DISABLED", message: "Онлайн-оплата пока доступна только для залов в России" } };
+  }
   const supabase = await createClient();
   const { data, error } = await supabase.functions.invoke("payments", {
     body: {

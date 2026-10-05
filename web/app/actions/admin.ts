@@ -31,8 +31,12 @@ export async function adminCreateGym(form: FormData): Promise<ActionResult<null>
   }
   const trialDays = Number(str(form, "trial_days")) || 14;
   const trialUntil = new Date(Date.now() + trialDays * 86400000).toISOString().slice(0, 10);
+  const region = str(form, "region") === "AE" ? "AE" : "RU";
+  const tz = str(form, "timezone");
   const { data: gym, error } = await admin.from("gyms").insert({
-    name, address: strOrNull(form, "address"), timezone: str(form, "timezone") || "Europe/Moscow",
+    name, address: strOrNull(form, "address"), region,
+    // пояс должен соответствовать региону: для ОАЭ — Дубай
+    timezone: region === "AE" ? "Asia/Dubai" : tz && tz !== "Asia/Dubai" ? tz : "Europe/Moscow",
     core_plan: str(form, "core_plan") || "start", trial_until: trialUntil,
   }).select("id").single();
   if (error) return fail(error);

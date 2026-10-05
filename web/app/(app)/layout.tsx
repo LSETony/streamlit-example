@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { date } from "@/lib/format";
 import { redirect } from "next/navigation";
 import { getT } from "@/lib/i18n/server";
+import { RegionProvider } from "@/lib/region-context";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
   const ctx = await requireStaff();
@@ -21,9 +22,11 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
   ) : null;
 
   return (
+    <RegionProvider region={ctx.gym.region ?? "RU"}>
     <AppShell role={ctx.staff.role} features={ctx.features} gymId={ctx.gym.id} gymName={ctx.gym.name} readOnly={ctx.readOnly} userName={ctx.staff.full_name}
       riskCount={count ?? null} banner={banner}>
       {children}
     </AppShell>
+    </RegionProvider>
   );
 }

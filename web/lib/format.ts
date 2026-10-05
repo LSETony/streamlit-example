@@ -2,20 +2,28 @@
 
 const rubFmt = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
 const rubFmt2 = new Intl.NumberFormat("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const aedFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+const aedFmt2 = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/** 300000 → «3 000 ₽» (копейки показываем, только если они есть) */
-export function money(kopecks: number | null | undefined): string {
-  if (kopecks === null || kopecks === undefined) return "—";
-  const rub = kopecks / 100;
-  return `${Number.isInteger(rub) ? rubFmt.format(rub) : rubFmt2.format(rub)} ₽`;
+/** Суммы хранятся в сотых долях валюты зала: 300000 → «3 000 ₽», 45000 в AED → «AED 450» (дробную часть показываем, только если она есть) */
+export function money(minor: number | null | undefined, currency: string = "RUB"): string {
+  if (minor === null || minor === undefined) return "—";
+  const v = minor / 100;
+  if (currency === "AED") return `AED ${Number.isInteger(v) ? aedFmt.format(v) : aedFmt2.format(v)}`;
+  return `${Number.isInteger(v) ? rubFmt.format(v) : rubFmt2.format(v)} ₽`;
 }
 
-/** «3000», «3 000,50» → копейки */
-export function parseRub(input: string): number | null {
-  const clean = input.replace(/\s/g, "").replace("₽", "").replace(",", ".");
+/** «3000», «3 000,50», «AED 1,200.50» → сотые доли валюты */
+export function parseMoney(input: string): number | null {
+  let clean = input.replace(/\s/g, "").replace(/₽|AED|руб\.?/gi, "");
+  // запятая — разделитель тысяч, если после неё три цифры (1,200), иначе — дробной части (3000,50)
+  clean = /,\d{3}(\D|$)/.test(clean) ? clean.replace(/,/g, "") : clean.replace(",", ".");
   if (!/^\d+(\.\d{1,2})?$/.test(clean)) return null;
   return Math.round(Number(clean) * 100);
 }
+
+/** Прежнее имя для рублей */
+export const parseRub = parseMoney;
 
 export function plural(n: number, one: string, few: string, many: string): string {
   const n10 = n % 10;
@@ -91,11 +99,14 @@ export function tzOffsetMinutes(at: Date, tz: string): number {
   return Math.round((asUtc - at.getTime()) / 60000);
 }
 
-/** +79161234567 → «+7 916 123-45-67» */
+/** +79161234567 → «+7 916 123-45-67», +971501234567 → «+971 50 123 4567» */
 export function phone(p: string | null | undefined): string {
   if (!p) return "—";
-  const m = p.match(/^\+7(\d{3})(\d{3})(\d{2})(\d{2})$/);
-  return m ? `+7 ${m[1]} ${m[2]}-${m[3]}-${m[4]}` : p;
+  const ru = p.match(/^\+7(\d{3})(\d{3})(\d{2})(\d{2})$/);
+  if (ru) return `+7 ${ru[1]} ${ru[2]}-${ru[3]}-${ru[4]}`;
+  const ae = p.match(/^\+971(\d{1,2})(\d{3})(\d{4})$/);
+  if (ae) return `+971 ${ae[1]} ${ae[2]} ${ae[3]}`;
+  return p;
 }
 
 export function initials(name: string): string {

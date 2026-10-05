@@ -30,6 +30,8 @@ export interface Gym {
   paid_until: string | null;
   settings: GymSettings;
   onboarded_at: string | null;
+  region: "RU" | "AE";
+  currency: "RUB" | "AED";
 }
 
 export interface Plan {

@@ -12,11 +12,19 @@ import { createClientAction, findByPhone, type DuplicateClient } from "@/app/act
 import { normalizePhone } from "@/lib/phone";
 import { useT } from "@/lib/i18n/client";
 
-export const SOURCES = ["Instagram", "ВКонтакте", "Яндекс Карты", "2ГИС", "Сайт", "Рекомендация", "Вывеска", "Другое"];
+import { useRegion } from "@/lib/region-context";
+import type { Region } from "@/lib/region";
+
+/** Откуда пришёл клиент — свои площадки в каждом регионе (значение хранится как ключ перевода) */
+export const SOURCES: Record<Region, string[]> = {
+  RU: ["Instagram", "ВКонтакте", "Яндекс Карты", "2ГИС", "Сайт", "Рекомендация", "Вывеска", "Другое"],
+  AE: ["Instagram", "TikTok", "Google Карты", "Сайт", "Рекомендация", "Вывеска", "Другое"],
+};
 
 /** FR-2.2 Создание клиента за 30 секунд */
 export function NewClientButton({ disabled, autoOpen, className }: { disabled?: boolean; autoOpen?: boolean; className?: string }) {
   const t = useT();
+  const { region, phonePlaceholder } = useRegion();
   const router = useRouter();
   const [open, setOpenState] = useState(!!autoOpen && !disabled);
   // открыто по ссылке /clients?new=1 — после закрытия убираем параметр из адреса
@@ -61,13 +69,13 @@ export function NewClientButton({ disabled, autoOpen, className }: { disabled?: 
               error={dup ? undefined : null}
               hint={dup ? <span className="text-warning-foreground">{t("Уже есть клиент с этим телефоном:")} <Link className="font-medium underline" href={`/clients/${dup.id}`} onClick={() => setOpenState(false)}>{dup.full_name}</Link></span> : undefined}
             >
-              <Input name="phone" type="tel" inputMode="tel" required placeholder="+7 900 000-00-00" onBlur={(e) => checkPhone(e.target.value)} />
+              <Input name="phone" type="tel" inputMode="tel" required placeholder={phonePlaceholder} onBlur={(e) => checkPhone(e.target.value)} />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Источник">
                 <NativeSelect name="source" defaultValue="">
                   <option value="">Не указан</option>
-                  {SOURCES.map((s) => <option key={s} value={s}>{s}</option>)}
+                  {SOURCES[region].map((s) => <option key={s} value={s}>{s}</option>)}
                 </NativeSelect>
               </Field>
               <Field label="Email (необязательно)">

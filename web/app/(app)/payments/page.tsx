@@ -14,6 +14,7 @@ import { PaymentFilters } from "./filters";
 import { ExportPayments } from "./export";
 import { RefundButton } from "./refund-button";
 import { getT } from "@/lib/i18n/server";
+import { regionInfo } from "@/lib/region";
 import { paymentDescription } from "@/lib/i18n/core";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,6 +31,7 @@ export interface PaymentListRow {
 export default async function PaymentsPage({ searchParams }: PageProps<"/payments">) {
   const ctx = await requireStaff(["owner", "admin"]);
   const t = await getT();
+  const cur = ctx.gym.currency ?? "RUB";
   const sp = await searchParams;
   const from = typeof sp.from === "string" ? sp.from : ctx.today;
   const to = typeof sp.to === "string" ? sp.to : ctx.today;
@@ -59,6 +61,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
     return `/payments?${params}`;
   };
   const s = (summary ?? {}) as { income: number; refunds: number; net: number; cash: number; card: number; online: number; count: number };
+  const showOnline = regionInfo(ctx.gym.region).onlinePayments || !!s.online;
 
   return (
     <>
@@ -66,12 +69,12 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
         actions={<ExportPayments rows={rows} timezone={tz} from={from} to={to} />} />
       <PaymentFilters from={from} to={to} method={method} status={status} today={ctx.today} />
 
-      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5 [&>*:first-child]:col-span-2 md:[&>*:first-child]:col-span-1">
-        <Sum label={t("Итого")} value={money(s.net)} strong />
-        <Sum label={t("Наличные")} value={money(s.cash)} />
-        <Sum label={t("Карта")} value={money(s.card)} />
-        <Sum label={t("Онлайн")} value={money(s.online)} />
-        <Sum label={t("Возвраты")} value={s.refunds ? `−${money(s.refunds)}` : money(0)} />
+      <div className={`mb-4 grid grid-cols-2 gap-3 ${showOnline ? "md:grid-cols-5" : "md:grid-cols-4"} [&>*:first-child]:col-span-2 md:[&>*:first-child]:col-span-1`}>
+        <Sum label={t("Итого")} value={money(s.net, cur)} strong />
+        <Sum label={t("Наличные")} value={money(s.cash, cur)} />
+        <Sum label={t("Карта")} value={money(s.card, cur)} />
+        {showOnline ? <Sum label={t("Онлайн")} value={money(s.online, cur)} /> : null}
+        <Sum label={t("Возвраты")} value={s.refunds ? `−${money(s.refunds, cur)}` : money(0, cur)} />
       </div>
 
       {rows.length === 0 ? <EmptyState title="Оплат за период нет" /> : (
@@ -90,7 +93,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
                     </span>
                   </span>
                   <span className="grid justify-items-end gap-1">
-                    <span className={p.refund_of_id ? "text-[17px] font-semibold tabular text-destructive" : "text-[17px] font-semibold tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount)}</span>
+                    <span className={p.refund_of_id ? "text-[17px] font-semibold tabular text-destructive" : "text-[17px] font-semibold tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount, cur)}</span>
                     <PaymentStatusBadge status={p.status} isRefund={!!p.refund_of_id} />
                   </span>
                 </div>
@@ -104,7 +107,7 @@ export default async function PaymentsPage({ searchParams }: PageProps<"/payment
                 <TR key={p.id} className="transition-colors hover:bg-field">
                   <TD className="whitespace-nowrap tabular">{dateTime(p.paid_at ?? p.created_at, tz)}</TD>
                   <TD>{p.client_id ? <Link className="font-medium hover:underline" href={`/clients/${p.client_id}`}>{p.clients?.full_name}</Link> : "—"}</TD>
-                  <TD className={p.refund_of_id ? "whitespace-nowrap tabular text-destructive" : "whitespace-nowrap font-medium tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount)}</TD>
+                  <TD className={p.refund_of_id ? "whitespace-nowrap tabular text-destructive" : "whitespace-nowrap font-medium tabular"}>{p.refund_of_id ? "−" : ""}{money(p.amount, cur)}</TD>
                   <TD>{t(METHOD_LABEL[p.method])}</TD>
                   <TD><PaymentStatusBadge status={p.status} isRefund={!!p.refund_of_id} /></TD>
                   <TD className="hidden text-muted-foreground lg:table-cell">{paymentDescription(t, p.description)}</TD>

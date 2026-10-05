@@ -22,19 +22,19 @@ const FIELD: Record<string, string> = {
   freeze_days_used: "дни заморозки", active: "активен", role: "роль", name: "название", settings: "настройки", method: "способ",
 };
 
-function describe(t: T, entity: string, action: string, diff: Record<string, unknown> | null): string {
+function describe(t: T, cur: string, entity: string, action: string, diff: Record<string, unknown> | null): string {
   if (!diff) return "";
   if (action === "update") {
     return Object.entries(diff).filter(([k]) => FIELD[k]).map(([k, v]) => {
       const [a, b] = v as [unknown, unknown];
-      const f = (x: unknown) => (k === "price" || k === "price_paid" || k === "amount") && typeof x === "number" ? money(x) : k === "settings" ? "…" : String(x);
+      const f = (x: unknown) => (k === "price" || k === "price_paid" || k === "amount") && typeof x === "number" ? money(x, cur) : k === "settings" ? "…" : String(x);
       return `${t(FIELD[k])}: ${f(a)} → ${f(b)}`;
     }).join("; ");
   }
-  if (entity === "payments") return `${t(diff.refund_of_id ? "возврат" : "оплата")} ${money(diff.amount as number)} (${diff.method})`;
+  if (entity === "payments") return `${t(diff.refund_of_id ? "возврат" : "оплата")} ${money(diff.amount as number, cur)} (${diff.method})`;
   if (entity === "memberships") return `«${diff.plan_name}» ${diff.starts_on} – ${diff.ends_on}`;
   if (entity === "freezes") return `${diff.from_date} – ${diff.to_date}`;
-  if (entity === "membership_plans") return `«${diff.name}» ${money(diff.price as number)}`;
+  if (entity === "membership_plans") return `«${diff.name}» ${money(diff.price as number, cur)}`;
   if (entity === "staff") return `${diff.full_name} (${diff.role})`;
   return "";
 }
@@ -71,7 +71,7 @@ export default async function AuditPage({ searchParams }: PageProps<"/audit">) {
                   <TD className="whitespace-nowrap tabular">{dateTime(r.at, ctx.gym.timezone)}</TD>
                   <TD>{r.actor_user_id ? names.get(r.actor_user_id) ?? t("клиент (приложение)") : t("система")}</TD>
                   <TD className="whitespace-nowrap">{ACTION[r.action] ? t(ACTION[r.action]) : r.action} · {ENTITY[r.entity] ? t(ENTITY[r.entity]) : r.entity}</TD>
-                  <TD className="text-muted-foreground">{describe(t, r.entity, r.action, r.diff)}</TD>
+                  <TD className="text-muted-foreground">{describe(t, ctx.gym.currency ?? "RUB", r.entity, r.action, r.diff)}</TD>
                 </TR>
               ))}
             </TBody>

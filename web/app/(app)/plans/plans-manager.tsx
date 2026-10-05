@@ -12,13 +12,14 @@ import { Field, Input, NativeSelect, Textarea } from "@/components/ui/input";
 import { SwitchRow } from "@/components/ui/switch";
 import { Alert, EmptyState } from "@/components/ui/misc";
 import { savePlan, setPlanActive } from "@/app/actions/plans";
-import { money } from "@/lib/format";
+import { useRegion } from "@/lib/region-context";
 import type { Plan, PlanKind } from "@/lib/types";
 import { PLAN_KIND_LABEL } from "@/lib/types";
 import { useT } from "@/lib/i18n/client";
 
 export function PlansManager({ plans, readOnly }: { plans: Plan[]; readOnly: boolean }) {
   const t = useT();
+  const { money } = useRegion();
   const router = useRouter();
   const [edit, setEdit] = useState<Plan | "new" | null>(null);
   const [, start] = useTransition();
@@ -81,6 +82,8 @@ export function PlansManager({ plans, readOnly }: { plans: Plan[]; readOnly: boo
 
 /** FR-3.1 Тарифы трёх типов: цена, срок, лимит заморозки, «продаётся в приложении» */
 export function PlanDialog({ plan, onClose }: { plan: Plan | null; onClose: () => void }) {
+  const t = useT();
+  const { symbol, onlinePayments } = useRegion();
   const [kind, setKind] = useState<PlanKind>(plan?.kind ?? "period");
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -104,13 +107,13 @@ export function PlanDialog({ plan, onClose }: { plan: Plan | null; onClose: () =
             </NativeSelect>
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Цена, ₽"><Input name="price" inputMode="decimal" defaultValue={plan ? String(plan.price / 100) : ""} required placeholder="3000" /></Field>
+            <Field label={t("Цена, {cur}", { cur: symbol })}><Input name="price" inputMode="decimal" defaultValue={plan ? String(plan.price / 100) : ""} required placeholder="3000" /></Field>
             <Field label="Срок действия, дней"><Input name="duration_days" type="number" min={1} defaultValue={plan?.duration_days ?? 30} required /></Field>
             {kind === "visits" ? <Field label="Число визитов"><Input name="visits_limit" type="number" min={1} defaultValue={plan?.visits_limit ?? 10} required /></Field> : null}
             <Field label="Заморозка, дней максимум"><Input name="freeze_days_max" type="number" min={0} defaultValue={plan?.freeze_days_max ?? 0} /></Field>
           </div>
           <Field label="Описание для приложения"><Textarea name="description" rows={2} defaultValue={plan?.description ?? ""} /></Field>
-          <SwitchRow name="sold_online" defaultChecked={plan?.sold_online ?? true} title="Продаётся в приложении" description="Клиенты смогут купить и продлить тариф онлайн" />
+          {onlinePayments ? <SwitchRow name="sold_online" defaultChecked={plan?.sold_online ?? true} title="Продаётся в приложении" description="Клиенты смогут купить и продлить тариф онлайн" /> : null}
           {error ? <Alert variant="danger">{error}</Alert> : null}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>Отмена</Button>
