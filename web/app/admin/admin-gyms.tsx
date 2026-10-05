@@ -123,6 +123,7 @@ function CreateGym({ onClose }: { onClose: () => void }) {
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Имя владельца"><Input name="owner_name" required /></Field>
             <Field label="Email владельца"><Input name="owner_email" type="email" required /></Field>
+            <Field label="Регион"><NativeSelect name="region" defaultValue="RU"><option value="RU">Россия</option><option value="AE">ОАЭ</option></NativeSelect></Field>
             <Field label="Часовой пояс"><NativeSelect name="timezone" defaultValue="Europe/Moscow">{TIMEZONES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</NativeSelect></Field>
             <Field label="Тариф"><NativeSelect name="core_plan" defaultValue="start">{Object.entries(PLAN).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect></Field>
             <Field label="Пробный период, дней"><Input name="trial_days" type="number" defaultValue={14} min={0} /></Field>

@@ -8,7 +8,8 @@ import { Field, Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/misc";
 import { createClient } from "@/lib/supabase/client";
 import { sellMembership, createPaymentLink } from "@/app/actions/memberships";
-import { addDays, date, money } from "@/lib/format";
+import { addDays, date } from "@/lib/format";
+import { useRegion } from "@/lib/region-context";
 import type { Plan } from "@/lib/types";
 import { PLAN_KIND_LABEL } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
   renew?: { id: string; ends_on: string; plan_id: string | null } | null;
   onDone?: () => void;
 }) {
+  const { money, onlinePayments } = useRegion();
   // диалог монтируется заново при каждом открытии, поэтому начальное состояние берём из пропсов
   const t = useT();
   const [plans, setPlans] = useState<Plan[] | null>(null);
@@ -132,12 +134,12 @@ export function SellDialog({ open, onOpenChange, gymId, client, today, renew, on
 
             <div className="grid gap-1.5">
               <span className="text-sm font-medium">{t("Оплата")}</span>
-              <div className="grid grid-cols-3 gap-2">
+              <div className={cn("grid gap-2", onlinePayments ? "grid-cols-3" : "grid-cols-2")}>
                 {([
                   ["card", "Карта", CreditCard],
                   ["cash", "Наличные", Banknote],
                   ["online", "Ссылка", Link2],
-                ] as const).map(([m, label, Icon]) => (
+                ] as const).filter(([m]) => m !== "online" || onlinePayments).map(([m, label, Icon]) => (
                   <button
                     key={m}
                     type="button"

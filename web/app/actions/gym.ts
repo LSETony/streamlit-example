@@ -7,17 +7,22 @@ import { fail, ok, type ActionResult } from "@/lib/errors";
 import { requireStaff } from "@/lib/auth";
 import { encryptSecret } from "@/lib/secrets";
 import type { GymSettings } from "@/lib/types";
+import { isRegion, REGIONS } from "@/lib/region";
 
 export async function createGym(form: FormData): Promise<ActionResult<string>> {
   const name = str(form, "name");
   const owner = str(form, "owner_name");
   if (!name || !owner) return { ok: false, error: { code: "INVALID_INPUT", message: "Укажите название зала и ваше имя" } };
+  const region = str(form, "region");
+  if (!isRegion(region)) return { ok: false, error: { code: "INVALID_REGION", message: "Выберите регион: Россия или ОАЭ" } };
   return callRpc<string>("create_gym", {
     p_name: name,
     p_owner_name: owner,
     p_address: strOrNull(form, "address"),
-    p_timezone: str(form, "timezone") || "Europe/Moscow",
+    p_timezone: str(form, "timezone") || REGIONS[region].timezone,
     p_phone: strOrNull(form, "phone"),
+    // регион передаём только для ОАЭ: российские залы создаются и на базе без миграции регионов
+    ...(region === "RU" ? {} : { p_region: region }),
   });
 }
 
@@ -83,6 +88,7 @@ export async function deleteZone(id: string): Promise<ActionResult<null>> {
 export async function saveYookassa(form: FormData): Promise<ActionResult<null>> {
   const ctx = await requireStaff(["owner"]);
   if (ctx.readOnly) return { ok: false, error: { code: "GYM_READ_ONLY", message: "Кабинет в режиме «только чтение»" } };
+  if (!REGIONS[ctx.gym.region ?? "RU"].onlinePayments) return { ok: false, error: { code: "FEATURE_DISABLED", message: "ЮKassa работает только для залов в России" } };
   const shopId = str(form, "shop_id");
   const secret = str(form, "secret_key");
   if (!/^\d+$/.test(shopId)) return { ok: false, error: { code: "INVALID_INPUT", message: "shopId — это число из личного кабинета ЮKassa" } };

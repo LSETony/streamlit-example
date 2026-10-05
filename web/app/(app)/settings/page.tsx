@@ -10,6 +10,7 @@ import { yookassaStatus } from "@/app/actions/gym";
 import { date } from "@/lib/format";
 import { YookassaForm } from "./yookassa-form";
 import { getT } from "@/lib/i18n/server";
+import { regionInfo } from "@/lib/region";
 import type { T } from "@/lib/i18n/core";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -36,13 +37,15 @@ export default async function SettingsPage() {
   const t = await getT();
   const g = ctx.gym;
   const paid = g.paid_until && g.paid_until >= ctx.today;
+  const reg = regionInfo(g.region);
+  const sections = SECTIONS.filter((s) => s.id !== "payments" || reg.onlinePayments);
   return (
     <>
       <PageHeader title="Настройки зала" description="Изменения сохраняются по разделам" />
       <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
         <nav className="hidden lg:block" aria-label={t("Разделы настроек")}>
           <div className="sticky top-8 grid gap-0.5">
-            {SECTIONS.map(({ id, title, icon: Icon }) => (
+            {sections.map(({ id, title, icon: Icon }) => (
               <a key={id} href={`#${id}`} className="flex items-center gap-2.5 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-field hover:text-foreground">
                 <Icon className="size-4" /> {t(title)}
               </a>
@@ -59,6 +62,9 @@ export default async function SettingsPage() {
                 {paid ? t("Оплачено до {date}", { date: date(g.paid_until) })
                   : g.trial_until >= ctx.today ? t("Пробный период до {date}", { date: date(g.trial_until) })
                   : t("Пробный период закончился — кабинет в режиме «только чтение»")}
+              </p>
+              <p className="text-sm text-sidebar-foreground">
+                {t("Регион: {region}", { region: t(g.region === "AE" ? "ОАЭ" : "Россия") })} · {reg.currency} · {reg.phoneCode}
               </p>
             </div>
             {paid || g.trial_until >= ctx.today ? <Badge variant="brand">Активна</Badge> : <Badge variant="danger">Только чтение</Badge>}
@@ -77,9 +83,11 @@ export default async function SettingsPage() {
           <Section t={t} id="risk" title="«В зоне риска»" description="Пороги попадания в список и шаблоны сообщений">
             <RiskForm settings={g.settings} disabled={ctx.readOnly} />
           </Section>
-          <Section t={t} id="payments" title="Онлайн-оплата ЮKassa" description="Деньги поступают напрямую на счёт зала. Ключ хранится в зашифрованном виде только на сервере.">
-            <YookassaForm status={yk} disabled={ctx.readOnly} />
-          </Section>
+          {reg.onlinePayments ? (
+            <Section t={t} id="payments" title="Онлайн-оплата ЮKassa" description="Деньги поступают напрямую на счёт зала. Ключ хранится в зашифрованном виде только на сервере.">
+              <YookassaForm status={yk} disabled={ctx.readOnly} />
+            </Section>
+          ) : null}
         </div>
       </div>
     </>

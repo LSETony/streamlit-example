@@ -11,13 +11,21 @@ import { deleteZone, saveZone, updateGymProfile, updateGymSettings } from "@/app
 import type { Gym, GymSettings, RiskReason } from "@/lib/types";
 import { RISK_LABEL } from "@/lib/types";
 import { useT } from "@/lib/i18n/client";
+import type { Region } from "@/lib/region";
 
-export const TIMEZONES = [
-  ["Europe/Kaliningrad", "Калининград (UTC+2)"], ["Europe/Moscow", "Москва (UTC+3)"], ["Europe/Samara", "Самара (UTC+4)"],
-  ["Asia/Yekaterinburg", "Екатеринбург (UTC+5)"], ["Asia/Omsk", "Омск (UTC+6)"], ["Asia/Novosibirsk", "Новосибирск (UTC+7)"],
-  ["Asia/Krasnoyarsk", "Красноярск (UTC+7)"], ["Asia/Irkutsk", "Иркутск (UTC+8)"], ["Asia/Yakutsk", "Якутск (UTC+9)"],
-  ["Asia/Vladivostok", "Владивосток (UTC+10)"], ["Asia/Magadan", "Магадан (UTC+11)"], ["Asia/Kamchatka", "Камчатка (UTC+12)"],
-] as const;
+/** Часовые пояса по регионам: в ОАЭ один пояс на всю страну */
+export const TIMEZONES_BY_REGION: Record<Region, readonly (readonly [string, string])[]> = {
+  RU: [
+    ["Europe/Kaliningrad", "Калининград (UTC+2)"], ["Europe/Moscow", "Москва (UTC+3)"], ["Europe/Samara", "Самара (UTC+4)"],
+    ["Asia/Yekaterinburg", "Екатеринбург (UTC+5)"], ["Asia/Omsk", "Омск (UTC+6)"], ["Asia/Novosibirsk", "Новосибирск (UTC+7)"],
+    ["Asia/Krasnoyarsk", "Красноярск (UTC+7)"], ["Asia/Irkutsk", "Иркутск (UTC+8)"], ["Asia/Yakutsk", "Якутск (UTC+9)"],
+    ["Asia/Vladivostok", "Владивосток (UTC+10)"], ["Asia/Magadan", "Магадан (UTC+11)"], ["Asia/Kamchatka", "Камчатка (UTC+12)"],
+  ],
+  AE: [["Asia/Dubai", "ОАЭ — Дубай, Абу-Даби (UTC+4)"]],
+};
+
+/** Все пояса — для админки команды core. */
+export const TIMEZONES = [...TIMEZONES_BY_REGION.RU, ...TIMEZONES_BY_REGION.AE];
 
 const DAYS: [string, string][] = [["mon", "Пн"], ["tue", "Вт"], ["wed", "Ср"], ["thu", "Чт"], ["fri", "Пт"], ["sat", "Сб"], ["sun", "Вс"]];
 
@@ -46,7 +54,7 @@ export function ProfileForm({ gym, disabled }: { gym: Gym; disabled?: boolean })
         <Field label="Адрес"><Input name="address" defaultValue={gym.address ?? ""} /></Field>
         <Field label="Часовой пояс">
           <NativeSelect name="timezone" defaultValue={gym.timezone}>
-            {TIMEZONES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            {TIMEZONES_BY_REGION[gym.region ?? "RU"].map(([v, l]) => <option key={v} value={v}>{l}</option>)}
           </NativeSelect>
         </Field>
       </div>

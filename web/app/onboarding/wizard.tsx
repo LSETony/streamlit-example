@@ -8,26 +8,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, Input, NativeSelect } from "@/components/ui/input";
 import { Alert } from "@/components/ui/misc";
-import { HoursForm, TIMEZONES, ZonesEditor } from "@/components/gym-settings-forms";
+import { HoursForm, TIMEZONES_BY_REGION, ZonesEditor } from "@/components/gym-settings-forms";
 import { createGym, finishOnboarding } from "@/app/actions/gym";
 import { createTemplatePlans } from "@/app/actions/plans";
 import { PlanDialog } from "@/app/(app)/plans/plans-manager";
 import { InviteForm } from "@/app/(app)/staff/staff-manager";
-import { money } from "@/lib/format";
 import type { Gym, Plan } from "@/lib/types";
 import { PLAN_KIND_LABEL, ROLE_LABEL, type Role } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/client";
+import { setLocale } from "@/app/actions/locale";
+import { PLAN_TEMPLATE_PRICES, REGIONS, type Region } from "@/lib/region";
+import { useRegion } from "@/lib/region-context";
 
 const STEPS = ["Зал", "Часы работы", "Зоны", "Тарифы", "Сотрудники", "Готово"];
 
-const TEMPLATES = [
-  { name: "Разовое посещение", kind: "visits" as const, price: 60000, duration_days: 1, visits_limit: 1, freeze_days_max: 0, sold_online: true },
-  { name: "Месяц", kind: "unlimited" as const, price: 350000, duration_days: 30, visits_limit: null, freeze_days_max: 7, sold_online: true },
-  { name: "8 занятий", kind: "visits" as const, price: 280000, duration_days: 45, visits_limit: 8, freeze_days_max: 7, sold_online: true },
-  { name: "3 месяца", kind: "unlimited" as const, price: 900000, duration_days: 90, visits_limit: null, freeze_days_max: 14, sold_online: true },
-  { name: "Год", kind: "unlimited" as const, price: 2900000, duration_days: 365, visits_limit: null, freeze_days_max: 30, sold_online: false },
-];
+function templates(region: Region) {
+  const p = PLAN_TEMPLATE_PRICES[region];
+  const online = REGIONS[region].onlinePayments;
+  return [
+    { name: "Разовое посещение", kind: "visits" as const, price: p.single, duration_days: 1, visits_limit: 1, freeze_days_max: 0, sold_online: online },
+    { name: "Месяц", kind: "unlimited" as const, price: p.month, duration_days: 30, visits_limit: null, freeze_days_max: 7, sold_online: online },
+    { name: "8 занятий", kind: "visits" as const, price: p.pack8, duration_days: 45, visits_limit: 8, freeze_days_max: 7, sold_online: online },
+    { name: "3 месяца", kind: "unlimited" as const, price: p.quarter, duration_days: 90, visits_limit: null, freeze_days_max: 14, sold_online: online },
+    { name: "Год", kind: "unlimited" as const, price: p.year, duration_days: 365, visits_limit: null, freeze_days_max: 30, sold_online: false },
+  ];
+}
 
 export function Wizard({ step, gym, zones, plans, staff, email }: {
   step: number; gym: Gym | null; zones: { id: string; name: string; capacity: number }[]; plans: Plan[];
@@ -84,23 +90,55 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
 function CreateGymStep({ email }: { email: string }) {
   const t = useT();
   const router = useRouter();
+  const [region, setRegion] = useState<Region | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
+
+  // Регион сразу переключает язык кабинета: Россия — русский, ОАЭ — английский (сменить можно в меню профиля)
+  const choose = (r: Region) => {
+    setRegion(r);
+    const lang = REGIONS[r].locale;
+    if (lang !== t.locale) {
+      document.documentElement.lang = lang;
+      void setLocale(lang).then(() => router.refresh());
+    }
+  };
+
+  if (!region) {
+    return (
+      <StepCard title="Где работает ваш зал?" description={t("От региона зависят валюта, формат телефонов, часовой пояс и язык кабинета. Изменить его после создания зала нельзя.")}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <RegionCard flag={<FlagRU />} title="Россия" hint="Рубли · +7 · ЮKassa · русский язык" onClick={() => choose("RU")} />
+          <RegionCard flag={<FlagAE />} title="ОАЭ" hint="Дирхамы (AED) · +971 · английский язык" onClick={() => choose("AE")} />
+        </div>
+      </StepCard>
+    );
+  }
+
+  const info = REGIONS[region];
   return (
     <StepCard title="Расскажите о зале" description={t("Вы входите как {email}. Настройка займёт около 15 минут.", { email })}>
+      <div className="flex items-center justify-between gap-3 rounded-2xl bg-field px-4 py-3">
+        <span className="flex items-center gap-3 text-[15px]">
+          {region === "RU" ? <FlagRU /> : <FlagAE />}
+          <span><b>{t(region === "RU" ? "Россия" : "ОАЭ")}</b> <span className="text-muted-foreground">· {info.currency} · {info.phoneCode}</span></span>
+        </span>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setRegion(null)}>Изменить</Button>
+      </div>
       <form className="grid gap-4" action={(f) => start(async () => {
         const r = await createGym(f);
         if (!r.ok) return setError(r.error.message);
         router.push("/onboarding?step=1");
         router.refresh();
       })}>
+        <input type="hidden" name="region" value={region} />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Название зала"><Input name="name" required placeholder="Iron Gym" /></Field>
-          <Field label="Ваше имя"><Input name="owner_name" required placeholder="Анна Смирнова" /></Field>
-          <Field label="Адрес"><Input name="address" placeholder="Москва, ул. Спортивная, 1" /></Field>
-          <Field label="Телефон зала"><Input name="phone" type="tel" /></Field>
+          <Field label="Ваше имя"><Input name="owner_name" required placeholder={region === "AE" ? "Sarah Ahmed" : "Анна Смирнова"} /></Field>
+          <Field label="Адрес"><Input name="address" placeholder={region === "AE" ? "Al Quoz 1, Dubai" : "Москва, ул. Спортивная, 1"} /></Field>
+          <Field label="Телефон зала"><Input name="phone" type="tel" placeholder={info.phonePlaceholder} /></Field>
           <Field label="Часовой пояс">
-            <NativeSelect name="timezone" defaultValue="Europe/Moscow">{TIMEZONES.map(([v, l]) => <option key={v} value={v}>{t(l)}</option>)}</NativeSelect>
+            <NativeSelect key={region} name="timezone" defaultValue={info.timezone}>{TIMEZONES_BY_REGION[region].map(([v, l]) => <option key={v} value={v}>{l}</option>)}</NativeSelect>
           </Field>
         </div>
         {error ? <Alert variant="danger">{error}</Alert> : null}
@@ -110,8 +148,41 @@ function CreateGymStep({ email }: { email: string }) {
   );
 }
 
+function RegionCard({ flag, title, hint, onClick }: { flag: React.ReactNode; title: string; hint: string; onClick: () => void }) {
+  const t = useT();
+  return (
+    <button type="button" onClick={onClick}
+      className="flex cursor-pointer items-center gap-4 rounded-[22px] bg-field p-5 text-left transition-colors hover:bg-tint-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 active:scale-[0.99]">
+      <span className="shrink-0 overflow-hidden rounded-lg shadow-sm">{flag}</span>
+      <span className="grid gap-1">
+        <span className="text-[19px] font-semibold">{t(title)}</span>
+        <span className="text-sm text-muted-foreground">{t(hint)}</span>
+      </span>
+    </button>
+  );
+}
+
+function FlagRU() {
+  return (
+    <svg viewBox="0 0 9 6" className="h-7 w-[42px]" aria-hidden>
+      <rect width="9" height="2" fill="#fff" /><rect y="2" width="9" height="2" fill="#0039A6" /><rect y="4" width="9" height="2" fill="#D52B1E" />
+      <rect width="9" height="6" fill="none" stroke="rgba(0,0,0,.12)" strokeWidth=".15" />
+    </svg>
+  );
+}
+
+function FlagAE() {
+  return (
+    <svg viewBox="0 0 12 6" className="h-7 w-[42px]" aria-hidden>
+      <rect width="12" height="2" fill="#00732F" /><rect y="2" width="12" height="2" fill="#fff" /><rect y="4" width="12" height="2" fill="#000" />
+      <rect width="3" height="6" fill="#FF0000" />
+    </svg>
+  );
+}
+
 function PlansStep({ plans, onBack, onNext }: { plans: Plan[]; onBack: () => void; onNext: () => void }) {
   const tr = useT();
+  const { region, money } = useRegion();
   const router = useRouter();
   const [dialog, setDialog] = useState(false);
   const [pending, start] = useTransition();
@@ -119,7 +190,7 @@ function PlansStep({ plans, onBack, onNext }: { plans: Plan[]; onBack: () => voi
   return (
     <StepCard title="Тарифы" description="Добавьте готовые шаблоны и поправьте цены или создайте свои. Цены можно менять в любой момент.">
       <div className="flex flex-wrap gap-2">
-        {TEMPLATES.map((t) => ({ ...t, name: tr(t.name) })).filter((t) => !existing.has(t.name)).map((t) => (
+        {templates(region).map((t) => ({ ...t, name: tr(t.name) })).filter((t) => !existing.has(t.name)).map((t) => (
           <Button key={t.name} variant="outline" size="sm" disabled={pending} onClick={() => start(async () => {
             const r = await createTemplatePlans([t]);
             if (!r.ok) toast.error(r.error.message); else router.refresh();

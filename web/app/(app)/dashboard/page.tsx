@@ -15,6 +15,7 @@ import { ColumnChart } from "@/components/charts/column-chart";
 import { BarList } from "@/components/charts/bar-list";
 import { Delta } from "@/components/charts/delta";
 import { getT } from "@/lib/i18n/server";
+import { regionInfo } from "@/lib/region";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: (await getT())("Дашборд") };
@@ -39,6 +40,7 @@ function resolvePeriod(p: string | undefined, today: string, from?: string, to?:
 export default async function DashboardPage({ searchParams }: PageProps<"/dashboard">) {
   const ctx = await requireStaff(["owner", "admin"]);
   const t = await getT();
+  const { currency, symbol } = regionInfo(ctx.gym.region);
   const sp = await searchParams;
   const period = resolvePeriod(sp.p as string | undefined, ctx.today, sp.from as string | undefined, sp.to as string | undefined);
   const supabase = await createClient();
@@ -70,18 +72,18 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
         <Card variant="hero" className="flex flex-col justify-between gap-6 p-7">
           <div className="grid gap-2">
             <span className="text-sm text-muted-foreground">{t("Выручка")}</span>
-            <span className="whitespace-nowrap text-[clamp(2.25rem,10.5vw,3.75rem)] font-semibold leading-none tracking-tight">{money(c.revenue)}</span>
-            <Delta current={c.revenue} previous={pv.revenue} money goodWhenUp label={t("к прошлому периоду")} />
+            <span className="whitespace-nowrap text-[clamp(2.25rem,10.5vw,3.75rem)] font-semibold leading-none tracking-tight">{money(c.revenue, currency)}</span>
+            <Delta current={c.revenue} previous={pv.revenue} currency={currency} goodWhenUp label={t("к прошлому периоду")} />
           </div>
           <div>
-            <p className="mb-2 text-xs text-muted-foreground">{t("Выручка по месяцам, ₽")}</p>
+            <p className="mb-2 text-xs text-muted-foreground">{t("Выручка по месяцам, {cur}", { cur: symbol })}</p>
             <ColumnChart
               data={((monthly.data ?? []) as { month: string; revenue: number }[]).map((m) => ({
                 key: m.month,
                 label: new Intl.DateTimeFormat(t.intl, { month: "short", timeZone: "UTC" }).format(new Date(m.month.slice(0, 10) + "T00:00:00Z")).replace(".", ""),
                 value: m.revenue / 100,
               }))}
-              unit="₽"
+              unit={symbol}
               highlightLast
             />
           </div>

@@ -6,7 +6,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Checkbox, Field, Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/misc";
 import { refundPayment } from "@/app/actions/memberships";
-import { money, parseRub } from "@/lib/format";
+import { parseMoney } from "@/lib/format";
+import { useRegion } from "@/lib/region-context";
 import { METHOD_LABEL } from "@/lib/types";
 import { useT } from "@/lib/i18n/client";
 
@@ -16,12 +17,13 @@ export function RefundDialog({ payment, clientId, onClose }: {
   clientId?: string; onClose: () => void;
 }) {
   const t = useT();
+  const { money, symbol } = useRegion();
   const [amount, setAmount] = useState(String(payment.amount / 100));
   const [cancel, setCancel] = useState(true);
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
-  const kopecks = parseRub(amount);
+  const kopecks = parseMoney(amount);
 
   return (
     <Dialog open onOpenChange={(v) => !v && onClose()}>
@@ -33,7 +35,7 @@ export function RefundDialog({ payment, clientId, onClose }: {
             {payment.method === "online" ? t("Деньги вернутся на карту клиента через ЮKassa.") : t("Выдайте деньги клиенту на кассе.")}
           </DialogDescription>
         </DialogHeader>
-        <Field label="Сумма возврата, ₽"><Input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} /></Field>
+        <Field label={t("Сумма возврата, {cur}", { cur: symbol })}><Input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} /></Field>
         <Field label="Причина"><Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Переезд, по состоянию здоровья…" /></Field>
         {payment.membership_id ? <Checkbox checked={cancel} onChange={(e) => setCancel(e.target.checked)} label="Отменить абонемент" /> : null}
         {error ? <Alert variant="danger">{error}</Alert> : null}

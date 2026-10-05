@@ -16,7 +16,8 @@ import { SellDialog } from "@/components/sell-dialog";
 import { checkinManual } from "@/app/actions/visits";
 import { endFreeze, cancelMembership } from "@/app/actions/memberships";
 import { saveNote } from "@/app/actions/clients";
-import { date, dateTime, money, phone } from "@/lib/format";
+import { date, dateTime, phone } from "@/lib/format";
+import { useRegion } from "@/lib/region-context";
 import type { Client, Membership, RiskRow, Role } from "@/lib/types";
 import { METHOD_LABEL } from "@/lib/types";
 import type { BookingRow, FreezeRow, PaymentRow, VisitRow } from "./page";
@@ -34,6 +35,7 @@ export function ClientCard(props: {
 }) {
   const { client, memberships, freezes, visits, payments, bookings, risk, role, timezone, today, readOnly } = props;
   const t = useT();
+  const { money } = useRegion();
   const router = useRouter();
   const [sell, setSell] = useState<null | { renew: Membership | null }>(props.openSell ? { renew: null } : null);
   const [freezeFor, setFreezeFor] = useState<Membership | null>(null);
