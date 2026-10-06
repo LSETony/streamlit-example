@@ -28,29 +28,36 @@ struct ProgressDetailView: View {
     }
 }
 
-/// Streak + achievements, muscle-mass growth chart, InBody body
-/// composition (trend chart, scan history, "Log scan"), supplement
-/// recommendations, this-week totals and workout history — every real
-/// metric this app tracks about a member's own progress, in one place.
-/// Used by both ProgressDetailView (Home's sheet) and ProgressTabView (the
-/// tab), so there's exactly one version of this content to keep real
-/// instead of two screens quietly drifting apart.
+private enum ProgressSection: String, CaseIterable {
+    case overview = "Overview", body = "Body", history = "History"
+}
+
+/// A streak ring hero, then a 3-way switch (Overview / Body / History)
+/// instead of one long stack of every card at once — Overview leads with
+/// the ring + this week's totals + an achievement carousel, Body holds the
+/// muscle-mass chart, InBody composition and supplement recommendations,
+/// History holds the full workout log. Used by both ProgressDetailView
+/// (Home's sheet) and ProgressTabView (the tab), so there's exactly one
+/// real Progress screen instead of two drifting apart.
 struct ProgressContentView: View {
     @EnvironmentObject var appState: AppState
+    @State private var section: ProgressSection = .overview
     @State private var selectedProduct: Product?
     @State private var isShowingProgressPhotos = false
     @State private var isShowingLogScan = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            streakSection
-            todayStatsSection
-            historySection
-            achievementsSection
-            muscleMassCard
-            bodyCompositionSection
-            vitaminRecommendationsSection
+        VStack(alignment: .leading, spacing: 20) {
+            streakHero
+            sectionPicker
+
+            switch section {
+            case .overview: overviewContent
+            case .body: bodyContent
+            case .history: historyContent
+            }
         }
+        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: section)
         .sheet(item: $selectedProduct) { product in
             NavigationStack { ProductDetailView(product: product) }
         }
@@ -62,76 +69,149 @@ struct ProgressContentView: View {
         }
     }
 
-    // MARK: Streak + achievements
+    // MARK: Hero — streak ring
 
-    private var streakSection: some View {
-        HStack(spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Image(systemName: "flame.fill").foregroundStyle(Color.appAccent)
-                    Text("\(appState.streakDays)").font(.digitalTimer(32)).foregroundStyle(.white)
+    private var streakHero: some View {
+        VStack(spacing: 16) {
+            ZStack {
+                Circle().stroke(Color.white.opacity(0.08), lineWidth: 14)
+                Circle()
+                    .trim(from: 0, to: max(0.03, min(1, Double(appState.streakDays) / 7)))
+                    .stroke(
+                        AngularGradient(colors: [Color.appAccent, Color.appAccentPurple], center: .center),
+                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+                VStack(spacing: 2) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundStyle(Color.appAccent)
+                    Text("\(appState.streakDays)")
+                        .font(.digitalTimer(44))
+                        .foregroundStyle(.white)
+                    Text(appState.streakDays == 1 ? "day streak" : "day streak")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Color.appTextSecondary)
                 }
-                Text("day streak")
-                    .font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
             }
-            Spacer()
+            .frame(width: 176, height: 176)
+
             Button { isShowingProgressPhotos = true } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "photo.on.rectangle.angled")
-                    Text("Photos")
+                    Text("Progress Photos")
                 }
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.white)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 9)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
             }
             .buttonStyle(.plain)
             .glassEffect(.regular.tint(.appAccentPurple).interactive(), in: Capsule())
         }
-        .glassCard(padding: 20)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 26)
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
                 .stroke(.white.opacity(0.08), lineWidth: 1)
         )
     }
 
-    private var achievementsSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            EyebrowLabel(text: "Achievements")
-            GlassEffectContainer(spacing: 10) {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                    ForEach(appState.achievements) { achievement in
-                        achievementTile(achievement)
+    // MARK: Section picker
+
+    private var sectionPicker: some View {
+        GlassEffectContainer(spacing: 4) {
+            HStack(spacing: 4) {
+                ForEach(ProgressSection.allCases, id: \.self) { tab in
+                    Button { section = tab } label: {
+                        Text(tab.rawValue)
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(section == tab ? .white : Color.appTextSecondary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
                     }
+                    .buttonStyle(.plain)
+                    .glassEffect(
+                        section == tab ? .regular.tint(.appAccentPurple).interactive() : .regular.interactive(),
+                        in: Capsule()
+                    )
                 }
             }
         }
     }
 
-    private func achievementTile(_ achievement: Achievement) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Image(systemName: achievement.icon)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(achievement.isUnlocked ? Color.appAccent : Color.appTextSecondary)
-            Text(achievement.title)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(achievement.isUnlocked ? .white : Color.appTextSecondary)
-            Text(achievement.detail)
-                .font(.system(size: 11))
-                .foregroundStyle(Color.appTextSecondary)
-                .lineLimit(2)
+    // MARK: Overview
+
+    private var overviewContent: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            todayStatsSection
+            achievementsCarousel
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .opacity(achievement.isUnlocked ? 1 : 0.5)
-        .glassEffect(achievement.isUnlocked ? .regular.tint(.appAccent.opacity(0.25)) : .regular, in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                .stroke(.white.opacity(0.08), lineWidth: 1)
-        )
     }
 
-    // MARK: Muscle mass chart
+    private var todayStatsSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            EyebrowLabel(text: "This week")
+            GlassEffectContainer(spacing: 10) {
+                HStack(spacing: 10) {
+                    statTile(value: "\(appState.totalSetsThisWeek)", label: "Sets")
+                    statTile(value: "\(appState.totalMinutesThisWeek)", label: "Mins")
+                    statTile(value: "\(appState.totalCaloriesThisWeek)", label: "Kcal")
+                }
+            }
+        }
+    }
+
+    private var achievementsCarousel: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                EyebrowLabel(text: "Achievements")
+                Spacer()
+                Text("\(appState.achievements.filter(\.isUnlocked).count)/\(appState.achievements.count)")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Color.appAccentPurple)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                GlassEffectContainer(spacing: 10) {
+                    HStack(spacing: 10) {
+                        ForEach(appState.achievements) { achievement in
+                            achievementBadge(achievement)
+                        }
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        }
+    }
+
+    private func achievementBadge(_ achievement: Achievement) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: achievement.icon)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(achievement.isUnlocked ? Color.appAccent : Color.appTextSecondary)
+                .frame(width: 56, height: 56)
+                .glassEffect(achievement.isUnlocked ? .regular.tint(.appAccent.opacity(0.3)) : .regular, in: Circle())
+                .overlay(Circle().stroke(.white.opacity(0.08), lineWidth: 1))
+            Text(achievement.title)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(achievement.isUnlocked ? .white : Color.appTextSecondary)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .frame(width: 84)
+        }
+        .opacity(achievement.isUnlocked ? 1 : 0.5)
+    }
+
+    // MARK: Body
+
+    private var bodyContent: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            muscleMassCard
+            bodyCompositionSection
+            vitaminRecommendationsSection
+        }
+    }
 
     private var muscleMassCard: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -184,8 +264,6 @@ struct ProgressContentView: View {
                 .stroke(.white.opacity(0.08), lineWidth: 1)
         )
     }
-
-    // MARK: Body composition (InBody)
 
     private var bodyCompositionSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -290,8 +368,6 @@ struct ProgressContentView: View {
         )
     }
 
-    // MARK: Vitamin recommendations
-
     private var vitaminRecommendationsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             EyebrowLabel(text: "Vitamin Recommendations")
@@ -338,30 +414,21 @@ struct ProgressContentView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: Today / week totals
+    // MARK: History
 
-    private var todayStatsSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            EyebrowLabel(text: "This week")
-            GlassEffectContainer(spacing: 10) {
-                HStack(spacing: 10) {
-                    statTile(value: "\(appState.totalSetsThisWeek)", label: "Sets")
-                    statTile(value: "\(appState.totalMinutesThisWeek)", label: "Mins")
-                    statTile(value: "\(appState.totalCaloriesThisWeek)", label: "Kcal")
-                }
-            }
-        }
-    }
-
-    // MARK: Workout history
-
-    private var historySection: some View {
+    private var historyContent: some View {
         VStack(alignment: .leading, spacing: 10) {
             EyebrowLabel(text: "Workout history")
-            GlassEffectContainer(spacing: 10) {
-                VStack(spacing: 10) {
-                    ForEach(appState.workoutHistory) { entry in
-                        historyRow(entry)
+            if appState.workoutHistory.isEmpty {
+                Text("No workouts logged yet — finish one to see it here.")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Color.appTextSecondary)
+            } else {
+                GlassEffectContainer(spacing: 10) {
+                    VStack(spacing: 10) {
+                        ForEach(appState.workoutHistory) { entry in
+                            historyRow(entry)
+                        }
                     }
                 }
             }
