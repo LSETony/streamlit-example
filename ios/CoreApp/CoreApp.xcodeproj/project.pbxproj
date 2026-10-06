@@ -49,6 +49,7 @@
 		751542B8D2F326DAF7C48472 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B522620C7AB48BA1A10A72FD /* HealthKitService.swift */; };
 		75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */; };
 		7C5C13D38099181B65B53829 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56518D16D8FD135E7DDD0E4 /* LeaderboardView.swift */; };
+		80C5FB742B6220AD78A6BFBA /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
 		827A626C864C99A017D8DBCA /* GymPhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */; };
 		84A8770FE10326533B8AF26E /* WorkoutActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */; };
 		85B05F926201A88F7E64D6EB /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */; };
@@ -64,6 +65,7 @@
 		A52425A03ABDED55A30EA3BD /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
 		B107D4897AEB5C35A5BCC272 /* ProgressPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EFBBA1AB1C30F36093C4D5 /* ProgressPhotosView.swift */; };
 		B125C469AA78A39EC0FD0ED8 /* OccupancyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */; };
+		BADABC863F594B5632190BEF /* WidgetBrandBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F04AD351DD5C8A48C4CBD32 /* WidgetBrandBackground.swift */; };
 		BAEABB3643DCA16A8216CDC6 /* PaymentSheetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */; };
 		BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67286F4868E97187636094AA /* WorkoutsView.swift */; };
 		C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */; };
@@ -73,6 +75,7 @@
 		DF0A25D15B132EA1F55DD11E /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */; };
 		DFD7622C13034D9789B7842F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3400C5EA574C43B3B4039970 /* ProfileView.swift */; };
 		EB64BE17744245A0AF0F1987 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99018F8559804203B50FC4E6 /* Components.swift */; };
+		EE9A4F5CA4AA35852B3D645A /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
 		EFE86F868A2D5B5A825B8812 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F173CD46DBE0612AD9D873 /* AuthService.swift */; };
 		F05383C3B4AB44D838E5F814 /* ProgressDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07A661384232071008EA8E3 /* ProgressDetailView.swift */; };
 		FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF518BECB85AFB2EC8F75527 /* EventsView.swift */; };
@@ -115,6 +118,7 @@
 		2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodRecipesView.swift; sourceTree = "<group>"; };
 		2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Doto-VariableFont.ttf"; sourceTree = "<group>"; };
 		2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
+		2F04AD351DD5C8A48C4CBD32 /* WidgetBrandBackground.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetBrandBackground.swift; sourceTree = "<group>"; };
 		30A5F510A6B3977F14D83E50 /* CoreWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CoreWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		31F2AB7862A2EA4586A53B5A /* AppState+Supabase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Supabase.swift"; sourceTree = "<group>"; };
 		3400C5EA574C43B3B4039970 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -323,6 +327,7 @@
 				424658A028CA6DAF50F921BC /* Info.plist */,
 				C0C5B4078B3AA456550D2C18 /* ProgressAchievementsWidget.swift */,
 				157DE2C2EFBBC95314EDBA55 /* CoreWidgets.entitlements */,
+				2F04AD351DD5C8A48C4CBD32 /* WidgetBrandBackground.swift */,
 			);
 			name = CoreWidgets;
 			path = CoreWidgets;
@@ -431,6 +436,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE9A4F5CA4AA35852B3D645A /* Doto-VariableFont.ttf in Resources */,
+				80C5FB742B6220AD78A6BFBA /* Francy-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,6 +456,7 @@
 				4375D4FF1EFA212852EDAF8A /* WorkoutActivityAttributes.swift in Sources */,
 				A3939502A0B45B030D6E2363 /* SharedProgressStore.swift in Sources */,
 				25F438B73B94A7914709447B /* ProgressAchievementsWidget.swift in Sources */,
+				BADABC863F594B5632190BEF /* WidgetBrandBackground.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -27,8 +27,7 @@ struct WorkoutLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     elapsedTimerText(context.state)
-                        .font(.system(size: 16, weight: .bold))
-                        .monospacedDigit()
+                        .font(.digitalTimer(18))
                         .foregroundStyle(.white)
                 }
                 DynamicIslandExpandedRegion(.center) {
@@ -108,7 +107,7 @@ struct WorkoutLiveActivity: Widget {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     Text(context.attributes.workoutTitle)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.brand(15))
                         .foregroundStyle(.white)
                         .lineLimit(1)
                     if context.state.isPaused {
@@ -136,8 +135,7 @@ struct WorkoutLiveActivity: Widget {
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 2) {
                 elapsedTimerText(context.state)
-                    .font(.system(size: 16, weight: .bold))
-                    .monospacedDigit()
+                    .font(.digitalTimer(20))
                     .foregroundStyle(.white)
                 Text("set \(context.state.currentSet)/\(context.state.totalSets) · \(context.state.estimatedCalories) kcal")
                     .font(.system(size: 10))

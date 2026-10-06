@@ -38,7 +38,7 @@ struct ProgressAchievementsWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ProgressProvider()) { entry in
             ProgressAchievementsWidgetView(entry: entry)
-                .containerBackground(for: .widget) { Color.appBackground }
+                .containerBackground(for: .widget) { WidgetBrandBackground() }
         }
         .configurationDisplayName("Progress & Achievements")
         .description("Your streak, weekly stats and unlocked achievements at a glance.")
@@ -69,19 +69,20 @@ struct ProgressAchievementsWidgetView: View {
 
     private var smallBody: some View {
         VStack(spacing: 10) {
-            ringView(progress: streakProgress, size: 60) {
+            ringView(progress: streakProgress, size: 64) {
                 VStack(spacing: 0) {
                     Image(systemName: "flame.fill")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(Color.appAccent)
                         .symbolEffect(.pulse)
                     Text("\(snapshot.streakDays)")
-                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .font(.digitalTimer(22))
                         .foregroundStyle(.white)
                 }
             }
             Text("day streak")
                 .font(.system(size: 10, weight: .semibold))
+                .tracking(0.3)
                 .foregroundStyle(Color.appTextSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -92,14 +93,14 @@ struct ProgressAchievementsWidgetView: View {
 
     private var mediumBody: some View {
         HStack(spacing: 16) {
-            ringView(progress: streakProgress, size: 72) {
+            ringView(progress: streakProgress, size: 74) {
                 VStack(spacing: 0) {
                     Image(systemName: "flame.fill")
                         .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(Color.appAccent)
                         .symbolEffect(.pulse)
                     Text("\(snapshot.streakDays)")
-                        .font(.system(size: 19, weight: .bold, design: .rounded))
+                        .font(.digitalTimer(24))
                         .foregroundStyle(.white)
                 }
             }
@@ -109,9 +110,9 @@ struct ProgressAchievementsWidgetView: View {
                     .font(.system(size: 9, weight: .semibold))
                     .tracking(0.5)
                     .foregroundStyle(Color.appTextSecondary)
-                statRow(icon: "repeat", value: "\(snapshot.weeklySets) sets")
-                statRow(icon: "clock.fill", value: "\(snapshot.weeklyMinutes) min")
-                statRow(icon: "flame", value: "\(snapshot.weeklyCalories) kcal")
+                statRow(icon: "repeat", value: "\(snapshot.weeklySets)", unit: "sets")
+                statRow(icon: "clock.fill", value: "\(snapshot.weeklyMinutes)", unit: "min")
+                statRow(icon: "flame", value: "\(snapshot.weeklyCalories)", unit: "kcal")
             }
 
             Spacer(minLength: 0)
@@ -122,7 +123,7 @@ struct ProgressAchievementsWidgetView: View {
                     .foregroundStyle(Color.appAccentPurple)
                     .symbolEffect(.variableColor.iterative)
                 Text("\(snapshot.unlockedAchievements)/\(snapshot.totalAchievements)")
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .font(.digitalTimer(16))
                     .foregroundStyle(.white)
             }
         }
@@ -136,8 +137,8 @@ struct ProgressAchievementsWidgetView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text("core.")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.5))
+                    .font(.brand(16))
+                    .foregroundStyle(.white.opacity(0.55))
                 Spacer()
                 if let title = snapshot.lastWorkoutTitle {
                     Text(title)
@@ -148,20 +149,20 @@ struct ProgressAchievementsWidgetView: View {
             }
 
             HStack(spacing: 18) {
-                ringView(progress: streakProgress, size: 80) {
+                ringView(progress: streakProgress, size: 82) {
                     VStack(spacing: 0) {
                         Image(systemName: "flame.fill")
                             .font(.system(size: 19, weight: .bold))
                             .foregroundStyle(Color.appAccent)
                             .symbolEffect(.pulse)
                         Text("\(snapshot.streakDays)")
-                            .font(.system(size: 21, weight: .bold, design: .rounded))
+                            .font(.digitalTimer(26))
                             .foregroundStyle(.white)
                     }
                 }
                 VStack(alignment: .leading, spacing: 3) {
                     Text("\(snapshot.streakDays)-day streak")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.brand(18))
                         .foregroundStyle(.white)
                     Text("\(snapshot.totalWorkouts) workouts logged")
                         .font(.system(size: 12))
@@ -188,7 +189,7 @@ struct ProgressAchievementsWidgetView: View {
                         .foregroundStyle(Color.appTextSecondary)
                     Spacer()
                     Text("\(snapshot.unlockedAchievements)/\(snapshot.totalAchievements)")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.digitalTimer(13))
                         .foregroundStyle(Color.appAccentPurple)
                 }
                 GeometryReader { geo in
@@ -213,11 +214,16 @@ struct ProgressAchievementsWidgetView: View {
     private func ringView<Content: View>(progress: Double, size: CGFloat, @ViewBuilder content: () -> Content) -> some View {
         ZStack {
             Circle()
+                .fill(
+                    RadialGradient(colors: [Color.appAccent.opacity(0.22), .clear], center: .center, startRadius: 0, endRadius: size * 0.72)
+                )
+                .frame(width: size * 1.5, height: size * 1.5)
+            Circle()
                 .stroke(Color.white.opacity(0.12), lineWidth: 6)
             Circle()
                 .trim(from: 0, to: max(0.03, progress))
                 .stroke(
-                    AngularGradient(colors: [Color.appAccent, Color.appAccentPurple], center: .center),
+                    AngularGradient(colors: [Color.appAccent, Color.appAccentPurple, Color.appAccent], center: .center),
                     style: StrokeStyle(lineWidth: 6, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
@@ -226,15 +232,20 @@ struct ProgressAchievementsWidgetView: View {
         .frame(width: size, height: size)
     }
 
-    private func statRow(icon: String, value: String) -> some View {
+    private func statRow(icon: String, value: String, unit: String) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Color.appAccent)
                 .frame(width: 14)
-            Text(value)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.white)
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text(value)
+                    .font(.digitalTimer(13))
+                    .foregroundStyle(.white)
+                Text(unit)
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color.appTextSecondary)
+            }
         }
     }
 
@@ -244,7 +255,7 @@ struct ProgressAchievementsWidgetView: View {
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Color.appAccent)
             Text(value)
-                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .font(.digitalTimer(17))
                 .foregroundStyle(.white)
             Text(label)
                 .font(.system(size: 8, weight: .semibold))
@@ -253,8 +264,7 @@ struct ProgressAchievementsWidgetView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }
 
