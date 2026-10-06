@@ -1,32 +1,20 @@
 import SwiftUI
 import Charts
 
-/// Opened by tapping the "Your Progress" card on Home. Leads with the
-/// muscle-mass growth chart, then an InBody-style body composition
-/// readout (body fat, total body water, visceral fat, BMR), then the
-/// today/week totals and workout history.
+/// Opened by tapping the "Your Progress" card on Home — a thin wrapper
+/// around ProgressContentView (the actual content, shared with the
+/// Progress tab — see ProgressTabView.swift) with a NavigationStack/Done
+/// button since this presents as a sheet.
 struct ProgressDetailView: View {
-    @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedProduct: Product?
-    @State private var isShowingProgressPhotos = false
-    @State private var isShowingLogScan = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 22) {
-                    streakSection
-                    todayStatsSection
-                    historySection
-                    achievementsSection
-                    muscleMassCard
-                    bodyCompositionSection
-                    vitaminRecommendationsSection
-                }
-                .screenPadding()
-                .padding(.top, 12)
-                .padding(.bottom, 24)
+                ProgressContentView()
+                    .screenPadding()
+                    .padding(.top, 12)
+                    .padding(.bottom, 24)
             }
             .background(Color.appBackground.ignoresSafeArea())
             .navigationTitle("Progress")
@@ -36,15 +24,41 @@ struct ProgressDetailView: View {
                     Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
                 }
             }
-            .sheet(item: $selectedProduct) { product in
-                NavigationStack { ProductDetailView(product: product) }
-            }
-            .sheet(isPresented: $isShowingProgressPhotos) {
-                ProgressPhotosView()
-            }
-            .sheet(isPresented: $isShowingLogScan) {
-                LogInBodyScanView()
-            }
+        }
+    }
+}
+
+/// Streak + achievements, muscle-mass growth chart, InBody body
+/// composition (trend chart, scan history, "Log scan"), supplement
+/// recommendations, this-week totals and workout history — every real
+/// metric this app tracks about a member's own progress, in one place.
+/// Used by both ProgressDetailView (Home's sheet) and ProgressTabView (the
+/// tab), so there's exactly one version of this content to keep real
+/// instead of two screens quietly drifting apart.
+struct ProgressContentView: View {
+    @EnvironmentObject var appState: AppState
+    @State private var selectedProduct: Product?
+    @State private var isShowingProgressPhotos = false
+    @State private var isShowingLogScan = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            streakSection
+            todayStatsSection
+            historySection
+            achievementsSection
+            muscleMassCard
+            bodyCompositionSection
+            vitaminRecommendationsSection
+        }
+        .sheet(item: $selectedProduct) { product in
+            NavigationStack { ProductDetailView(product: product) }
+        }
+        .sheet(isPresented: $isShowingProgressPhotos) {
+            ProgressPhotosView()
+        }
+        .sheet(isPresented: $isShowingLogScan) {
+            LogInBodyScanView()
         }
     }
 
@@ -72,17 +86,23 @@ struct ProgressDetailView: View {
                 .padding(.vertical, 9)
             }
             .buttonStyle(.plain)
-            .glassEffect(.regular.tint(.appAccentPurple), in: Capsule())
+            .glassEffect(.regular.tint(.appAccentPurple).interactive(), in: Capsule())
         }
-        .appCard(padding: 20)
+        .glassCard(padding: 20)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 
     private var achievementsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             EyebrowLabel(text: "Achievements")
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                ForEach(appState.achievements) { achievement in
-                    achievementTile(achievement)
+            GlassEffectContainer(spacing: 10) {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    ForEach(appState.achievements) { achievement in
+                        achievementTile(achievement)
+                    }
                 }
             }
         }
@@ -104,8 +124,11 @@ struct ProgressDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .opacity(achievement.isUnlocked ? 1 : 0.5)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .glassEffect(achievement.isUnlocked ? .regular.tint(.appAccent.opacity(0.25)) : .regular, in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 
     // MARK: Muscle mass chart
@@ -155,7 +178,11 @@ struct ProgressDetailView: View {
                 }
             }
         }
-        .appCard(padding: 20)
+        .glassCard(padding: 20)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 
     // MARK: Body composition (InBody)
@@ -178,11 +205,13 @@ struct ProgressDetailView: View {
                 .buttonStyle(.plain)
                 .glassEffect(.regular.tint(.appAccentPurple).interactive(), in: Capsule())
             }
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                statTile(value: String(format: "%.1f%%", appState.bodyFatPercent), label: "Body Fat")
-                statTile(value: String(format: "%.1f%%", appState.totalBodyWaterPercent), label: "Total Body Water")
-                statTile(value: "\(appState.visceralFatIndex)", label: "Visceral Fat Index")
-                statTile(value: "\(appState.basalMetabolicRate)", label: "Basal Metabolic Rate")
+            GlassEffectContainer(spacing: 10) {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    statTile(value: String(format: "%.1f%%", appState.bodyFatPercent), label: "Body Fat")
+                    statTile(value: String(format: "%.1f%%", appState.totalBodyWaterPercent), label: "Total Body Water")
+                    statTile(value: "\(appState.visceralFatIndex)", label: "Visceral Fat Index")
+                    statTile(value: "\(appState.basalMetabolicRate)", label: "Basal Metabolic Rate")
+                }
             }
 
             if appState.inBodyHistory.count > 1 {
@@ -216,12 +245,18 @@ struct ProgressDetailView: View {
                         }
                     }
                 }
-                .appCard(padding: 20)
+                .glassCard(padding: 20)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                        .stroke(.white.opacity(0.08), lineWidth: 1)
+                )
             }
 
-            VStack(spacing: 10) {
-                ForEach(appState.inBodyHistory.sorted(by: { $0.scannedAt > $1.scannedAt })) { entry in
-                    inBodyScanRow(entry)
+            GlassEffectContainer(spacing: 10) {
+                VStack(spacing: 10) {
+                    ForEach(appState.inBodyHistory.sorted(by: { $0.scannedAt > $1.scannedAt })) { entry in
+                        inBodyScanRow(entry)
+                    }
                 }
             }
         }
@@ -248,8 +283,11 @@ struct ProgressDetailView: View {
             }
         }
         .padding(14)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 
     // MARK: Vitamin recommendations
@@ -257,9 +295,11 @@ struct ProgressDetailView: View {
     private var vitaminRecommendationsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             EyebrowLabel(text: "Vitamin Recommendations")
-            VStack(spacing: 10) {
-                ForEach(appState.products) { product in
-                    vitaminRow(product)
+            GlassEffectContainer(spacing: 10) {
+                VStack(spacing: 10) {
+                    ForEach(appState.products) { product in
+                        vitaminRow(product)
+                    }
                 }
             }
         }
@@ -289,8 +329,11 @@ struct ProgressDetailView: View {
                     .foregroundStyle(Color.appTextSecondary)
             }
             .padding(14)
-            .background(Color.appSurface)
-            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                    .stroke(.white.opacity(0.08), lineWidth: 1)
+            )
         }
         .buttonStyle(.plain)
     }
@@ -300,10 +343,12 @@ struct ProgressDetailView: View {
     private var todayStatsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             EyebrowLabel(text: "This week")
-            HStack(spacing: 10) {
-                statTile(value: "\(appState.totalSetsThisWeek)", label: "Sets")
-                statTile(value: "\(appState.totalMinutesThisWeek)", label: "Mins")
-                statTile(value: "\(appState.totalCaloriesThisWeek)", label: "Kcal")
+            GlassEffectContainer(spacing: 10) {
+                HStack(spacing: 10) {
+                    statTile(value: "\(appState.totalSetsThisWeek)", label: "Sets")
+                    statTile(value: "\(appState.totalMinutesThisWeek)", label: "Mins")
+                    statTile(value: "\(appState.totalCaloriesThisWeek)", label: "Kcal")
+                }
             }
         }
     }
@@ -313,9 +358,11 @@ struct ProgressDetailView: View {
     private var historySection: some View {
         VStack(alignment: .leading, spacing: 10) {
             EyebrowLabel(text: "Workout history")
-            VStack(spacing: 10) {
-                ForEach(appState.workoutHistory) { entry in
-                    historyRow(entry)
+            GlassEffectContainer(spacing: 10) {
+                VStack(spacing: 10) {
+                    ForEach(appState.workoutHistory) { entry in
+                        historyRow(entry)
+                    }
                 }
             }
         }
@@ -328,8 +375,11 @@ struct ProgressDetailView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 
     private func historyRow(_ entry: WorkoutHistoryEntry) -> some View {
@@ -353,8 +403,11 @@ struct ProgressDetailView: View {
             }
         }
         .padding(14)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 }
 

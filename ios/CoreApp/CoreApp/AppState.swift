@@ -83,8 +83,6 @@ final class AppState: ObservableObject {
     let heroVideoPlayer = HeroVideoPlayerService()
     /// Extra real gym photos for the photo strip in GymPhotoViewer.
     @Published var gymPhotoURLs: [URL] = []
-    @Published var trainingProgressPercent: Int = 67
-    @Published var trainingDay: Int = 1
 
     /// Behind the Home "Your Progress" card — total sets/time/calories and
     /// a session-by-session history. Starts with past-day sample history
