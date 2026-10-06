@@ -44,6 +44,12 @@ final class PlayerLayerView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         playerLayer.videoGravity = .resizeAspectFill
+        // This is always a decorative background loop, never itself
+        // interactive — without this, the full-bleed UIKit view can
+        // intercept the first tap on a SwiftUI button layered on top of it
+        // (e.g. Home's wallet icon over the hero video), so the button
+        // looks "stuck" and needs a second tap to register.
+        isUserInteractionEnabled = false
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
