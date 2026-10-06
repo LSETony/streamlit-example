@@ -312,12 +312,6 @@ final class AppState: ObservableObject {
     @Published var membershipPlanName: String = "Unlimited 24/7"
     @Published var membershipRenewDate: String = "12 Mar 2027"
 
-    // MARK: Supabase diagnostics
-    // Set the first time any Supabase call fails; surfaced as an alert on
-    // ContentView so a failure is visible without needing Xcode's console
-    // open (see AppState+Supabase.swift).
-    @Published var supabaseDebugMessage: String?
-
     // MARK: Dynamic Island-style notifications
     // Self-contained (owns its own overlay UIWindow) — see
     // DynamicIslandNotifier.swift. Call notificationCenter.trigger(...)

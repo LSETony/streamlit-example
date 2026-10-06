@@ -108,17 +108,16 @@ extension AppState {
 
     // MARK: Fetch helpers
 
-    /// Errors are both printed to the console AND collected into
-    /// `supabaseDebugMessage` so they're visible on-screen (see the alert
-    /// wired up in ContentView) — the console alone is easy to miss when
-    /// testing on a phone or in the Simulator without Xcode's window open.
+    /// Failures are logged to the console and degrade gracefully (an empty
+    /// array — the feature that called this just shows no data) rather
+    /// than surfacing a raw Postgrest/Storage error on screen; a missing
+    /// table or RLS slip should never block a member from using the rest
+    /// of the app.
     func fetch<T: Decodable>(_ table: String, select: String = "*") async -> [T] {
         do {
             return try await supabase.from(table).select(select).execute().value
         } catch {
-            let message = "fetch(\(table)): \(error)"
-            print("Supabase \(message)")
-            recordSupabaseError(message)
+            print("Supabase fetch(\(table)): \(error)")
             return []
         }
     }
@@ -131,16 +130,8 @@ extension AppState {
                 .execute()
                 .value
         } catch {
-            let message = "fetchOwn(\(table)): \(error)"
-            print("Supabase \(message)")
-            recordSupabaseError(message)
+            print("Supabase fetchOwn(\(table)): \(error)")
             return []
-        }
-    }
-
-    private func recordSupabaseError(_ message: String) {
-        if supabaseDebugMessage == nil {
-            supabaseDebugMessage = message
         }
     }
 }
