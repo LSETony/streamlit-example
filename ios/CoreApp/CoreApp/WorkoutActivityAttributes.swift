@@ -19,6 +19,21 @@ struct WorkoutActivityAttributes: ActivityAttributes {
         var currentSet: Int
         var totalSets: Int
         var isPaused: Bool
+        /// Next exercise's name, so the expanded island can preview what's
+        /// coming — nil on the last exercise.
+        var nextExerciseName: String?
+        /// Rough calories burned so far (same ~7 kcal/min estimate
+        /// recordCompletion uses), refreshed whenever the app calls
+        /// update() — not itself ticking live.
+        var estimatedCalories: Int
+        /// Start date shifted forward by every second already spent
+        /// paused — paired with `pausedAt` below, this lets the widget
+        /// render a real system-ticking `Text(timerInterval:pauseTime:)`
+        /// that shows active elapsed time (pauses excluded) without the
+        /// app updating the Live Activity every second.
+        var elapsedStartDate: Date
+        /// The exact moment the current pause began — nil while playing.
+        var pausedAt: Date?
     }
 
     var workoutTitle: String

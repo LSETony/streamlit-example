@@ -161,13 +161,19 @@ struct ActiveWorkoutView: View {
     }
 
     private var currentActivityState: WorkoutActivityAttributes.ContentState {
-        WorkoutActivityAttributes.ContentState(
+        let nextIndex = exerciseIndex + 1
+        let estimatedCalories = Int(activeElapsed(at: Date()) / 60 * 7)
+        return WorkoutActivityAttributes.ContentState(
             exerciseName: currentExercise?.name ?? "Finished",
             exerciseIndex: exerciseIndex,
             totalExercises: card.exercises.count,
             currentSet: currentSet,
             totalSets: currentExercise?.sets ?? 0,
-            isPaused: isPaused
+            isPaused: isPaused,
+            nextExerciseName: nextIndex < card.exercises.count ? card.exercises[nextIndex].name : nil,
+            estimatedCalories: estimatedCalories,
+            elapsedStartDate: startedAt.addingTimeInterval(accumulatedPausedDuration),
+            pausedAt: pauseStartedAt
         )
     }
 
