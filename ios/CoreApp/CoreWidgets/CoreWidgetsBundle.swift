@@ -9,6 +9,7 @@ import SwiftUI
 struct CoreWidgetsBundle: WidgetBundle {
     var body: some Widget {
         WorkoutOfTheDayWidget()
+        ProgressAchievementsWidget()
         WorkoutLiveActivity()
     }
 }

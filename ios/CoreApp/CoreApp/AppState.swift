@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import WidgetKit
 
 /// Single in-memory store for the whole app. Every field here backs one of
 /// the 13 screens in the Figma source (splash, sign-in/OTP, the 4-step
@@ -347,6 +348,31 @@ final class AppState: ObservableObject {
             Achievement(icon: "checkmark.seal.fill", title: "50 Workouts", detail: "Complete 50 sessions", isUnlocked: workoutHistory.count >= 50),
             Achievement(icon: "star.fill", title: "100 Visits", detail: "Check in 100 times", isUnlocked: totalVisits >= 100),
         ]
+    }
+
+    /// Pushes this member's current streak/workout/achievement state to the
+    /// shared App Group container and nudges WidgetKit to redraw — called
+    /// after anything that could change what the Progress & Achievements
+    /// Home Screen widget shows (recordActivity, initial Supabase load).
+    /// The widget itself never hits the network; it just reads whatever
+    /// was last written here.
+    func syncProgressWidget() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let weekAgo = Calendar.current.date(byAdding: .day, value: -7, to: today) ?? today
+        let thisWeek = workoutHistory.filter { $0.completedAt >= weekAgo }
+        let snapshot = ProgressSnapshot(
+            streakDays: streakDays,
+            totalWorkouts: workoutHistory.count,
+            unlockedAchievements: achievements.filter(\.isUnlocked).count,
+            totalAchievements: achievements.count,
+            weeklySets: thisWeek.reduce(0) { $0 + $1.sets },
+            weeklyMinutes: thisWeek.reduce(0) { $0 + $1.minutes },
+            weeklyCalories: thisWeek.reduce(0) { $0 + $1.calories },
+            lastWorkoutTitle: workoutHistory.first?.title,
+            updatedAt: Date()
+        )
+        SharedProgressStore.save(snapshot)
+        WidgetCenter.shared.reloadTimelines(ofKind: "ProgressAchievementsWidget")
     }
 }
 

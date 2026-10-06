@@ -17,8 +17,10 @@
 		0A684AEED47A45E7811403F0 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F0FD454D2243F9954D55DC /* HomeView.swift */; };
 		0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2039733A32D3965970AD290D /* LiveActivityService.swift */; };
 		13665979218917FFC4BCE58C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2360973C0FF59F76A261826 /* OnboardingView.swift */; };
+		1B6BB854BFAD3B0D7A74F106 /* SharedProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B302EA70F1C4286289905AFF /* SharedProgressStore.swift */; };
 		1D204D15172197CC95F29C1A /* PaymentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C78F049CC8950FCEE905BD /* PaymentService.swift */; };
 		22CB65E17C3C4F9FA2E84F63 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFCFF1C6A1D454E80B7C92A /* AppState.swift */; };
+		25F438B73B94A7914709447B /* ProgressAchievementsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C5B4078B3AA456550D2C18 /* ProgressAchievementsWidget.swift */; };
 		29C465C7919C462EA2F0EE80 /* TrainersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */; };
 		2B11B98ED5A9373EA510D52E /* StripeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */; };
 		392881F6855843ACB49B7B46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */; };
@@ -58,6 +60,7 @@
 		929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55950DFCC22D525533532A31 /* SubscriptionsView.swift */; };
 		94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CDD914A646D49A055E8D /* CoreAppApp.swift */; };
 		A2E860860761333E4C376664 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B3511191EF0FD2AE5A30D /* SplashView.swift */; };
+		A3939502A0B45B030D6E2363 /* SharedProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B302EA70F1C4286289905AFF /* SharedProgressStore.swift */; };
 		A52425A03ABDED55A30EA3BD /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
 		B107D4897AEB5C35A5BCC272 /* ProgressPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EFBBA1AB1C30F36093C4D5 /* ProgressPhotosView.swift */; };
 		B125C469AA78A39EC0FD0ED8 /* OccupancyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */; };
@@ -105,6 +108,7 @@
 		0BA02BAD3472B4C8560DDB10 /* WidgetSupabaseConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetSupabaseConfig.swift; sourceTree = "<group>"; };
 		0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0DFCFF1C6A1D454E80B7C92A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		157DE2C2EFBBC95314EDBA55 /* CoreWidgets.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreWidgets.entitlements; sourceTree = "<group>"; };
 		187D5C91EAAA4F0DB404FA79 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
 		18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BookZoneView.swift; sourceTree = "<group>"; };
 		2039733A32D3965970AD290D /* LiveActivityService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
@@ -148,8 +152,10 @@
 		A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ThinkingOrb.swift; sourceTree = "<group>"; };
 		AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OTPVerificationView.swift; sourceTree = "<group>"; };
 		B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Francy-Regular.ttf"; sourceTree = "<group>"; };
+		B302EA70F1C4286289905AFF /* SharedProgressStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedProgressStore.swift; sourceTree = "<group>"; };
 		B522620C7AB48BA1A10A72FD /* HealthKitService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
 		B56518D16D8FD135E7DDD0E4 /* LeaderboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
+		C0C5B4078B3AA456550D2C18 /* ProgressAchievementsWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressAchievementsWidget.swift; sourceTree = "<group>"; };
 		CC7E1851BD66A6F385905E9F /* CartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		CDF9CCF5A54DD6B35ED51235 /* AppState+Growth.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Growth.swift"; sourceTree = "<group>"; };
 		E07A661384232071008EA8E3 /* ProgressDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressDetailView.swift; sourceTree = "<group>"; };
@@ -302,6 +308,7 @@
 				69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */,
 				FB2B6551AE2831475D8A342D /* LogInBodyScanView.swift */,
 				5458B4589D146B653EB54FB6 /* HeroVideo.mp4 */,
+				B302EA70F1C4286289905AFF /* SharedProgressStore.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -314,6 +321,8 @@
 				95244984817A4D1FE1DA7B22 /* WorkoutLiveActivity.swift */,
 				0BA02BAD3472B4C8560DDB10 /* WidgetSupabaseConfig.swift */,
 				424658A028CA6DAF50F921BC /* Info.plist */,
+				C0C5B4078B3AA456550D2C18 /* ProgressAchievementsWidget.swift */,
+				157DE2C2EFBBC95314EDBA55 /* CoreWidgets.entitlements */,
 			);
 			name = CoreWidgets;
 			path = CoreWidgets;
@@ -438,6 +447,8 @@
 				8E8594599D570F7D2910CF6D /* WidgetSupabaseConfig.swift in Sources */,
 				01401B0AE0843F1C01D92304 /* Theme.swift in Sources */,
 				4375D4FF1EFA212852EDAF8A /* WorkoutActivityAttributes.swift in Sources */,
+				A3939502A0B45B030D6E2363 /* SharedProgressStore.swift in Sources */,
+				25F438B73B94A7914709447B /* ProgressAchievementsWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,6 +508,7 @@
 				0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */,
 				75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */,
 				0A1A1E8118DA1AF02F910900 /* LogInBodyScanView.swift in Sources */,
+				1B6BB854BFAD3B0D7A74F106 /* SharedProgressStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,6 +578,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CoreWidgets/CoreWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -593,6 +606,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CoreWidgets/CoreWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;

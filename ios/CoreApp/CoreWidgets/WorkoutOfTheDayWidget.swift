@@ -4,13 +4,11 @@ import SwiftUI
 /// Home Screen widget — a rotating pick from the club's real workout_cards
 /// table (public-read, same table WorkoutsView shows), changing once a
 /// day. Deliberately doesn't show anything member-specific (streak, visit
-/// count, ...): the widget extension runs in its own sandboxed process
-/// without an App Group, so it has no access to this device's
-/// DeviceUser.id the way the host app does — wiring that up would need an
-/// App Group entitlement, which (like Sign in with Apple — see
-/// AuthService.isAppleSignInConfigured's comment) may not provision on a
-/// free/personal Apple Developer team. A shared, non-personal pick avoids
-/// that risk entirely while still being real, live server data.
+/// count, ...) — for that, see ProgressAchievementsWidget, which reads the
+/// personal snapshot the app writes to the shared App Group container.
+/// This one stays a plain network read instead: it doesn't need the
+/// member's own data, so there's no reason to depend on the app having
+/// synced one first.
 struct WorkoutOfTheDayEntry: TimelineEntry {
     let date: Date
     let title: String

@@ -35,6 +35,7 @@ extension AppState {
                 )
             )
         }
+        syncProgressWidget()
     }
 
     // MARK: Check-in (QR scan at reception)
@@ -63,6 +64,7 @@ extension AppState {
                 referralCode: referralCode.isEmpty ? nil : referralCode, referredBy: nil
             )
         )
+        syncProgressWidget()
         return true
     }
 
