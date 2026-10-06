@@ -60,8 +60,13 @@ struct HomeView: View {
             // Extra safety net alongside HeroVideoPlayerService's own
             // didBecomeActive resume — covers Home reappearing after a
             // full-screen cover (Scan) dismisses, not just the app itself
-            // backgrounding/foregrounding.
-            appState.heroVideoPlayer.player.play()
+            // backgrounding/foregrounding. Only rebuilds the player from
+            // scratch (restart) when it isn't actually playing, so a
+            // normal return to Home where it's already fine doesn't jump
+            // back to the start of the clip every time.
+            if appState.heroVideoPlayer.player.timeControlStatus != .playing {
+                appState.heroVideoPlayer.restart()
+            }
         }
     }
 

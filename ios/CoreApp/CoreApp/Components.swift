@@ -81,43 +81,45 @@ struct WorkoutHeroVideo: UIViewRepresentable {
 /// Home.
 ///
 /// Plays HeroVideo.mp4, bundled in the app, on a gapless infinite loop via
-/// AVPlayerLooper. A manual loop (seek-to-zero on
-/// AVPlayerItemDidPlayToEndTime) was tried first, but it's fragile exactly
-/// around backgrounding: if the app is suspended near the end of the clip,
-/// the notification/seek/play sequence can miss its chance to run, leaving
-/// the item stuck at .ended — and calling play() again on an ended item
-/// does nothing without an explicit seek first. AVPlayerLooper avoids this
-/// entirely by queuing the next loop ahead of time instead of reacting
-/// after the fact. (An earlier attempt at AVPlayerLooper failed for a
-/// different reason — it silently never inserts an item whose duration
-/// isn't known synchronously, which was true for the old remote 4K clips;
-/// a bundled local file's duration is known immediately, so that failure
-/// mode doesn't apply here.)
+/// AVPlayerLooper.
+///
+/// This has gone through several iterations that all looked right on paper
+/// but kept reproducing the same symptom on a real device (video plays,
+/// then after some background/foreground cycle it's permanently stuck on
+/// HomeView's backdrop photo): a manual seek-to-zero loop, then
+/// AVPlayerLooper + just calling play() again on didBecomeActive. Since
+/// this sandbox has no simulator/device to actually observe AVFoundation's
+/// runtime behavior, the only verifiable-from-code fix left is to stop
+/// trying to *resume* whatever state the player/looper/item were left in
+/// after backgrounding — any of the three can end up wedged in a way a
+/// bare play() doesn't recover from — and instead throw all three away and
+/// build fresh ones. A cold app launch always played the video correctly;
+/// restart() reproduces exactly that path on every return to foreground.
 @MainActor
 final class HeroVideoPlayerService: ObservableObject {
     let player = AVQueuePlayer()
     private var looper: AVPlayerLooper?
-    /// iOS pauses video playback whenever the app backgrounds (screen
-    /// locks, a system sheet takes over, the member switches apps) and
-    /// does NOT resume it automatically — without this, returning to the
-    /// app left the hero frozen on the backdrop photo for good, regardless
-    /// of which screen was showing. didBecomeActive fires on every return
-    /// to foreground, so this covers all of those cases, not just app
-    /// launch.
     private var foregroundObserver: NSObjectProtocol?
 
     init() {
         player.isMuted = true
         player.automaticallyWaitsToMinimizeStalling = false
-        if let url = Bundle.main.url(forResource: "HeroVideo", withExtension: "mp4") {
-            let item = AVPlayerItem(url: url)
-            looper = AVPlayerLooper(player: player, templateItem: item)
-        }
+        restart()
         foregroundObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main
         ) { [weak self] _ in
-            self?.player.play()
+            self?.restart()
         }
+    }
+
+    /// Tears down the current item/looper (if any) and builds both fresh,
+    /// then plays — called on init and on every return to foreground.
+    func restart() {
+        guard let url = Bundle.main.url(forResource: "HeroVideo", withExtension: "mp4") else { return }
+        looper = nil
+        player.removeAllItems()
+        let item = AVPlayerItem(url: url)
+        looper = AVPlayerLooper(player: player, templateItem: item)
         player.play()
     }
 
