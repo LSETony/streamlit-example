@@ -154,9 +154,14 @@ extension AppState {
             try await supabase.from("progress_photos").insert(row).execute()
             progressPhotos.insert(ProgressPhoto(id: photoID, imageURL: publicURL, takenAt: Date()), at: 0)
         } catch {
-            let message = "uploadProgressPhoto: \(error)"
-            print("Supabase \(message)")
-            supabaseDebugMessage = supabaseDebugMessage ?? message
+            // A friendly banner, not the raw Swift error dump the generic
+            // supabaseDebugMessage alert shows — that's meant for load
+            // failures during development, not a member adding a photo.
+            print("Supabase uploadProgressPhoto: \(error)")
+            notificationCenter.trigger(
+                icon: "exclamationmark.triangle.fill", title: "Couldn't upload photo",
+                subtitle: "Check your connection and try again", accent: .appAccent
+            )
         }
     }
 
