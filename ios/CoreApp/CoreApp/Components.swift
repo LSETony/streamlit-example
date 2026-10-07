@@ -207,6 +207,25 @@ struct AppDivider: View {
     }
 }
 
+/// Shared full-bleed backdrop for the sign-in flow (AuthWelcomeView,
+/// OTPVerificationView) — a dark gradient plus two soft brand-color glows,
+/// the same accent/purple duo used everywhere else. Deliberately NOT a
+/// photo backdrop with glass panels on top: an earlier pass tried that and
+/// it was fragile (ghost bars where glass shapes merged, uneven refraction
+/// over busy photo areas) — this keeps that lesson while still giving the
+/// screen some depth instead of a flat single color.
+struct AuthBackground: View {
+    var body: some View {
+        ZStack {
+            Color.appBackground
+            LinearGradient(colors: [Color.appSurfaceElevated, Color.appBackground], startPoint: .top, endPoint: .bottom)
+            RadialGradient(colors: [Color.appAccent.opacity(0.18), .clear], center: UnitPoint(x: 0.12, y: 0.04), startRadius: 0, endRadius: 420)
+            RadialGradient(colors: [Color.appAccentPurple.opacity(0.16), .clear], center: UnitPoint(x: 0.92, y: 0.38), startRadius: 0, endRadius: 420)
+        }
+        .ignoresSafeArea()
+    }
+}
+
 /// A themed gradient stand-in for a dish photo — there's no licensed food
 /// photography to embed yet, so this keeps Food recipes' exact card shapes
 /// while staying honest that it isn't a real photo. Swap in `Image(...)`

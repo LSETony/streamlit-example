@@ -7,10 +7,11 @@ import SwiftUI
 /// this project's configured OTP length (8 digits), not Supabase's 6-digit
 /// default — codeLength is the single place to change if that's adjusted.
 ///
-/// Styled like Apple's own native verification-code screens: plain system
-/// background, a grouped digit row instead of glass-over-photo boxes (whose
-/// tint varied unpredictably depending on what photo content sat behind
-/// each circle).
+/// Shares AuthWelcomeView's AuthBackground glow so the two-step flow reads
+/// as one screen rather than a jump from branded to plain system chrome.
+/// The digit row itself stays a grouped box (not glass-over-photo boxes,
+/// whose tint varied unpredictably depending on what photo content sat
+/// behind each circle) — that lesson still holds even over a flat gradient.
 struct OTPVerificationView: View {
     @EnvironmentObject var authService: AuthService
     @Environment(\.dismiss) private var dismiss
@@ -26,72 +27,77 @@ struct OTPVerificationView: View {
     private let codeLength = 8
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 28) {
-                VStack(spacing: 6) {
-                    Text("Verification")
-                        .font(.brand(34))
-                        .foregroundStyle(.white)
-                    Text("Enter the code we sent to \(email)")
-                        .font(.system(size: 15))
-                        .foregroundStyle(Color.appTextSecondary)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                }
-                .padding(.top, 56)
-
-                ZStack {
-                    HStack(spacing: 6) {
-                        ForEach(0..<codeLength, id: \.self) { i in
-                            digitBox(i)
-                        }
+        ZStack {
+            AuthBackground()
+            ScrollView {
+                VStack(spacing: 28) {
+                    VStack(spacing: 10) {
+                        Image(systemName: "envelope.badge.fill")
+                            .font(.system(size: 28, weight: .semibold))
+                            .foregroundStyle(Color.appAccentPurple)
+                        Text("Verification")
+                            .font(.brand(34))
+                            .foregroundStyle(.white)
+                        Text("Enter the code we sent to \(email)")
+                            .font(.system(size: 15))
+                            .foregroundStyle(Color.appTextSecondary)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
                     }
+                    .padding(.top, 40)
 
-                    // Invisible field capturing all input — a single field (rather
-                    // than N fields cycling focus) is what lets iOS's one-time-code
-                    // AutoFill actually fill the whole code in one tap.
-                    TextField("", text: $code)
-                        .keyboardType(.numberPad)
-                        .textContentType(.oneTimeCode)
-                        .focused($isCodeFieldFocused)
-                        .foregroundStyle(.clear)
-                        .tint(.clear)
-                        .onChange(of: code) { _, newValue in
-                            code = String(newValue.filter(\.isNumber).prefix(codeLength))
+                    ZStack {
+                        HStack(spacing: 6) {
+                            ForEach(0..<codeLength, id: \.self) { i in
+                                digitBox(i)
+                            }
                         }
-                }
-                .frame(maxWidth: .infinity)
-                .contentShape(Rectangle())
-                .onTapGesture { isCodeFieldFocused = true }
 
-                HStack(spacing: 4) {
-                    Text("Didn't get a code?")
-                        .font(.system(size: 14))
-                        .foregroundStyle(Color.appTextSecondary)
-                    if secondsRemaining > 0 {
-                        Text("Resend in \(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))")
+                        // Invisible field capturing all input — a single field (rather
+                        // than N fields cycling focus) is what lets iOS's one-time-code
+                        // AutoFill actually fill the whole code in one tap.
+                        TextField("", text: $code)
+                            .keyboardType(.numberPad)
+                            .textContentType(.oneTimeCode)
+                            .focused($isCodeFieldFocused)
+                            .foregroundStyle(.clear)
+                            .tint(.clear)
+                            .onChange(of: code) { _, newValue in
+                                code = String(newValue.filter(\.isNumber).prefix(codeLength))
+                            }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                    .onTapGesture { isCodeFieldFocused = true }
+
+                    HStack(spacing: 4) {
+                        Text("Didn't get a code?")
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.appTextSecondary)
+                        if secondsRemaining > 0 {
+                            Text("Resend in \(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(Color.appAccent)
+                        } else {
+                            Button("Resend") {
+                                secondsRemaining = 48
+                                startCountdown()
+                                Task { _ = await authService.startEmailRegistration(email: email) }
+                            }
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(Color.appAccent)
-                    } else {
-                        Button("Resend") {
-                            secondsRemaining = 48
-                            startCountdown()
-                            Task { _ = await authService.startEmailRegistration(email: email) }
                         }
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.appAccent)
                     }
-                }
 
-                PrimaryButton(title: isVerifying ? "Verifying…" : "Continue", isEnabled: isCodeComplete && !isVerifying, color: .appAccentPurple) {
-                    verify()
-                }
+                    PrimaryButton(title: isVerifying ? "Verifying…" : "Continue", isEnabled: isCodeComplete && !isVerifying, color: .appAccentPurple) {
+                        verify()
+                    }
 
-                Spacer(minLength: 24)
+                    Spacer(minLength: 24)
+                }
+                .screenPadding()
             }
-            .screenPadding()
         }
-        .background(Color.appBackground.ignoresSafeArea())
         .onAppear { isCodeFieldFocused = true }
         .task { startCountdown() }
         .navigationBarBackButtonHidden(didComplete)
