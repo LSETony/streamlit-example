@@ -38,6 +38,13 @@ final class PaymentService: ObservableObject {
             let clientSecret = try await Self.fetchClientSecret(amountCents: amountDollars * 100, description: description)
             var configuration = PaymentSheet.Configuration()
             configuration.merchantDisplayName = "core."
+            // Lets PaymentSheet show a native Apple Pay row alongside card
+            // entry — needs the com.apple.developer.in-app-payments
+            // entitlement (CoreApp.entitlements) with a matching Merchant
+            // ID created in the Apple Developer portal; the Edge Function
+            // side needs no change since Stripe's automatic_payment_methods
+            // already accepts Apple Pay as just another "card" payment.
+            configuration.applePay = .init(merchantId: "merchant.com.coreclub.app", merchantCountryCode: "US")
             paymentSheet = PaymentSheet(paymentIntentClientSecret: clientSecret, configuration: configuration)
             isPresenting = true
         } catch {

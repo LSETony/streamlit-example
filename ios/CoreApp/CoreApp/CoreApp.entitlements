@@ -8,5 +8,9 @@
 	<array>
 		<string>group.com.coreclub.app</string>
 	</array>
+	<key>com.apple.developer.in-app-payments</key>
+	<array>
+		<string>merchant.com.coreclub.app</string>
+	</array>
 </dict>
 </plist>
