@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// Sign-up/sign-in entry screen. Keeps the HIG-correct Apple/Google button
-/// specs from the previous pass (those aren't ours to restyle), but builds
-/// the rest entirely out of the app's own marks: AuthBackground's brand
-/// glow, the same EyebrowLabel used above every other screen's sections,
-/// the Francy wordmark with its "." picked out in the accent color (the
-/// actual logotype treatment, not a generic decorative shape), and
-/// individual glass fields that light up on focus.
+/// Sign-up/sign-in entry screen. Full redesign: a real gym photo (the
+/// original design's own "AuthBackground" asset, previously unused) fills
+/// the top of the screen and fades into a dark scrim the form content
+/// sits on — a hero composition, left-aligned like every other screen's
+/// headline (HomeView etc.), instead of a centered generic auth form.
+/// Apple/Google button specs are untouched — those follow Apple's own
+/// HIG, not ours to restyle.
 struct AuthWelcomeView: View {
     @EnvironmentObject var authService: AuthService
     @State private var fullName: String = ""
@@ -24,7 +24,9 @@ struct AuthWelcomeView: View {
             ZStack {
                 AuthBackground()
                 ScrollView {
-                    VStack(spacing: 28) {
+                    VStack(alignment: .leading, spacing: 26) {
+                        Spacer(minLength: 150)
+
                         header
 
                         VStack(spacing: 10) {
@@ -41,6 +43,7 @@ struct AuthWelcomeView: View {
                                     if sent { goToVerify = true }
                                 }
                             }
+                            .frame(maxWidth: .infinity)
                         }
 
                         HStack(spacing: 12) {
@@ -55,13 +58,12 @@ struct AuthWelcomeView: View {
                         }
 
                         if authService.isAuthenticating {
-                            ProgressView().tint(.white)
+                            ProgressView().tint(.white).frame(maxWidth: .infinity)
                         }
 
                         Spacer(minLength: 24)
                     }
                     .screenPadding()
-                    .padding(.top, 28)
                 }
             }
             .navigationDestination(isPresented: $goToVerify) {
@@ -76,7 +78,7 @@ struct AuthWelcomeView: View {
     }
 
     private var header: some View {
-        VStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: 10) {
             EyebrowLabel(text: "Member Access", color: .appAccentPurple)
 
             HStack(spacing: 2) {
@@ -92,7 +94,6 @@ struct AuthWelcomeView: View {
                 .font(.system(size: 15))
                 .foregroundStyle(Color.appTextSecondary)
         }
-        .padding(.top, 28)
     }
 
     private func authField(

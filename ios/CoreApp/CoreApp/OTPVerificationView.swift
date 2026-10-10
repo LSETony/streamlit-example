@@ -7,11 +7,13 @@ import SwiftUI
 /// this project's configured OTP length (8 digits), not Supabase's 6-digit
 /// default — codeLength is the single place to change if that's adjusted.
 ///
-/// Shares AuthWelcomeView's AuthBackground glow so the two-step flow reads
-/// as one screen rather than a jump from branded to plain system chrome.
-/// The digit row itself stays a grouped box (not glass-over-photo boxes,
-/// whose tint varied unpredictably depending on what photo content sat
-/// behind each circle) — that lesson still holds even over a flat gradient.
+/// Shares AuthWelcomeView's hero-photo AuthBackground (its own
+/// "OTPBackground" asset) and left-aligned header so the two-step flow
+/// reads as one screen. The digit row itself stays a solid grouped box,
+/// not glass over the photo — several glass shapes that close together
+/// is exactly the merge/ghost-bar failure mode AuthBackground's doc
+/// comment describes, and eight of them side by side is the worst case
+/// for it.
 struct OTPVerificationView: View {
     @EnvironmentObject var authService: AuthService
     @Environment(\.dismiss) private var dismiss
@@ -28,23 +30,21 @@ struct OTPVerificationView: View {
 
     var body: some View {
         ZStack {
-            AuthBackground()
+            AuthBackground(image: "OTPBackground")
             ScrollView {
-                VStack(spacing: 28) {
-                    VStack(spacing: 10) {
-                        Image(systemName: "envelope.badge.fill")
-                            .font(.system(size: 28, weight: .semibold))
-                            .foregroundStyle(Color.appAccentPurple)
+                VStack(alignment: .leading, spacing: 28) {
+                    Spacer(minLength: 150)
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        EyebrowLabel(text: "One-Time Code", color: .appAccentPurple)
                         Text("Verification")
-                            .font(.brand(34))
+                            .font(.brand(40))
                             .foregroundStyle(.white)
                         Text("Enter the code we sent to \(email)")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.appTextSecondary)
-                            .multilineTextAlignment(.center)
                             .lineLimit(2)
                     }
-                    .padding(.top, 40)
 
                     ZStack {
                         HStack(spacing: 6) {
