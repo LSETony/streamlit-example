@@ -5,11 +5,11 @@ import AuthenticationServices
 import GoogleSignIn
 import Supabase
 
-enum AuthProvider: String {
+enum AuthProvider: String, Codable {
     case apple, google, phone, email
 }
 
-struct AuthUser {
+struct AuthUser: Codable {
     var id: String
     var name: String
     var email: String?
@@ -24,12 +24,68 @@ struct AuthUser {
 /// + OTPVerificationView) is real Supabase Auth: startEmailRegistration
 /// sends a one-time code, verifyEmailCode checks it — no separate SMS
 /// provider needed, unlike phone-based OTP.
+///
+/// `currentUser` is mirrored to UserDefaults (see the `didSet` below) so a
+/// cold launch can restore "already signed in" synchronously, before any
+/// network call — RootView reads `isAuthenticated` immediately in its
+/// first `onAppear` to decide whether to show WelcomeBackView instead of
+/// forcing sign-in again. `validatePersistedSession()` then quietly
+/// double-checks that restored session in the background and signs out
+/// if it's no longer actually valid (Apple access revoked in Settings,
+/// Supabase session expired).
 @MainActor
 final class AuthService: NSObject, ObservableObject {
-    @Published var isAuthenticated = false
-    @Published var currentUser: AuthUser?
+    @Published var isAuthenticated: Bool
+    @Published var currentUser: AuthUser? {
+        didSet { Self.persist(currentUser) }
+    }
     @Published var isAuthenticating = false
     @Published var authError: String?
+
+    override init() {
+        let restored = Self.loadPersistedUser()
+        currentUser = restored
+        isAuthenticated = restored != nil
+        super.init()
+    }
+
+    private static let persistedUserKey = "core.auth.persistedUser"
+
+    private static func loadPersistedUser() -> AuthUser? {
+        guard let data = UserDefaults.standard.data(forKey: persistedUserKey) else { return nil }
+        return try? JSONDecoder().decode(AuthUser.self, from: data)
+    }
+
+    private static func persist(_ user: AuthUser?) {
+        guard let user, let data = try? JSONEncoder().encode(user) else {
+            UserDefaults.standard.removeObject(forKey: persistedUserKey)
+            return
+        }
+        UserDefaults.standard.set(data, forKey: persistedUserKey)
+    }
+
+    /// Call once on launch, after a persisted sign-in was restored into
+    /// `currentUser`, to quietly catch a session that's no longer actually
+    /// valid instead of leaving the member looking signed in but unable
+    /// to do anything that needs a real one. Runs in the background —
+    /// RootView doesn't wait on this before showing the welcome-back
+    /// greeting, it only acts if this turns up a problem.
+    func validatePersistedSession() async {
+        guard let user = currentUser else { return }
+        switch user.provider {
+        case .email:
+            if (try? await supabase.auth.session) == nil {
+                signOut()
+            }
+        case .apple:
+            let state = try? await ASAuthorizationAppleIDProvider().credentialState(forUserID: user.id)
+            if state == .revoked || state == .notFound {
+                signOut()
+            }
+        case .google, .phone:
+            break // Google re-validates itself via restorePreviousGoogleSignIn(); phone sign-in is unused.
+        }
+    }
 
     // MARK: - Sign in with Apple
 
