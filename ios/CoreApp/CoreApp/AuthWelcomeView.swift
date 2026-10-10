@@ -1,12 +1,12 @@
 import SwiftUI
 
 /// Sign-up/sign-in entry screen. Keeps the HIG-correct Apple/Google button
-/// specs from the previous pass (those aren't ours to restyle), but swaps
-/// the plain system background and grouped-list fields for the app's own
-/// language: AuthBackground's brand glow, a breathing ThinkingOrb mark,
-/// and individual glass fields that light up on focus — so the very first
-/// screen a member sees actually looks like core. instead of a generic
-/// system form.
+/// specs from the previous pass (those aren't ours to restyle), but builds
+/// the rest entirely out of the app's own marks: AuthBackground's brand
+/// glow, the same EyebrowLabel used above every other screen's sections,
+/// the Francy wordmark with its "." picked out in the accent color (the
+/// actual logotype treatment, not a generic decorative shape), and
+/// individual glass fields that light up on focus.
 struct AuthWelcomeView: View {
     @EnvironmentObject var authService: AuthService
     @State private var fullName: String = ""
@@ -76,27 +76,23 @@ struct AuthWelcomeView: View {
     }
 
     private var header: some View {
-        VStack(spacing: 16) {
-            ZStack {
-                ThinkingOrb(size: 92, speed: 0.55)
-                Circle()
-                    .stroke(
-                        LinearGradient(colors: [.white.opacity(0.35), .clear], startPoint: .top, endPoint: .bottom),
-                        lineWidth: 1
-                    )
-                    .frame(width: 92, height: 92)
+        VStack(spacing: 14) {
+            EyebrowLabel(text: "Member Access", color: .appAccentPurple)
+
+            HStack(spacing: 2) {
+                Text("core")
+                    .font(.brand(44))
+                    .foregroundStyle(.white)
+                Text(".")
+                    .font(.brand(44))
+                    .foregroundStyle(Color.appAccent)
             }
 
-            VStack(spacing: 6) {
-                Text("core.")
-                    .font(.brand(38))
-                    .foregroundStyle(.white)
-                Text("Sign in or create your account")
-                    .font(.system(size: 15))
-                    .foregroundStyle(Color.appTextSecondary)
-            }
+            Text("Sign in or create your account")
+                .font(.system(size: 15))
+                .foregroundStyle(Color.appTextSecondary)
         }
-        .padding(.top, 12)
+        .padding(.top, 28)
     }
 
     private func authField(
