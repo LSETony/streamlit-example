@@ -207,36 +207,20 @@ struct AppDivider: View {
     }
 }
 
-/// Shared full-bleed backdrop for the sign-in flow (AuthWelcomeView uses
-/// the "AuthBackground" photo, OTPVerificationView passes "OTPBackground")
-/// — real gym photography from the original design, not a generic
-/// gradient. An earlier pass tried a photo-plus-glass treatment and found
-/// it fragile (ghost bars where several glass shapes merged, uneven
-/// refraction over busy photo areas); this avoids both causes rather than
-/// avoiding photos altogether: a single solid scrim gradient (not glass)
-/// does the legibility work, and every field above it stays one ungrouped
-/// `.glassEffect()` call rather than several merged in a
-/// GlassEffectContainer, so there's nothing for shapes to merge with.
+/// Shared full-bleed backdrop for the sign-in flow (AuthWelcomeView,
+/// WelcomeBackView, OTPVerificationView) — a dark gradient plus two soft
+/// brand-color glows, the same accent/purple duo used everywhere else.
+/// A real-photo version of this was tried and reverted: it caused layout
+/// problems of its own, and photography behind the sign-in form wasn't
+/// actually wanted — this plain gradient is deliberately the safe,
+/// conventional choice.
 struct AuthBackground: View {
-    var image: String = "AuthBackground"
-
     var body: some View {
         ZStack {
             Color.appBackground
-            Image(image)
-                .resizable()
-                .scaledToFill()
-                .clipped()
-            LinearGradient(
-                stops: [
-                    .init(color: .black.opacity(0.05), location: 0),
-                    .init(color: .black.opacity(0.55), location: 0.48),
-                    .init(color: Color.appBackground, location: 0.8),
-                    .init(color: Color.appBackground, location: 1),
-                ],
-                startPoint: .top, endPoint: .bottom
-            )
-            RadialGradient(colors: [Color.appAccentPurple.opacity(0.2), .clear], center: .bottom, startRadius: 0, endRadius: 420)
+            LinearGradient(colors: [Color.appSurfaceElevated, Color.appBackground], startPoint: .top, endPoint: .bottom)
+            RadialGradient(colors: [Color.appAccent.opacity(0.18), .clear], center: UnitPoint(x: 0.12, y: 0.04), startRadius: 0, endRadius: 420)
+            RadialGradient(colors: [Color.appAccentPurple.opacity(0.16), .clear], center: UnitPoint(x: 0.92, y: 0.38), startRadius: 0, endRadius: 420)
         }
         .ignoresSafeArea()
     }

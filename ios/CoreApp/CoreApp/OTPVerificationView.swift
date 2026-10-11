@@ -7,13 +7,8 @@ import SwiftUI
 /// this project's configured OTP length (8 digits), not Supabase's 6-digit
 /// default — codeLength is the single place to change if that's adjusted.
 ///
-/// Shares AuthWelcomeView's hero-photo AuthBackground (its own
-/// "OTPBackground" asset) and left-aligned header so the two-step flow
-/// reads as one screen. The digit row itself stays a solid grouped box,
-/// not glass over the photo — several glass shapes that close together
-/// is exactly the merge/ghost-bar failure mode AuthBackground's doc
-/// comment describes, and eight of them side by side is the worst case
-/// for it.
+/// Shares AuthWelcomeView's plain AuthBackground gradient and centered
+/// header so the two-step flow reads as one screen.
 struct OTPVerificationView: View {
     @EnvironmentObject var authService: AuthService
     @Environment(\.dismiss) private var dismiss
@@ -30,21 +25,21 @@ struct OTPVerificationView: View {
 
     var body: some View {
         ZStack {
-            AuthBackground(image: "OTPBackground")
+            AuthBackground()
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
-                    Spacer(minLength: 150)
-
-                    VStack(alignment: .leading, spacing: 10) {
+                VStack(spacing: 28) {
+                    VStack(spacing: 10) {
                         EyebrowLabel(text: "One-Time Code", color: .appAccentPurple)
                         Text("Verification")
-                            .font(.brand(40))
+                            .font(.brand(34))
                             .foregroundStyle(.white)
                         Text("Enter the code we sent to \(email)")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.appTextSecondary)
+                            .multilineTextAlignment(.center)
                             .lineLimit(2)
                     }
+                    .padding(.top, 28)
 
                     ZStack {
                         HStack(spacing: 6) {
