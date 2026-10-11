@@ -1,12 +1,10 @@
 import SwiftUI
 
-/// Sign-up/sign-in entry screen. A conventional centered form — like most
-/// apps' own sign-in screens — over AuthBackground's brand gradient glow.
-/// Two earlier passes tried a breathing orb mark and then a full-bleed
-/// photo hero; both were reverted (the orb wasn't actually on-brand, the
-/// photo caused real layout problems and wasn't wanted), landing back on
-/// this simpler, safer structure. Apple/Google button specs are
-/// untouched — those follow Apple's own HIG, not ours to restyle.
+/// Sign-up/sign-in entry screen. A conventional centered form over
+/// AuthBackground's plain solid background — no orb mark, no photo, no
+/// gradient; each was tried and explicitly asked to be removed. Apple/
+/// Google button specs are untouched — those follow Apple's own HIG, not
+/// ours to restyle.
 struct AuthWelcomeView: View {
     @EnvironmentObject var authService: AuthService
     @State private var fullName: String = ""
@@ -77,21 +75,15 @@ struct AuthWelcomeView: View {
 
     private var header: some View {
         VStack(spacing: 10) {
-            EyebrowLabel(text: "Member Access", color: .appAccentPurple)
-
-            HStack(spacing: 2) {
-                Text("core")
-                    .font(.brand(38))
-                    .foregroundStyle(.white)
-                Text(".")
-                    .font(.brand(38))
-                    .foregroundStyle(Color.appAccent)
-            }
+            Text("core.")
+                .font(.brand(40))
+                .foregroundStyle(.white)
 
             Text("Sign in or create your account")
                 .font(.system(size: 15))
                 .foregroundStyle(Color.appTextSecondary)
         }
+        .padding(.top, 40)
     }
 
     private func authField(

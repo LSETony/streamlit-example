@@ -208,21 +208,12 @@ struct AppDivider: View {
 }
 
 /// Shared full-bleed backdrop for the sign-in flow (AuthWelcomeView,
-/// WelcomeBackView, OTPVerificationView) — a dark gradient plus two soft
-/// brand-color glows, the same accent/purple duo used everywhere else.
-/// A real-photo version of this was tried and reverted: it caused layout
-/// problems of its own, and photography behind the sign-in form wasn't
-/// actually wanted — this plain gradient is deliberately the safe,
-/// conventional choice.
+/// WelcomeBackView, OTPVerificationView) — plain solid app background,
+/// no gradient. Two earlier passes (photo, then gradient-plus-glow) were
+/// both reverted; flat was what was actually wanted.
 struct AuthBackground: View {
     var body: some View {
-        ZStack {
-            Color.appBackground
-            LinearGradient(colors: [Color.appSurfaceElevated, Color.appBackground], startPoint: .top, endPoint: .bottom)
-            RadialGradient(colors: [Color.appAccent.opacity(0.18), .clear], center: UnitPoint(x: 0.12, y: 0.04), startRadius: 0, endRadius: 420)
-            RadialGradient(colors: [Color.appAccentPurple.opacity(0.16), .clear], center: UnitPoint(x: 0.92, y: 0.38), startRadius: 0, endRadius: 420)
-        }
-        .ignoresSafeArea()
+        Color.appBackground.ignoresSafeArea()
     }
 }
 
