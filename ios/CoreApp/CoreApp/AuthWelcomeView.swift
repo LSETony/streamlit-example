@@ -21,7 +21,7 @@ struct AuthWelcomeView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottomLeading) {
+            ZStack {
                 AuthBackground()
                 ScrollView {
                     VStack(spacing: 26) {
@@ -63,14 +63,6 @@ struct AuthWelcomeView: View {
                     .screenPadding()
                     .padding(.top, 28)
                 }
-
-                Text("Welcome")
-                    .font(.brand(26))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.6), radius: 8, y: 2)
-                    .padding(.leading, AppMetrics.screenPadding)
-                    .padding(.bottom, 28)
-                    .allowsHitTesting(false)
             }
             .navigationDestination(isPresented: $goToVerify) {
                 OTPVerificationView(fullName: fullName, email: email)
