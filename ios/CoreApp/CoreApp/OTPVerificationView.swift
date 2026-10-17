@@ -153,4 +153,5 @@ struct OTPVerificationView: View {
         OTPVerificationView(fullName: "Artem", email: "artem@example.com")
     }
     .environmentObject(AuthService())
+    .environmentObject(AppState())
 }

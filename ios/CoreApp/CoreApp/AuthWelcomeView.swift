@@ -1,10 +1,12 @@
 import SwiftUI
 
 /// Sign-up/sign-in entry screen. A conventional centered form over
-/// AuthBackground's plain solid background — no orb mark, no photo, no
-/// gradient; each was tried and explicitly asked to be removed. Apple/
-/// Google button specs are untouched — those follow Apple's own HIG, not
-/// ours to restyle.
+/// AuthBackground's hero workout video. Apple's own "Sign in with Apple"
+/// button keeps its required spec (white fill, black text/logo); Google's
+/// button is restyled to match it as a matched white pill pair — Google
+/// doesn't mandate a specific button look the way Apple does — with
+/// Google's actual brand blue on the "G" instead of the app's accent
+/// color, since a stray red-orange "G" read as wrong for a Google button.
 struct AuthWelcomeView: View {
     @EnvironmentObject var authService: AuthService
     @State private var fullName: String = ""
@@ -125,33 +127,44 @@ struct AuthWelcomeView: View {
     private func appleButton(action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                Image(systemName: "apple.logo").font(.system(size: 18, weight: .medium))
+                Image(systemName: "apple.logo").font(.system(size: 19, weight: .medium))
                 Text("Sign in with Apple").font(.system(size: 17, weight: .semibold))
             }
             .foregroundStyle(.black)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            .padding(.vertical, 15)
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
         }
         .buttonStyle(.plain)
+        .shadow(color: .black.opacity(0.3), radius: 12, y: 5)
     }
 
+    /// Matches appleButton's white-pill shape instead of the previous dark
+    /// glass treatment — the two looked mismatched side by side, and a
+    /// stray glass tile over a busy video backdrop was harder to read than
+    /// a plain white pill. "G" uses Google's actual brand blue.
     private func googleButton(action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 8) {
-                Text("G").font(.system(size: 18, weight: .bold)).foregroundStyle(Color.appAccent)
-                Text("Sign in with Google").font(.system(size: 17, weight: .semibold)).foregroundStyle(.white)
+            HStack(spacing: 10) {
+                Text("G")
+                    .font(.system(size: 19, weight: .bold))
+                    .foregroundStyle(Color(red: 0.26, green: 0.52, blue: 0.96))
+                Text("Sign in with Google").font(.system(size: 17, weight: .semibold))
             }
+            .foregroundStyle(.black)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            .padding(.vertical, 15)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        .shadow(color: .black.opacity(0.3), radius: 12, y: 5)
     }
 }
 
 #Preview {
     AuthWelcomeView()
         .environmentObject(AuthService())
+        .environmentObject(AppState())
 }

@@ -208,12 +208,40 @@ struct AppDivider: View {
 }
 
 /// Shared full-bleed backdrop for the sign-in flow (AuthWelcomeView,
-/// WelcomeBackView, OTPVerificationView) — plain solid app background,
-/// no gradient. Two earlier passes (photo, then gradient-plus-glow) were
-/// both reverted; flat was what was actually wanted.
+/// WelcomeBackView, OTPVerificationView) — the same bundled workout video
+/// HomeView's hero uses (HeroVideoPlayerService, a single player instance
+/// shared via AppState, so this doesn't spin up a second decode), with a
+/// dark scrim for legibility. Two earlier passes (a flat gradient, then a
+/// static gym photo) were tried first; this reuses the real hero video
+/// instead of another static image.
 struct AuthBackground: View {
+    @EnvironmentObject var appState: AppState
+
     var body: some View {
-        Color.appBackground.ignoresSafeArea()
+        ZStack {
+            Color.appBackground
+            Image("HomeHero")
+                .resizable()
+                .scaledToFill()
+                .clipped()
+            HeroVideoQueue(player: appState.heroVideoPlayer.player)
+                .clipped()
+            LinearGradient(
+                stops: [
+                    .init(color: .black.opacity(0.35), location: 0),
+                    .init(color: .black.opacity(0.6), location: 0.55),
+                    .init(color: Color.appBackground, location: 0.92),
+                    .init(color: Color.appBackground, location: 1),
+                ],
+                startPoint: .top, endPoint: .bottom
+            )
+        }
+        .ignoresSafeArea()
+        .onAppear {
+            if appState.heroVideoPlayer.player.timeControlStatus != .playing {
+                appState.heroVideoPlayer.restart()
+            }
+        }
     }
 }
 

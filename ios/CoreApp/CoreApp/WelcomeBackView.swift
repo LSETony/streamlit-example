@@ -61,4 +61,5 @@ struct WelcomeBackView: View {
 
 #Preview {
     WelcomeBackView(name: "Jarvis Kitsune") {}
+        .environmentObject(AppState())
 }
