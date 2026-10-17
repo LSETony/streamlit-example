@@ -98,7 +98,7 @@ struct EventsView: View {
             HStack(spacing: 10) {
                 Image(systemName: event.icon)
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Color.appAccentPurple)
+                    .foregroundStyle(.white)
                     .frame(width: 36, height: 36)
                     .glassEffect(.regular.tint(.appAccentPurple.opacity(0.5)), in: Circle())
                 VStack(alignment: .leading, spacing: 4) {

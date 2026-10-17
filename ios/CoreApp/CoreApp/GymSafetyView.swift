@@ -58,7 +58,7 @@ struct GymSafetyView: View {
                             HStack(spacing: 10) {
                                 Image(systemName: section.icon)
                                     .font(.system(size: 15, weight: .semibold))
-                                    .foregroundStyle(Color.appAccentPurple)
+                                    .foregroundStyle(.white)
                                     .frame(width: 34, height: 34)
                                     .glassEffect(.regular.tint(.appAccentPurple.opacity(0.5)), in: Circle())
                                 Text(section.title)
