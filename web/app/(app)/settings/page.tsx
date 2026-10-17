@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Clock, CreditCard, Crown, MapPin, MessageCircle, ShieldAlert, SlidersHorizontal, Store } from "lucide-react";
+import { headers } from "next/headers";
+import { Clock, CreditCard, Crown, Globe, MapPin, MessageCircle, ShieldAlert, SlidersHorizontal, Store } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,7 @@ import { whatsappStatus, yookassaStatus } from "@/app/actions/gym";
 import { date } from "@/lib/format";
 import { YookassaForm } from "./yookassa-form";
 import { WhatsappForm } from "./whatsapp-form";
+import { SiteLinks } from "./site-links";
 import { getT } from "@/lib/i18n/server";
 import { regionInfo } from "@/lib/region";
 import type { T } from "@/lib/i18n/core";
@@ -27,6 +29,7 @@ const SECTIONS = [
   { id: "risk", title: "«В зоне риска»", icon: ShieldAlert },
   { id: "payments", title: "Онлайн-оплата", icon: CreditCard },
   { id: "whatsapp", title: "WhatsApp Business", icon: MessageCircle },
+  { id: "site", title: "Сайт и приложение", icon: Globe },
 ] as const;
 
 export default async function SettingsPage() {
@@ -38,6 +41,8 @@ export default async function SettingsPage() {
     whatsappStatus(),
   ]);
   const t = await getT();
+  const h = await headers();
+  const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("x-forwarded-host") ?? h.get("host")}`;
   const g = ctx.gym;
   const paid = g.paid_until && g.paid_until >= ctx.today;
   const reg = regionInfo(g.region);
@@ -93,6 +98,9 @@ export default async function SettingsPage() {
           ) : null}
           <Section t={t} id="whatsapp" title="WhatsApp Business" description="Автоматическая отправка сообщений клиентам «в зоне риска» через WhatsApp Cloud API.">
             <WhatsappForm status={wa} disabled={ctx.readOnly} />
+          </Section>
+          <Section t={t} id="site" title="Сайт и приложение" description="Расписание на сайте зала и приложение для клиентов — без установки из магазина.">
+            <SiteLinks origin={origin} gymId={g.id} />
           </Section>
         </div>
       </div>

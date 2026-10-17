@@ -18,6 +18,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
   const banner = ctx.isDemo ? (
     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-2xl bg-tint px-4 py-2.5 text-center text-sm text-white">
       <span>{t("Это демо-кабинет: можно всё смотреть, изменения отключены.")}</span>
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- обработчик выхода: Link заранее загрузил бы его и вышел из демо */}
       <a href="/demo/exit" className="font-semibold underline underline-offset-2">{t("Подключить свой зал")}</a>
     </div>
   ) : ctx.readOnly ? (
