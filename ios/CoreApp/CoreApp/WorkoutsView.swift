@@ -15,6 +15,8 @@ struct WorkoutsView: View {
     @State private var selectedCard: WorkoutCard?
     @State private var isShowingGymSafety = false
     @State private var isShowingEvents = false
+    @State private var isShowingCustomBuilder = false
+    @State private var pendingCustomCard: WorkoutCard?
     private let libraryFilters = ["All", "Strength", "Cardio", "Flexibility"]
 
     private var filteredBeginnerPlanCards: [WorkoutCard] {
@@ -37,6 +39,35 @@ struct WorkoutsView: View {
                         Text("Workouts")
                             .font(.brand(32))
                             .foregroundStyle(.white)
+
+                        Button { isShowingCustomBuilder = true } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "slider.horizontal.3")
+                                    .font(.system(size: 17, weight: .semibold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 40, height: 40)
+                                    .glassEffect(.regular.tint(.appAccentPurple.opacity(0.6)), in: Circle())
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Build Your Own Workout")
+                                        .font(.brand(15))
+                                        .foregroundStyle(.white)
+                                    Text("Pick a zone, choose your exercises")
+                                        .font(.system(size: 12))
+                                        .foregroundStyle(Color.appTextSecondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundStyle(Color.appTextSecondary)
+                            }
+                            .padding(14)
+                        }
+                        .buttonStyle(.plain)
+                        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                                .stroke(.white.opacity(0.08), lineWidth: 1)
+                        )
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
@@ -128,6 +159,21 @@ struct WorkoutsView: View {
             }
             .sheet(isPresented: $isShowingEvents) {
                 EventsView()
+            }
+            .sheet(isPresented: $isShowingCustomBuilder, onDismiss: {
+                // Deferred to onDismiss (fires once the builder's own
+                // dismiss animation finishes) rather than set directly
+                // from the builder's callback — presenting a second
+                // sheet in the same tick as dismissing the first is a
+                // known SwiftUI race that can silently no-op.
+                if let pendingCustomCard {
+                    selectedCard = pendingCustomCard
+                    self.pendingCustomCard = nil
+                }
+            }) {
+                CustomWorkoutBuilderView { card in
+                    pendingCustomCard = card
+                }
             }
         }
     }
