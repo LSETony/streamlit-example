@@ -43,7 +43,8 @@ struct GymSafetyView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        EyebrowLabel(text: "Club Guide", color: .appAccentPurple)
                         Text("Gym Safety")
                             .font(.brand(32))
                             .foregroundStyle(.white)
@@ -53,33 +54,39 @@ struct GymSafetyView: View {
                     }
 
                     ForEach(sections) { section in
-                        VStack(alignment: .leading, spacing: 14) {
+                        VStack(alignment: .leading, spacing: 16) {
                             HStack(spacing: 10) {
                                 Image(systemName: section.icon)
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 36, height: 36)
-                                    .background(Color.appAccentPurple)
-                                    .clipShape(Circle())
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(Color.appAccentPurple)
+                                    .frame(width: 34, height: 34)
+                                    .glassEffect(.regular.tint(.appAccentPurple.opacity(0.5)), in: Circle())
                                 Text(section.title)
                                     .font(.brand(18))
                                     .foregroundStyle(.white)
                             }
-                            VStack(alignment: .leading, spacing: 10) {
-                                ForEach(section.rules, id: \.self) { rule in
-                                    HStack(alignment: .top, spacing: 8) {
-                                        Image(systemName: "checkmark")
-                                            .font(.system(size: 11, weight: .bold))
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(Array(section.rules.enumerated()), id: \.offset) { index, rule in
+                                    if index > 0 { AppDivider() }
+                                    HStack(alignment: .top, spacing: 10) {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.system(size: 14))
                                             .foregroundStyle(Color.appAccent)
-                                            .padding(.top, 2)
+                                            .padding(.top, 1)
                                         Text(rule)
                                             .font(.system(size: 14))
-                                            .foregroundStyle(Color.appTextSecondary)
+                                            .foregroundStyle(.white.opacity(0.9))
+                                            .lineSpacing(2)
                                     }
+                                    .padding(.vertical, 10)
                                 }
                             }
                         }
-                        .appCard(padding: 18)
+                        .glassCard(padding: 18)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                                .stroke(.white.opacity(0.08), lineWidth: 1)
+                        )
                     }
                 }
                 .screenPadding()

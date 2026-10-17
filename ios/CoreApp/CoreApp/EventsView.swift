@@ -62,7 +62,8 @@ struct EventsView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        EyebrowLabel(text: "This Month", color: .appAccentPurple)
                         Text("Events")
                             .font(.brand(32))
                             .foregroundStyle(.white)
@@ -96,18 +97,21 @@ struct EventsView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 10) {
                 Image(systemName: event.icon)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Color.appAccentPurple)
                     .frame(width: 36, height: 36)
-                    .background(Color.appAccentPurple)
-                    .clipShape(Circle())
-                VStack(alignment: .leading, spacing: 2) {
+                    .glassEffect(.regular.tint(.appAccentPurple.opacity(0.5)), in: Circle())
+                VStack(alignment: .leading, spacing: 4) {
                     Text(event.title)
                         .font(.brand(17))
                         .foregroundStyle(.white)
                     Text("\(event.dateLabel) · \(event.timeLabel)")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.system(size: 11, weight: .bold))
+                        .tracking(0.3)
                         .foregroundStyle(Color.appAccent)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .glassEffect(.regular.tint(.appAccent.opacity(0.3)), in: Capsule())
                 }
                 Spacer()
             }
@@ -116,6 +120,8 @@ struct EventsView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(Color.appTextSecondary)
                 .lineSpacing(3)
+
+            AppDivider()
 
             HStack {
                 Text(isJoined ? "You're in!" : "\(event.spotsLeft) spots left")
@@ -132,17 +138,24 @@ struct EventsView: View {
                         NotificationService.scheduleEventReminder(id: event.id, title: event.title, date: event.date)
                     }
                 } label: {
-                    Text(isJoined ? "Joined ✓" : "Join")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 9)
+                    HStack(spacing: 4) {
+                        if isJoined { Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)) }
+                        Text(isJoined ? "Joined" : "Join")
+                    }
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 9)
                 }
                 .buttonStyle(.plain)
-                .glassEffect(isJoined ? .regular.tint(.appSuccess) : .regular.tint(.appAccentPurple), in: Capsule())
+                .glassEffect(isJoined ? .regular.tint(.appSuccess) : .regular.tint(.appAccentPurple).interactive(), in: Capsule())
             }
         }
-        .appCard(padding: 16)
+        .glassCard(padding: 18)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
     }
 }
 
