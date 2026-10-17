@@ -218,23 +218,35 @@ struct AuthBackground: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        ZStack {
-            Color.appBackground
-            Image("HomeHero")
-                .resizable()
-                .scaledToFill()
-                .clipped()
-            HeroVideoQueue(player: appState.heroVideoPlayer.player)
-                .clipped()
-            LinearGradient(
-                stops: [
-                    .init(color: .black.opacity(0.55), location: 0),
-                    .init(color: .black.opacity(0.78), location: 0.4),
-                    .init(color: Color.appBackground, location: 0.7),
-                    .init(color: Color.appBackground, location: 1),
-                ],
-                startPoint: .top, endPoint: .bottom
-            )
+        GeometryReader { geo in
+            ZStack {
+                Color.appBackground
+                Image("HomeHero")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+                // HeroVideoQueue wraps a plain UIView with no intrinsic
+                // size (see PlayerLayerView) — unlike Image(resizable:),
+                // a bare UIViewRepresentable doesn't reliably expand to
+                // fill its ZStack on its own, so it needs this explicit
+                // frame (matching exactly how HomeView's own hero sizes
+                // the same component) or it can render at the wrong size
+                // entirely.
+                HeroVideoQueue(player: appState.heroVideoPlayer.player)
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+                LinearGradient(
+                    stops: [
+                        .init(color: .black.opacity(0.55), location: 0),
+                        .init(color: .black.opacity(0.78), location: 0.4),
+                        .init(color: Color.appBackground, location: 0.7),
+                        .init(color: Color.appBackground, location: 1),
+                    ],
+                    startPoint: .top, endPoint: .bottom
+                )
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
         .ignoresSafeArea()
         .onAppear {
