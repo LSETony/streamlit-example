@@ -44,9 +44,9 @@ struct AuthWelcomeView: View {
                         }
 
                         HStack(spacing: 12) {
-                            Rectangle().fill(Color.appDivider).frame(height: 1)
-                            Text("or").font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
-                            Rectangle().fill(Color.appDivider).frame(height: 1)
+                            Rectangle().fill(.white.opacity(0.25)).frame(height: 1)
+                            Text("or").font(.system(size: 13)).foregroundStyle(.white.opacity(0.75))
+                            Rectangle().fill(.white.opacity(0.25)).frame(height: 1)
                         }
 
                         VStack(spacing: 12) {
@@ -67,6 +67,7 @@ struct AuthWelcomeView: View {
                 Text("Welcome")
                     .font(.brand(26))
                     .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.6), radius: 8, y: 2)
                     .padding(.leading, AppMetrics.screenPadding)
                     .padding(.bottom, 28)
                     .allowsHitTesting(false)
@@ -87,10 +88,12 @@ struct AuthWelcomeView: View {
             Text("core.")
                 .font(.brand(40))
                 .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.5), radius: 8, y: 2)
 
             Text("Sign in or create your account")
                 .font(.system(size: 15))
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(.white.opacity(0.85))
+                .shadow(color: .black.opacity(0.5), radius: 6, y: 1)
         }
         .padding(.top, 40)
     }
@@ -115,10 +118,14 @@ struct AuthWelcomeView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
+        // A dark tint (not plain .regular glass) so the field stays
+        // clearly legible regardless of how bright the video behind it
+        // is at any given moment — plain .regular glass over a face
+        // close-up washed out almost to invisible.
+        .glassEffect(.regular.tint(.black.opacity(0.45)), in: RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous)
-                .stroke(focusedField == field ? Color.appAccentPurple : .clear, lineWidth: 1.5)
+                .stroke(focusedField == field ? Color.appAccentPurple : .white.opacity(0.12), lineWidth: focusedField == field ? 1.5 : 1)
         )
         .animation(.easeOut(duration: 0.2), value: focusedField)
     }

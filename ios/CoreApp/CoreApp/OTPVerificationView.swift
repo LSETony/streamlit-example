@@ -30,12 +30,15 @@ struct OTPVerificationView: View {
                 VStack(spacing: 28) {
                     VStack(spacing: 10) {
                         EyebrowLabel(text: "One-Time Code", color: .appAccentPurple)
+                            .shadow(color: .black.opacity(0.5), radius: 6, y: 1)
                         Text("Verification")
                             .font(.brand(34))
                             .foregroundStyle(.white)
+                            .shadow(color: .black.opacity(0.5), radius: 8, y: 2)
                         Text("Enter the code we sent to \(email)")
                             .font(.system(size: 15))
-                            .foregroundStyle(Color.appTextSecondary)
+                            .foregroundStyle(.white.opacity(0.85))
+                            .shadow(color: .black.opacity(0.5), radius: 6, y: 1)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
                     }

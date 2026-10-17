@@ -228,9 +228,9 @@ struct AuthBackground: View {
                 .clipped()
             LinearGradient(
                 stops: [
-                    .init(color: .black.opacity(0.35), location: 0),
-                    .init(color: .black.opacity(0.6), location: 0.55),
-                    .init(color: Color.appBackground, location: 0.92),
+                    .init(color: .black.opacity(0.55), location: 0),
+                    .init(color: .black.opacity(0.78), location: 0.4),
+                    .init(color: Color.appBackground, location: 0.7),
                     .init(color: Color.appBackground, location: 1),
                 ],
                 startPoint: .top, endPoint: .bottom
