@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Gym, Role } from "@/lib/types";
@@ -16,7 +17,12 @@ export interface StaffContext {
   isDemo: boolean;
   today: string;
   isPlatformAdmin: boolean;
+  /** все залы, где пользователь работает, — для переключателя */
+  gyms: { id: string; name: string; role: Role }[];
 }
+
+/** Выбранный зал, если у пользователя их несколько */
+export const GYM_COOKIE = "core-gym";
 
 export const getUser = cache(async () => {
   const supabase = await createClient();
@@ -35,15 +41,16 @@ export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
   const user = await getUser();
   if (!user) return null;
   const supabase = await createClient();
-  const { data: staff } = await supabase
+  const { data: rows } = await supabase
     .from("staff")
     .select("id, role, full_name, gym_id, gyms(*)")
     .eq("user_id", user.id)
     .eq("active", true)
-    .order("created_at")
-    .limit(1)
-    .maybeSingle();
-  if (!staff || !staff.gyms) return null;
+    .order("created_at");
+  const list = (rows ?? []).filter((r) => r.gyms);
+  const selected = (await cookies()).get(GYM_COOKIE)?.value;
+  const staff = list.find((r) => r.gym_id === selected) ?? list[0];
+  if (!staff) return null;
   const gym = staff.gyms as unknown as Gym;
   const { data: features } = await supabase.rpc("gym_features", { p_gym: gym.id });
   const today = todayIn(gym.timezone);
@@ -59,6 +66,7 @@ export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
     isDemo,
     today,
     isPlatformAdmin: false,
+    gyms: list.map((r) => ({ id: r.gym_id, name: (r.gyms as unknown as Gym).name, role: r.role as Role })),
   };
 });
 

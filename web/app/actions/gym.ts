@@ -4,7 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callRpc, intOrNull, str, strOrNull } from "@/lib/actions";
 import { fail, ok, type ActionResult } from "@/lib/errors";
-import { requireStaff } from "@/lib/auth";
+import { GYM_COOKIE, homeFor, requireStaff } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { encryptSecret } from "@/lib/secrets";
 import type { GymSettings } from "@/lib/types";
 import { isRegion, REGIONS } from "@/lib/region";
@@ -15,7 +16,7 @@ export async function createGym(form: FormData): Promise<ActionResult<string>> {
   if (!name || !owner) return { ok: false, error: { code: "INVALID_INPUT", message: "Укажите название зала и ваше имя" } };
   const region = str(form, "region");
   if (!isRegion(region)) return { ok: false, error: { code: "INVALID_REGION", message: "Выберите регион: Россия или ОАЭ" } };
-  return callRpc<string>("create_gym", {
+  const r = await callRpc<string>("create_gym", {
     p_name: name,
     p_owner_name: owner,
     p_address: strOrNull(form, "address"),
@@ -24,6 +25,19 @@ export async function createGym(form: FormData): Promise<ActionResult<string>> {
     // регион передаём только для ОАЭ: российские залы создаются и на базе без миграции регионов
     ...(region === "RU" ? {} : { p_region: region }),
   });
+  // новый зал сразу становится текущим — мастер настройки откроется для него
+  if (r.ok) (await cookies()).set(GYM_COOKIE, r.data, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+  return r;
+}
+
+/** Переключить кабинет на другой зал пользователя */
+export async function switchGym(gymId: string): Promise<ActionResult<string>> {
+  const ctx = await requireStaff();
+  const target = ctx.gyms.find((g) => g.id === gymId);
+  if (!target) return { ok: false, error: { code: "FORBIDDEN", message: "Недостаточно прав для этого действия" } };
+  (await cookies()).set(GYM_COOKIE, gymId, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+  revalidatePath("/", "layout");
+  return ok(homeFor(target.role));
 }
 
 export async function updateGymProfile(form: FormData): Promise<ActionResult<null>> {

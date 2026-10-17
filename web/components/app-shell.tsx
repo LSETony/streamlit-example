@@ -1,16 +1,17 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import {
   LayoutDashboard, ScanLine, Users, AlertTriangle, CalendarDays, Wallet, Tags, UserCog, ScrollText, Settings, LogOut, X, Moon, Sun, ChevronLeft,
-  Search, Plus, LayoutGrid,
+  Search, Plus, LayoutGrid, Check, ChevronsUpDown,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { CommandMenu, Kbd } from "@/components/command-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/app/actions/auth";
+import { switchGym } from "@/app/actions/gym";
 import type { Role } from "@/lib/types";
 import { ROLE_LABEL } from "@/lib/types";
 import { useT, useTx } from "@/lib/i18n/client";
@@ -64,8 +65,8 @@ const TAB_PRIORITY = ["/reception", "/clients", "/schedule", "/dashboard", "/ris
  */
 const NavTitleContext = createContext<{ setTitle: (t: string | null) => void; setCollapsed: (v: boolean) => void } | null>(null);
 
-export function AppShell({ role, features, gymId, gymName, userName, riskCount, readOnly, children, banner }: {
-  role: Role; features: Record<string, boolean>; gymId: string; gymName: string; userName: string; riskCount: number | null;
+export function AppShell({ role, features, gymId, gymName, gyms, userName, riskCount, readOnly, children, banner }: {
+  role: Role; features: Record<string, boolean>; gymId: string; gymName: string; gyms: { id: string; name: string }[]; userName: string; riskCount: number | null;
   readOnly: boolean; children: React.ReactNode; banner?: React.ReactNode;
 }) {
   const tr = useT();
@@ -156,17 +157,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
     </nav>
   );
 
-  const gymCard = (
-    <div className="flex items-center gap-3 px-2">
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand text-[17px] font-bold text-white">
-        {gymName.trim()[0]?.toUpperCase() ?? "З"}
-      </span>
-      <span className="min-w-0">
-        <span className="block truncate text-[15px] font-semibold">{gymName}</span>
-        <span className="block text-[13px] text-muted-foreground">{tr("Кабинет зала")}</span>
-      </span>
-    </div>
-  );
+  const gymCard = <GymSwitcher gymId={gymId} gymName={gymName} gyms={gyms} canAdd={role === "owner"} />;
 
   const footer = (
     <div className="grid gap-2 rounded-2xl bg-field p-2">
@@ -373,6 +364,64 @@ export function PageHeader({ title, description, actions, back }: {
         {description ? <p className="text-[15px] text-muted-foreground">{description}</p> : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
+    </div>
+  );
+}
+
+/** Карточка зала в меню; если залов несколько — переключатель, владелец может добавить новый зал */
+function GymSwitcher({ gymId, gymName, gyms, canAdd }: { gymId: string; gymName: string; gyms: { id: string; name: string }[]; canAdd: boolean }) {
+  const tr = useT();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [pending, start] = useTransition();
+  const interactive = gyms.length > 1 || canAdd;
+  const pick = (id: string) => {
+    setOpen(false);
+    if (id === gymId) return;
+    start(async () => {
+      const r = await switchGym(id);
+      if (r.ok) { router.push(r.data); router.refresh(); }
+    });
+  };
+  const card = (
+    <>
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand text-[17px] font-bold text-white">
+        {gymName.trim()[0]?.toUpperCase() ?? "З"}
+      </span>
+      <span className="min-w-0 flex-1 text-left">
+        <span className="block truncate text-[15px] font-semibold">{gymName}</span>
+        <span className="block text-[13px] text-muted-foreground">
+          {gyms.length > 1 ? `${gyms.length} ${tr.n(gyms.length, "зал|зала|залов")}` : tr("Кабинет зала")}
+        </span>
+      </span>
+      {interactive ? <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" /> : null}
+    </>
+  );
+  if (!interactive) return <div className="flex items-center gap-3 px-2">{card}</div>;
+  return (
+    <div className={cn("relative", pending && "opacity-60")}>
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open}
+        className="flex w-full cursor-pointer items-center gap-3 rounded-2xl px-2 py-1.5 hover:bg-field">
+        {card}
+      </button>
+      {open ? (
+        <div className="absolute inset-x-0 top-full z-50 mt-2 grid gap-0.5 rounded-2xl border border-separator bg-card p-1.5 shadow-xl">
+          {gyms.map((g) => (
+            <button key={g.id} type="button" onClick={() => pick(g.id)}
+              className={cn("flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-left text-[15px] hover:bg-field",
+                g.id === gymId && "font-semibold")}>
+              <span className="min-w-0 flex-1 truncate">{g.name}</span>
+              {g.id === gymId ? <Check className="size-4 text-tint-text" /> : null}
+            </button>
+          ))}
+          {canAdd ? (
+            <Link href="/onboarding?new=1" onClick={() => setOpen(false)}
+              className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] text-tint-text hover:bg-field">
+              <Plus className="size-4" /> {tr("Добавить зал")}
+            </Link>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

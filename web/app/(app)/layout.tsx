@@ -29,7 +29,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
 
   return (
     <RegionProvider region={ctx.gym.region ?? "RU"}>
-    <AppShell role={ctx.staff.role} features={ctx.features} gymId={ctx.gym.id} gymName={ctx.gym.name} readOnly={ctx.readOnly} userName={ctx.staff.full_name}
+    <AppShell role={ctx.staff.role} features={ctx.features} gymId={ctx.gym.id} gymName={ctx.gym.name} gyms={ctx.gyms} readOnly={ctx.readOnly} userName={ctx.staff.full_name}
       riskCount={count ?? null} banner={banner}>
       {children}
     </AppShell>

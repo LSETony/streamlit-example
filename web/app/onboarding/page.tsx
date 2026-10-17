@@ -16,9 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function OnboardingPage({ searchParams }: PageProps<"/onboarding">) {
   const user = await getUser();
   if (!user) redirect("/login");
-  const ctx = await getStaffContext();
-  if (ctx && (ctx.gym.onboarded_at || ctx.staff.role !== "owner")) redirect(homeFor(ctx.staff.role));
   const sp = await searchParams;
+  // ?new=1 — ещё один зал в том же аккаунте: мастер начинается с создания зала
+  const adding = sp.new === "1";
+  const current = await getStaffContext();
+  if (!adding && current && (current.gym.onboarded_at || current.staff.role !== "owner")) redirect(homeFor(current.staff.role));
+  const ctx = adding ? null : current;
   const step = ctx ? Math.min(5, Math.max(1, Number(sp.step) || 1)) : 0;
 
   let zones: { id: string; name: string; capacity: number }[] = [];
@@ -41,7 +44,7 @@ export default async function OnboardingPage({ searchParams }: PageProps<"/onboa
       <header className="glass glass-rim sticky top-3 z-30 mx-3 mt-3 flex h-16 items-center rounded-[22px] px-6"><Logo className="h-6" /></header>
       <main className="mx-auto w-full max-w-3xl px-4 py-10">
         <RegionProvider region={ctx?.gym.region ?? "RU"}>
-          <Wizard step={step} gym={ctx?.gym ?? null} zones={zones} plans={plans} staff={staff} email={user.email ?? ""} />
+          <Wizard back={adding && current ? homeFor(current.staff.role) : null} step={step} gym={ctx?.gym ?? null} zones={zones} plans={plans} staff={staff} email={user.email ?? ""} />
         </RegionProvider>
       </main>
     </div>

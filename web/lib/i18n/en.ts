@@ -270,6 +270,12 @@ export const EN: Record<string, string> = {
   "Приложение для клиентов": "Member app",
   "Отправьте ссылку клиентам или разместите в соцсетях: вход по номеру телефона, QR-пропуск, абонементы и запись. Устанавливается на экран «Домой».": "Send this link to members or post it on social media: phone sign-in, QR pass, memberships and booking. Installs on the Home Screen.",
 
+  "зал|зала|залов": "gym|gyms",
+  "Добавить зал": "Add gym",
+  "Вернуться в кабинет": "Back to dashboard",
+  "error:GYM_LIMIT": "One account can have up to 20 gyms — contact us if you need more",
+  "В одном аккаунте можно создать до 20 залов — напишите нам, если нужно больше": "One account can have up to 20 gyms — contact us if you need more",
+
   // ── Меню и оболочка ─────────────────────────────────────────────────
   "Дашборд": "Dashboard",
   "Ресепшен": "Front desk",
