@@ -31,6 +31,7 @@ export interface Gym {
   settings: GymSettings;
   onboarded_at: string | null;
   region: "RU" | "AE";
+  is_demo?: boolean;
   currency: "RUB" | "AED";
 }
 

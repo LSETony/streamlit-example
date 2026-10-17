@@ -148,6 +148,22 @@ export const EN: Record<string, string> = {
   "Регион зала нельзя изменить после создания": "The gym’s region can’t be changed after creation",
   "error:REGION_LOCKED": "The gym’s region can’t be changed after creation",
 
+  // ── Демо ────────────────────────────────────────────────────────────
+  "Демо": "Demo",
+  "Попробуйте core. без регистрации": "Try core. without signing up",
+  "Демо-зал с данными за 10 месяцев. Всё можно смотреть, изменения отключены.": "A demo gym with 10 months of data. Look around freely; changes are turned off.",
+  "Зал в ОАЭ": "Gym in the UAE",
+  "Английский · AED · +971": "English · AED · +971",
+  "Зал в России": "Gym in Russia",
+  "Русский · ₽ · +7": "Russian · ₽ · +7",
+  "Не удалось открыть демо. Попробуйте ещё раз через минуту.": "Couldn’t open the demo. Please try again in a minute.",
+  "Готовы подключить свой зал?": "Ready to connect your gym?",
+  "Посмотреть демо без регистрации": "View the demo without signing up",
+  "Это демо-кабинет: можно всё смотреть, изменения отключены.": "This is a demo dashboard: look around freely, changes are turned off.",
+  "Подключить свой зал": "Connect your own gym",
+  "Это демо-кабинет: изменения отключены": "This is a demo dashboard: changes are turned off",
+  "error:DEMO_READ_ONLY": "This is a demo dashboard: changes are turned off",
+
   // ── Меню и оболочка ─────────────────────────────────────────────────
   "Дашборд": "Dashboard",
   "Ресепшен": "Front desk",

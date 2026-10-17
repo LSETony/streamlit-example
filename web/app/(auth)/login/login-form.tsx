@@ -50,6 +50,9 @@ export function LoginForm({ next, error: initialError }: { next: string; error: 
         <Link href="/forgot-password" className="text-muted-foreground hover:text-foreground">{t("Забыли пароль?")}</Link>
         <Link href="/signup" className="font-medium hover:underline">{t("Подключить зал")}</Link>
       </div>
+      <Link href="/demo" className="rounded-full bg-field py-3 text-center text-sm font-medium text-tint-text transition-colors hover:bg-tint-soft">
+        {t("Посмотреть демо без регистрации")}
+      </Link>
     </form>
   );
 }

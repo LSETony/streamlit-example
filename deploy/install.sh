@@ -75,6 +75,8 @@ if [ "$DEMO" = 1 ]; then
     docker exec -i core-db-1 psql -U supabase_admin -d postgres -q -o /dev/null < "$DIR/supabase/seed.sql"
   fi
 fi
+# Публичные демо-залы для кнопки «Попробовать демо» (только чтение; повторный запуск ничего не дублирует)
+docker exec -i core-db-1 psql -U supabase_admin -d postgres -q -o /dev/null < "$DIR/supabase/demo.sql"
 
 cat <<MSG
 

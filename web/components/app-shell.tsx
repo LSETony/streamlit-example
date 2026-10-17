@@ -207,9 +207,9 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
         </aside>
 
         <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(env(safe-area-inset-top)+5rem)] short:pb-[calc(env(safe-area-inset-bottom)+4.5rem)] short:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pb-10 lg:pl-0 lg:pt-[env(safe-area-inset-top)]">
-          {banner}
           <div className="mx-auto w-full max-w-[1600px] px-4 py-2 sm:px-6 lg:px-8 lg:py-6">
             <div className="hidden h-[52px] lg:mb-5 lg:block" aria-hidden />
+            {banner ? <div className="mb-5">{banner}</div> : null}
             {children}
           </div>
         </main>

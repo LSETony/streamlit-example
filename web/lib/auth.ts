@@ -12,6 +12,8 @@ export interface StaffContext {
   gym: Gym;
   features: Record<string, boolean>;
   readOnly: boolean;
+  /** публичный демо-зал: только просмотр */
+  isDemo: boolean;
   today: string;
   isPlatformAdmin: boolean;
 }
@@ -45,7 +47,8 @@ export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
   const gym = staff.gyms as unknown as Gym;
   const { data: features } = await supabase.rpc("gym_features", { p_gym: gym.id });
   const today = todayIn(gym.timezone);
-  const readOnly = gym.trial_until < today && (!gym.paid_until || gym.paid_until < today);
+  const isDemo = !!gym.is_demo;
+  const readOnly = isDemo || (gym.trial_until < today && (!gym.paid_until || gym.paid_until < today));
   return {
     userId: user.id,
     email: user.email ?? null,
@@ -53,6 +56,7 @@ export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
     gym,
     features: (features ?? {}) as Record<string, boolean>,
     readOnly,
+    isDemo,
     today,
     isPlatformAdmin: false,
   };
