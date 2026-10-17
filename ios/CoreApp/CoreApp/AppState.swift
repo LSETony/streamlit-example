@@ -10,6 +10,8 @@ import WidgetKit
 final class AppState: ObservableObject {
 
     init() {
+        avatarImageURLString = UserDefaults.standard.string(forKey: Self.avatarImageURLKey)
+        avatarPresetID = UserDefaults.standard.string(forKey: Self.avatarPresetIDKey)
         refreshOccupancyNow()
     }
 
@@ -356,6 +358,36 @@ final class AppState: ObservableObject {
     @Published var appleHealthSyncEnabled: Bool = true
     @Published var membershipPlanName: String = "Unlimited 24/7"
     @Published var membershipRenewDate: String = "12 Mar 2027"
+
+    /// A photo the member uploaded (see uploadAvatarPhoto in
+    /// AppState+Avatar.swift) — mutually exclusive with avatarPresetID,
+    /// uploading clears the preset and vice versa. Persisted locally
+    /// (UserDefaults) like DeviceUser.id, not synced server-side, so it
+    /// survives relaunches on this device but not a reinstall or a
+    /// different device.
+    @Published var avatarImageURLString: String? {
+        didSet {
+            if let avatarImageURLString {
+                UserDefaults.standard.set(avatarImageURLString, forKey: Self.avatarImageURLKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Self.avatarImageURLKey)
+            }
+        }
+    }
+    /// One of AvatarPresets.all's ids (see AvatarPickerView).
+    @Published var avatarPresetID: String? {
+        didSet {
+            if let avatarPresetID {
+                UserDefaults.standard.set(avatarPresetID, forKey: Self.avatarPresetIDKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Self.avatarPresetIDKey)
+            }
+        }
+    }
+    var avatarImageURL: URL? { avatarImageURLString.flatMap(URL.init) }
+
+    private static let avatarImageURLKey = "core.avatarImageURLString"
+    private static let avatarPresetIDKey = "core.avatarPresetID"
 
     // MARK: Dynamic Island-style notifications
     // Self-contained (owns its own overlay UIWindow) — see

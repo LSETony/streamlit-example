@@ -46,6 +46,7 @@
 		6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */; };
 		72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */; };
 		732C82C2D156E355FF600562 /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48290E2C932A5BA6DFF18347 /* ReferralView.swift */; };
+		73331FB97CF6826709377803 /* AppState+Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743BC3E253E631601128EE36 /* AppState+Avatar.swift */; };
 		73F652550548443DB32F62B9 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D5C91EAAA4F0DB404FA79 /* StoreView.swift */; };
 		751542B8D2F326DAF7C48472 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B522620C7AB48BA1A10A72FD /* HealthKitService.swift */; };
 		75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */; };
@@ -69,6 +70,7 @@
 		BADABC863F594B5632190BEF /* WidgetBrandBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F04AD351DD5C8A48C4CBD32 /* WidgetBrandBackground.swift */; };
 		BAEABB3643DCA16A8216CDC6 /* PaymentSheetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */; };
 		BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67286F4868E97187636094AA /* WorkoutsView.swift */; };
+		C05DCFB30D0F244A5CB9CEC3 /* AvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD756250130C03C75865E788 /* AvatarPickerView.swift */; };
 		C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */; };
 		CD6C01682CB4019E62A3746B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A6395C7AB467517757FDA0C9 /* GoogleSignIn */; };
 		D1CD4AD3F987D65633F9A927 /* VitaminDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */; };
@@ -144,6 +146,7 @@
 		69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodaysSpecialsView.swift; sourceTree = "<group>"; };
 		6E46CDD914A646D49A055E8D /* CoreAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppApp.swift; sourceTree = "<group>"; };
 		6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StripeConfig.swift; sourceTree = "<group>"; };
+		743BC3E253E631601128EE36 /* AppState+Avatar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Avatar.swift"; sourceTree = "<group>"; };
 		77F0FD454D2243F9954D55DC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		78EEC3E4AC434CCDB1F33D3B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		7FEFF51D05DF5DAD7F5AB494 /* NotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -166,6 +169,7 @@
 		CC7E1851BD66A6F385905E9F /* CartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		CDF9CCF5A54DD6B35ED51235 /* AppState+Growth.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Growth.swift"; sourceTree = "<group>"; };
 		D6A7B583C3630E23E55038A9 /* CustomWorkoutBuilderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CustomWorkoutBuilderView.swift; sourceTree = "<group>"; };
+		DD756250130C03C75865E788 /* AvatarPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AvatarPickerView.swift; sourceTree = "<group>"; };
 		E07A661384232071008EA8E3 /* ProgressDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressDetailView.swift; sourceTree = "<group>"; };
 		E2360973C0FF59F76A261826 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		E493C65B6E18E3804875719D /* CoreAIChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreAIChatView.swift; sourceTree = "<group>"; };
@@ -319,6 +323,8 @@
 				B302EA70F1C4286289905AFF /* SharedProgressStore.swift */,
 				65AA2CAD9F3D37D89D0EAD0B /* WelcomeBackView.swift */,
 				D6A7B583C3630E23E55038A9 /* CustomWorkoutBuilderView.swift */,
+				743BC3E253E631601128EE36 /* AppState+Avatar.swift */,
+				DD756250130C03C75865E788 /* AvatarPickerView.swift */,
 			);
 			path = CoreApp;
 			sourceTree = "<group>";
@@ -525,6 +531,8 @@
 				1B6BB854BFAD3B0D7A74F106 /* SharedProgressStore.swift in Sources */,
 				E0014AAD1FB109693AE6C578 /* WelcomeBackView.swift in Sources */,
 				4043E55A4E4192970C401B2A /* CustomWorkoutBuilderView.swift in Sources */,
+				73331FB97CF6826709377803 /* AppState+Avatar.swift in Sources */,
+				C05DCFB30D0F244A5CB9CEC3 /* AvatarPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

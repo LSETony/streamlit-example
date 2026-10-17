@@ -13,6 +13,7 @@ struct ProfileView: View {
     @State private var isShowingMembership = false
     @State private var isShowingReferral = false
     @State private var isShowingLeaderboard = false
+    @State private var isShowingAvatarPicker = false
 
     var body: some View {
         NavigationStack {
@@ -50,6 +51,9 @@ struct ProfileView: View {
             .sheet(isPresented: $isShowingLeaderboard) {
                 LeaderboardView()
             }
+            .sheet(isPresented: $isShowingAvatarPicker) {
+                AvatarPickerView()
+            }
         }
     }
 
@@ -83,12 +87,16 @@ struct ProfileView: View {
 
     private var header: some View {
         HStack(spacing: 16) {
-            Image("ProfileAvatar")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 56, height: 56)
-                .clipShape(Circle())
-                .overlay(Circle().stroke(Color.appDivider, lineWidth: 1))
+            Button { isShowingAvatarPicker = true } label: {
+                ZStack(alignment: .bottomTrailing) {
+                    AvatarView(appState: appState, size: 56)
+                    Image(systemName: "pencil.circle.fill")
+                        .font(.system(size: 18))
+                        .foregroundStyle(.white, Color.appAccentPurple)
+                        .background(Circle().fill(Color.appBackground).padding(1))
+                }
+            }
+            .buttonStyle(.plain)
             VStack(alignment: .leading, spacing: 3) {
                 Text(appState.fullName).font(.brand(18)).foregroundStyle(.white)
                 Text("Member since \(appState.memberSince)")
