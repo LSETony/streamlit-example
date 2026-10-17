@@ -67,6 +67,8 @@ struct HomeView: View {
             if appState.heroVideoPlayer.player.timeControlStatus != .playing {
                 appState.heroVideoPlayer.restart()
             }
+            appState.refreshOccupancyNow()
+            Task { await appState.refreshLiveOccupancy() }
         }
     }
 

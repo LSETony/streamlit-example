@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Supabase
 
 /// Streaks, check-ins, referrals, the leaderboard and the before/after
@@ -42,9 +43,14 @@ extension AppState {
 
     /// Called after a successful QR scan (CheckInView) or a completed
     /// in-app workout (ActiveWorkoutView) — either one counts as "showed
-    /// up today" for streak purposes, so both funnel through here.
+    /// up today" for streak purposes, so both funnel through here. Also
+    /// logs a `checkins` row every single time, unconditionally — unlike
+    /// the streak/visit-count logic below, which only counts the first
+    /// activity each day, live occupancy needs every individual check-in
+    /// timestamp to know who's actually still around right now.
     @discardableResult
     func recordActivity() async -> Bool {
+        await logCheckIn()
         let today = Calendar.current.startOfDay(for: Date())
         if let lastActivityDate, Calendar.current.isDate(lastActivityDate, inSameDayAs: today) {
             return false // already counted today — avoid double-counting a second scan/workout same day
@@ -67,6 +73,48 @@ extension AppState {
         syncProgressWidget()
         return true
     }
+
+    private func logCheckIn() async {
+        do {
+            try await supabase.from("checkins").insert(CheckInInsert(deviceUserID: DeviceUser.id)).execute()
+        } catch {
+            print("Supabase logCheckIn failed: \(error)")
+        }
+    }
+
+    // MARK: Club occupancy (real, from recent check-ins)
+
+    /// Reads `checkins` for the real, live reading: counts distinct
+    /// members whose most recent check-in falls inside the trailing
+    /// window (there's no check-out event, so this window stands in for
+    /// "still here"). Call on launch and periodically while an occupancy
+    /// screen is open (see HomeView/OccupancyDetailView's .task loops) —
+    /// on top of refreshOccupancyNow()'s instant clock-based estimate,
+    /// which keeps the UI from sitting at 0 while this network call is
+    /// in flight.
+    func refreshLiveOccupancy() async {
+        let cutoff = Date().addingTimeInterval(-Self.occupancyWindowSeconds)
+        do {
+            let rows: [CheckInRow] = try await supabase.from("checkins")
+                .select("device_user_id, checked_in_at")
+                .gte("checked_in_at", value: SupabaseDate.format(cutoff))
+                .execute()
+                .value
+            let distinctMembers = Set(rows.map(\.deviceUserID))
+            let count = min(distinctMembers.count, occupancyCapacity)
+            let percent = occupancyCapacity > 0 ? Int((Double(count) / Double(occupancyCapacity) * 100).rounded()) : 0
+            withAnimation {
+                occupancyInClub = count
+                occupancyPercent = percent
+            }
+        } catch {
+            print("Supabase refreshLiveOccupancy failed: \(error)")
+            // Falls back to whatever refreshOccupancyNow()'s curve estimate
+            // already set — not left at 0, which would misread as "empty".
+        }
+    }
+
+    private static let occupancyWindowSeconds: TimeInterval = 2 * 60 * 60 // 2 hours — a typical single visit
 
     // MARK: Referrals
 
@@ -211,6 +259,24 @@ private struct MemberStatsInsert: Encodable {
         case lastActivityDate = "last_activity_date"
         case referralCode = "referral_code"
         case referredBy = "referred_by"
+    }
+}
+
+private struct CheckInInsert: Encodable {
+    let deviceUserID: String
+
+    enum CodingKeys: String, CodingKey {
+        case deviceUserID = "device_user_id"
+    }
+}
+
+private struct CheckInRow: Decodable {
+    let deviceUserID: String
+    let checkedInAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case deviceUserID = "device_user_id"
+        case checkedInAt = "checked_in_at"
     }
 }
 

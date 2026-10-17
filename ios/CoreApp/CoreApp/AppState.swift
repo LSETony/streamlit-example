@@ -9,6 +9,10 @@ import WidgetKit
 @MainActor
 final class AppState: ObservableObject {
 
+    init() {
+        refreshOccupancyNow()
+    }
+
     // MARK: Profile
 
     @Published var fullName: String = "Jarvis Kitsune Jr"
@@ -141,19 +145,60 @@ final class AppState: ObservableObject {
 
     // MARK: Club occupancy
 
-    @Published var occupancyPercent: Int = 84
-    @Published var occupancyInClub: Int = 38
+    /// A "typical day" shape (same idea as Google Maps' Popular Times —
+    /// averaged, not a live sensor feed, since there's no turnstile/camera
+    /// hardware here to source a real headcount from) that
+    /// refreshOccupancyNow() samples against the real clock, so the
+    /// reading actually moves instead of being permanently frozen at
+    /// whatever hardcoded number it launched with.
+    struct OccupancyPoint: Identifiable, Equatable {
+        let id = UUID()
+        let hour: Int // 0...23
+        let shape: Double // 0...1, this hour's share of a full house
+        var isNow: Bool = false
+    }
+
+    @Published var occupancyPercent: Int = 0
+    @Published var occupancyInClub: Int = 0
     @Published var occupancyCapacity: Int = 90
-    /// Bar heights 0...1 across the day (5 bars, matching the Figma source's
-    /// exact geometry); index 2 is "now" and always accented.
-    @Published var occupancyBars: [Double] = [0.145, 0.355, 0.79, 1.0, 0.355]
-    /// Fuller hour-by-hour breakdown behind the occupancy detail screen.
-    @Published var occupancyHourly: [(hour: String, value: Double)] = [
-        ("06", 0.10), ("08", 0.22), ("10", 0.355), ("12", 0.5), ("14", 0.79),
-        ("16", 0.9), ("18", 1.0), ("20", 0.6), ("22", 0.355),
+    @Published var occupancyHourly: [OccupancyPoint] = [
+        OccupancyPoint(hour: 6, shape: 0.10), OccupancyPoint(hour: 8, shape: 0.22),
+        OccupancyPoint(hour: 10, shape: 0.355), OccupancyPoint(hour: 12, shape: 0.5),
+        OccupancyPoint(hour: 14, shape: 0.79), OccupancyPoint(hour: 16, shape: 0.9),
+        OccupancyPoint(hour: 18, shape: 1.0), OccupancyPoint(hour: 20, shape: 0.6),
+        OccupancyPoint(hour: 22, shape: 0.355),
     ]
-    /// The hour matching "now" on the compact Home card's accented bar.
-    @Published var occupancyNowHour: String = "14"
+
+    /// Samples the typical-day curve at the current wall-clock time —
+    /// interpolated between the two nearest hour points, so the number
+    /// genuinely moves minute to minute rather than jumping once an hour.
+    /// Call on launch and periodically while the occupancy screens are on
+    /// screen (see HomeView/OccupancyDetailView's .task loops).
+    func refreshOccupancyNow() {
+        let now = Calendar.current.dateComponents([.hour, .minute], from: Date())
+        let fractionalHour = Double(now.hour ?? 12) + Double(now.minute ?? 0) / 60
+        let sorted = occupancyHourly.sorted { $0.hour < $1.hour }
+        guard let first = sorted.first, let last = sorted.last else { return }
+
+        let shape: Double
+        if fractionalHour <= Double(first.hour) {
+            shape = first.shape
+        } else if fractionalHour >= Double(last.hour) {
+            shape = last.shape
+        } else {
+            let upperIndex = sorted.firstIndex { Double($0.hour) >= fractionalHour } ?? sorted.count - 1
+            let lower = sorted[max(0, upperIndex - 1)]
+            let upper = sorted[upperIndex]
+            let span = Double(upper.hour - lower.hour)
+            let t = span > 0 ? (fractionalHour - Double(lower.hour)) / span : 0
+            shape = lower.shape + (upper.shape - lower.shape) * t
+        }
+
+        let nearestHour = sorted.min { abs(Double($0.hour) - fractionalHour) < abs(Double($1.hour) - fractionalHour) }?.hour
+        occupancyHourly = sorted.map { OccupancyPoint(hour: $0.hour, shape: $0.shape, isNow: $0.hour == nearestHour) }
+        occupancyPercent = Int((shape * 100).rounded())
+        occupancyInClub = Int((shape * Double(occupancyCapacity)).rounded())
+    }
 
     // MARK: Workout library (Beginner's Plan / Top 10 / Important)
     // Catalog data below is loaded from Supabase — see loadFromSupabase()

@@ -1,17 +1,38 @@
 import SwiftUI
+import Charts
 
 /// Opened by tapping the "Club Occupancy" card on Home. Shows the current
 /// reading plus a fuller hour-by-hour breakdown of the day, and the
 /// quietest/busiest times to help members plan a visit.
+///
+/// The big number and "X of Y in the club" are real:
+/// AppState.refreshLiveOccupancy() counts distinct members with a
+/// `checkins` row in the last couple of hours (see
+/// supabase/add_checkins_table.sql and AppState+Growth.swift's
+/// recordActivity()/logCheckIn()) — there's no check-out event, so that
+/// window stands in for "still here". This view re-reads it once a
+/// minute while it's on screen. The hourly bar *shape* is still an
+/// illustrative "typical day" curve (same idea as Google Maps' Popular
+/// Times, which is itself historically averaged, not a live feed) —
+/// building a real per-hour history needs many days of check-in data
+/// this fresh install doesn't have yet; refreshOccupancyNow() just
+/// re-highlights which bar is "now" on that curve. The chart itself is a
+/// native Swift Charts BarMark (matching ProgressDetailView's own
+/// charts) instead of hand-rolled rectangles, so it gets real axis marks
+/// and animates its own transitions when the data updates.
 struct OccupancyDetailView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
 
-    private var quietestHour: String {
-        appState.occupancyHourly.min { $0.value < $1.value }?.hour ?? "--"
+    private var quietestHour: AppState.OccupancyPoint? {
+        appState.occupancyHourly.min { $0.shape < $1.shape }
     }
-    private var busiestHour: String {
-        appState.occupancyHourly.max { $0.value < $1.value }?.hour ?? "--"
+    private var busiestHour: AppState.OccupancyPoint? {
+        appState.occupancyHourly.max { $0.shape < $1.shape }
+    }
+
+    private func hourLabel(_ hour: Int) -> String {
+        String(format: "%02d", hour)
     }
 
     var body: some View {
@@ -19,41 +40,47 @@ struct OccupancyDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack(alignment: .firstTextBaseline) {
-                            Text("Club Occupancy")
-                                .font(.brand(24))
-                                .foregroundStyle(.white)
-                            Spacer()
-                        }
+                        Text("Club Occupancy")
+                            .font(.brand(24))
+                            .foregroundStyle(.white)
+
                         HStack(alignment: .bottom, spacing: 10) {
                             Text("\(appState.occupancyPercent)")
                                 .font(.digitalTimer(48))
                                 .foregroundStyle(.white)
+                                .contentTransition(.numericText())
                             Text("\(appState.occupancyInClub) of \(appState.occupancyCapacity) in the club")
                                 .font(.brand(16))
                                 .foregroundStyle(.white.opacity(0.75))
                                 .padding(.bottom, 6)
+                                .contentTransition(.numericText())
                         }
 
-                        HStack(alignment: .bottom, spacing: 6) {
-                            ForEach(appState.occupancyHourly.indices, id: \.self) { i in
-                                let entry = appState.occupancyHourly[i]
-                                let isNow = entry.hour == appState.occupancyNowHour
-                                UnevenRoundedRectangle(topLeadingRadius: 6, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 6, style: .continuous)
-                                    .fill(isNow ? AnyShapeStyle(Color.appAccent.gradient) : AnyShapeStyle(.white.opacity(0.7)))
-                                    .frame(height: max(4, entry.value * 100))
+                        Chart(appState.occupancyHourly) { point in
+                            BarMark(
+                                x: .value("Hour", hourLabel(point.hour)),
+                                y: .value("Occupancy", point.shape)
+                            )
+                            .foregroundStyle(point.isNow ? Color.appAccent.gradient : Color.white.opacity(0.35).gradient)
+                            .cornerRadius(6)
+                            .annotation(position: .top) {
+                                if point.isNow {
+                                    Text("NOW")
+                                        .font(.system(size: 9, weight: .bold))
+                                        .tracking(0.4)
+                                        .foregroundStyle(Color.appAccent)
+                                }
                             }
                         }
-                        .frame(height: 100, alignment: .bottom)
+                        .frame(height: 140)
                         .padding(.top, 12)
-                        HStack {
-                            ForEach(appState.occupancyHourly.indices, id: \.self) { i in
-                                Text(appState.occupancyHourly[i].hour)
-                                    .font(.brand(10))
-                                    .foregroundStyle(.white.opacity(0.6))
-                                    .frame(maxWidth: .infinity)
+                        .chartYAxis(.hidden)
+                        .chartXAxis {
+                            AxisMarks { _ in
+                                AxisValueLabel().foregroundStyle(Color.appTextSecondary)
                             }
                         }
+                        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: appState.occupancyHourly)
                     }
                     .glassCard(padding: 18)
                     .overlay(
@@ -63,8 +90,8 @@ struct OccupancyDetailView: View {
 
                     GlassEffectContainer(spacing: 10) {
                         HStack(spacing: 10) {
-                            infoTile(icon: "moon.stars.fill", title: "Quietest", value: quietestHour, color: .appSuccess)
-                            infoTile(icon: "flame.fill", title: "Busiest", value: busiestHour, color: .appAccent)
+                            infoTile(icon: "moon.stars.fill", title: "Quietest", value: quietestHour.map { hourLabel($0.hour) } ?? "--", color: .appSuccess)
+                            infoTile(icon: "flame.fill", title: "Busiest", value: busiestHour.map { hourLabel($0.hour) } ?? "--", color: .appAccent)
                         }
                     }
                 }
@@ -78,6 +105,22 @@ struct OccupancyDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
+                }
+            }
+            .task {
+                // Cancels automatically when the view disappears (NavigationStack
+                // tears the .task down), so this never keeps ticking in the
+                // background once the sheet is closed. refreshLiveOccupancy()
+                // is the real reading (recent check-ins); refreshOccupancyNow()
+                // just re-highlights the current hour on the shape curve and
+                // keeps the number from sitting at a stale value while the
+                // network call is in flight.
+                await appState.refreshLiveOccupancy()
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .seconds(60))
+                    guard !Task.isCancelled else { break }
+                    withAnimation { appState.refreshOccupancyNow() }
+                    await appState.refreshLiveOccupancy()
                 }
             }
         }
