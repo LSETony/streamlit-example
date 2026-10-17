@@ -122,3 +122,39 @@ export async function yookassaStatus(): Promise<{ connected: boolean; shopId: st
     return { connected: false, shopId: null, sendReceipt: true, vatCode: 1 };
   }
 }
+
+/** WhatsApp Business (Cloud API): ID номера, токен (шифруется) и одобренный шаблон сообщения */
+export async function saveWhatsapp(form: FormData): Promise<ActionResult<null>> {
+  const ctx = await requireStaff(["owner"]);
+  if (ctx.readOnly) return { ok: false, error: { code: "GYM_READ_ONLY", message: "Кабинет в режиме «только чтение»" } };
+  const phoneId = str(form, "phone_id");
+  const token = str(form, "token");
+  const template = str(form, "template");
+  const lang = str(form, "lang") || "en";
+  if (!/^\d+$/.test(phoneId)) return { ok: false, error: { code: "INVALID_INPUT", message: "Phone number ID — это число из WhatsApp Manager" } };
+  if (!/^[a-z0-9_]+$/.test(template)) return { ok: false, error: { code: "INVALID_INPUT", message: "Название шаблона — латиница в нижнем регистре, цифры и _" } };
+  const row: Record<string, unknown> = {
+    gym_id: ctx.gym.id, whatsapp_phone_id: phoneId, whatsapp_template: template, whatsapp_lang: lang, updated_at: new Date().toISOString(),
+  };
+  if (token) row.whatsapp_token_encrypted = encryptSecret(token);
+  const { error } = await createAdminClient().from("gym_secrets").upsert(row);
+  if (error) return fail(error);
+  revalidatePath("/settings");
+  revalidatePath("/risk");
+  return ok(null);
+}
+
+export async function whatsappStatus(): Promise<{ connected: boolean; phoneId: string | null; template: string | null; lang: string }> {
+  const ctx = await requireStaff(["owner"]);
+  try {
+    const { data } = await createAdminClient().from("gym_secrets")
+      .select("whatsapp_phone_id, whatsapp_token_encrypted, whatsapp_template, whatsapp_lang").eq("gym_id", ctx.gym.id).maybeSingle();
+    return {
+      connected: Boolean(data?.whatsapp_phone_id && data?.whatsapp_token_encrypted && data?.whatsapp_template),
+      phoneId: data?.whatsapp_phone_id ?? null, template: data?.whatsapp_template ?? null,
+      lang: data?.whatsapp_lang ?? REGIONS[ctx.gym.region ?? "RU"].locale,
+    };
+  } catch {
+    return { connected: false, phoneId: null, template: null, lang: REGIONS[ctx.gym.region ?? "RU"].locale };
+  }
+}

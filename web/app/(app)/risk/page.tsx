@@ -15,11 +15,12 @@ export default async function RiskPage({ searchParams }: PageProps<"/risk">) {
   const sp = await searchParams;
   const reason = (typeof sp.reason === "string" ? sp.reason : "") as RiskReason | "";
   const supabase = await createClient();
-  const [{ data }, { data: stats }] = await Promise.all([
+  const [{ data }, { data: stats }, { data: wa }] = await Promise.all([
     supabase.from("v_client_risk").select("*").eq("gym_id", ctx.gym.id).order("urgency", { ascending: false }).limit(500),
     supabase.rpc("risk_returned_stats", { p_gym: ctx.gym.id }),
+    supabase.rpc("whatsapp_connected", { p_gym: ctx.gym.id }),
   ]);
-  const s = (stats ?? { contacted: 0, returned: 0 }) as { contacted: number; returned: number };
+  const s = (stats ?? { contacted: 0, returned: 0 }) as { contacted: number; returned: number; revenue?: number };
   return (
     <>
       <PageHeader
@@ -34,6 +35,7 @@ export default async function RiskPage({ searchParams }: PageProps<"/risk">) {
         timezone={ctx.gym.timezone}
         stats={s}
         readOnly={ctx.readOnly}
+        whatsappConnected={wa === true}
       />
     </>
   );

@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Clock, CreditCard, Crown, MapPin, ShieldAlert, SlidersHorizontal, Store } from "lucide-react";
+import { Clock, CreditCard, Crown, MapPin, MessageCircle, ShieldAlert, SlidersHorizontal, Store } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HoursForm, ProfileForm, RiskForm, RulesForm, ZonesEditor } from "@/components/gym-settings-forms";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { yookassaStatus } from "@/app/actions/gym";
+import { whatsappStatus, yookassaStatus } from "@/app/actions/gym";
 import { date } from "@/lib/format";
 import { YookassaForm } from "./yookassa-form";
+import { WhatsappForm } from "./whatsapp-form";
 import { getT } from "@/lib/i18n/server";
 import { regionInfo } from "@/lib/region";
 import type { T } from "@/lib/i18n/core";
@@ -25,14 +26,16 @@ const SECTIONS = [
   { id: "rules", title: "Правила", icon: SlidersHorizontal },
   { id: "risk", title: "«В зоне риска»", icon: ShieldAlert },
   { id: "payments", title: "Онлайн-оплата", icon: CreditCard },
+  { id: "whatsapp", title: "WhatsApp Business", icon: MessageCircle },
 ] as const;
 
 export default async function SettingsPage() {
   const ctx = await requireStaff(["owner"]);
   const supabase = await createClient();
-  const [{ data: zones }, yk] = await Promise.all([
+  const [{ data: zones }, yk, wa] = await Promise.all([
     supabase.from("zones").select("id, name, capacity").eq("gym_id", ctx.gym.id).order("name"),
     yookassaStatus(),
+    whatsappStatus(),
   ]);
   const t = await getT();
   const g = ctx.gym;
@@ -88,6 +91,9 @@ export default async function SettingsPage() {
               <YookassaForm status={yk} disabled={ctx.readOnly} />
             </Section>
           ) : null}
+          <Section t={t} id="whatsapp" title="WhatsApp Business" description="Автоматическая отправка сообщений клиентам «в зоне риска» через WhatsApp Cloud API.">
+            <WhatsappForm status={wa} disabled={ctx.readOnly} />
+          </Section>
         </div>
       </div>
     </>

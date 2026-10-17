@@ -11,7 +11,8 @@ import { Avatar, EmptyState } from "@/components/ui/misc";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Field, NativeSelect, Textarea } from "@/components/ui/input";
 import { RiskBadge } from "@/components/status";
-import { markContacted } from "@/app/actions/risk";
+import { markContacted, sendWhatsappToRisk } from "@/app/actions/risk";
+import { useRegion } from "@/lib/region-context";
 import { date, dateTime, phone } from "@/lib/format";
 import type { RiskReason, RiskRow } from "@/lib/types";
 import { RISK_LABEL } from "@/lib/types";
@@ -27,16 +28,19 @@ const DEFAULT_TEMPLATES: Record<RiskReason, string> = {
   not_renewed: "{name}, ваш абонемент в {gym} закончился. Возвращайтесь — поможем с продлением.",
 };
 
-function fill(tpl: string, row: RiskRow, gym: string) {
-  const first = row.full_name.split(" ").length > 1 ? row.full_name.split(" ")[1] : row.full_name;
+function fill(tpl: string, row: RiskRow, gym: string, region: string) {
+  // ФИО в России пишут «Фамилия Имя», в ОАЭ — «Имя Фамилия»
+  const parts = row.full_name.split(" ");
+  const first = parts.length > 1 ? (region === "AE" ? parts[0] : parts[1]) : row.full_name;
   return tpl.replaceAll("{name}", first).replaceAll("{gym}", gym).replaceAll("{date}", date(row.membership_ends_on));
 }
 
-export function RiskList({ rows, initialReason, gymName, templates, timezone, stats, readOnly }: {
+export function RiskList({ rows, initialReason, gymName, templates, timezone, stats, readOnly, whatsappConnected }: {
   rows: RiskRow[]; initialReason: RiskReason | ""; gymName: string; templates?: Record<RiskReason, string>;
-  timezone: string; stats: { contacted: number; returned: number }; readOnly: boolean;
+  timezone: string; stats: { contacted: number; returned: number; revenue?: number }; readOnly: boolean; whatsappConnected: boolean;
 }) {
   const t = useT();
+  const { region, money } = useRegion();
   const [reason, setReason] = useState<RiskReason | "">(initialReason);
   const [hideContacted, setHideContacted] = useState(false);
   const [contactFor, setContactFor] = useState<{ row: RiskRow; channel: Channel } | null>(null);
@@ -57,10 +61,14 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
           <ShieldCheck className="size-5 text-success" />
           <div className="text-sm">
             <b className="tabular">{stats.returned}</b> {t("из")} <b className="tabular">{stats.contacted}</b> {t("вернулись после контакта")}
-            <span className="block text-xs text-muted-foreground">{t("за 30 дней: пришли или продлили")}</span>
+            <span className="block text-xs text-muted-foreground">
+              {stats.revenue ? t("за 30 дней · принесли {sum}", { sum: money(stats.revenue) }) : t("за 30 дней: пришли или продлили")}
+            </span>
           </div>
         </Card>
       </div>
+
+      {whatsappConnected && !readOnly ? <BulkWhatsapp rows={list} /> : null}
 
       {list.length === 0 ? (
         <EmptyState icon={<ShieldCheck />} title={rows.length ? "По фильтру никого" : "Никого в зоне риска"}>
@@ -71,7 +79,7 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
           <ul>
             {list.slice(0, limit).map((r) => {
               const digits = (r.phone ?? "").replace(/\D/g, "");
-              const text = encodeURIComponent(fill(tpl[r.reason], r, gymName));
+              const text = encodeURIComponent(fill(tpl[r.reason], r, gymName, region));
               return (
                 <li key={r.client_id} className="ios-sep grid gap-3 px-4 py-3.5 transition-colors [--sep-inset:4.25rem] hover:bg-field sm:grid-cols-[1fr_auto] sm:items-center sm:px-5">
                   <div className="flex min-w-0 items-start gap-3">
@@ -116,7 +124,7 @@ export function RiskList({ rows, initialReason, gymName, templates, timezone, st
       )}
 
       {contactFor ? (
-        <ContactDialog row={contactFor.row} channel={contactFor.channel} text={fill(tpl[contactFor.row.reason], contactFor.row, gymName)} onClose={() => setContactFor(null)} />
+        <ContactDialog row={contactFor.row} channel={contactFor.channel} text={fill(tpl[contactFor.row.reason], contactFor.row, gymName, region)} onClose={() => setContactFor(null)} />
       ) : null}
     </div>
   );
@@ -180,5 +188,43 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
       className={cn("h-9 shrink-0 cursor-pointer whitespace-nowrap rounded-full px-4 text-[15px] font-medium transition-colors active:opacity-70", active ? "bg-tint text-white" : "bg-field hover:bg-field-hover")}>
       {children}
     </button>
+  );
+}
+
+/** Отправка одобренного шаблона WhatsApp всем в текущем фильтре, с кем ещё не связались и кто согласен на рассылки */
+function BulkWhatsapp({ rows }: { rows: RiskRow[] }) {
+  const t = useT();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [pending, start] = useTransition();
+  const targets = rows.filter((r) => !r.contacted_at && r.marketing_ok && r.phone);
+  if (!targets.length) return null;
+  return (
+    <>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-[22px] bg-tint-soft px-5 py-3">
+        <p className="text-[15px]">{t("WhatsApp Business подключён: можно написать всем сразу.")}</p>
+        <Button size="sm" onClick={() => setOpen(true)}><MessageCircle /> {t("Написать в WhatsApp: {n}", { n: targets.length })}</Button>
+      </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("Отправить сообщение в WhatsApp?")}</DialogTitle>
+            <DialogDescription>{t("Получат {n} клиентов без контакта, согласных на рассылки. Контакт отметится автоматически.", { n: targets.length })}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>Отмена</Button>
+            <Button disabled={pending} onClick={() => start(async () => {
+              const r = await sendWhatsappToRisk(targets.map((x) => ({ clientId: x.client_id, reason: x.reason })));
+              if (!r.ok) { toast.error(r.error.message); return; }
+              const d = r.data;
+              if (d.sent) toast.success("Отправлено: {n}", { n: d.sent });
+              if (d.failed) toast.error("Не отправлено: {n}. {error}", { n: d.failed, error: d.firstError ?? "" });
+              setOpen(false);
+              router.refresh();
+            })}>{pending ? "Отправляем…" : "Отправить"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
