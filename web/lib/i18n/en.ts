@@ -164,6 +164,16 @@ export const EN: Record<string, string> = {
   "Это демо-кабинет: изменения отключены": "This is a demo dashboard: changes are turned off",
   "error:DEMO_READ_ONLY": "This is a demo dashboard: changes are turned off",
 
+  // ── Юридическое ─────────────────────────────────────────────────────
+  "Условия использования": "Terms of Service",
+  "Политика конфиденциальности": "Privacy Policy",
+  "Обновлено": "Last updated",
+  "Принимаю": "I accept the",
+  "условия использования": "terms of service",
+  "и": "and",
+  "политику конфиденциальности": "privacy policy",
+  "и поручаю core. обработку персональных данных клиентов зала": "and authorise core. to process my gym’s client data",
+
   // ── Меню и оболочка ─────────────────────────────────────────────────
   "Дашборд": "Dashboard",
   "Ресепшен": "Front desk",
@@ -271,7 +281,6 @@ export const EN: Record<string, string> = {
   "Подключить зал": "Connect your gym",
   "Ссылка устарела или уже использована. Войдите снова.": "The link has expired or was already used. Please sign in again.",
   "Неверный email или пароль": "Wrong email or password",
-  "Данные хранятся на серверах в России в соответствии с 152-ФЗ.": "Data is stored on servers in Russia in line with Federal Law 152-FZ.",
   "Видите, каких клиентов можете потерять, — с первой недели.": "See which clients you might lose — from week one.",
   "Клиенты, абонементы, посещения по QR, расписание и список «в зоне риска» в одном кабинете.": "Clients, memberships, QR check-ins, schedule and an at-risk list in one dashboard.",
   "Восстановление пароля": "Reset password",
@@ -292,7 +301,6 @@ export const EN: Record<string, string> = {
   "Перейдите по ссылке, чтобы продолжить настройку зала.": "Follow the link to continue setting up your gym.",
   "14 дней бесплатно. Настройка — около 15 минут.": "14 days free. Setup takes about 15 minutes.",
   "Email владельца": "Owner email",
-  "Принимаю условия оферты и поручение на обработку персональных данных клиентов зала": "I accept the terms of service and the data processing agreement for the gym’s clients",
   "Создать кабинет": "Create dashboard",
   "Уже есть кабинет?": "Already have a dashboard?",
   "Регистрация": "Sign up",

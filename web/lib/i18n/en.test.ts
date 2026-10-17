@@ -7,7 +7,7 @@ import { makeT, localeFromAcceptLanguage } from "./core";
 
 // Русские строки, которые не показываются в интерфейсе как есть: синонимы заголовков импорта,
 // тексты согласий для БД, сообщения для разработчика, примеры в шаблоне импорта
-const SKIP_FILES = [/\.test\.tsx?$/, /lib\/i18n\//, /lib\/secrets\.ts$/, /lib\/supabase\//];
+const SKIP_FILES = [/\.test\.tsx?$/, /lib\/i18n\//, /lib\/legal\//, /lib\/secrets\.ts$/, /lib\/supabase\//];
 const SKIP = new Set([
   "Согласие на обработку персональных данных получено залом (отметка в кабинете core.)",
   "Согласие на получение рассылок получено залом (отметка в кабинете core.)",
