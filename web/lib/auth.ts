@@ -76,5 +76,5 @@ export async function requireStaff(roles?: Role[]): Promise<StaffContext> {
 }
 
 export function homeFor(role: Role): string {
-  return role === "reception" ? "/reception" : "/dashboard";
+  return role === "reception" ? "/reception" : role === "trainer" ? "/schedule" : "/dashboard";
 }

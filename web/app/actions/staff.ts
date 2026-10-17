@@ -22,7 +22,7 @@ export async function inviteStaff(form: FormData): Promise<ActionResult<null>> {
   const role = str(form, "role") as Role;
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { ok: false, error: { code: "INVALID_INPUT", message: "Некорректный email" } };
   if (!fullName) return { ok: false, error: { code: "INVALID_INPUT", message: "Укажите имя сотрудника" } };
-  if (!["admin", "reception", "owner"].includes(role)) return { ok: false, error: { code: "INVALID_INPUT", message: "Выберите роль" } };
+  if (!["admin", "reception", "trainer", "owner"].includes(role)) return { ok: false, error: { code: "INVALID_INPUT", message: "Выберите роль" } };
 
   const admin = createAdminClient();
   let userId: string | null = null;

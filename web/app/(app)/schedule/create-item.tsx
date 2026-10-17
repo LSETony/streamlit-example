@@ -16,8 +16,8 @@ import { useT } from "@/lib/i18n/client";
 const WD = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
 /** FR-5.2 Разовое или повторяющееся занятие */
-export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }: {
-  gymZones: { id: string; name: string; capacity: number }[]; initialDate: string; initialTime: string; onClose: () => void;
+export function CreateItemDialog({ gymZones, trainers = [], initialDate, initialTime, onClose }: {
+  gymZones: { id: string; name: string; capacity: number }[]; trainers?: { id: string; full_name: string }[]; initialDate: string; initialTime: string; onClose: () => void;
 }) {
   const t = useT();
   const [kind, setKind] = useState<"class" | "personal" | "zone_slot">("class");
@@ -38,7 +38,8 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
         durationMin: Number(form.get("duration")),
         capacity: Number(form.get("capacity")),
         zoneId: String(form.get("zone")) || null,
-        trainer: String(form.get("trainer")).trim() || null,
+        trainer: String(form.get("trainer") ?? "").trim() || null,
+        trainerStaffId: String(form.get("trainer_staff") ?? "") || null,
         weekdays: repeat ? weekdays : [],
         until: repeat ? String(form.get("until")) || null : null,
         description: String(form.get("description")).trim() || null,
@@ -61,7 +62,14 @@ export function CreateItemDialog({ gymZones, initialDate, initialTime, onClose }
           </Segmented>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Название"><Input name="title" required placeholder={kind === "zone_slot" ? "Сауна" : kind === "personal" ? "Персональная тренировка" : "Йога"} /></Field>
-            <Field label="Тренер"><Input name="trainer" placeholder="Имя тренера" /></Field>
+            {trainers.length ? (
+              <Field label="Тренер">
+                <NativeSelect name="trainer_staff" defaultValue="">
+                  <option value="">Без тренера</option>
+                  {trainers.map((tr) => <option key={tr.id} value={tr.id}>{tr.full_name}</option>)}
+                </NativeSelect>
+              </Field>
+            ) : <Field label="Тренер"><Input name="trainer" placeholder="Имя тренера" /></Field>}
             <Field label="Дата"><DatePicker name="date" defaultValue={initialDate} required aria-label="Дата" /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Начало"><TimeSelect name="time" defaultValue={initialTime} step={15} className="w-full" aria-label="Начало" /></Field>

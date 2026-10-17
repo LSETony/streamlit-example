@@ -25,17 +25,18 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
   const tz = ctx.gym.timezone;
 
   const supabase = await createClient();
-  const [{ data: items }, { data: zones }] = await Promise.all([
+  const [{ data: items }, { data: zones }, { data: trainers }] = await Promise.all([
     supabase.from("schedule_items").select("*, bookings(status)")
       .eq("gym_id", ctx.gym.id)
       .gte("starts_at", zonedToUtc(from, "00:00", tz).toISOString())
       .lt("starts_at", zonedToUtc(addDays(from, days), "00:00", tz).toISOString())
       .order("starts_at"),
     supabase.from("zones").select("id, name, capacity").eq("gym_id", ctx.gym.id).order("name"),
+    supabase.from("staff").select("id, full_name").eq("gym_id", ctx.gym.id).eq("role", "trainer").eq("active", true).order("full_name"),
   ]);
 
   const list: Item[] = (items ?? []).map((i) => ({
-    id: i.id, title: i.title, kind: i.kind, zone_id: i.zone_id, trainer_name: i.trainer_name, starts_at: i.starts_at, ends_at: i.ends_at,
+    id: i.id, title: i.title, kind: i.kind, zone_id: i.zone_id, trainer_name: i.trainer_name, trainer_staff_id: i.trainer_staff_id, starts_at: i.starts_at, ends_at: i.ends_at,
     capacity: i.capacity, cancelled: i.cancelled, series_id: i.series_id, description: i.description,
     booked: ((i.bookings ?? []) as { status: string }[]).filter((b) => b.status === "booked" || b.status === "attended").length,
   }));
@@ -51,7 +52,10 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
       zones={(zones ?? []) as { id: string; name: string; capacity: number }[]}
       gymId={ctx.gym.id}
       timezone={tz}
-      canEdit={ctx.staff.role !== "reception" && !ctx.readOnly}
+      canEdit={(ctx.staff.role === "owner" || ctx.staff.role === "admin") && !ctx.readOnly}
+      canBook={ctx.staff.role !== "trainer"}
+      myStaffId={ctx.staff.role === "trainer" ? ctx.staff.id : undefined}
+      trainers={(trainers ?? []) as { id: string; full_name: string }[]}
       readOnly={ctx.readOnly}
       hours={ctx.gym.settings?.hours}
     />

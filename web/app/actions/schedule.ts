@@ -17,6 +17,7 @@ export interface SeriesInput {
   weekdays: number[];    // 1 = пн … 7 = вс; пусто — разовое занятие
   until: string | null;
   description: string | null;
+  trainerStaffId?: string | null;
 }
 
 /** FR-5.2 Разовое или повторяющееся занятие */
@@ -35,6 +36,7 @@ export async function createSeries(input: SeriesInput): Promise<ActionResult<{ c
     p_weekdays: input.weekdays.length ? input.weekdays : null,
     p_until: input.until,
     p_description: input.description,
+    ...(input.trainerStaffId ? { p_trainer_staff: input.trainerStaffId } : {}),
   });
   if (res.ok) revalidatePath("/schedule");
   return res;

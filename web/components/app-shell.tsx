@@ -33,9 +33,9 @@ const NAV: { title: string; items: NavItem[] }[] = [
     items: [
       { href: "/dashboard", label: "Дашборд", icon: LayoutDashboard, roles: ["owner", "admin"], feature: "dashboard" },
       { href: "/reception", label: "Ресепшен", icon: ScanLine, roles: ["owner", "admin", "reception"] },
-      { href: "/clients", label: "Клиенты", icon: Users, roles: ["owner", "admin", "reception"] },
+      { href: "/clients", label: "Клиенты", icon: Users, roles: ["owner", "admin", "reception", "trainer"] },
       { href: "/risk", label: "В зоне риска", short: "Риск", icon: AlertTriangle, roles: ["owner", "admin", "reception"], feature: "risk" },
-      { href: "/schedule", label: "Расписание", icon: CalendarDays, roles: ["owner", "admin", "reception"], feature: "schedule" },
+      { href: "/schedule", label: "Расписание", icon: CalendarDays, roles: ["owner", "admin", "reception", "trainer"], feature: "schedule" },
     ],
   },
   {

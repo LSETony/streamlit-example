@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RiskPage({ searchParams }: PageProps<"/risk">) {
-  const ctx = await requireStaff();
+  const ctx = await requireStaff(["owner", "admin", "reception"]);
   const sp = await searchParams;
   const reason = (typeof sp.reason === "string" ? sp.reason : "") as RiskReason | "";
   const supabase = await createClient();

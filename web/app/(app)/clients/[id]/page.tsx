@@ -18,7 +18,7 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/c
   const { data: client } = await supabase.from("clients").select("*").eq("id", id).eq("gym_id", ctx.gym.id).is("deleted_at", null).maybeSingle();
   if (!client) notFound();
 
-  const canMoney = ctx.staff.role !== "reception";
+  const canMoney = ctx.staff.role === "owner" || ctx.staff.role === "admin";
   const [memberships, freezes, visits, payments, bookings, risk] = await Promise.all([
     supabase.from("memberships").select("*").eq("client_id", id).order("starts_on", { ascending: false }),
     supabase.from("freezes").select("*, memberships!inner(client_id)").eq("memberships.client_id", id).order("from_date", { ascending: false }),
@@ -43,7 +43,7 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/c
       gymId={ctx.gym.id}
       timezone={ctx.gym.timezone}
       today={ctx.today}
-      readOnly={ctx.readOnly}
+      readOnly={ctx.readOnly || ctx.staff.role === "trainer"}
       openSell={sp.sell === "1"}
     />
   );

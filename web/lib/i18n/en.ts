@@ -199,6 +199,13 @@ export const EN: Record<string, string> = {
   "WhatsApp Business не подключён. Подключите его в настройках зала": "WhatsApp Business isn’t connected. Connect it in gym settings",
   "error:WHATSAPP_NOT_CONNECTED": "WhatsApp Business isn’t connected. Connect it in gym settings",
 
+  // ── Тренер ──────────────────────────────────────────────────────────
+  "Без тренера": "No coach",
+  "Мои занятия": "My classes",
+  "Расписание, свои занятия и отметка посещаемости. Без продаж и выручки": "Schedule, own classes and attendance. No sales or revenue",
+  "Тренер не найден": "Coach not found",
+  "error:TRAINER_NOT_FOUND": "Coach not found",
+
   // ── Меню и оболочка ─────────────────────────────────────────────────
   "Дашборд": "Dashboard",
   "Ресепшен": "Front desk",

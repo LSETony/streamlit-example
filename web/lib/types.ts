@@ -1,5 +1,5 @@
 // Типы строк базы, которые использует кабинет (упрощённо; источник правды — миграции supabase/)
-export type Role = "owner" | "admin" | "reception";
+export type Role = "owner" | "admin" | "reception" | "trainer";
 export type PlanKind = "period" | "visits" | "unlimited";
 export type MembershipStatus = "pending" | "active" | "frozen" | "expired" | "cancelled";
 export type PaymentMethod = "cash" | "card" | "online";
@@ -163,7 +163,7 @@ export interface Dashboard {
   occupancy: Occupancy;
 }
 
-export const ROLE_LABEL: Record<Role, string> = { owner: "Владелец", admin: "Администратор", reception: "Ресепшен" };
+export const ROLE_LABEL: Record<Role, string> = { owner: "Владелец", admin: "Администратор", reception: "Ресепшен", trainer: "Тренер" };
 export const PLAN_KIND_LABEL: Record<PlanKind, string> = { period: "На срок", visits: "На визиты", unlimited: "Безлимит" };
 export const METHOD_LABEL: Record<PaymentMethod, string> = { cash: "Наличные", card: "Карта", online: "Онлайн" };
 export const RISK_LABEL: Record<RiskReason, string> = {
