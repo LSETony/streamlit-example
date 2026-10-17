@@ -34,6 +34,18 @@ struct WorkoutActivityAttributes: ActivityAttributes {
         var elapsedStartDate: Date
         /// The exact moment the current pause began — nil while playing.
         var pausedAt: Date?
+        /// True for the final update sent right as the workout finishes —
+        /// WorkoutLiveActivity swaps the whole presentation to a
+        /// "complete" look (checkmark, no more live timer) instead of the
+        /// in-progress exercise/set view. LiveActivityService.end() is
+        /// called a few seconds after this update, not immediately, so
+        /// there's actually time to see it on the island.
+        var isCompleted: Bool = false
+        /// An achievement newly unlocked by finishing this workout (e.g.
+        /// "10 Workouts") — nil if this session didn't unlock a new one.
+        /// Only meaningful when isCompleted is true.
+        var unlockedAchievementTitle: String?
+        var unlockedAchievementIcon: String?
     }
 
     var workoutTitle: String

@@ -309,13 +309,22 @@ struct ActiveWorkoutView: View {
         }
     }
 
-    /// Logs the session (history entry, streak, Apple Health if synced,
-    /// and a Dynamic Island confirmation) the moment the last set finishes.
+    /// Logs the session (history entry, streak, Apple Health if synced)
+    /// the moment the last set finishes, then shows the result — any
+    /// newly-unlocked achievement included — as the Live Activity's final
+    /// state on the Dynamic Island/Lock Screen for a few seconds, instead
+    /// of just ending it immediately with no completion moment at all.
     private func recordCompletion() {
         let endedAt = Date()
         let totalSets = card.exercises.reduce(0) { $0 + $1.sets }
         let minutes = max(1, Int(activeElapsed(at: endedAt) / 60))
         let calories = Int(Double(minutes) * 7) // rough strength-training estimate, ~7 kcal/min
+
+        // Snapshot which achievements are already unlocked *before* this
+        // session's history entry/streak land, so afterwards we can tell
+        // exactly which one (if any) just newly unlocked.
+        let unlockedBefore = Set(appState.achievements.filter(\.isUnlocked).map(\.title))
+
         appState.workoutHistory.insert(
             WorkoutHistoryEntry(date: "Today", title: card.title, sets: totalSets, minutes: minutes, calories: calories, completedAt: endedAt),
             at: 0
@@ -323,13 +332,22 @@ struct ActiveWorkoutView: View {
         if appState.appleHealthSyncEnabled {
             HealthKitService.shared.saveWorkout(activityType: .traditionalStrengthTraining, start: startedAt, end: endedAt, calories: Double(calories))
         }
-        LiveActivityService.end()
         Task {
             await appState.recordActivity()
             await MainActor.run {
+                let newlyUnlocked = appState.achievements.first { $0.isUnlocked && !unlockedBefore.contains($0.title) }
+
+                var finalState = currentActivityState
+                finalState.isCompleted = true
+                finalState.unlockedAchievementTitle = newlyUnlocked?.title
+                finalState.unlockedAchievementIcon = newlyUnlocked?.icon
+                LiveActivityService.endWithFinalUpdate(finalState)
+
                 appState.notificationCenter.trigger(
-                    icon: "flame.fill", title: "Workout complete!",
-                    subtitle: "\(appState.streakDays)-day streak", accent: .appAccent
+                    icon: newlyUnlocked?.icon ?? "flame.fill",
+                    title: newlyUnlocked != nil ? "Achievement unlocked!" : "Workout complete!",
+                    subtitle: newlyUnlocked?.title ?? "\(appState.streakDays)-day streak",
+                    accent: .appAccent
                 )
             }
         }

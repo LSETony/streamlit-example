@@ -38,4 +38,18 @@ enum LiveActivityService {
         current = nil
         Task { await activity.end(nil, dismissalPolicy: .immediate) }
     }
+
+    /// Sends one last `update()` (e.g. a "workout complete" state showing
+    /// any newly-unlocked achievement) and only ends the activity a few
+    /// seconds later, instead of ending it immediately — otherwise that
+    /// final state has no time to actually be seen on the island.
+    static func endWithFinalUpdate(_ state: WorkoutActivityAttributes.ContentState, after seconds: TimeInterval = 6) {
+        guard let activity = current else { return }
+        current = nil
+        Task {
+            await activity.update(.init(state: state, staleDate: nil))
+            try? await Task.sleep(for: .seconds(seconds))
+            await activity.end(nil, dismissalPolicy: .immediate)
+        }
+    }
 }
