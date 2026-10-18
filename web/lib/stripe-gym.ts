@@ -28,7 +28,7 @@ export async function createGymCheckout(secret: string, purchase: Purchase, curr
   const back = `${origin}/pay/done?payment=${purchase.payment_id}`;
   return stripeRequest<CheckoutSession>(secret, "POST", "/v1/checkout/sessions", {
     mode: "payment",
-    line_items: [{ quantity: 1, price_data: { currency: currency.toLowerCase(), unit_amount: purchase.amount, product_data: { name: purchase.description } } }],
+    line_items: [{ quantity: 1, price_data: { currency: currency.toLowerCase(), unit_amount: purchase.amount, product_data: { name: purchase.description.replace(/^Абонемент/, "Membership") } } }],
     client_reference_id: purchase.payment_id,
     metadata: { payment_id: purchase.payment_id, gym_id: purchase.gym_id },
     payment_intent_data: { metadata: { payment_id: purchase.payment_id, gym_id: purchase.gym_id } },

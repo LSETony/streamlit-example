@@ -79,4 +79,14 @@ describe("i18n", () => {
     expect(localeFromAcceptLanguage("de-DE")).toBe("en");
     expect(localeFromAcceptLanguage(null)).toBe("ru");
   });
+
+  it("арабский: свой перевод, иначе английский; цифры латинские", () => {
+    const t = makeT("ar");
+    expect(t("Записаться")).toBe("احجز");
+    expect(t("Сотрудники")).toBe("الموظفون");
+    expect(t("Журнал действий")).not.toMatch(/[А-Яа-яЁё]/);
+    expect(t("Настройки зала")).toBe(makeT("en")("Настройки зала"));
+    expect((1234).toLocaleString(t.intl)).toBe("1,234");
+    expect(localeFromAcceptLanguage("ar-AE,ar;q=0.9")).toBe("ar");
+  });
 });

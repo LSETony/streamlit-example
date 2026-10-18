@@ -9,5 +9,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Page() {
   const t = await getT();
-  return <LegalDocument doc={PRIVACY[t.locale]} updatedLabel={t("Обновлено")} />;
+  return <LegalDocument doc={PRIVACY[t.locale === "ru" ? "ru" : "en"]} updatedLabel={t("Обновлено")} />;
 }

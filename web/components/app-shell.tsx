@@ -186,7 +186,7 @@ export function AppShell({ role, features, gymId, gymName, gyms, userName, riskC
   return (
     <NavTitleContext.Provider value={navTitle}>
       <div className="flex min-h-dvh">
-        <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] lg:block">
+        <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] ps-[max(0.75rem,env(safe-area-inset-left))] lg:block">
           <div className="glass glass-rim relative flex h-full flex-col gap-5 rounded-[28px] px-3 pb-3 pt-6">
             <Link href="/" className="px-3 text-foreground" aria-label={tr("core. — на главную")}>
               <Logo className="h-6" />
@@ -197,7 +197,7 @@ export function AppShell({ role, features, gymId, gymName, gyms, userName, riskC
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(env(safe-area-inset-top)+5rem)] short:pb-[calc(env(safe-area-inset-bottom)+4.5rem)] short:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pb-10 lg:pl-0 lg:pt-[env(safe-area-inset-top)]">
+        <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] ps-[env(safe-area-inset-left)] pe-[env(safe-area-inset-right)] pt-[calc(env(safe-area-inset-top)+5rem)] short:pb-[calc(env(safe-area-inset-bottom)+4.5rem)] short:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pb-10 lg:ps-0 lg:pt-[env(safe-area-inset-top)]">
           <div className="mx-auto w-full max-w-[1600px] px-4 py-2 sm:px-6 lg:px-8 lg:py-6">
             <div className="hidden h-[52px] lg:mb-5 lg:block" aria-hidden />
             {banner ? <div className="mb-5">{banner}</div> : null}
@@ -226,7 +226,7 @@ export function AppShell({ role, features, gymId, gymName, gyms, userName, riskC
         {/* Плавающие панели идут в DOM после содержимого: иначе Chromium не размывает то, что под ними */}
 
         {/* телефон и iPad в портрете: навигационная панель сверху, вкладки снизу (iOS 26) */}
-        <div className={cn("glass glass-rim fixed left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full pl-5 pr-1.5 transition-transform duration-300 short:top-[max(0.5rem,env(safe-area-inset-top))] short:h-12 lg:hidden",
+        <div className={cn("glass glass-rim fixed left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full ps-5 pe-1.5 transition-transform duration-300 short:top-[max(0.5rem,env(safe-area-inset-top))] short:h-12 lg:hidden",
           barHidden && "-translate-y-[calc(100%+env(safe-area-inset-top)+1rem)]")}>
           <div className="relative min-w-0 flex-1">
             <Link href="/" aria-label={tr("core. — на главную")}
@@ -270,8 +270,8 @@ export function AppShell({ role, features, gymId, gymName, gyms, userName, riskC
         </nav>
 
         {/* iPad в альбоме и компьютер: навигационная панель над колонкой содержимого */}
-        <div className="glass glass-rim fixed top-[max(0.75rem,env(safe-area-inset-top))] z-30 hidden h-[52px] items-center gap-2 rounded-full p-1.5 pl-5 lg:flex
-          left-[calc(300px+max(0px,(100vw-300px-1600px)/2)+2rem)] right-[calc(max(0px,(100vw-300px-1600px)/2)+2rem)]">
+        <div className="glass glass-rim fixed top-[max(0.75rem,env(safe-area-inset-top))] z-30 hidden h-[52px] items-center gap-2 rounded-full p-1.5 ps-5 lg:flex
+          start-[calc(300px+max(0px,(100vw-300px-1600px)/2)+2rem)] end-[calc(max(0px,(100vw-300px-1600px)/2)+2rem)]">
           <p className={cn("min-w-0 flex-1 truncate text-[17px] font-semibold transition-all duration-300",
             inlineTitle ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0")} aria-hidden={!inlineTitle}>
             {title}
@@ -356,8 +356,8 @@ export function PageHeader({ title, description, actions, back }: {
     <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <div className="grid min-w-[min(100%,18rem)] flex-1 gap-1">
         {back ? (
-          <Link href={back.href} className="-ml-1.5 inline-flex w-fit items-center gap-0.5 text-[17px] text-tint-text active:opacity-60">
-            <ChevronLeft className="size-6" strokeWidth={2.25} /> {tr(back.label)}
+          <Link href={back.href} className="-ms-1.5 inline-flex w-fit items-center gap-0.5 text-[17px] text-tint-text active:opacity-60">
+            <ChevronLeft className="size-6 rtl:rotate-180" strokeWidth={2.25} /> {tr(back.label)}
           </Link>
         ) : null}
         <h1 ref={ref} className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">{title}</h1>

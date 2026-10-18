@@ -1,15 +1,21 @@
+import { AR } from "./ar";
 import { EN, EN_PATTERNS } from "./en";
 
 /*
-  Языки кабинета: русский (основной) и английский.
+  Языки кабинета: русский (основной), английский и арабский (справа налево; чего нет в арабском словаре — по-английски).
   Ключ перевода — сам русский текст: t("Клиенты") → «Clients». Так строки остаются читаемыми в коде,
   а подписи из констант (разделы меню, роли, статусы) переводятся там, где выводятся: t(ROLE_LABEL[role]).
   Подстановки — {имя}: t("Показано {n} из {total}", { n, total }).
   Формы слова — t.n(5, "клиент|клиента|клиентов") → «клиентов» / «clients».
 */
 
-export type Locale = "ru" | "en";
-export const LOCALES: Locale[] = ["ru", "en"];
+export type Locale = "ru" | "en" | "ar";
+export const LOCALES: Locale[] = ["ru", "en", "ar"];
+
+/** Направление текста языка: арабский — справа налево */
+export function dirOf(locale: Locale): "rtl" | "ltr" {
+  return locale === "ar" ? "rtl" : "ltr";
+}
 export const LOCALE_COOKIE = "core-lang";
 
 export type Vars = Record<string, string | number>;
@@ -51,21 +57,23 @@ function lookup(text: string): string {
 }
 
 export function makeT(locale: Locale): T {
-  const t = ((text: string, vars?: Vars) => fill(locale === "en" ? lookup(text) : text, vars)) as T;
+  const tr = (text: string) => locale === "en" ? lookup(text) : locale === "ar" ? AR[text] ?? lookup(text) : text;
+  const t = ((text: string, vars?: Vars) => fill(tr(text), vars)) as T;
   t.n = (count, forms) => {
-    if (locale === "en") {
-      const [one, other = one] = (EN[forms] ?? forms).split("|");
+    if (locale !== "ru") {
+      const [one, other = one] = ((locale === "ar" ? AR[forms] : undefined) ?? EN[forms] ?? forms).split("|");
       return Math.abs(count) === 1 ? one : other;
     }
     return ruForm(count, forms.split("|"));
   };
   t.locale = locale;
-  t.intl = locale === "en" ? "en-GB" : "ru-RU";
+  // арабский с латинскими цифрами — так принято в интерфейсах ОАЭ и совпадает с суммами в AED
+  t.intl = locale === "en" ? "en-GB" : locale === "ar" ? "ar-AE-u-nu-latn" : "ru-RU";
   return t;
 }
 
 export function isLocale(v: unknown): v is Locale {
-  return v === "ru" || v === "en";
+  return v === "ru" || v === "en" || v === "ar";
 }
 
 /** Язык без выбора пользователя — по заголовку Accept-Language браузера: русский, если он среди предпочтений, иначе английский */
@@ -74,6 +82,7 @@ export function localeFromAcceptLanguage(header: string | null): Locale {
   const langs = header.split(",").map((part) => part.trim().split(";")[0].toLowerCase());
   const first = langs[0] ?? "";
   if (first.startsWith("en")) return "en";
+  if (first.startsWith("ar")) return "ar";
   if (langs.some((l) => /^(ru|uk|be|kk)/.test(l))) return "ru";
   return langs.length ? "en" : "ru";
 }

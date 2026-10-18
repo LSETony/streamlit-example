@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Onest } from "next/font/google";
+import { Noto_Sans_Arabic, Onest } from "next/font/google";
 import { Toaster } from "sonner";
 import { I18nProvider } from "@/lib/i18n/client";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { dirOf } from "@/lib/i18n/core";
 import "./globals.css";
 
 const onest = Onest({ variable: "--font-onest", subsets: ["latin", "cyrillic"] });
+// арабский шрифт подключается только для глифов, которых нет в Onest
+const arabic = Noto_Sans_Arabic({ variable: "--font-arabic", subsets: ["arabic"], preload: false });
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -32,7 +35,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const locale = await getLocale();
   return (
-    <html lang={locale} className={`${onest.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang={locale} dir={dirOf(locale)} className={`${onest.variable} ${arabic.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
