@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Opened from Profile — picks AppState.preferredLanguage, which
-/// CoreAppApp.swift's RootView applies as both `.environment(\.locale)`
-/// (so every `Text("...")` string-literal lookup in Localizable.xcstrings
-/// resolves against it) and `.environment(\.layoutDirection)` for Arabic.
-/// Both take effect immediately — no relaunch needed.
+/// Opened from Profile, and from AuthWelcomeView during registration —
+/// picks AppState.preferredLanguage, which CoreAppApp.swift's RootView
+/// applies as `.environment(\.locale)` (so every `Text("...")`
+/// string-literal lookup in Localizable.xcstrings resolves against it).
+/// Takes effect immediately — no relaunch needed.
 struct LanguagePickerView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss

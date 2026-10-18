@@ -3,12 +3,6 @@
   "strings": {
     "Home": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الرئيسية"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "Calendar": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "التقويم"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Workouts": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "التمارين"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "Progress": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "التقدم"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -67,12 +43,6 @@
     },
     "Profile": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الملف الشخصي"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -83,12 +53,6 @@
     },
     "Body fat trend": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اتجاه نسبة الدهون"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -99,12 +63,6 @@
     },
     "Build Your Own Workout": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "أنشئ تمرينك الخاص"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -115,12 +73,6 @@
     },
     "Club Occupancy": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ازدحام النادي"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -131,12 +83,6 @@
     },
     "Connect Apple Health to see your heart rate, steps, sleep and more here.": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "قم بربط Apple Health لرؤية معدل ضربات القلب والخطوات والنوم والمزيد هنا."
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -147,12 +93,6 @@
     },
     "Custom Workout": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تمرين مخصص"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -163,12 +103,6 @@
     },
     "Didn't get a code?": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لم يصلك الرمز؟"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -179,12 +113,6 @@
     },
     "EXERCISES": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "التمارين"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -195,12 +123,6 @@
     },
     "Events": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الفعاليات"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -211,12 +133,6 @@
     },
     "FOCUS ZONE": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "منطقة التركيز"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -227,12 +143,6 @@
     },
     "Gym Safety": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سلامة الصالة الرياضية"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -243,12 +153,6 @@
     },
     "Health Metrics": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "مقاييس الصحة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -259,12 +163,6 @@
     },
     "Log scan": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تسجيل الفحص"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -275,12 +173,6 @@
     },
     "MOST POPULAR": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الأكثر شيوعًا"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -291,12 +183,6 @@
     },
     "Membership": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "العضوية"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -307,12 +193,6 @@
     },
     "Muscle Mass": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الكتلة العضلية"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -323,12 +203,6 @@
     },
     "NOW": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الآن"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -339,12 +213,6 @@
     },
     "No data": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لا توجد بيانات"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -355,12 +223,6 @@
     },
     "No workouts logged yet — finish one to see it here.": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لم يتم تسجيل أي تمارين بعد — أكمل تمرينًا لرؤيته هنا."
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -371,12 +233,6 @@
     },
     "OR CHOOSE AN AVATAR": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "أو اختر صورة رمزية"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -387,12 +243,6 @@
     },
     "Occupancy": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الازدحام"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -403,12 +253,6 @@
     },
     "Pick a zone to focus on, then choose which exercises to include.": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اختر منطقة للتركيز عليها، ثم حدد التمارين لإضافتها."
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -419,12 +263,6 @@
     },
     "Pick a zone, choose your exercises": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اختر منطقة، ثم اختر تمارينك"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -435,12 +273,6 @@
     },
     "Progress Photos": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "صور التقدم"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -451,12 +283,6 @@
     },
     "QR access pass": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تصريح الدخول QR"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -467,12 +293,6 @@
     },
     "Rules and equipment guide for using the club safely.": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "قواعد ودليل المعدات لاستخدام النادي بأمان."
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -483,12 +303,6 @@
     },
     "Sign in or create your account": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سجّل الدخول أو أنشئ حسابك"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -499,12 +313,6 @@
     },
     "Sign in with Apple": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تسجيل الدخول عبر Apple"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -515,12 +323,6 @@
     },
     "Sign in with Google": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تسجيل الدخول عبر Google"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -531,12 +333,6 @@
     },
     "Specials for today": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "عروض اليوم"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -547,12 +343,6 @@
     },
     "Subscriptions": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الاشتراكات"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -563,12 +353,6 @@
     },
     "Total": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الإجمالي"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -579,12 +363,6 @@
     },
     "Turnstile and reception check-in": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بوابة الدخول وتسجيل الاستقبال"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -595,12 +373,6 @@
     },
     "Verification": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "التحقق"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -611,12 +383,6 @@
     },
     "What's on this month — tap Join to reserve a spot.": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ما الذي يحدث هذا الشهر — اضغط \"انضمام\" لحجز مكانك."
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -627,12 +393,6 @@
     },
     "or": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "أو"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -643,12 +403,6 @@
     },
     "Your cart is empty": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سلتك فارغة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -659,12 +413,6 @@
     },
     "Your membership auto-renews on this date unless cancelled.": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يتجدد اشتراكك تلقائيًا في هذا التاريخ ما لم يتم إلغاؤه."
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -675,12 +423,6 @@
     },
     "Cancel": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إلغاء"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -691,12 +433,6 @@
     },
     "Cancel booking": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إلغاء الحجز"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -707,12 +443,6 @@
     },
     "Delete": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "حذف"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -723,12 +453,6 @@
     },
     "Don't have a code? Show a test one": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ليس لديك رمز؟ عرض رمز تجريبي"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -739,12 +463,6 @@
     },
     "Done": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تم"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -755,12 +473,6 @@
     },
     "End": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إنهاء"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -771,12 +483,6 @@
     },
     "Keep booking": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الاحتفاظ بالحجز"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -787,12 +493,6 @@
     },
     "Reschedule": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إعادة الجدولة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -803,12 +503,6 @@
     },
     "Resend": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إعادة الإرسال"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -819,12 +513,6 @@
     },
     "Reset": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إعادة تعيين"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -835,12 +523,6 @@
     },
     "Add to cart": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "أضف إلى السلة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -851,12 +533,6 @@
     },
     "Choose this location": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اختر هذا الموقع"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -867,12 +543,6 @@
     },
     "Confirm reschedule": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تأكيد إعادة الجدولة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -883,12 +553,6 @@
     },
     "Connect Apple Health": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ربط Apple Health"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -899,12 +563,6 @@
     },
     "Continue": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "متابعة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -915,12 +573,6 @@
     },
     "Get Directions": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الحصول على الاتجاهات"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -931,12 +583,6 @@
     },
     "Logout": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تسجيل الخروج"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -947,12 +593,6 @@
     },
     "Save scan": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "حفظ الفحص"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -963,12 +603,6 @@
     },
     "Share invite": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "مشاركة الدعوة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -979,12 +613,6 @@
     },
     "Start Workout": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ابدأ التمرين"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -995,12 +623,6 @@
     },
     "Full name": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الاسم الكامل"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1011,12 +633,6 @@
     },
     "Email": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "البريد الإلكتروني"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1027,12 +643,6 @@
     },
     "Welcome": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "مرحبًا"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1043,12 +653,6 @@
     },
     "Settings": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الإعدادات"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1059,16 +663,630 @@
     },
     "Language": {
       "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اللغة"
-          }
-        },
         "ru": {
           "stringUnit": {
             "state": "translated",
             "value": "Язык"
+          }
+        }
+      }
+    },
+    "A private before/after timeline — newest first.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приватная хронология «до/после» — сначала новые."
+          }
+        }
+      }
+    },
+    "Achievements": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Достижения"
+          }
+        }
+      }
+    },
+    "Active until": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Активен до"
+          }
+        }
+      }
+    },
+    "Ask Core AI…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спросите Core AI…"
+          }
+        }
+      }
+    },
+    "Avatar": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аватар"
+          }
+        }
+      }
+    },
+    "Beginner's Plan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "План для начинающих"
+          }
+        }
+      }
+    },
+    "Benefits": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преимущества"
+          }
+        }
+      }
+    },
+    "Body Composition": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Состав тела"
+          }
+        }
+      }
+    },
+    "Book a Zone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Забронировать зону"
+          }
+        }
+      }
+    },
+    "Build Your Own": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создайте свою"
+          }
+        }
+      }
+    },
+    "Cart": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корзина"
+          }
+        }
+      }
+    },
+    "Change plan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменить план"
+          }
+        }
+      }
+    },
+    "Check out": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оформить заказ"
+          }
+        }
+      }
+    },
+    "Check-in code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Код для check-in"
+          }
+        }
+      }
+    },
+    "Choose Location": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбрать локацию"
+          }
+        }
+      }
+    },
+    "Club Guide": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гид по клубу"
+          }
+        }
+      }
+    },
+    "Enter the numbers from your latest InBody printout.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите данные с последней распечатки InBody."
+          }
+        }
+      }
+    },
+    "Exercises": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Упражнения"
+          }
+        }
+      }
+    },
+    "Food recipes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рецепты"
+          }
+        }
+      }
+    },
+    "Important": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Важное"
+          }
+        }
+      }
+    },
+    "Included": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включено"
+          }
+        }
+      }
+    },
+    "Ingredients per serving": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ингредиенты на порцию"
+          }
+        }
+      }
+    },
+    "Interactions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Взаимодействия"
+          }
+        }
+      }
+    },
+    "Invite a friend": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пригласить друга"
+          }
+        }
+      }
+    },
+    "Leaderboard": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Таблица лидеров"
+          }
+        }
+      }
+    },
+    "Log InBody Scan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить скан InBody"
+          }
+        }
+      }
+    },
+    "Max price": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Макс. цена"
+          }
+        }
+      }
+    },
+    "Next free slots": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ближайшие свободные слоты"
+          }
+        }
+      }
+    },
+    "Next free slots · Tue 15": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ближайшие свободные слоты · Вт 15"
+          }
+        }
+      }
+    },
+    "No bookings on this day": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В этот день нет броней"
+          }
+        }
+      }
+    },
+    "No check-ins yet — be the first.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока никто не отметился — будьте первым."
+          }
+        }
+      }
+    },
+    "No leftover slots right now — check back later today.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сейчас нет свободных окон — загляните позже сегодня."
+          }
+        }
+      }
+    },
+    "No photos yet — add your first to start the timeline.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока нет фото — добавьте первое, чтобы начать хронологию."
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ОК"
+          }
+        }
+      }
+    },
+    "One-Time Code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одноразовый код"
+          }
+        }
+      }
+    },
+    "PAUSED": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ПАУЗА"
+          }
+        }
+      }
+    },
+    "Personal Trainers": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Персональные тренеры"
+          }
+        }
+      }
+    },
+    "Personal trainer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Персональный тренер"
+          }
+        }
+      }
+    },
+    "Point the camera at a supplement label": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наведите камеру на этикетку добавки"
+          }
+        }
+      }
+    },
+    "Print this at reception, or scan it from another device to test check-in.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Распечатайте это на ресепшене или отсканируйте с другого устройства для теста."
+          }
+        }
+      }
+    },
+    "Ranked by total visits, across every core. member.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рейтинг по количеству визитов среди всех участников core."
+          }
+        }
+      }
+    },
+    "Risks and cautions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Риски и предостережения"
+          }
+        }
+      }
+    },
+    "Scan the check-in QR at reception": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отсканируйте QR для check-in на ресепшене"
+          }
+        }
+      }
+    },
+    "Scanning needs a real iPhone camera — it isn't available in the Simulator or on this device.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для сканирования нужна настоящая камера iPhone — недоступно в симуляторе или на этом устройстве."
+          }
+        }
+      }
+    },
+    "Share your code — every friend who joins with it counts toward both your streaks.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поделитесь кодом — каждый друг, который присоединится по нему, засчитывается в серию вам обоим."
+          }
+        }
+      }
+    },
+    "Show this code at the turnstile or reception to check in": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покажите этот код на турникете или ресепшене для входа"
+          }
+        }
+      }
+    },
+    "Supplements": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавки"
+          }
+        }
+      }
+    },
+    "This Month": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В этом месяце"
+          }
+        }
+      }
+    },
+    "This week": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На этой неделе"
+          }
+        }
+      }
+    },
+    "Top 10 workouts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Топ-10 тренировок"
+          }
+        }
+      }
+    },
+    "Type here…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите здесь…"
+          }
+        }
+      }
+    },
+    "Unbooked trainer slots, discounted so they don't go to waste.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Незабронированные окна тренеров со скидкой, чтобы не пропадали зря."
+          }
+        }
+      }
+    },
+    "Upcoming reminders": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ближайшие напоминания"
+          }
+        }
+      }
+    },
+    "View more": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подробнее"
+          }
+        }
+      }
+    },
+    "Vitamin Recommendations": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рекомендации по витаминам"
+          }
+        }
+      }
+    },
+    "Workout complete!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренировка завершена!"
+          }
+        }
+      }
+    },
+    "Workout history": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "История тренировок"
+          }
+        }
+      }
+    },
+    "You're checked in!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы отметились!"
+          }
+        }
+      }
+    },
+    "Your referral code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваш реферальный код"
+          }
+        }
+      }
+    },
+    "cap.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "вмест."
+          }
+        }
+      }
+    },
+    "search": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "поиск"
+          }
+        }
+      }
+    },
+    "visits": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "визитов"
           }
         }
       }

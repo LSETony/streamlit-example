@@ -7,12 +7,15 @@ import SwiftUI
 /// doesn't mandate a specific button look the way Apple does — with
 /// Google's actual brand blue on the "G" instead of the app's accent
 /// color, since a stray red-orange "G" read as wrong for a Google button.
+/// A globe button opens LanguagePickerView so a new member can pick their
+/// language before even registering, not just after from Profile.
 struct AuthWelcomeView: View {
     @EnvironmentObject var authService: AuthService
     @State private var fullName: String = ""
     @State private var email: String = ""
     @State private var goToVerify = false
     @State private var isSendingCode = false
+    @State private var isShowingLanguagePicker = false
     @FocusState private var focusedField: Field?
 
     private enum Field: Hashable { case name, email }
@@ -64,8 +67,19 @@ struct AuthWelcomeView: View {
                     .padding(.top, 28)
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { isShowingLanguagePicker = true } label: {
+                        Image(systemName: "globe")
+                            .foregroundStyle(.white)
+                    }
+                }
+            }
             .navigationDestination(isPresented: $goToVerify) {
                 OTPVerificationView(fullName: fullName, email: email)
+            }
+            .sheet(isPresented: $isShowingLanguagePicker) {
+                LanguagePickerView()
             }
             .alert("Sign-in error", isPresented: Binding(get: { authService.authError != nil }, set: { if !$0 { authService.authError = nil } })) {
                 Button("OK", role: .cancel) {}

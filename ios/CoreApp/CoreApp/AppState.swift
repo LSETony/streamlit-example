@@ -4,13 +4,10 @@ import WidgetKit
 
 /// A language core. actually ships translations for (see
 /// Localizable.xcstrings) — not every language iOS itself supports.
-/// `.arabic` additionally flips the whole app to right-to-left (see
-/// CoreAppApp.swift's RootView, which applies both the locale and the
-/// layout direction from AppState.preferredLanguage).
+/// CoreAppApp.swift's RootView applies it as `.environment(\.locale)`.
 enum AppLanguage: String, CaseIterable, Identifiable {
     case english = "en"
     case russian = "ru"
-    case arabic = "ar"
 
     var id: String { rawValue }
 
@@ -21,12 +18,10 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         switch self {
         case .english: "English"
         case .russian: "Русский"
-        case .arabic: "العربية"
         }
     }
 
     var locale: Locale { Locale(identifier: rawValue) }
-    var isRightToLeft: Bool { self == .arabic }
 }
 
 /// Single in-memory store for the whole app. Every field here backs one of

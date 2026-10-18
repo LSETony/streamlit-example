@@ -16,7 +16,6 @@ struct CoreAppApp: App {
                 .environmentObject(appState)
                 .environmentObject(authService)
                 .environment(\.locale, appState.preferredLanguage.locale)
-                .environment(\.layoutDirection, appState.preferredLanguage.isRightToLeft ? .rightToLeft : .leftToRight)
                 .preferredColorScheme(.dark)
                 .onOpenURL { url in
                     AuthService.handle(url)
