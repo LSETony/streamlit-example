@@ -1,0 +1,1078 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Home": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الرئيسية"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Главная"
+          }
+        }
+      }
+    },
+    "Calendar": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التقويم"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Календарь"
+          }
+        }
+      }
+    },
+    "Workouts": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التمارين"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренировки"
+          }
+        }
+      }
+    },
+    "Progress": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التقدم"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогресс"
+          }
+        }
+      }
+    },
+    "Profile": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الملف الشخصي"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профиль"
+          }
+        }
+      }
+    },
+    "Body fat trend": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اتجاه نسبة الدهون"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Динамика жира"
+          }
+        }
+      }
+    },
+    "Build Your Own Workout": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنشئ تمرينك الخاص"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создать свою тренировку"
+          }
+        }
+      }
+    },
+    "Club Occupancy": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ازدحام النادي"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загруженность клуба"
+          }
+        }
+      }
+    },
+    "Connect Apple Health to see your heart rate, steps, sleep and more here.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قم بربط Apple Health لرؤية معدل ضربات القلب والخطوات والنوم والمزيد هنا."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подключите Apple Health, чтобы видеть пульс, шаги, сон и другое здесь."
+          }
+        }
+      }
+    },
+    "Custom Workout": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمرين مخصص"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Своя тренировка"
+          }
+        }
+      }
+    },
+    "Didn't get a code?": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يصلك الرمز؟"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не пришёл код?"
+          }
+        }
+      }
+    },
+    "EXERCISES": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التمارين"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "УПРАЖНЕНИЯ"
+          }
+        }
+      }
+    },
+    "Events": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الفعاليات"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "События"
+          }
+        }
+      }
+    },
+    "FOCUS ZONE": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منطقة التركيز"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЗОНА АКЦЕНТА"
+          }
+        }
+      }
+    },
+    "Gym Safety": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامة الصالة الرياضية"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правила зала"
+          }
+        }
+      }
+    },
+    "Health Metrics": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقاييس الصحة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показатели здоровья"
+          }
+        }
+      }
+    },
+    "Log scan": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسجيل الفحص"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записать скан"
+          }
+        }
+      }
+    },
+    "MOST POPULAR": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأكثر شيوعًا"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ПОПУЛЯРНЫЙ"
+          }
+        }
+      }
+    },
+    "Membership": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العضوية"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Абонемент"
+          }
+        }
+      }
+    },
+    "Muscle Mass": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الكتلة العضلية"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мышечная масса"
+          }
+        }
+      }
+    },
+    "NOW": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الآن"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "СЕЙЧАС"
+          }
+        }
+      }
+    },
+    "No data": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد بيانات"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет данных"
+          }
+        }
+      }
+    },
+    "No workouts logged yet — finish one to see it here.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يتم تسجيل أي تمارين بعد — أكمل تمرينًا لرؤيته هنا."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренировок пока нет — завершите одну, чтобы увидеть её здесь."
+          }
+        }
+      }
+    },
+    "OR CHOOSE AN AVATAR": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أو اختر صورة رمزية"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ИЛИ ВЫБЕРИТЕ АВАТАР"
+          }
+        }
+      }
+    },
+    "Occupancy": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الازدحام"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загруженность"
+          }
+        }
+      }
+    },
+    "Pick a zone to focus on, then choose which exercises to include.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر منطقة للتركيز عليها، ثم حدد التمارين لإضافتها."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите зону акцента, затем упражнения для включения."
+          }
+        }
+      }
+    },
+    "Pick a zone, choose your exercises": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر منطقة، ثم اختر تمارينك"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите зону, подберите упражнения"
+          }
+        }
+      }
+    },
+    "Progress Photos": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صور التقدم"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото прогресса"
+          }
+        }
+      }
+    },
+    "QR access pass": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصريح الدخول QR"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-пропуск"
+          }
+        }
+      }
+    },
+    "Rules and equipment guide for using the club safely.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قواعد ودليل المعدات لاستخدام النادي بأمان."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правила и инструкция по безопасному использованию оборудования."
+          }
+        }
+      }
+    },
+    "Sign in or create your account": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سجّل الدخول أو أنشئ حسابك"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите или создайте аккаунт"
+          }
+        }
+      }
+    },
+    "Sign in with Apple": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسجيل الدخول عبر Apple"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войти через Apple"
+          }
+        }
+      }
+    },
+    "Sign in with Google": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسجيل الدخول عبر Google"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войти через Google"
+          }
+        }
+      }
+    },
+    "Specials for today": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عروض اليوم"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Специальные предложения"
+          }
+        }
+      }
+    },
+    "Subscriptions": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاشتراكات"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подписки"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الإجمالي"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Итого"
+          }
+        }
+      }
+    },
+    "Turnstile and reception check-in": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بوابة الدخول وتسجيل الاستقبال"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Турникет и регистрация на ресепшене"
+          }
+        }
+      }
+    },
+    "Verification": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التحقق"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подтверждение"
+          }
+        }
+      }
+    },
+    "What's on this month — tap Join to reserve a spot.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ما الذي يحدث هذا الشهر — اضغط \"انضمام\" لحجز مكانك."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что проходит в этом месяце — нажмите «Присоединиться», чтобы занять место."
+          }
+        }
+      }
+    },
+    "or": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أو"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "или"
+          }
+        }
+      }
+    },
+    "Your cart is empty": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلتك فارغة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корзина пуста"
+          }
+        }
+      }
+    },
+    "Your membership auto-renews on this date unless cancelled.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يتجدد اشتراكك تلقائيًا في هذا التاريخ ما لم يتم إلغاؤه."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Абонемент автоматически продлевается в эту дату, если не отменён."
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إلغاء"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмена"
+          }
+        }
+      }
+    },
+    "Cancel booking": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إلغاء الحجز"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменить бронь"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить"
+          }
+        }
+      }
+    },
+    "Don't have a code? Show a test one": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ليس لديك رمز؟ عرض رمز تجريبي"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет кода? Показать тестовый"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готово"
+          }
+        }
+      }
+    },
+    "End": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إنهاء"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завершить"
+          }
+        }
+      }
+    },
+    "Keep booking": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاحتفاظ بالحجز"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оставить бронь"
+          }
+        }
+      }
+    },
+    "Reschedule": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة الجدولة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перенести"
+          }
+        }
+      }
+    },
+    "Resend": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة الإرسال"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отправить снова"
+          }
+        }
+      }
+    },
+    "Reset": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة تعيين"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сбросить"
+          }
+        }
+      }
+    },
+    "Add to cart": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أضف إلى السلة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить в корзину"
+          }
+        }
+      }
+    },
+    "Choose this location": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر هذا الموقع"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбрать это место"
+          }
+        }
+      }
+    },
+    "Confirm reschedule": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأكيد إعادة الجدولة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подтвердить перенос"
+          }
+        }
+      }
+    },
+    "Connect Apple Health": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ربط Apple Health"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подключить Apple Health"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متابعة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продолжить"
+          }
+        }
+      }
+    },
+    "Get Directions": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الحصول على الاتجاهات"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маршрут"
+          }
+        }
+      }
+    },
+    "Logout": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسجيل الخروج"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выйти"
+          }
+        }
+      }
+    },
+    "Save scan": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حفظ الفحص"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранить скан"
+          }
+        }
+      }
+    },
+    "Share invite": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشاركة الدعوة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поделиться приглашением"
+          }
+        }
+      }
+    },
+    "Start Workout": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ابدأ التمرين"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начать тренировку"
+          }
+        }
+      }
+    },
+    "Full name": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاسم الكامل"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Полное имя"
+          }
+        }
+      }
+    },
+    "Email": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "البريد الإلكتروني"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email"
+          }
+        }
+      }
+    },
+    "Welcome": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحبًا"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добро пожаловать"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الإعدادات"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللغة"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -15,6 +15,7 @@ struct ProfileView: View {
     @State private var isShowingLeaderboard = false
     @State private var isShowingAvatarPicker = false
     @State private var isShowingHealthMetrics = false
+    @State private var isShowingLanguagePicker = false
 
     var body: some View {
         NavigationStack {
@@ -30,6 +31,8 @@ struct ProfileView: View {
                         .buttonStyle(.plain)
                     statsRow
                     healthCard
+                    Button { isShowingLanguagePicker = true } label: { languageRow }
+                        .buttonStyle(.plain)
                     communityRow
                     Spacer(minLength: 40)
                     logoutButton
@@ -57,6 +60,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $isShowingHealthMetrics) {
                 HealthMetricsView()
+            }
+            .sheet(isPresented: $isShowingLanguagePicker) {
+                LanguagePickerView()
             }
         }
     }
@@ -199,6 +205,23 @@ struct ProfileView: View {
                 }
             }
         )
+    }
+
+    private var languageRow: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Language").font(.brand(24)).foregroundStyle(.white)
+                Text(appState.preferredLanguage.nativeName)
+                    .font(.brand(16)).foregroundStyle(Color.appTextSecondary)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.appTextSecondary)
+        }
+        .padding(18)
+        .background(Color.black.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }
 
     private var healthCard: some View {

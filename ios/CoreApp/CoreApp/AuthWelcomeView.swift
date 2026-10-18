@@ -91,7 +91,7 @@ struct AuthWelcomeView: View {
     }
 
     private func authField(
-        icon: String, placeholder: String, text: Binding<String>, field: Field,
+        icon: String, placeholder: LocalizedStringKey, text: Binding<String>, field: Field,
         keyboard: UIKeyboardType = .default, autocap: TextInputAutocapitalization = .sentences
     ) -> some View {
         HStack(spacing: 12) {

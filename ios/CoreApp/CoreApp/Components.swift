@@ -170,7 +170,7 @@ struct ProgressBarView: View {
 /// "Logout", "Add to cart" ...) — real Liquid Glass via the system's
 /// `.glassProminent` button style, tinted per call site.
 struct PrimaryButton: View {
-    let title: String
+    let title: LocalizedStringKey
     var isEnabled: Bool = true
     /// Shows a spinner in place of the title and blocks taps — for an
     /// action with a real network step (e.g. starting a Stripe payment)

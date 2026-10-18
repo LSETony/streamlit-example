@@ -2,6 +2,33 @@ import Foundation
 import SwiftUI
 import WidgetKit
 
+/// A language core. actually ships translations for (see
+/// Localizable.xcstrings) — not every language iOS itself supports.
+/// `.arabic` additionally flips the whole app to right-to-left (see
+/// CoreAppApp.swift's RootView, which applies both the locale and the
+/// layout direction from AppState.preferredLanguage).
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case english = "en"
+    case russian = "ru"
+    case arabic = "ar"
+
+    var id: String { rawValue }
+
+    /// Shown in its own language (not translated through the current
+    /// locale), like every real iOS language picker — "Русский" reads the
+    /// same regardless of which language is currently selected.
+    var nativeName: String {
+        switch self {
+        case .english: "English"
+        case .russian: "Русский"
+        case .arabic: "العربية"
+        }
+    }
+
+    var locale: Locale { Locale(identifier: rawValue) }
+    var isRightToLeft: Bool { self == .arabic }
+}
+
 /// Single in-memory store for the whole app. Every field here backs one of
 /// the 13 screens in the Figma source (splash, sign-in/OTP, the 4-step
 /// onboarding wizard, Home, Workouts Library, Profile, Trainers,
@@ -12,8 +39,24 @@ final class AppState: ObservableObject {
     init() {
         avatarImageURLString = UserDefaults.standard.string(forKey: Self.avatarImageURLKey)
         avatarPresetID = UserDefaults.standard.string(forKey: Self.avatarPresetIDKey)
+        if let saved = UserDefaults.standard.string(forKey: Self.preferredLanguageKey), let language = AppLanguage(rawValue: saved) {
+            preferredLanguage = language
+        } else {
+            // First launch: default to the device's own language if core.
+            // actually supports it, English otherwise — not forced on
+            // every member regardless of their phone's language.
+            let deviceLanguage = Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier }
+            preferredLanguage = deviceLanguage.flatMap(AppLanguage.init) ?? .english
+        }
         refreshOccupancyNow()
     }
+
+    // MARK: Language
+
+    @Published var preferredLanguage: AppLanguage {
+        didSet { UserDefaults.standard.set(preferredLanguage.rawValue, forKey: Self.preferredLanguageKey) }
+    }
+    private static let preferredLanguageKey = "core.preferredLanguage"
 
     // MARK: Profile
 
