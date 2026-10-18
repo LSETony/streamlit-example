@@ -10,6 +10,7 @@ struct CoreWidgetsBundle: WidgetBundle {
     var body: some Widget {
         WorkoutOfTheDayWidget()
         ProgressAchievementsWidget()
+        HealthMetricsWidget()
         WorkoutLiveActivity()
     }
 }

@@ -359,6 +359,21 @@ final class AppState: ObservableObject {
     @Published var membershipPlanName: String = "Unlimited 24/7"
     @Published var membershipRenewDate: String = "12 Mar 2027"
 
+    // MARK: Health metrics (HealthMetricsView — see AppState+Health.swift)
+    // Every field is nil until refreshHealthMetrics() runs (Apple Health
+    // sync must be on, and the device must actually have that kind of
+    // data) — HealthMetricsView and HealthMetricsWidget both show a plain
+    // empty state per card rather than a fake number when nil.
+    @Published var heartRateBPM: Int?
+    @Published var todaySteps: Int?
+    @Published var hydrationML: Int?
+    @Published var bmi: Double?
+    @Published var sleepMinutesLastNight: Int?
+    @Published var bloodPressureSystolic: Int?
+    @Published var bloodPressureDiastolic: Int?
+    @Published var bloodGlucose: Int?
+    @Published var healthMetricsUpdatedAt: Date?
+
     /// A photo the member uploaded (see uploadAvatarPhoto in
     /// AppState+Avatar.swift) — mutually exclusive with avatarPresetID,
     /// uploading clears the preset and vice versa. Persisted locally

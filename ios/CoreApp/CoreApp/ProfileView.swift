@@ -14,6 +14,7 @@ struct ProfileView: View {
     @State private var isShowingReferral = false
     @State private var isShowingLeaderboard = false
     @State private var isShowingAvatarPicker = false
+    @State private var isShowingHealthMetrics = false
 
     var body: some View {
         NavigationStack {
@@ -53,6 +54,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $isShowingAvatarPicker) {
                 AvatarPickerView()
+            }
+            .sheet(isPresented: $isShowingHealthMetrics) {
+                HealthMetricsView()
             }
         }
     }
@@ -198,18 +202,37 @@ struct ProfileView: View {
     }
 
     private var healthCard: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Apple Health").font(.brand(24)).foregroundStyle(.white)
-                Text(appState.appleHealthSyncEnabled ? "Workouts syncing to Health" : "Disconnected")
-                    .font(.brand(16)).foregroundStyle(Color.appTextSecondary)
+        VStack(spacing: 0) {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Apple Health").font(.brand(24)).foregroundStyle(.white)
+                    Text(appState.appleHealthSyncEnabled ? "Workouts syncing to Health" : "Disconnected")
+                        .font(.brand(16)).foregroundStyle(Color.appTextSecondary)
+                }
+                Spacer()
+                Toggle("", isOn: healthToggleBinding)
+                    .labelsHidden()
+                    .tint(.appAccent)
             }
-            Spacer()
-            Toggle("", isOn: healthToggleBinding)
-                .labelsHidden()
-                .tint(.appAccent)
+            .padding(18)
+
+            AppDivider().padding(.horizontal, 18)
+
+            Button { isShowingHealthMetrics = true } label: {
+                HStack {
+                    Text("Health Metrics")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Color.appTextSecondary)
+                }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 14)
+            }
+            .buttonStyle(.plain)
         }
-        .padding(18)
         .background(Color.black.opacity(0.2))
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
     }

@@ -45,6 +45,7 @@ extension AppState {
         await loadMemberStats()
         await loadProgressPhotos()
         await refreshLiveOccupancy()
+        await refreshHealthMetrics()
     }
 
     // MARK: Bookings
