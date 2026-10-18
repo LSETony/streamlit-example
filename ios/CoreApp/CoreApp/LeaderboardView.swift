@@ -18,7 +18,7 @@ struct LeaderboardView: View {
                             .font(.brand(32))
                             .foregroundStyle(.white)
                         Text("Ranked by total visits, across every core. member.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
@@ -26,7 +26,7 @@ struct LeaderboardView: View {
                         ProgressView().tint(Color.appTextSecondary).frame(maxWidth: .infinity).padding(.top, 40)
                     } else if appState.leaderboard.isEmpty {
                         Text("No check-ins yet — be the first.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     } else {
                         VStack(spacing: 10) {
@@ -62,11 +62,11 @@ struct LeaderboardView: View {
                 .frame(width: 28)
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.isMe ? "You" : entry.displayName)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.uiText(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
                 if entry.streakDays > 0 {
                     Text("\(entry.streakDays)-day streak")
-                        .font(.system(size: 11))
+                        .font(.uiText(size: 11))
                         .foregroundStyle(Color.appTextSecondary)
                 }
             }
@@ -75,7 +75,7 @@ struct LeaderboardView: View {
                 .font(.digitalTimer(18))
                 .foregroundStyle(.white)
             Text("visits")
-                .font(.system(size: 11))
+                .font(.uiText(size: 11))
                 .foregroundStyle(Color.appTextSecondary)
         }
         .padding(14)

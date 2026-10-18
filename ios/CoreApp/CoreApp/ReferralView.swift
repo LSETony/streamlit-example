@@ -24,7 +24,7 @@ struct ReferralView: View {
                             .font(.brand(32))
                             .foregroundStyle(.white)
                         Text("Share your code — every friend who joins with it counts toward both your streaks.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
@@ -33,7 +33,7 @@ struct ReferralView: View {
                             .font(.digitalTimer(40))
                             .foregroundStyle(.white)
                         Text("Your referral code")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.uiText(size: 12, weight: .semibold))
                             .foregroundStyle(Color.appTextSecondary)
                     }
                     .frame(maxWidth: .infinity)

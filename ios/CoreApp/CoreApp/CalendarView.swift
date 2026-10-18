@@ -48,7 +48,7 @@ struct CalendarView: View {
                     EyebrowLabel(text: dayHeaderText)
                     if sessionsOnSelectedDay.isEmpty {
                         Text("No bookings on this day")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                             .padding(.vertical, 8)
                     } else {
@@ -105,9 +105,9 @@ struct CalendarView: View {
     private func bookingRow(_ session: BookedSession) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(session.title).font(.system(size: 14, weight: .semibold)).foregroundStyle(.white)
+                Text(session.title).font(.uiText(size: 14, weight: .semibold)).foregroundStyle(.white)
                 Text("\(session.trainerName) · \(session.date.formatted(date: .abbreviated, time: .shortened))")
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
@@ -116,7 +116,7 @@ struct CalendarView: View {
                 Button("Cancel", role: .destructive) { sessionToCancel = session }
             } label: {
                 Image(systemName: "ellipsis.circle.fill")
-                    .font(.system(size: 20))
+                    .font(.uiText(size: 20))
                     .foregroundStyle(Color.appTextSecondary)
             }
         }

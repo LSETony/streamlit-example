@@ -85,17 +85,55 @@ extension Font {
     static func brand(_ size: CGFloat) -> Font {
         .custom(brandFontOverride ?? "Francy-Regular", size: size)
     }
+
+    /// Drop-in replacement for `.system(size:weight:)` used by every
+    /// ordinary label/body/button string across the app (not just brand
+    /// headlines) — hundreds of call sites. When AppState sets
+    /// `uiFontFamilyOverride` (Russian — see its didSet), this swaps the
+    /// system font for the matching Geologica weight everywhere at once,
+    /// so switching language restyles the whole app, not just titles.
+    /// `nil` (the default, every other language) falls straight back to
+    /// the real system font, unchanged.
+    static var uiFontFamilyOverride: String?
+
+    static func uiText(size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        guard let family = uiFontFamilyOverride else {
+            return .system(size: size, weight: weight)
+        }
+        let suffix: String
+        switch weight {
+        case .bold: suffix = "Bold"
+        case .semibold: suffix = "SemiBold"
+        case .medium: suffix = "Medium"
+        case .light: suffix = "Light"
+        default: suffix = "Regular"
+        }
+        return .custom("\(family)-\(suffix)", size: size)
+    }
 }
 
-/// A small uppercase, letter-spaced label used above sections ("UPCOMING", "CLUB OCCUPANCY", ...).
+/// A small uppercase, letter-spaced label used above sections ("Upcoming", "Club Occupancy", ...).
 struct EyebrowLabel: View {
     let text: String
     var color: Color = .appTextSecondary
 
     var body: some View {
-        Text(text.uppercased())
-            .font(.system(size: 12, weight: .semibold))
+        Text(Self.localizedUppercased(text))
+            .font(.uiText(size: 12, weight: .semibold))
             .tracking(0.6)
             .foregroundStyle(color)
+    }
+
+    /// Runs `text` through the String Catalog first (so a translated
+    /// Russian label gets uppercased, not the English source) and only
+    /// then uppercases — `Text(text.uppercased())` would uppercase the
+    /// English key before lookup, which never matches any catalog entry.
+    /// Looked up against `AppLanguage.current` (the member's in-app
+    /// choice) rather than the default `Locale.current` — `String(localized:)`
+    /// doesn't see SwiftUI's `.environment(\.locale, ...)` override, so
+    /// without this it would follow the device's system language instead
+    /// of the language picked in Profile/sign-in.
+    static func localizedUppercased(_ text: String) -> String {
+        String(localized: String.LocalizationValue(text), locale: AppLanguage.current.locale).uppercased()
     }
 }

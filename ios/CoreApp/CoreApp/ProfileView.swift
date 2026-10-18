@@ -83,9 +83,9 @@ struct ProfileView: View {
     private func communityTile(icon: String, title: String) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(systemName: icon)
-                .font(.system(size: 18, weight: .semibold))
+                .font(.uiText(size: 18, weight: .semibold))
                 .foregroundStyle(Color.appAccent)
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.brand(15))
                 .foregroundStyle(.white)
         }
@@ -101,7 +101,7 @@ struct ProfileView: View {
                 ZStack(alignment: .bottomTrailing) {
                     AvatarView(appState: appState, size: 56)
                     Image(systemName: "pencil.circle.fill")
-                        .font(.system(size: 18))
+                        .font(.uiText(size: 18))
                         .foregroundStyle(.white, Color.appAccentPurple)
                         .background(Circle().fill(Color.appBackground).padding(1))
                 }
@@ -176,7 +176,7 @@ struct ProfileView: View {
     private func plainStat(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(value).font(.digitalTimer(32)).foregroundStyle(.white)
-            Text(label).font(.brand(24)).foregroundStyle(.white)
+            Text(LocalizedStringKey(label)).font(.brand(24)).foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
@@ -216,7 +216,7 @@ struct ProfileView: View {
             }
             Spacer()
             Image(systemName: "chevron.right")
-                .font(.system(size: 13, weight: .semibold))
+                .font(.uiText(size: 13, weight: .semibold))
                 .foregroundStyle(Color.appTextSecondary)
         }
         .padding(18)
@@ -244,11 +244,11 @@ struct ProfileView: View {
             Button { isShowingHealthMetrics = true } label: {
                 HStack {
                     Text("Health Metrics")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.uiText(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.uiText(size: 12, weight: .semibold))
                         .foregroundStyle(Color.appTextSecondary)
                 }
                 .padding(.horizontal, 18)
@@ -306,7 +306,7 @@ private struct MembershipDetailView: View {
                             .font(.digitalTimer(28))
                             .foregroundStyle(.white)
                         Text("Your membership auto-renews on this date unless cancelled.")
-                            .font(.system(size: 13))
+                            .font(.uiText(size: 13))
                             .foregroundStyle(Color.appTextSecondary)
                     }
                     .padding(18)
@@ -320,7 +320,7 @@ private struct MembershipDetailView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 ForEach(plan.perks, id: \.self) { perk in
                                     HStack(spacing: 8) {
-                                        Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.appAccent)
+                                        Image(systemName: "checkmark").font(.uiText(size: 11, weight: .bold)).foregroundStyle(Color.appAccent)
                                         Text(perk).font(.brand(14)).foregroundStyle(Color.appTextSecondary)
                                     }
                                 }

@@ -160,12 +160,12 @@ struct PriceTagFilterSheet: View {
         } label: {
             HStack {
                 Text(option)
-                    .font(.system(size: 14))
+                    .font(.uiText(size: 14))
                     .foregroundStyle(.white)
                 Spacer()
                 if isOn {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 13, weight: .bold))
+                        .font(.uiText(size: 13, weight: .bold))
                         .foregroundStyle(Color.appAccent)
                 }
             }
@@ -205,7 +205,7 @@ struct SearchToolRow: View {
                 } else {
                     Menu {
                         ForEach(sortOptions, id: \.self) { option in
-                            Button(option) { onSortSelect(option) }
+                            Button(LocalizedStringKey(option)) { onSortSelect(option) }
                         }
                     } label: {
                         toolIcon("IconSort")
@@ -280,12 +280,12 @@ struct TrainerDetailView: View {
                             .font(.brand(24))
                             .foregroundStyle(.white)
                         Text(trainer.specialty)
-                            .font(.system(size: 13))
+                            .font(.uiText(size: 13))
                             .foregroundStyle(Color.appTextSecondary)
                         HStack(spacing: 10) {
                             Text(trainer.rating).font(.digitalTimer(16)).foregroundStyle(Color.appAccent)
                             Text("\(trainer.reviews) reviews · \(trainer.yearsExperience)")
-                                .font(.system(size: 12))
+                                .font(.uiText(size: 12))
                                 .foregroundStyle(Color.appTextSecondary)
                         }
                     }
@@ -294,7 +294,7 @@ struct TrainerDetailView: View {
                 HStack(spacing: 8) {
                     ForEach(trainer.tags, id: \.self) { tag in
                         Text(tag)
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.uiText(size: 12, weight: .semibold))
                             .foregroundStyle(Color.appAccent)
                             .padding(.horizontal, 13)
                             .padding(.vertical, 7)
@@ -304,7 +304,7 @@ struct TrainerDetailView: View {
                 }
 
                 Text(trainer.bio)
-                    .font(.system(size: 14))
+                    .font(.uiText(size: 14))
                     .foregroundStyle(Color.appTextSecondary)
                     .lineSpacing(4)
 
@@ -353,7 +353,7 @@ struct TrainerDetailView: View {
     private func statBlock(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(value).font(.digitalTimer(20)).foregroundStyle(.white)
-            Text(label.uppercased()).font(.system(size: 10, weight: .semibold)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
+            Text(label.uppercased()).font(.uiText(size: 10, weight: .semibold)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)

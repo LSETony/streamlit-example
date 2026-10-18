@@ -24,7 +24,7 @@ struct ProgressPhotosView: View {
                             .font(.brand(32))
                             .foregroundStyle(.white)
                         Text("A private before/after timeline — newest first.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
@@ -37,7 +37,7 @@ struct ProgressPhotosView: View {
                             }
                             Text(isUploading ? "Uploading…" : "Add a photo")
                         }
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.uiText(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -48,7 +48,7 @@ struct ProgressPhotosView: View {
 
                     if appState.progressPhotos.isEmpty {
                         Text("No photos yet — add your first to start the timeline.")
-                            .font(.system(size: 13))
+                            .font(.uiText(size: 13))
                             .foregroundStyle(Color.appTextSecondary)
                     } else {
                         LazyVGrid(columns: columns, spacing: 10) {
@@ -95,7 +95,7 @@ struct ProgressPhotosView: View {
         .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
         .overlay(alignment: .bottomLeading) {
             Text(photo.takenAt.formatted(date: .abbreviated, time: .omitted))
-                .font(.system(size: 10, weight: .semibold))
+                .font(.uiText(size: 10, weight: .semibold))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)

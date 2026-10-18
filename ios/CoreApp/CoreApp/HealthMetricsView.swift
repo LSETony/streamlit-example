@@ -46,7 +46,7 @@ struct HealthMetricsView: View {
                         }
                         if let updatedAt = appState.healthMetricsUpdatedAt {
                             Text("Updated \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                                .font(.system(size: 11))
+                                .font(.uiText(size: 11))
                                 .foregroundStyle(Color.appTextSecondary)
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
@@ -71,10 +71,10 @@ struct HealthMetricsView: View {
     private var connectPrompt: some View {
         VStack(spacing: 14) {
             Image(systemName: "heart.text.square.fill")
-                .font(.system(size: 34, weight: .semibold))
+                .font(.uiText(size: 34, weight: .semibold))
                 .foregroundStyle(Color.appAccent)
             Text("Connect Apple Health to see your heart rate, steps, sleep and more here.")
-                .font(.system(size: 14))
+                .font(.uiText(size: 14))
                 .foregroundStyle(Color.appTextSecondary)
                 .multilineTextAlignment(.center)
             PrimaryButton(title: "Connect Apple Health", color: .appAccentPurple) {
@@ -175,10 +175,10 @@ struct HealthMetricsView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 6) {
                 Image(systemName: icon)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.uiText(size: 13, weight: .semibold))
                     .foregroundStyle(color)
-                Text(title.uppercased())
-                    .font(.system(size: 10, weight: .semibold))
+                Text(EyebrowLabel.localizedUppercased(title))
+                    .font(.uiText(size: 10, weight: .semibold))
                     .tracking(0.3)
                     .foregroundStyle(Color.appTextSecondary)
             }
@@ -196,13 +196,13 @@ struct HealthMetricsView: View {
     private func statValue(_ value: String, unit: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 4) {
             Text(value).font(.digitalTimer(22)).foregroundStyle(.white)
-            Text(unit).font(.system(size: 11, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
+            Text(LocalizedStringKey(unit)).font(.uiText(size: 11, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
         }
     }
 
     private var noData: some View {
         Text("No data")
-            .font(.system(size: 13))
+            .font(.uiText(size: 13))
             .foregroundStyle(Color.appTextSecondary.opacity(0.6))
     }
 

@@ -43,7 +43,7 @@ struct WorkoutsView: View {
                         Button { isShowingCustomBuilder = true } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: "slider.horizontal.3")
-                                    .font(.system(size: 17, weight: .semibold))
+                                    .font(.uiText(size: 17, weight: .semibold))
                                     .foregroundStyle(.white)
                                     .frame(width: 40, height: 40)
                                     .glassEffect(.regular.tint(.appAccentPurple.opacity(0.6)), in: Circle())
@@ -52,12 +52,12 @@ struct WorkoutsView: View {
                                         .font(.brand(15))
                                         .foregroundStyle(.white)
                                     Text("Pick a zone, choose your exercises")
-                                        .font(.system(size: 12))
+                                        .font(.uiText(size: 12))
                                         .foregroundStyle(Color.appTextSecondary)
                                 }
                                 Spacer()
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: 13, weight: .semibold))
+                                    .font(.uiText(size: 13, weight: .semibold))
                                     .foregroundStyle(Color.appTextSecondary)
                             }
                             .padding(14)
@@ -73,7 +73,7 @@ struct WorkoutsView: View {
                             HStack(spacing: 8) {
                                 ForEach(libraryFilters, id: \.self) { filter in
                                     let on = libraryFilter == filter
-                                    Text(filter)
+                                    Text(LocalizedStringKey(filter))
                                         .font(.brand(16))
                                         .foregroundStyle(on ? .white : Color.appTextPrimary)
                                         .padding(.horizontal, 16)
@@ -128,7 +128,7 @@ struct WorkoutsView: View {
 
                         if filteredBeginnerPlanCards.isEmpty && filteredTopWorkoutCards.isEmpty {
                             Text("No \(libraryFilter.lowercased()) workouts yet.")
-                                .font(.system(size: 14))
+                                .font(.uiText(size: 14))
                                 .foregroundStyle(Color.appTextSecondary)
                         }
 
@@ -179,7 +179,7 @@ struct WorkoutsView: View {
     }
 
     private func sectionLabel(_ text: String) -> some View {
-        Text(text)
+        Text(LocalizedStringKey(text))
             .font(.brand(20))
             .foregroundStyle(.white)
     }
@@ -229,7 +229,7 @@ private struct ImportantCardTile: View {
         Button(action: onOpen) {
             VStack(alignment: .leading, spacing: 0) {
                 Image(systemName: card.icon)
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.uiText(size: 20, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
                     .background(.white.opacity(0.16))

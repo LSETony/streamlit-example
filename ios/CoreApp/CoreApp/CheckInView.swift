@@ -44,13 +44,13 @@ struct CheckInView: View {
                         Spacer()
                         VStack(spacing: 10) {
                             Text("Scan the check-in QR at reception")
-                                .font(.system(size: 13, weight: .semibold))
+                                .font(.uiText(size: 13, weight: .semibold))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 10)
                                 .glassEffect(.regular, in: Capsule())
                             Button("Don't have a code? Show a test one") { isShowingTestCode = true }
-                                .font(.system(size: 12, weight: .semibold))
+                                .font(.uiText(size: 12, weight: .semibold))
                                 .foregroundStyle(Color.appAccent)
                         }
                         .padding(.bottom, 40)
@@ -88,13 +88,13 @@ struct CheckInView: View {
     private var successState: some View {
         VStack(spacing: 16) {
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
+                .font(.uiText(size: 64))
                 .foregroundStyle(Color.appSuccess)
             Text("You're checked in!")
                 .font(.brand(24))
                 .foregroundStyle(.white)
             Text("\(appState.streakDays)-day streak · \(appState.totalVisits) total visits")
-                .font(.system(size: 13))
+                .font(.uiText(size: 13))
                 .foregroundStyle(Color.appTextSecondary)
             PrimaryButton(title: "Done") { dismiss() }
                 .padding(.top, 8)
@@ -105,10 +105,10 @@ struct CheckInView: View {
     private var unavailableState: some View {
         VStack(spacing: 16) {
             Image(systemName: "camera.metering.unknown")
-                .font(.system(size: 40))
+                .font(.uiText(size: 40))
                 .foregroundStyle(Color.appTextSecondary)
             Text("Scanning needs a real iPhone camera — it isn't available in the Simulator or on this device.")
-                .font(.system(size: 14))
+                .font(.uiText(size: 14))
                 .foregroundStyle(Color.appTextSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
@@ -179,7 +179,7 @@ private struct CheckInPosterView: View {
                     .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCorner, style: .continuous))
             }
             Text("Print this at reception, or scan it from another device to test check-in.")
-                .font(.system(size: 12))
+                .font(.uiText(size: 12))
                 .foregroundStyle(Color.appTextSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)

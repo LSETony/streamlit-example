@@ -53,12 +53,12 @@ struct LanguagePickerView: View {
         } label: {
             HStack {
                 Text(language.nativeName)
-                    .font(.system(size: 16, weight: .medium))
+                    .font(.uiText(size: 16, weight: .medium))
                     .foregroundStyle(.white)
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.uiText(size: 14, weight: .bold))
                         .foregroundStyle(Color.appAccentPurple)
                 }
             }

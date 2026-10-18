@@ -24,7 +24,7 @@ enum NotificationService {
         requestAuthorizationIfNeeded()
         guard let fireDate = Calendar.current.date(byAdding: .hour, value: -1, to: date), fireDate > Date() else { return }
         let content = UNMutableNotificationContent()
-        content.title = "Starting in an hour"
+        content.title = String(localized: "Starting in an hour", locale: AppLanguage.current.locale)
         content.body = trainerName.isEmpty ? title : "\(title) with \(trainerName)"
         content.sound = .default
         schedule(identifier: "session-\(id.uuidString)", content: content, fireDate: fireDate)
@@ -38,7 +38,7 @@ enum NotificationService {
         requestAuthorizationIfNeeded()
         guard let fireDate = Calendar.current.date(byAdding: .hour, value: -1, to: date), fireDate > Date() else { return }
         let content = UNMutableNotificationContent()
-        content.title = "Event starting soon"
+        content.title = String(localized: "Event starting soon", locale: AppLanguage.current.locale)
         content.body = "\(title) starts in an hour."
         content.sound = .default
         schedule(identifier: "event-\(id.uuidString)", content: content, fireDate: fireDate)
@@ -56,7 +56,7 @@ enum NotificationService {
         components.hour = 10
         guard let fireDate = Calendar.current.date(from: components), fireDate > Date() else { return }
         let content = UNMutableNotificationContent()
-        content.title = "Subscription renewing soon"
+        content.title = String(localized: "Subscription renewing soon", locale: AppLanguage.current.locale)
         content.body = "Your \(planName) plan renews in \(daysBefore) days."
         content.sound = .default
         schedule(identifier: "renewal", content: content, fireDate: fireDate)

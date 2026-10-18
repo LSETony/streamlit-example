@@ -85,7 +85,7 @@ private struct PlanCard: View {
         VStack(alignment: .leading, spacing: 18) {
             if plan.recommended {
                 Text("MOST POPULAR")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.uiText(size: 10, weight: .bold))
                     .tracking(0.6)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
@@ -110,10 +110,10 @@ private struct PlanCard: View {
                 ForEach(plan.perks, id: \.self) { perk in
                     HStack(spacing: 10) {
                         Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 16))
+                            .font(.uiText(size: 16))
                             .foregroundStyle(plan.recommended ? Color.appAccentPurple : Color.appAccent)
                         Text(perk)
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(.white.opacity(0.9))
                     }
                 }

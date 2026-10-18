@@ -49,7 +49,7 @@ struct GymPhotoViewer: View {
                         .font(.brand(24))
                         .foregroundStyle(.white)
                     Text(appState.clubAddress)
-                        .font(.system(size: 14))
+                        .font(.uiText(size: 14))
                         .foregroundStyle(Color.appTextSecondary)
                 }
 
@@ -64,7 +64,7 @@ struct GymPhotoViewer: View {
                 }
 
                 Text(appState.clubDescription)
-                    .font(.system(size: 14))
+                    .font(.uiText(size: 14))
                     .foregroundStyle(Color.appTextSecondary)
                     .lineSpacing(4)
                     .appCard(padding: 16)
@@ -86,8 +86,8 @@ struct GymPhotoViewer: View {
 
     private func infoChipLabel(icon: String, text: String) -> some View {
         HStack(spacing: 6) {
-            Image(systemName: icon).font(.system(size: 12, weight: .semibold))
-            Text(text).font(.system(size: 13, weight: .semibold))
+            Image(systemName: icon).font(.uiText(size: 12, weight: .semibold))
+            Text(LocalizedStringKey(text)).font(.uiText(size: 13, weight: .semibold))
         }
         .foregroundStyle(.white)
         .padding(.horizontal, 14)

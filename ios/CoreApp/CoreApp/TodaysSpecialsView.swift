@@ -19,13 +19,13 @@ struct TodaysSpecialsView: View {
                             .font(.brand(32))
                             .foregroundStyle(.white)
                         Text("Unbooked trainer slots, discounted so they don't go to waste.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
                     if appState.todaysSpecials.isEmpty {
                         Text("No leftover slots right now — check back later today.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     } else {
                         GlassEffectContainer(spacing: 12) {
@@ -64,17 +64,17 @@ struct TodaysSpecialsView: View {
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(special.trainer.name)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.uiText(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
                     Text("\(special.trainer.specialty) · Today \(special.time)")
-                        .font(.system(size: 12))
+                        .font(.uiText(size: 12))
                         .foregroundStyle(Color.appTextSecondary)
                 }
 
                 Spacer(minLength: 8)
 
                 Text("-\(special.discountPercent)%")
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.uiText(size: 11, weight: .bold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
@@ -84,7 +84,7 @@ struct TodaysSpecialsView: View {
             HStack(alignment: .firstTextBaseline) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text("$\(special.originalPrice)")
-                        .font(.system(size: 13))
+                        .font(.uiText(size: 13))
                         .foregroundStyle(Color.appTextSecondary)
                         .strikethrough()
                     Text("$\(special.discountedPrice)")
@@ -99,7 +99,7 @@ struct TodaysSpecialsView: View {
                     bookedSpecialIDs.insert(special.id)
                 } label: {
                     Text(isBooked ? "✓ Booked" : "Book")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.uiText(size: 13, weight: .semibold))
                         .foregroundStyle(.white)
                         .padding(.horizontal, isBooked ? 14 : 20)
                         .padding(.vertical, 9)

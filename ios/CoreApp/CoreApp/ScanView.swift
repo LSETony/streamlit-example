@@ -44,7 +44,7 @@ struct ScanView: View {
                 VStack {
                     Spacer()
                     Text("Point the camera at a supplement label")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.uiText(size: 13, weight: .semibold))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
@@ -81,10 +81,10 @@ struct ScanView: View {
     private var unavailableState: some View {
         VStack(spacing: 16) {
             Image(systemName: "camera.metering.unknown")
-                .font(.system(size: 40))
+                .font(.uiText(size: 40))
                 .foregroundStyle(Color.appTextSecondary)
             Text("Scanning needs a real iPhone camera — it isn't available in the Simulator or on this device.")
-                .font(.system(size: 14))
+                .font(.uiText(size: 14))
                 .foregroundStyle(Color.appTextSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
@@ -166,7 +166,7 @@ private struct ScanResultView: View {
                 .font(.brand(28))
                 .foregroundStyle(.white)
             Text(description)
-                .font(.system(size: 14))
+                .font(.uiText(size: 14))
                 .foregroundStyle(Color.appTextSecondary)
                 .lineSpacing(3)
         }
@@ -176,7 +176,7 @@ private struct ScanResultView: View {
         VStack(alignment: .leading, spacing: 6) {
             EyebrowLabel(text: title)
             Text(text)
-                .font(.system(size: 14))
+                .font(.uiText(size: 14))
                 .foregroundStyle(.white)
                 .lineSpacing(3)
         }

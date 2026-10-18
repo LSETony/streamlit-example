@@ -68,7 +68,7 @@ struct EventsView: View {
                             .font(.brand(32))
                             .foregroundStyle(.white)
                         Text("What's on this month — tap Join to reserve a spot.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
@@ -97,16 +97,16 @@ struct EventsView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 10) {
                 Image(systemName: event.icon)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.uiText(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 36, height: 36)
                     .glassEffect(.regular.tint(.appAccentPurple.opacity(0.5)), in: Circle())
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(event.title)
+                    Text(LocalizedStringKey(event.title))
                         .font(.brand(17))
                         .foregroundStyle(.white)
                     Text("\(event.dateLabel) · \(event.timeLabel)")
-                        .font(.system(size: 11, weight: .bold))
+                        .font(.uiText(size: 11, weight: .bold))
                         .tracking(0.3)
                         .foregroundStyle(Color.appAccent)
                         .padding(.horizontal, 8)
@@ -116,8 +116,8 @@ struct EventsView: View {
                 Spacer()
             }
 
-            Text(event.description)
-                .font(.system(size: 13))
+            Text(LocalizedStringKey(event.description))
+                .font(.uiText(size: 13))
                 .foregroundStyle(Color.appTextSecondary)
                 .lineSpacing(3)
 
@@ -125,7 +125,7 @@ struct EventsView: View {
 
             HStack {
                 Text(isJoined ? "You're in!" : "\(event.spotsLeft) spots left")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.uiText(size: 12, weight: .semibold))
                     .foregroundStyle(isJoined ? Color.appSuccess : Color.appTextSecondary)
                 Spacer()
                 Button {
@@ -139,10 +139,10 @@ struct EventsView: View {
                     }
                 } label: {
                     HStack(spacing: 4) {
-                        if isJoined { Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)) }
+                        if isJoined { Image(systemName: "checkmark").font(.uiText(size: 11, weight: .bold)) }
                         Text(isJoined ? "Joined" : "Join")
                     }
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.uiText(size: 13, weight: .semibold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 9)

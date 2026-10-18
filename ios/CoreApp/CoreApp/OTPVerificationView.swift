@@ -36,7 +36,7 @@ struct OTPVerificationView: View {
                             .foregroundStyle(.white)
                             .shadow(color: .black.opacity(0.5), radius: 8, y: 2)
                         Text("Enter the code we sent to \(email)")
-                            .font(.system(size: 15))
+                            .font(.uiText(size: 15))
                             .foregroundStyle(.white.opacity(0.85))
                             .shadow(color: .black.opacity(0.5), radius: 6, y: 1)
                             .multilineTextAlignment(.center)
@@ -70,11 +70,11 @@ struct OTPVerificationView: View {
 
                     HStack(spacing: 4) {
                         Text("Didn't get a code?")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                         if secondsRemaining > 0 {
                             Text("Resend in \(String(format: "%02d:%02d", secondsRemaining / 60, secondsRemaining % 60))")
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.uiText(size: 14, weight: .semibold))
                                 .foregroundStyle(Color.appAccent)
                         } else {
                             Button("Resend") {
@@ -82,7 +82,7 @@ struct OTPVerificationView: View {
                                 startCountdown()
                                 Task { _ = await authService.startEmailRegistration(email: email) }
                             }
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.uiText(size: 14, weight: .semibold))
                             .foregroundStyle(Color.appAccent)
                         }
                     }
@@ -113,7 +113,7 @@ struct OTPVerificationView: View {
         let isActive = isCodeFieldFocused && index == code.count
         return Text(digit)
             .multilineTextAlignment(.center)
-            .font(.system(size: 17, weight: .semibold))
+            .font(.uiText(size: 17, weight: .semibold))
             .foregroundStyle(.white)
             .frame(width: 34, height: 46)
             .background(Color.appSurface)

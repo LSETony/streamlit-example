@@ -62,7 +62,7 @@ struct StoreView: View {
                         Image(systemName: "cart.fill").foregroundStyle(Color.appAccent)
                         if appState.cartCount > 0 {
                             Text("\(appState.cartCount)")
-                                .font(.system(size: 10, weight: .bold))
+                                .font(.uiText(size: 10, weight: .bold))
                                 .foregroundStyle(.white)
                                 .frame(minWidth: 15, minHeight: 15)
                                 .background(Color.appAccent)
@@ -132,7 +132,7 @@ private struct ProductTile: View {
                     Spacer()
                     Button(action: onAdd) {
                         Image(systemName: "plus")
-                            .font(.system(size: 13, weight: .bold))
+                            .font(.uiText(size: 13, weight: .bold))
                             .foregroundStyle(.white)
                             .frame(width: 30, height: 30)
                     }
@@ -165,24 +165,24 @@ struct ProductDetailView: View {
                 .frame(height: 150)
 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(product.tag.uppercased()).font(.system(size: 11, weight: .semibold)).tracking(0.4).foregroundStyle(product.tagColor)
+                    Text(product.tag.uppercased()).font(.uiText(size: 11, weight: .semibold)).tracking(0.4).foregroundStyle(product.tagColor)
                     Text(product.name).font(.brand(26)).foregroundStyle(.white)
-                    Text("\(product.form) · \(product.dose) · \(product.count)").font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
+                    Text("\(product.form) · \(product.dose) · \(product.count)").font(.uiText(size: 13)).foregroundStyle(Color.appTextSecondary)
                 }
 
                 HStack(spacing: 10) {
                     Text("\(product.price)$").font(.digitalTimer(28)).foregroundStyle(.white)
-                    Text("or \(product.subscriptionPrice)$ on subscription").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    Text("or \(product.subscriptionPrice)$ on subscription").font(.uiText(size: 12)).foregroundStyle(Color.appTextSecondary)
                 }
 
-                Text(product.desc).font(.system(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
+                Text(product.desc).font(.uiText(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
 
                 VStack(alignment: .leading, spacing: 14) {
                     VStack(alignment: .leading, spacing: 10) {
                         EyebrowLabel(text: "Ingredients per serving")
                         ForEach(product.ingredients) { ingredient in
                             HStack {
-                                Text(ingredient.name).font(.system(size: 14)).foregroundStyle(.white)
+                                Text(ingredient.name).font(.uiText(size: 14)).foregroundStyle(.white)
                                 Spacer()
                                 Text(ingredient.amount).font(.digitalTimer(13)).foregroundStyle(Color.appTextSecondary)
                             }
@@ -192,15 +192,15 @@ struct ProductDetailView: View {
                     }
                     VStack(alignment: .leading, spacing: 6) {
                         EyebrowLabel(text: "Benefits")
-                        Text(product.benefits).font(.system(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
+                        Text(product.benefits).font(.uiText(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
                     }
                     VStack(alignment: .leading, spacing: 6) {
                         EyebrowLabel(text: "Risks and cautions", color: .appWarning)
-                        Text(product.risks).font(.system(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
+                        Text(product.risks).font(.uiText(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
                     }
                     VStack(alignment: .leading, spacing: 6) {
                         EyebrowLabel(text: "Interactions", color: .appWarning)
-                        Text(product.interactions).font(.system(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
+                        Text(product.interactions).font(.uiText(size: 14)).foregroundStyle(Color.appTextSecondary).lineSpacing(4)
                     }
                 }
                 .appCard(padding: 20)

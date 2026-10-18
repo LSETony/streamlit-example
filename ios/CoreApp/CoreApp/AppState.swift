@@ -22,6 +22,18 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     }
 
     var locale: Locale { Locale(identifier: rawValue) }
+
+    /// Reads the persisted language preference directly — for code (like
+    /// NotificationService, which schedules local notifications outside
+    /// any SwiftUI view and has no `appState` to read) that still needs to
+    /// localize into the member's chosen in-app language rather than the
+    /// device's system language, which may differ.
+    static var current: AppLanguage {
+        if let saved = UserDefaults.standard.string(forKey: "core.preferredLanguage"), let language = AppLanguage(rawValue: saved) {
+            return language
+        }
+        return .english
+    }
 }
 
 /// Single in-memory store for the whole app. Every field here backs one of
@@ -51,7 +63,9 @@ final class AppState: ObservableObject {
     @Published var preferredLanguage: AppLanguage {
         didSet {
             UserDefaults.standard.set(preferredLanguage.rawValue, forKey: Self.preferredLanguageKey)
-            Font.brandFontOverride = preferredLanguage == .russian ? "Geologica-SemiBold" : nil
+            let usesGeologica = preferredLanguage == .russian
+            Font.brandFontOverride = usesGeologica ? "Geologica-SemiBold" : nil
+            Font.uiFontFamilyOverride = usesGeologica ? "Geologica" : nil
         }
     }
     private static let preferredLanguageKey = "core.preferredLanguage"

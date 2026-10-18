@@ -43,21 +43,21 @@ struct BookZoneView: View {
         Button { selectedZone = zone } label: {
             HStack(spacing: 14) {
                 Image(systemName: zone.icon)
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.uiText(size: 20, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 48, height: 48)
                     .background(Color.appAccentPurple)
                     .clipShape(Circle())
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(zone.name).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                    Text(zone.subtitle).font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    Text(LocalizedStringKey(zone.name)).font(.uiText(size: 15, weight: .semibold)).foregroundStyle(.white)
+                    Text(LocalizedStringKey(zone.subtitle)).font(.uiText(size: 12)).foregroundStyle(Color.appTextSecondary)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
                     Text("\(zone.capacity)").font(.digitalTimer(16)).foregroundStyle(.white)
-                    Text("cap.").font(.system(size: 10, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
+                    Text("cap.").font(.uiText(size: 10, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
                 }
-                Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
+                Image(systemName: "chevron.right").font(.uiText(size: 12, weight: .semibold)).foregroundStyle(Color.appTextSecondary)
             }
             .padding(14)
             .background(Color.appSurface)
@@ -80,14 +80,14 @@ private struct ZoneBookingView: View {
             VStack(alignment: .leading, spacing: 18) {
                 HStack(spacing: 14) {
                     Image(systemName: zone.icon)
-                        .font(.system(size: 24, weight: .semibold))
+                        .font(.uiText(size: 24, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(width: 56, height: 56)
                         .background(Color.appAccentPurple)
                         .clipShape(Circle())
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(zone.name).font(.brand(22)).foregroundStyle(.white)
-                        Text(zone.subtitle).font(.system(size: 13)).foregroundStyle(Color.appTextSecondary)
+                        Text(LocalizedStringKey(zone.name)).font(.brand(22)).foregroundStyle(.white)
+                        Text(LocalizedStringKey(zone.subtitle)).font(.uiText(size: 13)).foregroundStyle(Color.appTextSecondary)
                     }
                 }
 

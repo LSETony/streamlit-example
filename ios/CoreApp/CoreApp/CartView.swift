@@ -41,7 +41,7 @@ struct CartView: View {
         VStack(spacing: 12) {
             Spacer()
             Image(systemName: "cart")
-                .font(.system(size: 40))
+                .font(.uiText(size: 40))
                 .foregroundStyle(Color.appTextSecondary)
             Text("Your cart is empty")
                 .font(.brand(18))
@@ -85,7 +85,7 @@ struct CartView: View {
     private func cartRow(_ line: CartLine) -> some View {
         HStack(spacing: 12) {
             Text(line.name)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.uiText(size: 14, weight: .semibold))
                 .foregroundStyle(.white)
             Spacer()
             Text("\(line.price)$")

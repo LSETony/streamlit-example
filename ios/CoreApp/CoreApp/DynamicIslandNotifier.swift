@@ -133,20 +133,20 @@ private struct DynamicIslandNotificationView: View {
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: notification.icon)
-                .font(.system(size: 14, weight: .bold))
+                .font(.uiText(size: 14, weight: .bold))
                 .foregroundStyle(.white)
                 .frame(width: 28, height: 28)
                 .background(notification.accent)
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(notification.title)
-                    .font(.system(size: 13, weight: .semibold))
+                Text(LocalizedStringKey(notification.title))
+                    .font(.uiText(size: 13, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                 if let subtitle = notification.subtitle {
-                    Text(subtitle)
-                        .font(.system(size: 11))
+                    Text(LocalizedStringKey(subtitle))
+                        .font(.uiText(size: 11))
                         .foregroundStyle(.white.opacity(0.7))
                         .lineLimit(1)
                 }

@@ -49,7 +49,7 @@ struct GymSafetyView: View {
                             .font(.brand(32))
                             .foregroundStyle(.white)
                         Text("Rules and equipment guide for using the club safely.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
@@ -57,11 +57,11 @@ struct GymSafetyView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             HStack(spacing: 10) {
                                 Image(systemName: section.icon)
-                                    .font(.system(size: 15, weight: .semibold))
+                                    .font(.uiText(size: 15, weight: .semibold))
                                     .foregroundStyle(.white)
                                     .frame(width: 34, height: 34)
                                     .glassEffect(.regular.tint(.appAccentPurple.opacity(0.5)), in: Circle())
-                                Text(section.title)
+                                Text(LocalizedStringKey(section.title))
                                     .font(.brand(18))
                                     .foregroundStyle(.white)
                             }
@@ -70,11 +70,11 @@ struct GymSafetyView: View {
                                     if index > 0 { AppDivider() }
                                     HStack(alignment: .top, spacing: 10) {
                                         Image(systemName: "checkmark.circle.fill")
-                                            .font(.system(size: 14))
+                                            .font(.uiText(size: 14))
                                             .foregroundStyle(Color.appAccent)
                                             .padding(.top, 1)
-                                        Text(rule)
-                                            .font(.system(size: 14))
+                                        Text(LocalizedStringKey(rule))
+                                            .font(.uiText(size: 14))
                                             .foregroundStyle(.white.opacity(0.9))
                                             .lineSpacing(2)
                                     }

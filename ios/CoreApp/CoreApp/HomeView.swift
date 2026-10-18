@@ -106,7 +106,7 @@ struct HomeView: View {
                                 .foregroundStyle(.white)
                                 .shadow(radius: 6)
                             Image(systemName: "chevron.down")
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.uiText(size: 12, weight: .bold))
                                 .foregroundStyle(.white)
                         }
                     }
@@ -144,7 +144,7 @@ struct HomeView: View {
                     .foregroundStyle(.white)
                     .minimumScaleFactor(0.6)
                     .lineLimit(1)
-                Text(trafficLabel)
+                Text(LocalizedStringKey(trafficLabel))
                     .font(.digitalTimer(13))
                     .foregroundStyle(.white)
                 Spacer(minLength: 8)
@@ -168,7 +168,7 @@ struct HomeView: View {
                     .foregroundStyle(.white)
                 if !appState.todaysSpecials.isEmpty {
                     Text("\(appState.todaysSpecials.count) unbooked slots, discounted")
-                        .font(.system(size: 12))
+                        .font(.uiText(size: 12))
                         .foregroundStyle(.white.opacity(0.75))
                 }
                 Spacer(minLength: 8)
@@ -183,7 +183,7 @@ struct HomeView: View {
     }
 
     private func glassPillLabel(_ text: String, tint: Color, bold: Bool = false) -> some View {
-        Text(text)
+        Text(LocalizedStringKey(text))
             .font(.brand(bold ? 12 : 10))
             .fontWeight(bold ? .bold : .regular)
             .foregroundStyle(.white)
@@ -223,7 +223,7 @@ struct HomeView: View {
             activeSheet = .progress
         } label: {
             VStack(alignment: .leading, spacing: 10) {
-                Text(label)
+                Text(LocalizedStringKey(label))
                     .font(.brand(16))
                     .foregroundStyle(.white)
                 Text(value)
@@ -264,14 +264,14 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Group {
                     if isSystemIcon {
-                        Image(systemName: icon).font(.system(size: 26, weight: .semibold))
+                        Image(systemName: icon).font(.uiText(size: 26, weight: .semibold))
                     } else {
                         Image(icon).customIcon(size: 28)
                     }
                 }
                 .foregroundStyle(.white)
                 Spacer(minLength: 0)
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.brand(14))
                     .foregroundStyle(.white)
             }

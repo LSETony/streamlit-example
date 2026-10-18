@@ -27,7 +27,7 @@ struct QRPassView: View {
                             .font(.brand(20))
                             .foregroundStyle(.black)
                         Text("Member since \(appState.memberSince)")
-                            .font(.system(size: 12))
+                            .font(.uiText(size: 12))
                             .foregroundStyle(.black.opacity(0.55))
                     }
                 }
@@ -36,7 +36,7 @@ struct QRPassView: View {
                 .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
 
                 Text("Show this code at the turnstile or reception to check in")
-                    .font(.system(size: 13))
+                    .font(.uiText(size: 13))
                     .foregroundStyle(Color.appTextSecondary)
                     .multilineTextAlignment(.center)
                     .screenPadding()

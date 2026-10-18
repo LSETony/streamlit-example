@@ -66,7 +66,7 @@ struct OccupancyDetailView: View {
                             .annotation(position: .top) {
                                 if point.isNow {
                                     Text("NOW")
-                                        .font(.system(size: 9, weight: .bold))
+                                        .font(.uiText(size: 9, weight: .bold))
                                         .tracking(0.4)
                                         .foregroundStyle(Color.appAccent)
                                 }
@@ -129,10 +129,10 @@ struct OccupancyDetailView: View {
     private func infoTile(icon: String, title: String, value: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(systemName: icon)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.uiText(size: 15, weight: .semibold))
                 .foregroundStyle(color)
             Text(value).font(.digitalTimer(28)).foregroundStyle(.white)
-            Text(title.uppercased()).font(.system(size: 10, weight: .semibold)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
+            Text(EyebrowLabel.localizedUppercased(title)).font(.uiText(size: 10, weight: .semibold)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)

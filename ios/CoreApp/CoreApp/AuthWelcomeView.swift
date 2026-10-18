@@ -48,7 +48,7 @@ struct AuthWelcomeView: View {
 
                         HStack(spacing: 12) {
                             Rectangle().fill(.white.opacity(0.25)).frame(height: 1)
-                            Text("or").font(.system(size: 13)).foregroundStyle(.white.opacity(0.75))
+                            Text("or").font(.uiText(size: 13)).foregroundStyle(.white.opacity(0.75))
                             Rectangle().fill(.white.opacity(0.25)).frame(height: 1)
                         }
 
@@ -97,7 +97,7 @@ struct AuthWelcomeView: View {
                 .shadow(color: .black.opacity(0.5), radius: 8, y: 2)
 
             Text("Sign in or create your account")
-                .font(.system(size: 15))
+                .font(.uiText(size: 15))
                 .foregroundStyle(.white.opacity(0.85))
                 .shadow(color: .black.opacity(0.5), radius: 6, y: 1)
         }
@@ -110,11 +110,11 @@ struct AuthWelcomeView: View {
     ) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.uiText(size: 15, weight: .semibold))
                 .foregroundStyle(focusedField == field ? Color.appAccentPurple : Color.appTextSecondary)
                 .frame(width: 18)
             TextField("", text: text, prompt: Text(placeholder).foregroundStyle(Color.appTextSecondary))
-                .font(.system(size: 17))
+                .font(.uiText(size: 17))
                 .foregroundStyle(.white)
                 .keyboardType(keyboard)
                 .textInputAutocapitalization(autocap)
@@ -140,8 +140,8 @@ struct AuthWelcomeView: View {
     private func appleButton(action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                Image(systemName: "apple.logo").font(.system(size: 19, weight: .medium))
-                Text("Sign in with Apple").font(.system(size: 17, weight: .semibold))
+                Image(systemName: "apple.logo").font(.uiText(size: 19, weight: .medium))
+                Text("Sign in with Apple").font(.uiText(size: 17, weight: .semibold))
             }
             .foregroundStyle(.black)
             .frame(maxWidth: .infinity)
@@ -161,9 +161,9 @@ struct AuthWelcomeView: View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Text("G")
-                    .font(.system(size: 19, weight: .bold))
+                    .font(.uiText(size: 19, weight: .bold))
                     .foregroundStyle(Color(red: 0.26, green: 0.52, blue: 0.96))
-                Text("Sign in with Google").font(.system(size: 17, weight: .semibold))
+                Text("Sign in with Google").font(.uiText(size: 17, weight: .semibold))
             }
             .foregroundStyle(.black)
             .frame(maxWidth: .infinity)

@@ -33,12 +33,12 @@ struct CustomWorkoutBuilderView: View {
                             .font(.brand(28))
                             .foregroundStyle(.white)
                         Text("Pick a zone to focus on, then choose which exercises to include.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("FOCUS ZONE").font(.system(size: 11, weight: .semibold)).tracking(0.5).foregroundStyle(Color.appTextSecondary)
+                        Text("FOCUS ZONE").font(.uiText(size: 11, weight: .semibold)).tracking(0.5).foregroundStyle(Color.appTextSecondary)
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(WorkoutZone.allCases) { zone in
@@ -50,10 +50,10 @@ struct CustomWorkoutBuilderView: View {
 
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
-                            Text("EXERCISES").font(.system(size: 11, weight: .semibold)).tracking(0.5).foregroundStyle(Color.appTextSecondary)
+                            Text("EXERCISES").font(.uiText(size: 11, weight: .semibold)).tracking(0.5).foregroundStyle(Color.appTextSecondary)
                             Spacer()
                             Text("\(selectedExerciseIDs.count) selected")
-                                .font(.system(size: 11, weight: .semibold))
+                                .font(.uiText(size: 11, weight: .semibold))
                                 .foregroundStyle(Color.appAccentPurple)
                         }
                         VStack(alignment: .leading, spacing: 0) {
@@ -108,8 +108,8 @@ struct CustomWorkoutBuilderView: View {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { selectedZone = zone }
         } label: {
             HStack(spacing: 6) {
-                Image(systemName: zone.icon).font(.system(size: 12, weight: .semibold))
-                Text(zone.name).font(.system(size: 13, weight: .semibold))
+                Image(systemName: zone.icon).font(.uiText(size: 12, weight: .semibold))
+                Text(LocalizedStringKey(zone.name)).font(.uiText(size: 13, weight: .semibold))
             }
             .foregroundStyle(isOn ? .white : Color.appTextSecondary)
             .padding(.horizontal, 14)
@@ -126,16 +126,16 @@ struct CustomWorkoutBuilderView: View {
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: exercise.icon)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.uiText(size: 14, weight: .semibold))
                     .foregroundStyle(isSelected ? Color.appAccentPurple : Color.appTextSecondary)
                     .frame(width: 26)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(exercise.name).font(.system(size: 14, weight: .medium)).foregroundStyle(.white)
-                    Text("\(exercise.sets) sets · \(exercise.reps)").font(.system(size: 12)).foregroundStyle(Color.appTextSecondary)
+                    Text(LocalizedStringKey(exercise.name)).font(.uiText(size: 14, weight: .medium)).foregroundStyle(.white)
+                    Text("\(exercise.sets) sets · \(exercise.reps)").font(.uiText(size: 12)).foregroundStyle(Color.appTextSecondary)
                 }
                 Spacer()
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 19))
+                    .font(.uiText(size: 19))
                     .foregroundStyle(isSelected ? Color.appAccentPurple : Color.appTextSecondary.opacity(0.5))
             }
             .padding(.horizontal, 12)

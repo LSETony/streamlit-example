@@ -271,7 +271,7 @@ struct PhotoPlaceholder: View {
             LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
             if let icon {
                 Image(systemName: icon)
-                    .font(.system(size: 26, weight: .light))
+                    .font(.uiText(size: 26, weight: .light))
                     .foregroundStyle(.white.opacity(0.22))
             }
         }
@@ -285,7 +285,7 @@ struct FavoriteButton: View {
     var body: some View {
         Button { isFavorite.toggle() } label: {
             Image(systemName: isFavorite ? "heart.fill" : "heart")
-                .font(.system(size: 13, weight: .semibold))
+                .font(.uiText(size: 13, weight: .semibold))
                 .foregroundStyle(isFavorite ? Color.appAccent : .white)
                 .frame(width: 30, height: 30)
         }

@@ -48,7 +48,7 @@ struct AvatarView: View {
                 ZStack {
                     preset.color
                     Image(systemName: preset.icon)
-                        .font(.system(size: size * 0.42, weight: .semibold))
+                        .font(.uiText(size: size * 0.42, weight: .semibold))
                         .foregroundStyle(.white)
                 }
             } else {
@@ -96,7 +96,7 @@ struct AvatarPickerView: View {
                             }
                             Text(isUploading ? "Uploading…" : "Upload a Photo")
                         }
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.uiText(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -107,7 +107,7 @@ struct AvatarPickerView: View {
 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("OR CHOOSE AN AVATAR")
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(.uiText(size: 11, weight: .semibold))
                             .tracking(0.5)
                             .foregroundStyle(Color.appTextSecondary)
                         LazyVGrid(columns: columns, spacing: 16) {
@@ -150,7 +150,7 @@ struct AvatarPickerView: View {
             ZStack {
                 Circle().fill(preset.color)
                 Image(systemName: preset.icon)
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.uiText(size: 20, weight: .semibold))
                     .foregroundStyle(.white)
             }
             .frame(width: 56, height: 56)

@@ -63,8 +63,8 @@ struct WorkoutDetailView: View {
     }
 
     private func pill(_ text: String) -> some View {
-        Text(text)
-            .font(.system(size: 12, weight: .semibold))
+        Text(LocalizedStringKey(text))
+            .font(.uiText(size: 12, weight: .semibold))
             .foregroundStyle(Color.appAccent)
             .padding(.horizontal, 13)
             .padding(.vertical, 7)
@@ -82,18 +82,18 @@ struct WorkoutDetailView: View {
                 .clipShape(Circle())
 
             Image(systemName: exercise.icon)
-                .font(.system(size: 16, weight: .medium))
+                .font(.uiText(size: 16, weight: .medium))
                 .foregroundStyle(.white)
                 .frame(width: 34, height: 34)
                 .background(.white.opacity(0.08))
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(exercise.name)
-                    .font(.system(size: 14, weight: .semibold))
+                Text(LocalizedStringKey(exercise.name))
+                    .font(.uiText(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
                 Text("\(exercise.sets) sets · \(exercise.reps)")
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
@@ -211,7 +211,7 @@ struct ActiveWorkoutView: View {
                 HStack(spacing: 6) {
                     if isPaused {
                         Text("PAUSED")
-                            .font(.system(size: 10, weight: .bold))
+                            .font(.uiText(size: 10, weight: .bold))
                             .tracking(0.6)
                             .foregroundStyle(Color.appTextSecondary)
                     }
@@ -227,13 +227,13 @@ struct ActiveWorkoutView: View {
 
         VStack(spacing: 16) {
             Image(systemName: exercise.icon)
-                .font(.system(size: 48, weight: .medium))
+                .font(.uiText(size: 48, weight: .medium))
                 .foregroundStyle(Color.appAccent)
                 .frame(width: 120, height: 120)
                 .background(Color.appAccentDim)
                 .clipShape(Circle())
 
-            Text(exercise.name)
+            Text(LocalizedStringKey(exercise.name))
                 .font(.brand(26))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
@@ -243,7 +243,7 @@ struct ActiveWorkoutView: View {
                 .foregroundStyle(.white)
 
             Text("Set \(currentSet) of \(exercise.sets)")
-                .font(.system(size: 14, weight: .semibold))
+                .font(.uiText(size: 14, weight: .semibold))
                 .foregroundStyle(Color.appTextSecondary)
         }
 
@@ -254,7 +254,7 @@ struct ActiveWorkoutView: View {
                 togglePause()
             } label: {
                 Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.uiText(size: 18, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 52, height: 52)
             }
@@ -274,7 +274,7 @@ struct ActiveWorkoutView: View {
         VStack(spacing: 20) {
             Spacer(minLength: 0)
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
+                .font(.uiText(size: 64))
                 .foregroundStyle(Color.appSuccess)
             Text("Workout complete!")
                 .font(.brand(26))
@@ -285,7 +285,7 @@ struct ActiveWorkoutView: View {
                     .foregroundStyle(Color.appAccent)
             }
             Text("\(card.exercises.count) exercises · \(card.title)")
-                .font(.system(size: 13))
+                .font(.uiText(size: 13))
                 .foregroundStyle(Color.appTextSecondary)
             Spacer(minLength: 0)
             PrimaryButton(title: "Done") { dismiss() }

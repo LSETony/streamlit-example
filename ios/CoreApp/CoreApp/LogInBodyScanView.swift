@@ -30,7 +30,7 @@ struct LogInBodyScanView: View {
                             .font(.brand(28))
                             .foregroundStyle(.white)
                         Text("Enter the numbers from your latest InBody printout.")
-                            .font(.system(size: 14))
+                            .font(.uiText(size: 14))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
@@ -63,8 +63,8 @@ struct LogInBodyScanView: View {
 
     private func scanField(label: String, text: Binding<String>, placeholder: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(label)
-                .font(.system(size: 12, weight: .semibold))
+            Text(LocalizedStringKey(label))
+                .font(.uiText(size: 12, weight: .semibold))
                 .foregroundStyle(Color.appTextSecondary)
             TextField("", text: text, prompt: Text(placeholder).foregroundStyle(.white.opacity(0.4)))
                 .keyboardType(.decimalPad)

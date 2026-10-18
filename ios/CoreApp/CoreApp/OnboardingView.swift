@@ -35,10 +35,10 @@ struct OnboardingView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(step == 2 ? "Tell us about yourself" : stepTitle)
+            Text(LocalizedStringKey(step == 2 ? "Tell us about yourself" : stepTitle))
                 .font(.brand(32))
                 .foregroundStyle(.white)
-            Text(stepSubtitle)
+            Text(LocalizedStringKey(stepSubtitle))
                 .font(.brand(13))
                 .foregroundStyle(Color.appTextSecondary)
         }
@@ -196,11 +196,11 @@ struct OnboardingView: View {
                     Color.appAccentPurple
                 }
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
+                    Text(LocalizedStringKey(title))
                         .font(.brand(16))
                         .foregroundStyle(.white)
                     Spacer()
-                    Text(subtitle)
+                    Text(LocalizedStringKey(subtitle))
                         .font(.brand(12))
                         .foregroundStyle(isSelected ? .white.opacity(0.9) : Color.appTextSecondary)
                 }
@@ -224,7 +224,7 @@ struct OnboardingView: View {
                 if let icon {
                     Group {
                         if isSystemIcon {
-                            Image(systemName: icon).font(.system(size: 15))
+                            Image(systemName: icon).font(.uiText(size: 15))
                         } else {
                             Image(icon).customIcon(size: 17)
                         }
@@ -232,14 +232,14 @@ struct OnboardingView: View {
                     .foregroundStyle(.white)
                     .frame(width: 20)
                 }
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.brand(16))
                     .foregroundStyle(.white)
                 Spacer()
                 if isSelected {
                     ZStack {
                         Circle().fill(Color.appAccent)
-                        Image(systemName: "checkmark").font(.system(size: 13, weight: .bold)).foregroundStyle(.white)
+                        Image(systemName: "checkmark").font(.uiText(size: 13, weight: .bold)).foregroundStyle(.white)
                     }
                     .frame(width: 34, height: 34)
                 }
@@ -269,7 +269,7 @@ private struct FlowChips: View {
 
     private func chip(for item: String) -> some View {
         let isOn = selected.contains(item)
-        return Text(item)
+        return Text(LocalizedStringKey(item))
             .font(.brand(14))
             .foregroundStyle(.white)
             .padding(.horizontal, 18)

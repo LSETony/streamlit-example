@@ -37,7 +37,7 @@ struct CoreAIChatView: View {
                         Image(systemName: "exclamationmark.triangle.fill")
                         Text(unavailableMessage(unavailableReason))
                     }
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.uiText(size: 12, weight: .semibold))
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, AppMetrics.screenPadding)
@@ -56,7 +56,7 @@ struct CoreAIChatView: View {
                             }
                             if let errorText {
                                 Text(errorText)
-                                    .font(.system(size: 12))
+                                    .font(.uiText(size: 12))
                                     .foregroundStyle(Color.appWarning)
                             }
                         }
@@ -103,7 +103,7 @@ struct CoreAIChatView: View {
         HStack {
             if message.role == .user { Spacer(minLength: 40) }
             Text(message.content)
-                .font(.system(size: 14))
+                .font(.uiText(size: 14))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
@@ -127,7 +127,7 @@ struct CoreAIChatView: View {
     private var inputBar: some View {
         HStack(spacing: 10) {
             TextField("", text: $draft, prompt: Text("Ask Core AI…").foregroundStyle(Color.appTextSecondary), axis: .vertical)
-                .font(.system(size: 15))
+                .font(.uiText(size: 15))
                 .foregroundStyle(.white)
                 .lineLimit(1...4)
                 .focused($inputFocused)
@@ -137,7 +137,7 @@ struct CoreAIChatView: View {
 
             Button(action: send) {
                 Image(systemName: "arrow.up")
-                    .font(.system(size: 15, weight: .bold))
+                    .font(.uiText(size: 15, weight: .bold))
                     .foregroundStyle(.white)
                     .frame(width: 40, height: 40)
             }

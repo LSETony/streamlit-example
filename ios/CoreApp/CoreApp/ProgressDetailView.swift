@@ -84,13 +84,13 @@ struct ProgressContentView: View {
                     .rotationEffect(.degrees(-90))
                 VStack(spacing: 2) {
                     Image(systemName: "flame.fill")
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.uiText(size: 22, weight: .semibold))
                         .foregroundStyle(Color.appAccent)
                     Text("\(appState.streakDays)")
                         .font(.digitalTimer(44))
                         .foregroundStyle(.white)
                     Text(appState.streakDays == 1 ? "day streak" : "day streak")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.uiText(size: 12, weight: .semibold))
                         .foregroundStyle(Color.appTextSecondary)
                 }
             }
@@ -101,7 +101,7 @@ struct ProgressContentView: View {
                     Image(systemName: "photo.on.rectangle.angled")
                     Text("Progress Photos")
                 }
-                .font(.system(size: 13, weight: .semibold))
+                .font(.uiText(size: 13, weight: .semibold))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
@@ -125,8 +125,8 @@ struct ProgressContentView: View {
             HStack(spacing: 4) {
                 ForEach(ProgressSection.allCases, id: \.self) { tab in
                     Button { section = tab } label: {
-                        Text(tab.rawValue)
-                            .font(.system(size: 13, weight: .semibold))
+                        Text(LocalizedStringKey(tab.rawValue))
+                            .font(.uiText(size: 13, weight: .semibold))
                             .foregroundStyle(section == tab ? .white : Color.appTextSecondary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
@@ -169,7 +169,7 @@ struct ProgressContentView: View {
                 EyebrowLabel(text: "Achievements")
                 Spacer()
                 Text("\(appState.achievements.filter(\.isUnlocked).count)/\(appState.achievements.count)")
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.uiText(size: 12, weight: .bold))
                     .foregroundStyle(Color.appAccentPurple)
             }
             ScrollView(.horizontal, showsIndicators: false) {
@@ -188,13 +188,13 @@ struct ProgressContentView: View {
     private func achievementBadge(_ achievement: Achievement) -> some View {
         VStack(spacing: 8) {
             Image(systemName: achievement.icon)
-                .font(.system(size: 22, weight: .semibold))
+                .font(.uiText(size: 22, weight: .semibold))
                 .foregroundStyle(achievement.isUnlocked ? Color.appAccent : Color.appTextSecondary)
                 .frame(width: 56, height: 56)
                 .glassEffect(achievement.isUnlocked ? .regular.tint(.appAccent.opacity(0.3)) : .regular, in: Circle())
                 .overlay(Circle().stroke(.white.opacity(0.08), lineWidth: 1))
-            Text(achievement.title)
-                .font(.system(size: 11, weight: .semibold))
+            Text(LocalizedStringKey(achievement.title))
+                .font(.uiText(size: 11, weight: .semibold))
                 .foregroundStyle(achievement.isUnlocked ? .white : Color.appTextSecondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
@@ -217,13 +217,13 @@ struct ProgressContentView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Muscle Mass")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.uiText(size: 16, weight: .semibold))
                     .foregroundStyle(.white)
                 Spacer()
                 if let first = appState.muscleMassHistory.first, let last = appState.muscleMassHistory.last {
                     let delta = last.kg - first.kg
                     Text(String(format: "%+.1f kg", delta))
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.uiText(size: 12, weight: .semibold))
                         .foregroundStyle(delta >= 0 ? Color.appSuccess : Color.appAccent)
                 }
             }
@@ -275,7 +275,7 @@ struct ProgressContentView: View {
                         Image(systemName: "plus")
                         Text("Log scan")
                     }
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.uiText(size: 12, weight: .semibold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 7)
@@ -295,7 +295,7 @@ struct ProgressContentView: View {
             if appState.inBodyHistory.count > 1 {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Body fat trend")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.uiText(size: 13, weight: .semibold))
                         .foregroundStyle(.white)
                     Chart(appState.inBodyHistory.sorted(by: { $0.scannedAt < $1.scannedAt })) { entry in
                         AreaMark(x: .value("Date", entry.scannedAt), y: .value("Body Fat %", entry.bodyFatPercent))
@@ -344,19 +344,19 @@ struct ProgressContentView: View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(entry.scannedAt.formatted(.dateTime.month(.abbreviated).day().year()))
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.uiText(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
                 Text("BMR \(entry.basalMetabolicRate) · VFI \(entry.visceralFatIndex)")
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
                 Text(String(format: "%.1f%% fat", entry.bodyFatPercent))
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(.white.opacity(0.85))
                 Text(String(format: "%.1f%% water", entry.totalBodyWaterPercent))
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(Color.appAccentPurple)
             }
         }
@@ -393,15 +393,15 @@ struct ProgressContentView: View {
                 .frame(width: 42, height: 42)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(product.name)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.uiText(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                     Text(product.tag)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.uiText(size: 11, weight: .semibold))
                         .foregroundStyle(product.tagColor)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.uiText(size: 12, weight: .semibold))
                     .foregroundStyle(Color.appTextSecondary)
             }
             .padding(14)
@@ -421,7 +421,7 @@ struct ProgressContentView: View {
             EyebrowLabel(text: "Workout history")
             if appState.workoutHistory.isEmpty {
                 Text("No workouts logged yet — finish one to see it here.")
-                    .font(.system(size: 13))
+                    .font(.uiText(size: 13))
                     .foregroundStyle(Color.appTextSecondary)
             } else {
                 GlassEffectContainer(spacing: 10) {
@@ -438,7 +438,7 @@ struct ProgressContentView: View {
     private func statTile(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(value).font(.digitalTimer(20)).foregroundStyle(.white)
-            Text(label.uppercased()).font(.system(size: 10, weight: .semibold)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
+            Text(label.uppercased()).font(.uiText(size: 10, weight: .semibold)).tracking(0.4).foregroundStyle(Color.appTextSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
@@ -453,19 +453,19 @@ struct ProgressContentView: View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(entry.title)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.uiText(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
                 Text(entry.date)
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(Color.appTextSecondary)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
                 Text("\(entry.sets) sets · \(entry.minutes) min")
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(.white.opacity(0.85))
                 Text("\(entry.calories) kcal")
-                    .font(.system(size: 12))
+                    .font(.uiText(size: 12))
                     .foregroundStyle(Color.appAccent)
             }
         }

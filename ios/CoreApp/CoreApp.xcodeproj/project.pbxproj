@@ -32,6 +32,7 @@
 		3D72EF131AA6CEA6CAE3B712 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97814377FFBA6C26D2370416 /* CalendarView.swift */; };
 		3F356E097DF7CAE19BDEAF07 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7767DFABE3FC38A17C249E0 /* ScanView.swift */; };
 		4043E55A4E4192970C401B2A /* CustomWorkoutBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A7B583C3630E23E55038A9 /* CustomWorkoutBuilderView.swift */; };
+		413EBE97ADC27F46502D459E /* Geologica-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6340070255C0F1639426C831 /* Geologica-Bold.ttf */; };
 		43328045AB488CECE9AF1A75 /* DynamicIslandNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */; };
 		43554B5640BA55F311A51850 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7E1851BD66A6F385905E9F /* CartView.swift */; };
 		4375D4FF1EFA212852EDAF8A /* WorkoutActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */; };
@@ -42,10 +43,12 @@
 		55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */; };
 		59B8AE958A4203AFF9449EE4 /* CheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D09AAE1018ED458346CC2B2 /* CheckInView.swift */; };
 		5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
+		5ABAF057522A0A5C2DD75CCA /* Geologica-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */; };
 		5B109E9053C7AB7139E42BA6 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */; };
 		5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */; };
 		5F5C090B9B20338957AE3766 /* WorkoutLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95244984817A4D1FE1DA7B22 /* WorkoutLiveActivity.swift */; };
 		6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */; };
+		6B94894A315587D410147A6B /* Geologica-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */; };
 		6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */; };
 		6F34106828F49C391B04BC87 /* LanguagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA64CB7A4B8E5FDBE751D5C5 /* LanguagePickerView.swift */; };
 		72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */; };
@@ -85,6 +88,7 @@
 		DF1A8235B3D5BA104441976B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 78D97C91AA3F9C02D2720D25 /* Localizable.xcstrings */; };
 		DFD7622C13034D9789B7842F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3400C5EA574C43B3B4039970 /* ProfileView.swift */; };
 		E0014AAD1FB109693AE6C578 /* WelcomeBackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA2CAD9F3D37D89D0EAD0B /* WelcomeBackView.swift */; };
+		E88586642CECCFAF43508279 /* Geologica-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A4A7223229C0180EDB2C4E9 /* Geologica-Regular.ttf */; };
 		EB64BE17744245A0AF0F1987 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99018F8559804203B50FC4E6 /* Components.swift */; };
 		EE9A4F5CA4AA35852B3D645A /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
 		EFE86F868A2D5B5A825B8812 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F173CD46DBE0612AD9D873 /* AuthService.swift */; };
@@ -149,8 +153,10 @@
 		5458B4589D146B653EB54FB6 /* HeroVideo.mp4 */ = {isa = PBXFileReference; includeInIndex = 1; path = HeroVideo.mp4; sourceTree = "<group>"; };
 		55950DFCC22D525533532A31 /* SubscriptionsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
 		5A3B3511191EF0FD2AE5A30D /* SplashView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		5A4A7223229C0180EDB2C4E9 /* Geologica-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Regular.ttf"; sourceTree = "<group>"; };
 		5E33F8791E4F6E9BEF57AC18 /* CoreWidgetsBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreWidgetsBundle.swift; sourceTree = "<group>"; };
 		61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreApp.entitlements; sourceTree = "<group>"; };
+		6340070255C0F1639426C831 /* Geologica-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Bold.ttf"; sourceTree = "<group>"; };
 		65AA2CAD9F3D37D89D0EAD0B /* WelcomeBackView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WelcomeBackView.swift; sourceTree = "<group>"; };
 		67286F4868E97187636094AA /* WorkoutsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
 		69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodaysSpecialsView.swift; sourceTree = "<group>"; };
@@ -170,6 +176,7 @@
 		9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GymPhotoViewer.swift; sourceTree = "<group>"; };
 		97814377FFBA6C26D2370416 /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		99018F8559804203B50FC4E6 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Medium.ttf"; sourceTree = "<group>"; };
 		9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaymentSheetPresenter.swift; sourceTree = "<group>"; };
 		A53D6AEA6361817922FA8EC6 /* HealthMetricsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HealthMetricsView.swift; sourceTree = "<group>"; };
 		A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ThinkingOrb.swift; sourceTree = "<group>"; };
@@ -189,6 +196,7 @@
 		E2360973C0FF59F76A261826 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		E493C65B6E18E3804875719D /* CoreAIChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreAIChatView.swift; sourceTree = "<group>"; };
 		E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
+		EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Light.ttf"; sourceTree = "<group>"; };
 		EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GymSafetyView.swift; sourceTree = "<group>"; };
 		EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainersView.swift; sourceTree = "<group>"; };
 		F19E3997796F4D24A679D9FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -274,6 +282,10 @@
 				2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */,
 				B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */,
 				4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */,
+				5A4A7223229C0180EDB2C4E9 /* Geologica-Regular.ttf */,
+				9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */,
+				6340070255C0F1639426C831 /* Geologica-Bold.ttf */,
+				EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */,
 			);
 			name = Fonts;
 			path = Fonts;
@@ -466,6 +478,10 @@
 				073061F2B15F31F4094C9177 /* HeroVideo.mp4 in Resources */,
 				DF1A8235B3D5BA104441976B /* Localizable.xcstrings in Resources */,
 				F903ED912ABCAD4835B009DE /* Geologica-SemiBold.ttf in Resources */,
+				E88586642CECCFAF43508279 /* Geologica-Regular.ttf in Resources */,
+				6B94894A315587D410147A6B /* Geologica-Medium.ttf in Resources */,
+				413EBE97ADC27F46502D459E /* Geologica-Bold.ttf in Resources */,
+				5ABAF057522A0A5C2DD75CCA /* Geologica-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

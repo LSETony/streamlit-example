@@ -89,21 +89,21 @@ struct LocationPickerView: View {
         return Button { choose(location) } label: {
             HStack(spacing: 14) {
                 Image(systemName: "building.2.fill")
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.uiText(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 38, height: 38)
                     .glassEffect(.regular.tint(isSelected ? .appAccent : .clear), in: Circle())
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(location.name)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.uiText(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                     Text(location.address)
-                        .font(.system(size: 12))
+                        .font(.uiText(size: 12))
                         .foregroundStyle(Color.appTextSecondary)
                         .lineLimit(1)
                     Text(location.hoursLabel)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.uiText(size: 11, weight: .semibold))
                         .foregroundStyle(Color.appTextSecondary)
                 }
 
@@ -111,7 +111,7 @@ struct LocationPickerView: View {
 
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20))
+                        .font(.uiText(size: 20))
                         .foregroundStyle(Color.appAccent)
                 }
             }
@@ -162,13 +162,13 @@ struct LocationPickerView: View {
         return Button { choose(location) } label: {
             VStack(spacing: 2) {
                 Image(systemName: "dumbbell.fill")
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.uiText(size: 16, weight: .bold))
                     .foregroundStyle(.white)
                     .frame(width: 42, height: 42)
                     .glassEffect(.regular.tint(isSelected ? .appAccent : .appAccentPurple), in: Circle())
                     .overlay(Circle().stroke(.white.opacity(0.8), lineWidth: 2))
                 Image(systemName: "triangle.fill")
-                    .font(.system(size: 9))
+                    .font(.uiText(size: 9))
                     .foregroundStyle(isSelected ? Color.appAccent : Color.appAccentPurple)
                     .rotationEffect(.degrees(180))
                     .offset(y: -6)
@@ -181,7 +181,7 @@ struct LocationPickerView: View {
         let isSelected = location.name == appState.clubName
         return Button { choose(location) } label: {
             Text(location.name)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.uiText(size: 13, weight: .semibold))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
