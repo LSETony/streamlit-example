@@ -15,7 +15,7 @@ import { ItemDialog } from "./item-dialog";
 import { useT } from "@/lib/i18n/client";
 
 export interface Item {
-  id: string; title: string; kind: "class" | "personal" | "zone_slot"; zone_id: string | null; trainer_name: string | null;
+  id: string; title: string; kind: "class" | "personal" | "zone_slot"; zone_id: string | null; trainer_name: string | null; trainer_staff_id?: string | null;
   starts_at: string; ends_at: string; capacity: number; cancelled: boolean; series_id: string | null; description: string | null; booked: number;
 }
 
@@ -33,11 +33,15 @@ function minutesOfDay(ts: string, tz: string): number {
   return h * 60 + m;
 }
 
-export function ScheduleView({ view, viewChosen, from, days, today, items, zones, gymId, timezone, canEdit, readOnly, hours }: {
+export function ScheduleView({ view, viewChosen, from, days, today, items: allItems, zones, gymId, timezone, canEdit, canBook = true, myStaffId, trainers = [], readOnly, hours }: {
   view: "week" | "day"; viewChosen?: boolean; from: string; days: number; today: string; items: Item[]; zones: { id: string; name: string; capacity: number }[];
-  gymId: string; timezone: string; canEdit: boolean; readOnly: boolean; hours?: Record<string, [string, string] | null>;
+  gymId: string; timezone: string; canEdit: boolean; canBook?: boolean; myStaffId?: string; trainers?: { id: string; full_name: string }[];
+  readOnly: boolean; hours?: Record<string, [string, string] | null>;
 }) {
   const t = useT();
+  // Тренер по умолчанию видит только свои занятия
+  const [mineOnly, setMineOnly] = useState(Boolean(myStaffId));
+  const items = mineOnly && myStaffId ? allItems.filter((i) => i.trainer_staff_id === myStaffId) : allItems;
   const router = useRouter();
   const [create, setCreate] = useState<{ date: string; time: string } | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -101,6 +105,9 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
             <Button variant="outline" size="icon" asChild><Link href={nav(-1)} aria-label={t("Назад")}><ChevronLeft /></Link></Button>
             <Button variant="outline" asChild><Link href={`/schedule?view=${view}&date=${today}`}>Сегодня</Link></Button>
             <Button variant="outline" size="icon" asChild><Link href={nav(1)} aria-label={t("Вперёд")}><ChevronRight /></Link></Button>
+            {myStaffId ? (
+              <Button variant={mineOnly ? "default" : "outline"} aria-pressed={mineOnly} onClick={() => setMineOnly((v) => !v)}>{t("Мои занятия")}</Button>
+            ) : null}
             {canEdit ? <Button onClick={() => setCreate({ date: dayList.includes(today) ? today : from, time: "19:00" })}><Plus /> Занятие</Button> : null}
           </>
         }
@@ -177,7 +184,7 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
       </p>
 
       {create ? (
-        <CreateItemDialog gymZones={zones} initialDate={create.date} initialTime={create.time} onClose={() => { setCreate(null); router.refresh(); }} />
+        <CreateItemDialog gymZones={zones} trainers={trainers} initialDate={create.date} initialTime={create.time} onClose={() => { setCreate(null); router.refresh(); }} />
       ) : null}
       {openId ? (
         <ItemDialog
@@ -186,6 +193,7 @@ export function ScheduleView({ view, viewChosen, from, days, today, items, zones
           gymId={gymId}
           timezone={timezone}
           canEdit={canEdit}
+          canBook={canBook}
           readOnly={readOnly}
           onClose={() => { setOpenId(null); router.refresh(); }}
         />

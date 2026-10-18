@@ -17,8 +17,8 @@ import { useT } from "@/lib/i18n/client";
 
 interface B { id: string; status: "booked" | "cancelled" | "attended" | "no_show"; channel: "app" | "staff"; client_id: string; clients: { full_name: string } | null }
 
-export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, onClose }: {
-  item: Item; zones: { id: string; name: string }[]; gymId: string; timezone: string; canEdit: boolean; readOnly: boolean; onClose: () => void;
+export function ItemDialog({ item, zones, gymId, timezone, canEdit, canBook = true, readOnly, onClose }: {
+  item: Item; zones: { id: string; name: string }[]; gymId: string; timezone: string; canEdit: boolean; canBook?: boolean; readOnly: boolean; onClose: () => void;
 }) {
   const t = useT();
   const [bookings, setBookings] = useState<B[]>([]);
@@ -62,7 +62,7 @@ export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, on
           <EditForm item={item} zones={zones} onDone={() => { setEdit(false); onClose(); }} />
         ) : (
           <>
-            {!item.cancelled && !past && !readOnly ? (
+            {!item.cancelled && !past && !readOnly && canBook ? (
               <ClientSearch gymId={gymId} placeholder="Записать клиента: ФИО или телефон" onSelect={(c) => run(() => bookClient(item.id, c.id), t("{name} записан(а)", { name: c.full_name }))} />
             ) : null}
             <div className="grid max-h-80 gap-1 overflow-y-auto">
@@ -75,7 +75,7 @@ export function ItemDialog({ item, zones, gymId, timezone, canEdit, readOnly, on
                     <div className="flex gap-0.5">
                       <Button size="icon-sm" variant="ghost" title="Пришёл" aria-label="Пришёл" onClick={() => run(() => markBooking(b.id, b.status === "attended" ? "booked" : "attended"))}><Check /></Button>
                       <Button size="icon-sm" variant="ghost" title="Не пришёл" aria-label="Не пришёл" onClick={() => run(() => markBooking(b.id, b.status === "no_show" ? "booked" : "no_show"))}><Ban /></Button>
-                      {b.status === "booked" && !past ? <Button size="icon-sm" variant="ghost" title="Отменить запись" aria-label="Отменить запись" onClick={() => run(() => cancelBooking(b.id), "Запись отменена")}><X /></Button> : null}
+                      {b.status === "booked" && !past && canBook ? <Button size="icon-sm" variant="ghost" title="Отменить запись" aria-label="Отменить запись" onClick={() => run(() => cancelBooking(b.id), "Запись отменена")}><X /></Button> : null}
                     </div>
                   ) : null}
                 </div>

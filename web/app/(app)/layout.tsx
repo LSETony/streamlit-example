@@ -15,15 +15,21 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
     ? { count: null }
     : await supabase.from("v_client_risk").select("client_id", { count: "exact", head: true }).eq("gym_id", ctx.gym.id).is("contacted_at", null);
 
-  const banner = ctx.readOnly ? (
-    <div className="mx-4 mt-3 rounded-2xl border border-warning/40 bg-warning/15 px-4 py-2.5 text-center text-sm backdrop-blur-xl sm:mx-6 lg:mx-8">
+  const banner = ctx.isDemo ? (
+    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-2xl bg-tint px-4 py-2.5 text-center text-sm text-white">
+      <span>{t("Это демо-кабинет: можно всё смотреть, изменения отключены.")}</span>
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- обработчик выхода: Link заранее загрузил бы его и вышел из демо */}
+      <a href="/demo/exit" className="font-semibold underline underline-offset-2">{t("Подключить свой зал")}</a>
+    </div>
+  ) : ctx.readOnly ? (
+    <div className="rounded-2xl border border-warning/40 bg-warning/15 px-4 py-2.5 text-center text-sm backdrop-blur-xl">
       {t("Пробный период закончился {date}. Кабинет работает в режиме «только чтение» — данные сохранены. Чтобы продолжить работу, свяжитесь с командой core.", { date: date(ctx.gym.trial_until) })}
     </div>
   ) : null;
 
   return (
     <RegionProvider region={ctx.gym.region ?? "RU"}>
-    <AppShell role={ctx.staff.role} features={ctx.features} gymId={ctx.gym.id} gymName={ctx.gym.name} readOnly={ctx.readOnly} userName={ctx.staff.full_name}
+    <AppShell role={ctx.staff.role} features={ctx.features} gymId={ctx.gym.id} gymName={ctx.gym.name} gyms={ctx.gyms} readOnly={ctx.readOnly} userName={ctx.staff.full_name}
       riskCount={count ?? null} banner={banner}>
       {children}
     </AppShell>

@@ -198,7 +198,7 @@
   --shadow-card: var(--elev-card);
   --shadow-pop: var(--elev-pop);
   /* SF Pro на устройствах Apple, Onest — на остальных (кириллица, близкая геометрия) */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", var(--font-onest), "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", var(--font-onest), var(--font-arabic), "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   /* шкала текста iOS: footnote 13, subheadline 15, body 17, title3 20, title2 22 */
   --text-xs: 0.8125rem;
   --text-xs--line-height: 1.125rem;

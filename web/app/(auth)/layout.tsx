@@ -14,8 +14,10 @@ export default async function AuthLayout({ children }: LayoutProps<"/">) {
         <div className="flex flex-1 items-center justify-center py-10">
           <div className="w-full max-w-sm">{children}</div>
         </div>
-        <p className="text-xs text-muted-foreground">
-          {t("Данные хранятся на серверах в России в соответствии с 152-ФЗ.")}
+        <p className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <span>© 2026 core.</span>
+          <a href="/terms" className="hover:text-foreground">{t("Условия использования")}</a>
+          <a href="/privacy" className="hover:text-foreground">{t("Политика конфиденциальности")}</a>
         </p>
       </div>
       <div className="relative hidden overflow-hidden bg-sidebar lg:block">

@@ -4,8 +4,10 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callRpc, intOrNull, str, strOrNull } from "@/lib/actions";
 import { fail, ok, type ActionResult } from "@/lib/errors";
-import { requireStaff } from "@/lib/auth";
+import { GYM_COOKIE, homeFor, requireStaff } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { encryptSecret } from "@/lib/secrets";
+import { stripeRequest } from "@/lib/stripe";
 import type { GymSettings } from "@/lib/types";
 import { isRegion, REGIONS } from "@/lib/region";
 
@@ -15,7 +17,7 @@ export async function createGym(form: FormData): Promise<ActionResult<string>> {
   if (!name || !owner) return { ok: false, error: { code: "INVALID_INPUT", message: "Укажите название зала и ваше имя" } };
   const region = str(form, "region");
   if (!isRegion(region)) return { ok: false, error: { code: "INVALID_REGION", message: "Выберите регион: Россия или ОАЭ" } };
-  return callRpc<string>("create_gym", {
+  const r = await callRpc<string>("create_gym", {
     p_name: name,
     p_owner_name: owner,
     p_address: strOrNull(form, "address"),
@@ -24,6 +26,19 @@ export async function createGym(form: FormData): Promise<ActionResult<string>> {
     // регион передаём только для ОАЭ: российские залы создаются и на базе без миграции регионов
     ...(region === "RU" ? {} : { p_region: region }),
   });
+  // новый зал сразу становится текущим — мастер настройки откроется для него
+  if (r.ok) (await cookies()).set(GYM_COOKIE, r.data, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+  return r;
+}
+
+/** Переключить кабинет на другой зал пользователя */
+export async function switchGym(gymId: string): Promise<ActionResult<string>> {
+  const ctx = await requireStaff();
+  const target = ctx.gyms.find((g) => g.id === gymId);
+  if (!target) return { ok: false, error: { code: "FORBIDDEN", message: "Недостаточно прав для этого действия" } };
+  (await cookies()).set(GYM_COOKIE, gymId, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+  revalidatePath("/", "layout");
+  return ok(homeFor(target.role));
 }
 
 export async function updateGymProfile(form: FormData): Promise<ActionResult<null>> {
@@ -88,7 +103,7 @@ export async function deleteZone(id: string): Promise<ActionResult<null>> {
 export async function saveYookassa(form: FormData): Promise<ActionResult<null>> {
   const ctx = await requireStaff(["owner"]);
   if (ctx.readOnly) return { ok: false, error: { code: "GYM_READ_ONLY", message: "Кабинет в режиме «только чтение»" } };
-  if (!REGIONS[ctx.gym.region ?? "RU"].onlinePayments) return { ok: false, error: { code: "FEATURE_DISABLED", message: "ЮKassa работает только для залов в России" } };
+  if (REGIONS[ctx.gym.region ?? "RU"].paymentProvider !== "yookassa") return { ok: false, error: { code: "FEATURE_DISABLED", message: "ЮKassa работает только для залов в России" } };
   const shopId = str(form, "shop_id");
   const secret = str(form, "secret_key");
   if (!/^\d+$/.test(shopId)) return { ok: false, error: { code: "INVALID_INPUT", message: "shopId — это число из личного кабинета ЮKassa" } };
@@ -120,5 +135,77 @@ export async function yookassaStatus(): Promise<{ connected: boolean; shopId: st
     };
   } catch {
     return { connected: false, shopId: null, sendReceipt: true, vatCode: 1 };
+  }
+}
+
+/** WhatsApp Business (Cloud API): ID номера, токен (шифруется) и одобренный шаблон сообщения */
+export async function saveWhatsapp(form: FormData): Promise<ActionResult<null>> {
+  const ctx = await requireStaff(["owner"]);
+  if (ctx.readOnly) return { ok: false, error: { code: "GYM_READ_ONLY", message: "Кабинет в режиме «только чтение»" } };
+  const phoneId = str(form, "phone_id");
+  const token = str(form, "token");
+  const template = str(form, "template");
+  const lang = str(form, "lang") || "en";
+  if (!/^\d+$/.test(phoneId)) return { ok: false, error: { code: "INVALID_INPUT", message: "Phone number ID — это число из WhatsApp Manager" } };
+  if (!/^[a-z0-9_]+$/.test(template)) return { ok: false, error: { code: "INVALID_INPUT", message: "Название шаблона — латиница в нижнем регистре, цифры и _" } };
+  const row: Record<string, unknown> = {
+    gym_id: ctx.gym.id, whatsapp_phone_id: phoneId, whatsapp_template: template, whatsapp_lang: lang, updated_at: new Date().toISOString(),
+  };
+  if (token) row.whatsapp_token_encrypted = encryptSecret(token);
+  const { error } = await createAdminClient().from("gym_secrets").upsert(row);
+  if (error) return fail(error);
+  revalidatePath("/settings");
+  revalidatePath("/risk");
+  return ok(null);
+}
+
+export async function whatsappStatus(): Promise<{ connected: boolean; phoneId: string | null; template: string | null; lang: string }> {
+  const ctx = await requireStaff(["owner"]);
+  try {
+    const { data } = await createAdminClient().from("gym_secrets")
+      .select("whatsapp_phone_id, whatsapp_token_encrypted, whatsapp_template, whatsapp_lang").eq("gym_id", ctx.gym.id).maybeSingle();
+    return {
+      connected: Boolean(data?.whatsapp_phone_id && data?.whatsapp_token_encrypted && data?.whatsapp_template),
+      phoneId: data?.whatsapp_phone_id ?? null, template: data?.whatsapp_template ?? null,
+      lang: data?.whatsapp_lang ?? REGIONS[ctx.gym.region ?? "RU"].locale,
+    };
+  } catch {
+    return { connected: false, phoneId: null, template: null, lang: REGIONS[ctx.gym.region ?? "RU"].locale };
+  }
+}
+
+/** Ключи Stripe зала (ОАЭ): секретный ключ проверяется запросом к Stripe и хранится зашифрованным */
+export async function saveStripe(form: FormData): Promise<ActionResult<null>> {
+  const ctx = await requireStaff(["owner"]);
+  if (ctx.readOnly) return { ok: false, error: { code: "GYM_READ_ONLY", message: "Кабинет в режиме «только чтение»" } };
+  if (REGIONS[ctx.gym.region ?? "RU"].paymentProvider !== "stripe") return { ok: false, error: { code: "FEATURE_DISABLED", message: "Stripe подключается для залов в ОАЭ" } };
+  const secret = str(form, "secret_key");
+  const webhook = str(form, "webhook_secret");
+  if (secret && !/^(sk|rk)_(live|test)_\w+$/.test(secret)) return { ok: false, error: { code: "INVALID_INPUT", message: "Секретный ключ Stripe начинается с sk_live_ или sk_test_" } };
+  if (webhook && !/^whsec_\w+$/.test(webhook)) return { ok: false, error: { code: "INVALID_INPUT", message: "Секрет подписи уведомлений начинается с whsec_" } };
+  if (secret) {
+    try {
+      await stripeRequest(secret, "GET", "/v1/checkout/sessions", { limit: 1 });
+    } catch {
+      return { ok: false, error: { code: "STRIPE_KEY_INVALID", message: "Stripe не принял ключ. Проверьте его в Developers → API keys" } };
+    }
+  }
+  const row: Record<string, unknown> = { gym_id: ctx.gym.id, updated_at: new Date().toISOString() };
+  if (secret) row.stripe_secret_encrypted = encryptSecret(secret);
+  if (webhook) row.stripe_webhook_secret_encrypted = encryptSecret(webhook);
+  const { error } = await createAdminClient().from("gym_secrets").upsert(row);
+  if (error) return fail(error);
+  revalidatePath("/settings");
+  return ok(null);
+}
+
+export async function stripeStatus(): Promise<{ connected: boolean; webhook: boolean }> {
+  const ctx = await requireStaff(["owner"]);
+  try {
+    const { data } = await createAdminClient().from("gym_secrets")
+      .select("stripe_secret_encrypted, stripe_webhook_secret_encrypted").eq("gym_id", ctx.gym.id).maybeSingle();
+    return { connected: Boolean(data?.stripe_secret_encrypted), webhook: Boolean(data?.stripe_webhook_secret_encrypted) };
+  } catch {
+    return { connected: false, webhook: false };
   }
 }

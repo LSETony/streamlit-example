@@ -35,8 +35,8 @@ function templates(region: Region) {
   ];
 }
 
-export function Wizard({ step, gym, zones, plans, staff, email }: {
-  step: number; gym: Gym | null; zones: { id: string; name: string; capacity: number }[]; plans: Plan[];
+export function Wizard({ back, step, gym, zones, plans, staff, email }: {
+  back: string | null; step: number; gym: Gym | null; zones: { id: string; name: string; capacity: number }[]; plans: Plan[];
   staff: { id: string; full_name: string; email: string; role: string }[]; email: string;
 }) {
   const t = useT();
@@ -44,6 +44,7 @@ export function Wizard({ step, gym, zones, plans, staff, email }: {
   const go = (s: number) => router.push(`/onboarding?step=${s}`);
   return (
     <div className="grid gap-8">
+      {back ? <Link href={back} className="text-sm text-tint-text">← {t("Вернуться в кабинет")}</Link> : null}
       <ol className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
         {STEPS.map((s, i) => (
           <li key={s} className={cn("flex items-center gap-2", i === step ? "font-semibold" : "text-muted-foreground")}>

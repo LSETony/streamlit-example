@@ -19,6 +19,7 @@ export const ROLE_HINT: Record<Role, string> = {
   owner: "Всё, включая тарифы, настройки, сотрудников и журнал",
   admin: "Дашборд, выручка, клиенты, возвраты, расписание",
   reception: "Клиенты, продажа, визиты, записи. Без выручки и настроек",
+  trainer: "Расписание, свои занятия и отметка посещаемости. Без продаж и выручки",
 };
 
 export function InviteForm({ onDone, compact }: { onDone?: () => void; compact?: boolean }) {
@@ -38,6 +39,7 @@ export function InviteForm({ onDone, compact }: { onDone?: () => void; compact?:
         <Field label="Роль">
           <NativeSelect name="role" defaultValue="reception">
             <option value="reception">Ресепшен</option>
+            <option value="trainer">Тренер</option>
             <option value="admin">Администратор</option>
             <option value="owner">Владелец</option>
           </NativeSelect>

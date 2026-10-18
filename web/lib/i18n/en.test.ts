@@ -7,7 +7,7 @@ import { makeT, localeFromAcceptLanguage } from "./core";
 
 // Русские строки, которые не показываются в интерфейсе как есть: синонимы заголовков импорта,
 // тексты согласий для БД, сообщения для разработчика, примеры в шаблоне импорта
-const SKIP_FILES = [/\.test\.tsx?$/, /lib\/i18n\//, /lib\/secrets\.ts$/, /lib\/supabase\//];
+const SKIP_FILES = [/\.test\.tsx?$/, /lib\/i18n\//, /lib\/legal\//, /lib\/secrets\.ts$/, /lib\/supabase\//];
 const SKIP = new Set([
   "Согласие на обработку персональных данных получено залом (отметка в кабинете core.)",
   "Согласие на получение рассылок получено залом (отметка в кабинете core.)",
@@ -78,5 +78,15 @@ describe("i18n", () => {
     expect(localeFromAcceptLanguage("de-DE,ru;q=0.5")).toBe("ru");
     expect(localeFromAcceptLanguage("de-DE")).toBe("en");
     expect(localeFromAcceptLanguage(null)).toBe("ru");
+  });
+
+  it("арабский: свой перевод, иначе английский; цифры латинские", () => {
+    const t = makeT("ar");
+    expect(t("Записаться")).toBe("احجز");
+    expect(t("Сотрудники")).toBe("الموظفون");
+    expect(t("Журнал действий")).not.toMatch(/[А-Яа-яЁё]/);
+    expect(t("Настройки зала")).toBe(makeT("en")("Настройки зала"));
+    expect((1234).toLocaleString(t.intl)).toBe("1,234");
+    expect(localeFromAcceptLanguage("ar-AE,ar;q=0.9")).toBe("ar");
   });
 });

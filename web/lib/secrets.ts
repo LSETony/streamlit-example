@@ -1,15 +1,27 @@
 import "server-only";
-import { createCipheriv, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 
 // Шифрование ключа ЮKassa зала: AES-256-GCM, base64(iv[12] | ciphertext | tag[16]).
 // Формат совместим с supabase/functions/_shared/crypto.ts (Web Crypto).
-export function encryptSecret(plain: string): string {
+function secretKey(): Buffer {
   const raw = process.env.GYM_SECRETS_KEY;
   if (!raw) throw new Error("GYM_SECRETS_KEY не задан");
   const key = Buffer.from(raw, "base64");
   if (key.length !== 32) throw new Error("GYM_SECRETS_KEY должен быть 32 байта в base64");
+  return key;
+}
+
+export function encryptSecret(plain: string): string {
+  const key = secretKey();
   const iv = randomBytes(12);
   const cipher = createCipheriv("aes-256-gcm", key, iv);
   const enc = Buffer.concat([cipher.update(plain, "utf8"), cipher.final()]);
   return Buffer.concat([iv, enc, cipher.getAuthTag()]).toString("base64");
+}
+
+export function decryptSecret(payload: string): string {
+  const buf = Buffer.from(payload, "base64");
+  const decipher = createDecipheriv("aes-256-gcm", secretKey(), buf.subarray(0, 12));
+  decipher.setAuthTag(buf.subarray(buf.length - 16));
+  return Buffer.concat([decipher.update(buf.subarray(12, buf.length - 16)), decipher.final()]).toString("utf8");
 }

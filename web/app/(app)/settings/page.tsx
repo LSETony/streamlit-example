@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
-import { Clock, CreditCard, Crown, MapPin, ShieldAlert, SlidersHorizontal, Store } from "lucide-react";
+import { Clock, CreditCard, Crown, Globe, MapPin, MessageCircle, ShieldAlert, SlidersHorizontal, Store } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HoursForm, ProfileForm, RiskForm, RulesForm, ZonesEditor } from "@/components/gym-settings-forms";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { yookassaStatus } from "@/app/actions/gym";
+import { stripeStatus, whatsappStatus, yookassaStatus } from "@/app/actions/gym";
 import { date } from "@/lib/format";
 import { YookassaForm } from "./yookassa-form";
+import { WhatsappForm } from "./whatsapp-form";
+import { SiteLinks } from "./site-links";
+import { StripeForm } from "./stripe-form";
+import { BillingButtons } from "./billing-buttons";
+import { billingAvailable } from "@/lib/billing";
+import { appOrigin } from "@/lib/origin";
 import { getT } from "@/lib/i18n/server";
 import { regionInfo } from "@/lib/region";
 import type { T } from "@/lib/i18n/core";
@@ -25,16 +31,21 @@ const SECTIONS = [
   { id: "rules", title: "Правила", icon: SlidersHorizontal },
   { id: "risk", title: "«В зоне риска»", icon: ShieldAlert },
   { id: "payments", title: "Онлайн-оплата", icon: CreditCard },
+  { id: "whatsapp", title: "WhatsApp Business", icon: MessageCircle },
+  { id: "site", title: "Сайт и приложение", icon: Globe },
 ] as const;
 
 export default async function SettingsPage() {
   const ctx = await requireStaff(["owner"]);
   const supabase = await createClient();
-  const [{ data: zones }, yk] = await Promise.all([
+  const [{ data: zones }, yk, st, wa] = await Promise.all([
     supabase.from("zones").select("id, name, capacity").eq("gym_id", ctx.gym.id).order("name"),
     yookassaStatus(),
+    stripeStatus(),
+    whatsappStatus(),
   ]);
   const t = await getT();
+  const origin = await appOrigin();
   const g = ctx.gym;
   const paid = g.paid_until && g.paid_until >= ctx.today;
   const reg = regionInfo(g.region);
@@ -67,7 +78,10 @@ export default async function SettingsPage() {
                 {t("Регион: {region}", { region: t(g.region === "AE" ? "ОАЭ" : "Россия") })} · {reg.currency} · {reg.phoneCode}
               </p>
             </div>
-            {paid || g.trial_until >= ctx.today ? <Badge variant="brand">Активна</Badge> : <Badge variant="danger">Только чтение</Badge>}
+            <div className="flex flex-wrap items-center gap-2">
+              {paid || g.trial_until >= ctx.today ? <Badge variant="brand">Активна</Badge> : <Badge variant="danger">Только чтение</Badge>}
+              {!g.is_demo && billingAvailable(g.region, g.core_plan) ? <BillingButtons subscribed={!!g.stripe_subscription_id} /> : null}
+            </div>
           </Card>
 
           <Section t={t} id="gym" title="Зал" description="Название и часовой пояс видят клиенты в приложении">
@@ -83,11 +97,21 @@ export default async function SettingsPage() {
           <Section t={t} id="risk" title="«В зоне риска»" description="Пороги попадания в список и шаблоны сообщений">
             <RiskForm settings={g.settings} disabled={ctx.readOnly} />
           </Section>
-          {reg.onlinePayments ? (
+          {reg.paymentProvider === "yookassa" ? (
             <Section t={t} id="payments" title="Онлайн-оплата ЮKassa" description="Деньги поступают напрямую на счёт зала. Ключ хранится в зашифрованном виде только на сервере.">
               <YookassaForm status={yk} disabled={ctx.readOnly} />
             </Section>
-          ) : null}
+          ) : (
+            <Section t={t} id="payments" title="Онлайн-оплата Stripe" description="Деньги поступают напрямую на счёт зала в Stripe. Ключи хранятся в зашифрованном виде только на сервере.">
+              <StripeForm status={st} webhookUrl={`${origin}/api/stripe/gym/${g.id}`} disabled={ctx.readOnly} />
+            </Section>
+          )}
+          <Section t={t} id="whatsapp" title="WhatsApp Business" description="Автоматическая отправка сообщений клиентам «в зоне риска» через WhatsApp Cloud API.">
+            <WhatsappForm status={wa} disabled={ctx.readOnly} />
+          </Section>
+          <Section t={t} id="site" title="Сайт и приложение" description="Расписание на сайте зала и приложение для клиентов — без установки из магазина.">
+            <SiteLinks origin={origin} gymId={g.id} />
+          </Section>
         </div>
       </div>
     </>

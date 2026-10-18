@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ReceptionPage() {
-  const ctx = await requireStaff();
+  const ctx = await requireStaff(["owner", "admin", "reception"]);
   const capacity = ctx.gym.settings?.capacity ?? 0;
   return (
     <ReceptionScreen

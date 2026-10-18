@@ -66,7 +66,10 @@ export default function SignupPage() {
       <Checkbox
         required
         name="offer"
-        label={<span className="text-muted-foreground">Принимаю условия оферты и поручение на обработку персональных данных клиентов зала</span>}
+        label={<span className="text-muted-foreground">{t("Принимаю")}{" "}
+          <a href="/terms" target="_blank" className="text-tint-text underline underline-offset-2">{t("условия использования")}</a>{" "}{t("и")}{" "}
+          <a href="/privacy" target="_blank" className="text-tint-text underline underline-offset-2">{t("политику конфиденциальности")}</a>
+          {" "}{t("и поручаю core. обработку персональных данных клиентов зала")}</span>}
       />
       <Button type="submit" size="lg" disabled={pending}>{pending ? "Создаём…" : "Создать кабинет"}</Button>
       <p className="text-center text-sm text-muted-foreground">

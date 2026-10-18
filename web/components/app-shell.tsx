@@ -1,16 +1,17 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import {
   LayoutDashboard, ScanLine, Users, AlertTriangle, CalendarDays, Wallet, Tags, UserCog, ScrollText, Settings, LogOut, X, Moon, Sun, ChevronLeft,
-  Search, Plus, LayoutGrid,
+  Search, Plus, LayoutGrid, Check, ChevronsUpDown,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { CommandMenu, Kbd } from "@/components/command-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/app/actions/auth";
+import { switchGym } from "@/app/actions/gym";
 import type { Role } from "@/lib/types";
 import { ROLE_LABEL } from "@/lib/types";
 import { useT, useTx } from "@/lib/i18n/client";
@@ -33,9 +34,9 @@ const NAV: { title: string; items: NavItem[] }[] = [
     items: [
       { href: "/dashboard", label: "Дашборд", icon: LayoutDashboard, roles: ["owner", "admin"], feature: "dashboard" },
       { href: "/reception", label: "Ресепшен", icon: ScanLine, roles: ["owner", "admin", "reception"] },
-      { href: "/clients", label: "Клиенты", icon: Users, roles: ["owner", "admin", "reception"] },
+      { href: "/clients", label: "Клиенты", icon: Users, roles: ["owner", "admin", "reception", "trainer"] },
       { href: "/risk", label: "В зоне риска", short: "Риск", icon: AlertTriangle, roles: ["owner", "admin", "reception"], feature: "risk" },
-      { href: "/schedule", label: "Расписание", icon: CalendarDays, roles: ["owner", "admin", "reception"], feature: "schedule" },
+      { href: "/schedule", label: "Расписание", icon: CalendarDays, roles: ["owner", "admin", "reception", "trainer"], feature: "schedule" },
     ],
   },
   {
@@ -64,8 +65,8 @@ const TAB_PRIORITY = ["/reception", "/clients", "/schedule", "/dashboard", "/ris
  */
 const NavTitleContext = createContext<{ setTitle: (t: string | null) => void; setCollapsed: (v: boolean) => void } | null>(null);
 
-export function AppShell({ role, features, gymId, gymName, userName, riskCount, readOnly, children, banner }: {
-  role: Role; features: Record<string, boolean>; gymId: string; gymName: string; userName: string; riskCount: number | null;
+export function AppShell({ role, features, gymId, gymName, gyms, userName, riskCount, readOnly, children, banner }: {
+  role: Role; features: Record<string, boolean>; gymId: string; gymName: string; gyms: { id: string; name: string }[]; userName: string; riskCount: number | null;
   readOnly: boolean; children: React.ReactNode; banner?: React.ReactNode;
 }) {
   const tr = useT();
@@ -156,17 +157,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
     </nav>
   );
 
-  const gymCard = (
-    <div className="flex items-center gap-3 px-2">
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand text-[17px] font-bold text-white">
-        {gymName.trim()[0]?.toUpperCase() ?? "З"}
-      </span>
-      <span className="min-w-0">
-        <span className="block truncate text-[15px] font-semibold">{gymName}</span>
-        <span className="block text-[13px] text-muted-foreground">{tr("Кабинет зала")}</span>
-      </span>
-    </div>
-  );
+  const gymCard = <GymSwitcher gymId={gymId} gymName={gymName} gyms={gyms} canAdd={role === "owner"} />;
 
   const footer = (
     <div className="grid gap-2 rounded-2xl bg-field p-2">
@@ -195,7 +186,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
   return (
     <NavTitleContext.Provider value={navTitle}>
       <div className="flex min-h-dvh">
-        <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] lg:block">
+        <aside className="sticky top-0 hidden h-dvh w-[300px] shrink-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] ps-[max(0.75rem,env(safe-area-inset-left))] lg:block">
           <div className="glass glass-rim relative flex h-full flex-col gap-5 rounded-[28px] px-3 pb-3 pt-6">
             <Link href="/" className="px-3 text-foreground" aria-label={tr("core. — на главную")}>
               <Logo className="h-6" />
@@ -206,10 +197,10 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(env(safe-area-inset-top)+5rem)] short:pb-[calc(env(safe-area-inset-bottom)+4.5rem)] short:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pb-10 lg:pl-0 lg:pt-[env(safe-area-inset-top)]">
-          {banner}
+        <main className="min-w-0 flex-1 pb-[calc(env(safe-area-inset-bottom)+7rem)] ps-[env(safe-area-inset-left)] pe-[env(safe-area-inset-right)] pt-[calc(env(safe-area-inset-top)+5rem)] short:pb-[calc(env(safe-area-inset-bottom)+4.5rem)] short:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pb-10 lg:ps-0 lg:pt-[env(safe-area-inset-top)]">
           <div className="mx-auto w-full max-w-[1600px] px-4 py-2 sm:px-6 lg:px-8 lg:py-6">
             <div className="hidden h-[52px] lg:mb-5 lg:block" aria-hidden />
+            {banner ? <div className="mb-5">{banner}</div> : null}
             {children}
           </div>
         </main>
@@ -235,7 +226,7 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
         {/* Плавающие панели идут в DOM после содержимого: иначе Chromium не размывает то, что под ними */}
 
         {/* телефон и iPad в портрете: навигационная панель сверху, вкладки снизу (iOS 26) */}
-        <div className={cn("glass glass-rim fixed left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full pl-5 pr-1.5 transition-transform duration-300 short:top-[max(0.5rem,env(safe-area-inset-top))] short:h-12 lg:hidden",
+        <div className={cn("glass glass-rim fixed left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex h-14 items-center gap-2 rounded-full ps-5 pe-1.5 transition-transform duration-300 short:top-[max(0.5rem,env(safe-area-inset-top))] short:h-12 lg:hidden",
           barHidden && "-translate-y-[calc(100%+env(safe-area-inset-top)+1rem)]")}>
           <div className="relative min-w-0 flex-1">
             <Link href="/" aria-label={tr("core. — на главную")}
@@ -279,8 +270,8 @@ export function AppShell({ role, features, gymId, gymName, userName, riskCount, 
         </nav>
 
         {/* iPad в альбоме и компьютер: навигационная панель над колонкой содержимого */}
-        <div className="glass glass-rim fixed top-[max(0.75rem,env(safe-area-inset-top))] z-30 hidden h-[52px] items-center gap-2 rounded-full p-1.5 pl-5 lg:flex
-          left-[calc(300px+max(0px,(100vw-300px-1600px)/2)+2rem)] right-[calc(max(0px,(100vw-300px-1600px)/2)+2rem)]">
+        <div className="glass glass-rim fixed top-[max(0.75rem,env(safe-area-inset-top))] z-30 hidden h-[52px] items-center gap-2 rounded-full p-1.5 ps-5 lg:flex
+          start-[calc(300px+max(0px,(100vw-300px-1600px)/2)+2rem)] end-[calc(max(0px,(100vw-300px-1600px)/2)+2rem)]">
           <p className={cn("min-w-0 flex-1 truncate text-[17px] font-semibold transition-all duration-300",
             inlineTitle ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0")} aria-hidden={!inlineTitle}>
             {title}
@@ -365,14 +356,72 @@ export function PageHeader({ title, description, actions, back }: {
     <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <div className="grid min-w-[min(100%,18rem)] flex-1 gap-1">
         {back ? (
-          <Link href={back.href} className="-ml-1.5 inline-flex w-fit items-center gap-0.5 text-[17px] text-tint-text active:opacity-60">
-            <ChevronLeft className="size-6" strokeWidth={2.25} /> {tr(back.label)}
+          <Link href={back.href} className="-ms-1.5 inline-flex w-fit items-center gap-0.5 text-[17px] text-tint-text active:opacity-60">
+            <ChevronLeft className="size-6 rtl:rotate-180" strokeWidth={2.25} /> {tr(back.label)}
           </Link>
         ) : null}
         <h1 ref={ref} className="text-[34px] font-bold leading-[41px] tracking-[-0.02em]">{title}</h1>
         {description ? <p className="text-[15px] text-muted-foreground">{description}</p> : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
+    </div>
+  );
+}
+
+/** Карточка зала в меню; если залов несколько — переключатель, владелец может добавить новый зал */
+function GymSwitcher({ gymId, gymName, gyms, canAdd }: { gymId: string; gymName: string; gyms: { id: string; name: string }[]; canAdd: boolean }) {
+  const tr = useT();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [pending, start] = useTransition();
+  const interactive = gyms.length > 1 || canAdd;
+  const pick = (id: string) => {
+    setOpen(false);
+    if (id === gymId) return;
+    start(async () => {
+      const r = await switchGym(id);
+      if (r.ok) { router.push(r.data); router.refresh(); }
+    });
+  };
+  const card = (
+    <>
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand text-[17px] font-bold text-white">
+        {gymName.trim()[0]?.toUpperCase() ?? "З"}
+      </span>
+      <span className="min-w-0 flex-1 text-left">
+        <span className="block truncate text-[15px] font-semibold">{gymName}</span>
+        <span className="block text-[13px] text-muted-foreground">
+          {gyms.length > 1 ? `${gyms.length} ${tr.n(gyms.length, "зал|зала|залов")}` : tr("Кабинет зала")}
+        </span>
+      </span>
+      {interactive ? <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" /> : null}
+    </>
+  );
+  if (!interactive) return <div className="flex items-center gap-3 px-2">{card}</div>;
+  return (
+    <div className={cn("relative", pending && "opacity-60")}>
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open}
+        className="flex w-full cursor-pointer items-center gap-3 rounded-2xl px-2 py-1.5 hover:bg-field">
+        {card}
+      </button>
+      {open ? (
+        <div className="absolute inset-x-0 top-full z-50 mt-2 grid gap-0.5 rounded-2xl border border-separator bg-card p-1.5 shadow-xl">
+          {gyms.map((g) => (
+            <button key={g.id} type="button" onClick={() => pick(g.id)}
+              className={cn("flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-left text-[15px] hover:bg-field",
+                g.id === gymId && "font-semibold")}>
+              <span className="min-w-0 flex-1 truncate">{g.name}</span>
+              {g.id === gymId ? <Check className="size-4 text-tint-text" /> : null}
+            </button>
+          ))}
+          {canAdd ? (
+            <Link href="/onboarding?new=1" onClick={() => setOpen(false)}
+              className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] text-tint-text hover:bg-field">
+              <Plus className="size-4" /> {tr("Добавить зал")}
+            </Link>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

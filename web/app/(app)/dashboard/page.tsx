@@ -56,7 +56,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
   const pv = k.previous;
   const riskCounts = (risk.data ?? []).reduce<Record<string, number>>((acc, r) => ({ ...acc, [r.reason]: (acc[r.reason] ?? 0) + 1 }), {});
   const riskTotal = risk.data?.length ?? 0;
-  const ret = (returned.data ?? { contacted: 0, returned: 0 }) as { contacted: number; returned: number };
+  const ret = (returned.data ?? { contacted: 0, returned: 0 }) as { contacted: number; returned: number; revenue?: number };
   const prevLabel = `${date(k.previous_period.from)} – ${date(k.previous_period.to)}`;
   const occ = k.occupancy;
 
@@ -139,6 +139,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
               <p className="text-sm text-muted-foreground">
                 {t("За 30 дней связались с")} <b className="text-foreground">{ret.contacted}</b>, {t("вернулись")}{" "}
                 <b className="text-foreground">{ret.returned}</b>{ret.contacted ? ` (${Math.round((ret.returned / ret.contacted) * 100)}%)` : ""}.
+                {ret.revenue ? <> {t("Они принесли")} <b className="text-foreground">{money(ret.revenue, currency)}</b>.</> : null}
               </p>
             </CardContent>
           </Card>

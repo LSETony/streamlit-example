@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { ANON_KEY, SESSION_COOKIE, serverUrl } from "./config";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/forgot-password", "/auth", "/pay", "/brand"];
+const PUBLIC_PATHS = ["/login", "/signup", "/forgot-password", "/auth", "/pay", "/brand", "/demo", "/terms", "/privacy", "/m", "/w", "/api/stripe"];
 
 // Обновляет сессию Supabase в cookies и отправляет неавторизованных на вход
 export async function updateSession(request: NextRequest) {

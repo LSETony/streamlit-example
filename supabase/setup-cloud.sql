@@ -1,5 +1,5 @@
 -- core. — полная установка базы для Supabase Cloud: вставьте весь файл в SQL Editor и нажмите Run.
--- Собрано из supabase/migrations/*.sql и supabase/seed.sql (демо-зал «Атлет», пароль demo12345).
+-- Собрано скриптом supabase/build-setup-cloud.py из supabase/migrations/*.sql, supabase/seed.sql и supabase/demo.sql.
 
 -- ===== supabase/migrations/20260928000001_schema.sql
 -- core. MVP — схема базы данных (раздел 4 ТЗ)
@@ -2630,6 +2630,315 @@ grant select on public.public_gyms to authenticated;
 
 grant execute on function private.gyms_region_locked() to authenticated, service_role;
 
+-- ===== supabase/migrations/20261017000001_demo.sql
+-- Публичное демо: залы с флагом is_demo открываются в один клик и работают только на чтение,
+-- поэтому проверяющие и потенциальные клиенты не могут ничего изменить или сломать.
+
+alter table public.gyms add column is_demo boolean not null default false;
+
+create or replace function private.gym_writable(p_gym uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (
+    select 1 from public.gyms g
+     where g.id = p_gym
+       and not g.is_demo
+       and (g.trial_until >= current_date or coalesce(g.paid_until, date '1900-01-01') >= current_date)
+  )
+$$;
+
+create or replace function private.require_staff(p_gym uuid, p_roles public.staff_role[] default null,
+                                                 p_write boolean default true) returns uuid
+language plpgsql stable security definer set search_path = public as $$
+declare
+  v_id uuid;
+begin
+  select id into v_id from public.staff
+   where gym_id = p_gym and user_id = auth.uid() and active
+     and (p_roles is null or role = any (p_roles));
+  if v_id is null then
+    perform private.fail('FORBIDDEN', 'Недостаточно прав для этого действия');
+  end if;
+  if p_write and not private.gym_writable(p_gym) then
+    if exists (select 1 from public.gyms where id = p_gym and is_demo) then
+      perform private.fail('DEMO_READ_ONLY', 'Это демо-кабинет: изменения отключены');
+    end if;
+    perform private.fail('GYM_READ_ONLY', 'Пробный период закончился: кабинет работает в режиме «только чтение»');
+  end if;
+  return v_id;
+end $$;
+
+grant execute on function private.gym_writable(uuid) to authenticated, service_role;
+grant execute on function private.require_staff(uuid, public.staff_role[], boolean) to authenticated, service_role;
+
+-- ===== supabase/migrations/20261017000002_winback.sql
+-- Возврат клиентов в деньгах и автоматическая отправка в WhatsApp Business
+
+-- Статистика «в зоне риска»: сколько клиентов связались, сколько вернулись и сколько они заплатили после первого контакта
+create or replace function public.risk_returned_stats(p_gym uuid, p_from date default null) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare
+  v_from timestamptz;
+begin
+  perform private.require_staff(p_gym, null, false);
+  v_from := coalesce(p_from::timestamp at time zone (select timezone from public.gyms where id = p_gym),
+                     now() - interval '30 days');
+  return (
+    with first_contact as (
+      select client_id, min(contacted_at) as at, bool_or(returned_at is not null) as returned
+        from public.risk_contacts
+       where gym_id = p_gym and contacted_at >= v_from
+       group by client_id
+    )
+    select jsonb_build_object(
+      'contacted', count(*),
+      'returned', count(*) filter (where fc.returned),
+      'revenue', coalesce((
+        select sum(p.amount)
+          from public.payments p
+          join first_contact f on f.client_id = p.client_id
+         where p.gym_id = p_gym and p.status = 'succeeded' and p.refund_of_id is null and p.paid_at >= f.at
+      ), 0))
+      from first_contact fc
+  );
+end $$;
+
+-- Ключи WhatsApp Business (Cloud API): номер отправителя, токен (зашифрован), одобренный шаблон сообщения
+alter table public.gym_secrets
+  add column whatsapp_phone_id text,
+  add column whatsapp_token_encrypted text,
+  add column whatsapp_template text,
+  add column whatsapp_lang text not null default 'en';
+
+-- Флаг «WhatsApp подключён» без раскрытия ключей — для интерфейса сотрудников
+create or replace function public.whatsapp_connected(p_gym uuid) returns boolean
+language plpgsql stable security definer set search_path = public as $$
+begin
+  perform private.require_staff(p_gym, null, false);
+  return exists (select 1 from public.gym_secrets
+                  where gym_id = p_gym and whatsapp_phone_id is not null and whatsapp_token_encrypted is not null
+                    and whatsapp_template is not null);
+end $$;
+
+revoke execute on function public.whatsapp_connected(uuid) from public, anon;
+grant execute on function public.whatsapp_connected(uuid) to authenticated, service_role;
+grant execute on function public.risk_returned_stats(uuid, date) to authenticated, service_role;
+
+-- ===== supabase/migrations/20261017000003_trainer_role.sql
+-- Роль «тренер». Новое значение перечисления должно появиться в отдельной транзакции, до политик, которые его используют.
+alter type public.staff_role add value if not exists 'trainer';
+
+-- ===== supabase/migrations/20261017000004_trainer_access.sql
+-- Доступ тренера: видит клиентов, расписание и записи, отмечает «пришёл / не пришёл».
+-- Не продаёт абонементы, не отмечает визиты на ресепшене, не видит оплаты и настройки.
+
+alter table public.schedule_items add column trainer_staff_id uuid references public.staff(id) on delete set null;
+create index schedule_items_trainer_idx on public.schedule_items(trainer_staff_id) where trainer_staff_id is not null;
+
+-- Права по умолчанию: запись без явного списка ролей — владелец, администратор и ресепшен (не тренер)
+create or replace function private.require_staff(p_gym uuid, p_roles public.staff_role[] default null,
+                                                 p_write boolean default true) returns uuid
+language plpgsql stable security definer set search_path = public as $$
+declare
+  v_id uuid;
+  v_roles public.staff_role[] := coalesce(p_roles, case when p_write then '{owner,admin,reception}'::public.staff_role[] end);
+begin
+  select id into v_id from public.staff
+   where gym_id = p_gym and user_id = auth.uid() and active
+     and (v_roles is null or role = any (v_roles));
+  if v_id is null then
+    perform private.fail('FORBIDDEN', 'Недостаточно прав для этого действия');
+  end if;
+  if p_write and not private.gym_writable(p_gym) then
+    if exists (select 1 from public.gyms where id = p_gym and is_demo) then
+      perform private.fail('DEMO_READ_ONLY', 'Это демо-кабинет: изменения отключены');
+    end if;
+    perform private.fail('GYM_READ_ONLY', 'Пробный период закончился: кабинет работает в режиме «только чтение»');
+  end if;
+  return v_id;
+end $$;
+
+-- Клиентов создают и меняют владелец, администратор и ресепшен
+drop policy clients_insert on public.clients;
+drop policy clients_update on public.clients;
+create policy clients_insert on public.clients for insert to authenticated
+  with check (private.is_staff(gym_id, '{owner,admin,reception}') and private.gym_writable(gym_id) and deleted_at is null);
+create policy clients_update on public.clients for update to authenticated
+  using (private.is_staff(gym_id, '{owner,admin,reception}') and private.gym_writable(gym_id) and deleted_at is null)
+  with check (private.is_staff(gym_id, '{owner,admin,reception}'));
+
+-- «Пришёл / не пришёл» отмечает и тренер
+create or replace function public.mark_booking(p_booking uuid, p_status public.booking_status) returns void
+language plpgsql security definer set search_path = public as $$
+declare
+  v_gym uuid;
+begin
+  if p_status not in ('attended', 'no_show', 'booked') then
+    perform private.fail('INVALID_STATUS', 'Недопустимый статус');
+  end if;
+  select gym_id into v_gym from public.bookings where id = p_booking;
+  if v_gym is null then perform private.fail('BOOKING_NOT_FOUND', 'Запись не найдена'); end if;
+  perform private.require_staff(v_gym, '{owner,admin,reception,trainer}');
+  update public.bookings set status = p_status where id = p_booking and status <> 'cancelled';
+end $$;
+
+-- Занятие можно назначить сотруднику-тренеру: имя подставляется из его профиля
+drop function if exists public.create_schedule_series(uuid, text, timestamp, int, int, public.schedule_kind, uuid, text, int[], date, text);
+create or replace function public.create_schedule_series(
+  p_gym uuid, p_title text, p_starts_local timestamp, p_duration_min int,
+  p_capacity int default 10, p_kind public.schedule_kind default 'class', p_zone uuid default null,
+  p_trainer text default null, p_weekdays int[] default null, p_until date default null,
+  p_description text default null, p_trainer_staff uuid default null
+) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare
+  v_tz text;
+  v_series uuid;
+  v_rule text;
+  v_day date;
+  v_count int := 0;
+  v_until date;
+  v_trainer text := p_trainer;
+begin
+  perform private.require_staff(p_gym, '{owner,admin}');
+  perform private.require_feature(p_gym, 'schedule');
+  if p_duration_min <= 0 then perform private.fail('INVALID_DURATION', 'Длительность должна быть больше нуля'); end if;
+  select timezone into v_tz from public.gyms where id = p_gym;
+  if p_trainer_staff is not null then
+    select full_name into v_trainer from public.staff where id = p_trainer_staff and gym_id = p_gym and role = 'trainer' and active;
+    if v_trainer is null then perform private.fail('TRAINER_NOT_FOUND', 'Тренер не найден'); end if;
+  end if;
+
+  if p_weekdays is null or cardinality(p_weekdays) = 0 then
+    insert into public.schedule_items (gym_id, kind, title, description, zone_id, trainer_name, trainer_staff_id, starts_at, ends_at, capacity)
+    values (p_gym, p_kind, p_title, p_description, p_zone, v_trainer, p_trainer_staff,
+            p_starts_local at time zone v_tz,
+            (p_starts_local + make_interval(mins => p_duration_min)) at time zone v_tz,
+            p_capacity);
+    return jsonb_build_object('created', 1, 'series_id', null);
+  end if;
+
+  v_until := least(coalesce(p_until, p_starts_local::date + 83), p_starts_local::date + 365);
+  v_series := gen_random_uuid();
+  v_rule := 'FREQ=WEEKLY;BYDAY=' ||
+            array_to_string(array(select (array['MO','TU','WE','TH','FR','SA','SU'])[d]
+                                    from unnest(p_weekdays) d order by d), ',') ||
+            ';UNTIL=' || to_char(v_until, 'YYYYMMDD');
+  for v_day in select generate_series(p_starts_local::date, v_until, interval '1 day')::date loop
+    if extract(isodow from v_day)::int = any (p_weekdays) then
+      insert into public.schedule_items (gym_id, kind, title, description, zone_id, trainer_name, trainer_staff_id, starts_at, ends_at,
+                                         capacity, recurrence_rule, series_id)
+      values (p_gym, p_kind, p_title, p_description, p_zone, v_trainer, p_trainer_staff,
+              (v_day + p_starts_local::time) at time zone v_tz,
+              (v_day + p_starts_local::time + make_interval(mins => p_duration_min)) at time zone v_tz,
+              p_capacity, v_rule, v_series);
+      v_count := v_count + 1;
+    end if;
+  end loop;
+  return jsonb_build_object('created', v_count, 'series_id', v_series, 'rule', v_rule);
+end $$;
+
+revoke execute on function public.create_schedule_series(uuid, text, timestamp, int, int, public.schedule_kind, uuid, text, int[], date, text, uuid) from public, anon;
+grant execute on function public.create_schedule_series(uuid, text, timestamp, int, int, public.schedule_kind, uuid, text, int[], date, text, uuid) to authenticated, service_role;
+grant execute on function private.require_staff(uuid, public.staff_role[], boolean) to authenticated, service_role;
+
+-- ===== supabase/migrations/20261017000005_member_app.sql
+-- Веб-приложение клиента и публичный виджет записи: расписание со свободными местами без персональных данных.
+-- Записи других клиентов скрыты RLS, поэтому количество занятых мест отдаёт отдельная функция.
+
+-- Карточка зала для виджета на сайте: название, контакты, валюта и действующие тарифы
+create or replace function public.public_gym(p_gym uuid) returns jsonb
+language sql stable security definer set search_path = public as $$
+  select jsonb_build_object(
+    'id', g.id, 'name', g.name, 'address', g.address, 'phone', g.phone, 'logo_url', g.logo_url,
+    'region', g.region, 'currency', g.currency, 'timezone', g.timezone,
+    'schedule', coalesce((public.gym_features(g.id) ->> 'schedule')::boolean, false),
+    'plans', coalesce((
+      select jsonb_agg(jsonb_build_object('id', p.id, 'name', p.name, 'description', p.description, 'kind', p.kind,
+                                          'price', p.price, 'duration_days', p.duration_days,
+                                          'visits_limit', p.visits_limit) order by p.price)
+        from public.membership_plans p where p.gym_id = g.id and p.active), '[]'))
+    from public.gyms g where g.id = p_gym
+$$;
+
+-- Ближайшие групповые занятия: занято мест и, для вошедшего клиента зала, его запись
+create or replace function public.public_schedule(p_gym uuid, p_days int default 14) returns jsonb
+language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+           'id', s.id, 'title', s.title, 'description', s.description, 'trainer_name', s.trainer_name,
+           'zone', z.name, 'starts_at', s.starts_at, 'ends_at', s.ends_at, 'capacity', s.capacity,
+           'booked', (select count(*) from public.bookings b
+                       where b.schedule_item_id = s.id and b.status in ('booked', 'attended')),
+           'my_booking_id', (select b.id from public.bookings b join public.clients c on c.id = b.client_id
+                              where b.schedule_item_id = s.id and b.status = 'booked'
+                                and c.user_id = auth.uid() and auth.uid() is not null and c.deleted_at is null
+                              limit 1)
+         ) order by s.starts_at), '[]')
+    from public.schedule_items s
+    left join public.zones z on z.id = s.zone_id
+   where s.gym_id = p_gym and s.kind = 'class' and not s.cancelled
+     and s.starts_at > now() and s.starts_at < now() + make_interval(days => least(greatest(p_days, 1), 31))
+     and coalesce((public.gym_features(p_gym) ->> 'schedule')::boolean, false)
+$$;
+
+revoke execute on function public.public_gym(uuid) from public;
+revoke execute on function public.public_schedule(uuid, int) from public;
+grant execute on function public.public_gym(uuid) to anon, authenticated, service_role;
+grant execute on function public.public_schedule(uuid, int) to anon, authenticated, service_role;
+
+-- ===== supabase/migrations/20261017000006_multi_gym.sql
+-- Несколько залов в одном аккаунте: владелец сети создаёт новые залы и переключается между ними в кабинете.
+-- Ограничение на 20 залов защищает от злоупотребления пробными периодами.
+
+-- Создание зала: для ОАЭ — часовой пояс Дубая и шаблоны сообщений на английском
+create or replace function public.create_gym(p_name text, p_owner_name text, p_address text default null,
+                                  p_timezone text default null, p_phone text default null, p_region text default 'RU')
+returns uuid
+language plpgsql security definer set search_path = public as $$
+declare
+  v_gym uuid;
+  v_email text;
+  v_region text := coalesce(p_region, 'RU');
+  v_tz text;
+begin
+  if auth.uid() is null then perform private.fail('UNAUTHORIZED', 'Требуется вход'); end if;
+  if v_region not in ('RU', 'AE') then perform private.fail('INVALID_REGION', 'Выберите регион: Россия или ОАЭ'); end if;
+  if (select count(*) from public.staff where user_id = auth.uid() and role = 'owner' and active) >= 20 then
+    perform private.fail('GYM_LIMIT', 'В одном аккаунте можно создать до 20 залов — напишите нам, если нужно больше');
+  end if;
+  v_tz := coalesce(nullif(p_timezone, ''), case v_region when 'AE' then 'Asia/Dubai' else 'Europe/Moscow' end);
+  perform now() at time zone v_tz;   -- валидация часового пояса
+  select email into v_email from auth.users where id = auth.uid();
+  insert into public.gyms (name, address, timezone, phone, region)
+  values (p_name, p_address, v_tz, public.normalize_phone(p_phone), v_region) returning id into v_gym;
+  if v_region = 'AE' then
+    update public.gyms set settings = jsonb_set(settings, '{message_templates}', '{
+      "gone": "{name}, we haven''t seen you at {gym} for a while! Hope to see you at a workout soon — let us know if anything is in the way.",
+      "expiring": "{name}, your {gym} membership ends on {date}. Renew in advance so you don''t miss a workout.",
+      "declining": "{name}, we noticed you''ve been coming to {gym} less often. Can we find a better time or coach for you?",
+      "not_renewed": "{name}, your {gym} membership has ended. Come back — we''ll help you renew."
+    }'::jsonb) where id = v_gym;
+  end if;
+  insert into public.staff (gym_id, user_id, email, role, full_name)
+  values (v_gym, auth.uid(), coalesce(v_email, auth.uid()::text), 'owner', p_owner_name);
+  return v_gym;
+end $$;
+revoke execute on function public.create_gym(text, text, text, text, text, text) from public, anon;
+grant execute on function public.create_gym(text, text, text, text, text, text) to authenticated, service_role;
+
+-- ===== supabase/migrations/20261017000007_stripe.sql
+-- Stripe: онлайн-оплата абонементов для залов в ОАЭ (ключи зала) и подписка core. для залов (аккаунт core.)
+
+-- Ключи Stripe зала: секретный ключ и секрет подписи уведомлений, оба зашифрованы
+alter table public.gym_secrets
+  add column stripe_secret_encrypted text,
+  add column stripe_webhook_secret_encrypted text;
+
+-- Подписка core.: покупатель и подписка в Stripe. Пишет только сервер (service role) по уведомлениям Stripe
+alter table public.gyms
+  add column stripe_customer_id text,
+  add column stripe_subscription_id text;
+create index gyms_stripe_customer_idx on public.gyms(stripe_customer_id) where stripe_customer_id is not null;
+
 -- ===== supabase/seed.sql
 -- Демо-данные core.: зал «Атлет» с историей за 10 месяцев — для локальной разработки, показа и пилотов.
 -- Входы (пароль у всех demo12345):
@@ -2890,3 +3199,250 @@ update public.risk_contacts set returned_at = now() - interval '1 day'
 
 -- Статусы по датам
 select public.run_maintenance();
+
+-- ===== supabase/demo.sql
+-- Публичные демо-залы core. для кнопки «Попробовать демо» (/demo): работают только на чтение (gyms.is_demo).
+--   Desert Fit — ОАЭ, английский, AED, +971 (вход demo-ae@demo.core)
+--   Атлет      — Россия, русский, ₽, +7      (вход demo-ru@demo.core)
+-- Вход — одноразовой ссылкой с сервера, пароль никому не нужен. Повторный запуск ничего не дублирует.
+
+select setseed(0.17);
+
+create or replace function pg_temp.demo_owner(p_id uuid, p_email text) returns uuid
+language plpgsql as $$
+begin
+  insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
+                          raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+                          confirmation_token, recovery_token, email_change_token_new, email_change)
+  values ('00000000-0000-0000-0000-000000000000', p_id, 'authenticated', 'authenticated', p_email,
+          extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(),
+          '{"provider":"email","providers":["email"]}', '{}', now(), now(), '', '', '', '')
+  on conflict (id) do nothing;
+  insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+  values (gen_random_uuid(), p_id, p_id::text, jsonb_build_object('sub', p_id::text, 'email', p_email, 'email_verified', true),
+          'email', now(), now(), now())
+  on conflict do nothing;
+  return p_id;
+end $$;
+
+create or replace function pg_temp.demo_gym(p_gym uuid, p_region text, p_owner uuid, p_email text) returns void
+language plpgsql as $$
+declare
+  ae boolean := p_region = 'AE';
+  tz text := case when p_region = 'AE' then 'Asia/Dubai' else 'Europe/Moscow' end;
+  today date := (now() at time zone (case when p_region = 'AE' then 'Asia/Dubai' else 'Europe/Moscow' end))::date;
+  first_m text[];
+  first_f text[];
+  last_n text[];
+  sources text[];
+  z_gym uuid := gen_random_uuid();
+  z_studio uuid := gen_random_uuid();
+  z_sauna uuid := gen_random_uuid();
+  plans uuid[];
+  pick uuid;
+  p_month uuid;
+  p_pack uuid;
+  p_quarter uuid;
+  p_offpeak uuid;
+  i int;
+  c uuid;
+  female boolean;
+  name text;
+  joined date;
+  d date;
+  pl public.membership_plans;
+  m uuid;
+  loyalty numeric;
+  weekly numeric;
+  fading boolean;
+  ends date;
+  v_day date;
+  ts timestamptz;
+  hr int;
+  vleft int;
+  method public.payment_method;
+  monday date;
+  s record;
+  item uuid;
+begin
+  if exists (select 1 from public.gyms where id = p_gym) then return; end if;
+  perform pg_temp.demo_owner(p_owner, p_email);
+
+  if ae then
+    first_m := array['Omar','Ahmed','Khalid','Yousef','Ali','Hassan','Rashid','James','Daniel','Arjun','Rahul','Michael','Luca','Adam','Karim','Ryan'];
+    first_f := array['Fatima','Aisha','Mariam','Noura','Layla','Sara','Emma','Olivia','Priya','Anna','Sofia','Hannah','Zara','Mia','Leila','Chloe'];
+    last_n := array['Al Mansoori','Al Hashimi','Khan','Patel','Sharma','Smith','Johnson','Haddad','Nasser','Rahman','Ibrahim','Fernandes','Brown','Wilson','Kumar','Saleh','Al Zaabi','Murphy','Rossi','Costa'];
+    sources := array['Instagram','Instagram','Instagram','TikTok','Google Карты','Google Карты','Рекомендация','Рекомендация','Сайт','Вывеска'];
+  else
+    first_m := array['Иван','Алексей','Дмитрий','Сергей','Андрей','Максим','Артём','Никита','Павел','Егор','Михаил','Роман','Кирилл','Илья','Олег','Тимур'];
+    first_f := array['Анна','Мария','Екатерина','Ольга','Наталья','Юлия','Дарья','Алина','Ксения','Полина','Виктория','Елена','София','Вера','Ирина','Алёна'];
+    last_n := array['Иванов','Петров','Смирнов','Кузнецов','Попов','Васильев','Соколов','Михайлов','Новиков','Фёдоров','Морозов','Волков','Алексеев','Лебедев','Семёнов','Егоров','Павлов','Козлов','Орлов','Андреев'];
+    sources := array['Instagram','Instagram','Рекомендация','Рекомендация','Рекомендация','Яндекс Карты','2ГИС','Вывеска','ВКонтакте','Сайт'];
+  end if;
+
+  insert into public.gyms (id, name, address, timezone, phone, region, is_demo, trial_until, paid_until, onboarded_at, created_at)
+  values (p_gym,
+          case when ae then 'Desert Fit' else 'Атлет' end,
+          case when ae then 'Al Quoz 1, Dubai' else 'Москва, ул. Спортивная, 12' end,
+          tz, case when ae then '+97143456789' else '+74951234567' end, p_region, true,
+          current_date + 3650, current_date + 3650, now() - interval '300 days', now() - interval '300 days');
+  if ae then
+    update public.gyms set settings = jsonb_set(settings, '{message_templates}', '{
+      "gone": "{name}, we haven''t seen you at {gym} for a while! Hope to see you at a workout soon — let us know if anything is in the way.",
+      "expiring": "{name}, your {gym} membership ends on {date}. Renew in advance so you don''t miss a workout.",
+      "declining": "{name}, we noticed you''ve been coming to {gym} less often. Can we find a better time or coach for you?",
+      "not_renewed": "{name}, your {gym} membership has ended. Come back — we''ll help you renew."
+    }'::jsonb) where id = p_gym;
+  end if;
+
+  insert into public.staff (gym_id, user_id, email, role, full_name)
+  values (p_gym, p_owner, p_email, 'owner', case when ae then 'Sarah Ahmed' else 'Анна Смирнова' end);
+
+  insert into public.zones (id, gym_id, name, capacity) values
+    (z_gym, p_gym, case when ae then 'Gym floor' else 'Тренажёрный зал' end, 60),
+    (z_studio, p_gym, case when ae then 'Studio' else 'Студия' end, 20),
+    (z_sauna, p_gym, case when ae then 'Sauna' else 'Сауна' end, 6);
+
+  insert into public.membership_plans (gym_id, name, kind, price, duration_days, visits_limit, freeze_days_max, sold_online, description)
+  values (p_gym, case when ae then 'Single visit' else 'Разовое посещение' end, 'visits', case when ae then 7500 else 60000 end, 1, 1, 0, not ae,
+          case when ae then 'One visit within a day' else 'Один визит в течение дня' end);
+  insert into public.membership_plans (gym_id, name, kind, price, duration_days, visits_limit, freeze_days_max, sold_online, description)
+  values (p_gym, case when ae then 'Month' else 'Месяц' end, 'unlimited', case when ae then 45000 else 350000 end, 30, null, 7, not ae,
+          case when ae then 'Unlimited for 30 days' else 'Безлимит на 30 дней' end) returning id into p_month;
+  insert into public.membership_plans (gym_id, name, kind, price, duration_days, visits_limit, freeze_days_max, sold_online, description)
+  values (p_gym, case when ae then '8 classes' else '8 занятий' end, 'visits', case when ae then 40000 else 280000 end, 45, 8, 7, not ae,
+          case when ae then '8 visits within 45 days' else '8 визитов за 45 дней' end) returning id into p_pack;
+  insert into public.membership_plans (gym_id, name, kind, price, duration_days, visits_limit, freeze_days_max, sold_online, description)
+  values (p_gym, case when ae then '3 months' else '3 месяца' end, 'unlimited', case when ae then 120000 else 900000 end, 90, null, 14, not ae,
+          case when ae then 'Unlimited for 90 days' else 'Безлимит на 90 дней' end) returning id into p_quarter;
+  insert into public.membership_plans (gym_id, name, kind, price, duration_days, visits_limit, freeze_days_max, sold_online, description)
+  values (p_gym, case when ae then 'Off-peak' else 'Утренний' end, 'period', case when ae then 30000 else 250000 end, 30, null, 7, false,
+          case when ae then 'Weekdays until 4 pm' else 'До 16:00 по будням' end) returning id into p_offpeak;
+  -- «Месяц» продаётся чаще остальных, как в настоящих залах
+  plans := array[p_month, p_month, p_month, p_pack, p_quarter, p_offpeak];
+
+  for i in 1..260 loop
+    female := random() < 0.5;
+    if ae then
+      name := (case when female then first_f[1 + floor(random() * array_length(first_f, 1))::int] else first_m[1 + floor(random() * array_length(first_m, 1))::int] end)
+              || ' ' || last_n[1 + floor(random() * array_length(last_n, 1))::int];
+    else
+      name := last_n[1 + floor(random() * array_length(last_n, 1))::int] || case when female then 'а ' else ' ' end
+              || (case when female then first_f[1 + floor(random() * array_length(first_f, 1))::int] else first_m[1 + floor(random() * array_length(first_m, 1))::int] end);
+    end if;
+    joined := today - (1 + floor(random() * 290))::int;
+    insert into public.clients (gym_id, full_name, phone, gender, source, tags, consent_pd_at, consent_pd_text,
+                                consent_marketing_at, consent_marketing_text, created_at)
+    values (p_gym, name, case when ae then '+97150' else '+7926' end || lpad(i::text, 7, '0'),
+            case when female then 'female' else 'male' end,
+            sources[1 + floor(random() * array_length(sources, 1))::int],
+            case when random() < 0.12 then array['vip'] else '{}' end,
+            joined::timestamp at time zone tz, case when ae then 'Consent given at the front desk (demo)' else 'Согласие получено на ресепшене (демо)' end,
+            case when random() < 0.7 then joined::timestamp at time zone tz end,
+            case when ae then 'Marketing consent (demo)' else 'Согласие на рассылки (демо)' end, joined::timestamp at time zone tz)
+    returning id into c;
+
+    loyalty := 0.55 + random() * 0.4;
+    weekly := 1.2 + random() * 2.6;
+    fading := random() < 0.08;
+    d := joined;
+    m := null;
+    loop
+      pick := plans[1 + floor(random() * 6)::int];
+      select * into pl from public.membership_plans where id = pick;
+      ends := d + pl.duration_days - 1;
+      method := (array['card','card','cash'])[1 + floor(random() * 3)::int]::public.payment_method;
+      insert into public.memberships (gym_id, client_id, plan_id, plan_name, kind, starts_on, ends_on, visits_left,
+                                      freeze_days_max, status, price_paid, renewed_from_id, created_at)
+      values (p_gym, c, pl.id, pl.name, pl.kind, d, ends, pl.visits_limit, pl.freeze_days_max,
+              case when ends < today then 'expired' else 'active' end::public.membership_status, pl.price, m,
+              (d::timestamp + time '10:00' + make_interval(mins => floor(random() * 600)::int)) at time zone tz)
+      returning id into m;
+      insert into public.payments (gym_id, client_id, membership_id, amount, method, status, paid_at, created_at, description)
+      values (p_gym, c, m, pl.price, method, 'succeeded',
+              (d::timestamp + time '10:00' + make_interval(mins => floor(random() * 600)::int)) at time zone tz,
+              (d::timestamp + time '10:00') at time zone tz, 'Абонемент «' || pl.name || '»');
+
+      vleft := coalesce(pl.visits_limit, 1000);
+      v_day := d;
+      while v_day <= least(ends, today) and vleft > 0 loop
+        if random() < ((weekly / 7.0) * (case when fading and v_day > today - 14 then 0.15 else 1 end)) then
+          hr := case when random() < 0.3 then 6 + floor(random() * 4)::int
+                     when random() < 0.75 then 17 + floor(random() * 5)::int
+                     else 11 + floor(random() * 6)::int end;
+          ts := (v_day::timestamp + make_interval(hours => hr, mins => floor(random() * 60)::int)) at time zone tz;
+          if ts < now() - interval '2 hours' then
+            insert into public.visits (gym_id, client_id, membership_id, checked_in_at, checked_out_at, method)
+            values (p_gym, c, m, ts, ts + make_interval(mins => 50 + floor(random() * 60)::int),
+                    case when random() < 0.65 then 'qr' else 'manual' end::public.visit_method);
+            vleft := vleft - 1;
+          end if;
+        end if;
+        v_day := v_day + 1;
+      end loop;
+      if pl.visits_limit is not null then
+        update public.memberships set visits_left = greatest(vleft, 0) where id = m;
+      end if;
+
+      exit when ends >= today;
+      exit when random() > loyalty;
+      d := ends + 1 + case when random() < 0.25 then floor(random() * 10)::int else 0 end;
+      exit when d > today;
+    end loop;
+  end loop;
+
+  update public.clients cl set last_visit_at = v.mx
+    from (select client_id, max(checked_in_at) mx from public.visits where gym_id = p_gym group by client_id) v
+   where v.client_id = cl.id;
+
+  insert into public.visits (gym_id, client_id, membership_id, checked_in_at, method)
+  select p_gym, m2.client_id, m2.id, now() - make_interval(mins => floor(random() * 80)::int), 'qr'
+    from public.memberships m2
+   where m2.gym_id = p_gym and m2.status = 'active' and m2.starts_on <= today and m2.ends_on >= today and m2.kind <> 'visits'
+   order by random() limit 12;
+
+  -- расписание на 4 недели
+  monday := date_trunc('week', (now() at time zone tz))::date - 7;
+  for s in select * from (values
+      (case when ae then 'Yoga' else 'Йога' end, case when ae then 'Layla' else 'Ольга' end, 1, '19:00'::time, 60, 16, z_studio),
+      (case when ae then 'Yoga' else 'Йога' end, case when ae then 'Layla' else 'Ольга' end, 3, '19:00'::time, 60, 16, z_studio),
+      (case when ae then 'Functional training' else 'Функциональный тренинг' end, case when ae then 'Marcus' else 'Максим' end, 2, '20:00'::time, 55, 14, z_gym),
+      (case when ae then 'Functional training' else 'Функциональный тренинг' end, case when ae then 'Marcus' else 'Максим' end, 4, '20:00'::time, 55, 14, z_gym),
+      (case when ae then 'Pilates' else 'Пилатес' end, case when ae then 'Noura' else 'Ника' end, 6, '11:00'::time, 55, 12, z_studio),
+      (case when ae then 'Boxing' else 'Бокс' end, case when ae then 'Khalid' else 'Тимур' end, 5, '19:30'::time, 60, 12, z_gym),
+      (case when ae then 'Stretching' else 'Стретчинг' end, case when ae then 'Layla' else 'Ольга' end, 7, '12:00'::time, 50, 16, z_studio)
+    ) t(title, trainer, dow, at_time, minutes, cap, zone) loop
+    for w in 0..3 loop
+      d := monday + w * 7 + s.dow - 1;
+      insert into public.schedule_items (gym_id, kind, title, zone_id, trainer_name, starts_at, ends_at, capacity, recurrence_rule)
+      values (p_gym, 'class', s.title, s.zone, s.trainer, (d + s.at_time) at time zone tz,
+              (d + s.at_time + make_interval(mins => s.minutes)) at time zone tz, s.cap, 'FREQ=WEEKLY')
+      returning id into item;
+      insert into public.bookings (gym_id, schedule_item_id, client_id, status, channel)
+      select p_gym, item, cl.id,
+             case when (d + s.at_time) at time zone tz < now() then (case when random() < 0.85 then 'attended' else 'no_show' end)::public.booking_status
+                  else 'booked' end,
+             case when random() < 0.45 then 'app' else 'staff' end::public.booking_channel
+        from public.clients cl
+       where cl.gym_id = p_gym and exists (select 1 from public.memberships mm where mm.client_id = cl.id and mm.status in ('active', 'frozen'))
+       order by random()
+       limit (s.cap * (0.4 + random() * 0.6))::int;
+    end loop;
+  end loop;
+end $$;
+
+select pg_temp.demo_gym('d1000000-0000-0000-0000-0000000000a1', 'AE', 'd0000000-0000-0000-0000-0000000000a1', 'demo-ae@demo.core');
+select pg_temp.demo_gym('d1000000-0000-0000-0000-0000000000b1', 'RU', 'd0000000-0000-0000-0000-0000000000b1', 'demo-ru@demo.core');
+
+select public.run_maintenance();
+
+-- отметки контакта по части клиентов «в зоне риска»: счётчик «вернулись после контакта»
+insert into public.risk_contacts (gym_id, client_id, reason, channel, note, contacted_at)
+select r.gym_id, r.client_id, r.reason, (array['call','whatsapp','telegram'])[1 + floor(random() * 3)::int], 'demo', now() - interval '6 days'
+  from public.v_client_risk r
+ where r.gym_id in ('d1000000-0000-0000-0000-0000000000a1', 'd1000000-0000-0000-0000-0000000000b1')
+   and not exists (select 1 from public.risk_contacts rc where rc.gym_id = r.gym_id)
+ order by random() limit 18
+on conflict do nothing;
+update public.risk_contacts set returned_at = now() - interval '2 days'
+ where note = 'demo' and returned_at is null and random() < 0.45;

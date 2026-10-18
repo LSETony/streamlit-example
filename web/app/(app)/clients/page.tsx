@@ -49,7 +49,7 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
   const { data: tagRows } = await supabase.from("clients").select("tags").eq("gym_id", ctx.gym.id).is("deleted_at", null).neq("tags", "{}").limit(1000);
   const tags = Array.from(new Set((tagRows ?? []).flatMap((r) => r.tags as string[]))).sort();
   const total = count ?? 0;
-  const canImport = ctx.staff.role !== "reception";
+  const canImport = ctx.staff.role === "owner" || ctx.staff.role === "admin";
 
   const pageHref = (p: number) => {
     const params = new URLSearchParams();
@@ -73,7 +73,7 @@ export default async function ClientsPage({ searchParams }: PageProps<"/clients"
               <Button variant="outline" asChild className="hidden sm:inline-flex"><Link href="/clients/import"><Upload /> Импорт</Link></Button>
             ) : null}
             {ctx.features.export !== false ? <span className="hidden sm:contents"><ExportClientsButton gymId={ctx.gym.id} filters={{ q, state, tag, risk }} /></span> : null}
-            <NewClientButton disabled={ctx.readOnly} autoOpen={sp.new === "1"} className="hidden sm:inline-flex" />
+            {ctx.staff.role !== "trainer" ? <NewClientButton disabled={ctx.readOnly} autoOpen={sp.new === "1"} className="hidden sm:inline-flex" /> : null}
           </>
         }
       />
