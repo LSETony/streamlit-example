@@ -1,0 +1,391 @@
+/* Design tokens ported 1:1 from the iOS app's Theme.swift, which itself
+   ports the source Figma's CSS custom properties. Keeping the same names
+   (minus the `app` prefix, which CSS custom properties don't need) so the
+   two codebases stay easy to compare. */
+
+@font-face {
+  font-family: "Geologica";
+  src: url("/fonts/Geologica-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geologica";
+  src: url("/fonts/Geologica-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geologica";
+  src: url("/fonts/Geologica-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geologica";
+  src: url("/fonts/Geologica-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geologica";
+  src: url("/fonts/Geologica-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Francy";
+  src: url("/fonts/Francy-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Doto";
+  src: url("/fonts/Doto-VariableFont.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  --bg: #1e1e1e;
+  --surf: #141417;
+  --surf2: #1d1d22;
+  --accent: #f92c00;
+  --accent-dim: rgba(249, 44, 0, 0.14);
+  --accent-purple: #5900ff;
+  --ink: #f6f6f5;
+  --muted: #8a8a93;
+  --good: #4ade80;
+  --warn: #facc15;
+  --line: #27272f;
+  --option-row-fill: rgba(60, 56, 56, 0.2);
+
+  --r: 30px;
+  --r-s: 16px;
+  --screen-pad: 20px;
+
+  --font-brand: "Francy", "Geologica", sans-serif;
+  --font-ui: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-digital: "Doto", monospace;
+}
+
+/* Russian: the brand face has no Cyrillic glyphs, and (by request) every
+   weight collapses to one consistent Geologica Medium instead of mapping
+   each system weight to its own Geologica weight — mirrors
+   Font.uiFontFamilyOverride / Font.brandFontOverride in Theme.swift. */
+html.lang-ru {
+  --font-brand: "Geologica", sans-serif;
+  --font-ui: "Geologica", sans-serif;
+}
+html.lang-ru body,
+html.lang-ru input,
+html.lang-ru textarea,
+html.lang-ru button {
+  font-weight: 500 !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-shell {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: calc(78px + env(safe-area-inset-bottom));
+}
+
+.auth-bg {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(89, 0, 255, 0.35), transparent 55%),
+    radial-gradient(circle at 100% 30%, rgba(249, 44, 0, 0.25), transparent 50%),
+    var(--bg);
+}
+
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 32px;
+}
+
+.screen-padding {
+  padding-left: var(--screen-pad);
+  padding-right: var(--screen-pad);
+}
+
+.brand {
+  font-family: var(--font-brand);
+  font-weight: 400;
+}
+html.lang-ru .brand {
+  font-weight: 500;
+}
+
+.digital {
+  font-family: var(--font-digital);
+  font-variation-settings: "wght" 900;
+  font-weight: 900;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--surf);
+  border-radius: var(--r);
+  padding: 16px;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-radius: 999px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
+  border: none;
+}
+
+.btn-primary {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 16px;
+  font-family: var(--font-brand);
+  font-size: 20px;
+  font-weight: 400;
+  color: white;
+  background: var(--accent);
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+html.lang-ru .btn-primary {
+  font-weight: 500;
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.btn-primary.purple {
+  background: var(--accent-purple);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: white;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.scroll-x {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 24px 24px 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: sheet-up 0.25s ease-out;
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px var(--screen-pad) calc(10px + env(safe-area-inset-bottom));
+  background: rgba(20, 20, 23, 0.85);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-top: 1px solid var(--line);
+  z-index: 40;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 10px;
+}
+.tab-item.active {
+  color: var(--accent);
+}
+
+.toast-stack {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 28px);
+  max-width: 400px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: black;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 10px 14px;
+  animation: toast-in 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateY(-16px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+textarea {
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: var(--r-s);
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  width: 100%;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+input:focus,
+textarea:focus {
+  border-color: var(--accent-purple);
+}
