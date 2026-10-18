@@ -7,6 +7,7 @@ import { fail, ok, type ActionResult } from "@/lib/errors";
 import { GYM_COOKIE, homeFor, requireStaff } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { encryptSecret } from "@/lib/secrets";
+import { stripeRequest } from "@/lib/stripe";
 import type { GymSettings } from "@/lib/types";
 import { isRegion, REGIONS } from "@/lib/region";
 
@@ -102,7 +103,7 @@ export async function deleteZone(id: string): Promise<ActionResult<null>> {
 export async function saveYookassa(form: FormData): Promise<ActionResult<null>> {
   const ctx = await requireStaff(["owner"]);
   if (ctx.readOnly) return { ok: false, error: { code: "GYM_READ_ONLY", message: "Кабинет в режиме «только чтение»" } };
-  if (!REGIONS[ctx.gym.region ?? "RU"].onlinePayments) return { ok: false, error: { code: "FEATURE_DISABLED", message: "ЮKassa работает только для залов в России" } };
+  if (REGIONS[ctx.gym.region ?? "RU"].paymentProvider !== "yookassa") return { ok: false, error: { code: "FEATURE_DISABLED", message: "ЮKassa работает только для залов в России" } };
   const shopId = str(form, "shop_id");
   const secret = str(form, "secret_key");
   if (!/^\d+$/.test(shopId)) return { ok: false, error: { code: "INVALID_INPUT", message: "shopId — это число из личного кабинета ЮKassa" } };
@@ -170,5 +171,41 @@ export async function whatsappStatus(): Promise<{ connected: boolean; phoneId: s
     };
   } catch {
     return { connected: false, phoneId: null, template: null, lang: REGIONS[ctx.gym.region ?? "RU"].locale };
+  }
+}
+
+/** Ключи Stripe зала (ОАЭ): секретный ключ проверяется запросом к Stripe и хранится зашифрованным */
+export async function saveStripe(form: FormData): Promise<ActionResult<null>> {
+  const ctx = await requireStaff(["owner"]);
+  if (ctx.readOnly) return { ok: false, error: { code: "GYM_READ_ONLY", message: "Кабинет в режиме «только чтение»" } };
+  if (REGIONS[ctx.gym.region ?? "RU"].paymentProvider !== "stripe") return { ok: false, error: { code: "FEATURE_DISABLED", message: "Stripe подключается для залов в ОАЭ" } };
+  const secret = str(form, "secret_key");
+  const webhook = str(form, "webhook_secret");
+  if (secret && !/^(sk|rk)_(live|test)_\w+$/.test(secret)) return { ok: false, error: { code: "INVALID_INPUT", message: "Секретный ключ Stripe начинается с sk_live_ или sk_test_" } };
+  if (webhook && !/^whsec_\w+$/.test(webhook)) return { ok: false, error: { code: "INVALID_INPUT", message: "Секрет подписи уведомлений начинается с whsec_" } };
+  if (secret) {
+    try {
+      await stripeRequest(secret, "GET", "/v1/checkout/sessions", { limit: 1 });
+    } catch {
+      return { ok: false, error: { code: "STRIPE_KEY_INVALID", message: "Stripe не принял ключ. Проверьте его в Developers → API keys" } };
+    }
+  }
+  const row: Record<string, unknown> = { gym_id: ctx.gym.id, updated_at: new Date().toISOString() };
+  if (secret) row.stripe_secret_encrypted = encryptSecret(secret);
+  if (webhook) row.stripe_webhook_secret_encrypted = encryptSecret(webhook);
+  const { error } = await createAdminClient().from("gym_secrets").upsert(row);
+  if (error) return fail(error);
+  revalidatePath("/settings");
+  return ok(null);
+}
+
+export async function stripeStatus(): Promise<{ connected: boolean; webhook: boolean }> {
+  const ctx = await requireStaff(["owner"]);
+  try {
+    const { data } = await createAdminClient().from("gym_secrets")
+      .select("stripe_secret_encrypted, stripe_webhook_secret_encrypted").eq("gym_id", ctx.gym.id).maybeSingle();
+    return { connected: Boolean(data?.stripe_secret_encrypted), webhook: Boolean(data?.stripe_webhook_secret_encrypted) };
+  } catch {
+    return { connected: false, webhook: false };
   }
 }

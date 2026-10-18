@@ -33,6 +33,8 @@ export interface Gym {
   region: "RU" | "AE";
   is_demo?: boolean;
   currency: "RUB" | "AED";
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
 }
 
 export interface Plan {

@@ -12,13 +12,15 @@ export interface RegionInfo {
   locale: "ru" | "en";
   phoneCode: string;
   phonePlaceholder: string;
-  /** онлайн-оплата по ссылке (ЮKassa работает только в России) */
+  /** онлайн-оплата по ссылке и в приложении */
   onlinePayments: boolean;
+  /** платёжный сервис зала: ЮKassa в России, Stripe в ОАЭ */
+  paymentProvider: "yookassa" | "stripe";
 }
 
 export const REGIONS: Record<Region, RegionInfo> = {
-  RU: { currency: "RUB", symbol: "₽", timezone: "Europe/Moscow", locale: "ru", phoneCode: "+7", phonePlaceholder: "+7 916 123-45-67", onlinePayments: true },
-  AE: { currency: "AED", symbol: "AED", timezone: "Asia/Dubai", locale: "en", phoneCode: "+971", phonePlaceholder: "+971 50 123 4567", onlinePayments: false },
+  RU: { currency: "RUB", symbol: "₽", timezone: "Europe/Moscow", locale: "ru", phoneCode: "+7", phonePlaceholder: "+7 916 123-45-67", onlinePayments: true, paymentProvider: "yookassa" },
+  AE: { currency: "AED", symbol: "AED", timezone: "Asia/Dubai", locale: "en", phoneCode: "+971", phonePlaceholder: "+971 50 123 4567", onlinePayments: true, paymentProvider: "stripe" },
 };
 
 export function isRegion(v: unknown): v is Region {

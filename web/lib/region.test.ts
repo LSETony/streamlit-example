@@ -33,8 +33,8 @@ describe("регионы", () => {
   });
 
   it("настройки региона", () => {
-    expect(regionInfo("AE")).toMatchObject({ currency: "AED", timezone: "Asia/Dubai", locale: "en", onlinePayments: false });
-    expect(regionInfo("RU")).toMatchObject({ currency: "RUB", locale: "ru", onlinePayments: true });
+    expect(regionInfo("AE")).toMatchObject({ currency: "AED", timezone: "Asia/Dubai", locale: "en", onlinePayments: true, paymentProvider: "stripe" });
+    expect(regionInfo("RU")).toMatchObject({ currency: "RUB", locale: "ru", onlinePayments: true, paymentProvider: "yookassa" });
     expect(regionInfo(undefined).currency).toBe("RUB");
   });
 });

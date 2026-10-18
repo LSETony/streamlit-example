@@ -34,7 +34,7 @@ export const TERMS: Record<"ru" | "en", LegalDoc> = {
         "You can export your client list at any time. After you close your account, we delete your data within a reasonable period unless the law requires us to keep it.",
       ] },
       { h: "5. Payments to your gym", p: [
-        "Online payments from members go directly to your account with the payment provider you connect (for example YooKassa in Russia). core. is not a party to these payments and does not hold your funds.",
+        "Online payments from members go directly to your account with the payment provider you connect (YooKassa in Russia, Stripe in the UAE). core. is not a party to these payments and does not hold your funds.",
       ] },
       { h: "6. Acceptable use", p: [
         "You must not use core. to break the law, send spam, access other customers' data, or interfere with the service.",
@@ -70,7 +70,7 @@ export const TERMS: Record<"ru" | "en", LegalDoc> = {
         "Список клиентов можно выгрузить в любой момент. После закрытия аккаунта мы удаляем данные в разумный срок, если закон не требует их хранить.",
       ] },
       { h: "5. Оплаты в пользу зала", p: [
-        "Онлайн-оплаты клиентов поступают напрямую на счёт зала у подключённого платёжного сервиса (например, ЮKassa). core. не является стороной этих платежей и не держит ваши деньги.",
+        "Онлайн-оплаты клиентов поступают напрямую на счёт зала у подключённого платёжного сервиса (ЮKassa в России, Stripe в ОАЭ). core. не является стороной этих платежей и не держит ваши деньги.",
       ] },
       { h: "6. Допустимое использование", p: [
         "Нельзя использовать core. для нарушения закона, рассылки спама, доступа к данным других клиентов сервиса или вмешательства в его работу.",
