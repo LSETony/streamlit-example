@@ -77,7 +77,7 @@ extension Font {
     /// headline (page titles, the Home club name, names on detail cards).
     /// Francy has no Cyrillic glyphs of its own, so when the member's
     /// language is Russian, AppState swaps `brandFontOverride` to
-    /// "Geologica-SemiBold" (which does) instead — every existing
+    /// "Geologica-Medium" (which does) instead — every existing
     /// `.font(.brand(_:))` call site picks this up automatically, no
     /// per-view changes needed.
     static var brandFontOverride: String?
@@ -90,25 +90,19 @@ extension Font {
     /// ordinary label/body/button string across the app (not just brand
     /// headlines) — hundreds of call sites. When AppState sets
     /// `uiFontFamilyOverride` (Russian — see its didSet), this swaps the
-    /// system font for the matching Geologica weight everywhere at once,
-    /// so switching language restyles the whole app, not just titles.
+    /// system font for Geologica's Medium (500) weight everywhere at
+    /// once, regardless of the `weight` the call site asked for — one
+    /// consistent mid-weight across the whole app, by request, rather
+    /// than mapping each system weight to its own Geologica weight.
     /// `nil` (the default, every other language) falls straight back to
-    /// the real system font, unchanged.
+    /// the real system font at its original weight, unchanged.
     static var uiFontFamilyOverride: String?
 
     static func uiText(size: CGFloat, weight: Font.Weight = .regular) -> Font {
         guard let family = uiFontFamilyOverride else {
             return .system(size: size, weight: weight)
         }
-        let suffix: String
-        switch weight {
-        case .bold: suffix = "Bold"
-        case .semibold: suffix = "SemiBold"
-        case .medium: suffix = "Medium"
-        case .light: suffix = "Light"
-        default: suffix = "Regular"
-        }
-        return .custom("\(family)-\(suffix)", size: size)
+        return .custom("\(family)-Medium", size: size)
     }
 }
 

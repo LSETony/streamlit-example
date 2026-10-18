@@ -551,6 +551,16 @@
         }
       }
     },
+    "Cancel booking?": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменить бронирование?"
+          }
+        }
+      }
+    },
     "Cardio": {
       "localizations": {
         "ru": {
@@ -1027,6 +1037,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Этикет в зале"
+          }
+        }
+      }
+    },
+    "Filter recipes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фильтр рецептов"
+          }
+        }
+      }
+    },
+    "Filter supplements": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фильтр добавок"
+          }
+        }
+      }
+    },
+    "Filter trainers": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фильтр тренеров"
           }
         }
       }
@@ -2317,6 +2357,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Специальные предложения"
+          }
+        }
+      }
+    },
+    "Specialty": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Специализация"
           }
         }
       }

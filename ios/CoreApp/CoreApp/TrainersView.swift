@@ -136,7 +136,7 @@ struct PriceTagFilterSheet: View {
             .padding(.top, 12)
             .padding(.bottom, 24)
             .background(Color.appBackground.ignoresSafeArea())
-            .navigationTitle(title)
+            .navigationTitle(LocalizedStringKey(title))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
