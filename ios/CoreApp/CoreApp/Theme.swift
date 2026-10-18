@@ -75,8 +75,15 @@ extension Font {
 
     /// "Francy" — the brand display face used for each screen's main
     /// headline (page titles, the Home club name, names on detail cards).
+    /// Francy has no Cyrillic glyphs of its own, so when the member's
+    /// language is Russian, AppState swaps `brandFontOverride` to
+    /// "Geologica-SemiBold" (which does) instead — every existing
+    /// `.font(.brand(_:))` call site picks this up automatically, no
+    /// per-view changes needed.
+    static var brandFontOverride: String?
+
     static func brand(_ size: CGFloat) -> Font {
-        .custom("Francy-Regular", size: size)
+        .custom(brandFontOverride ?? "Francy-Regular", size: size)
     }
 }
 

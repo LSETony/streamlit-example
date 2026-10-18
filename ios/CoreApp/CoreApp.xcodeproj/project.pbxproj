@@ -89,6 +89,7 @@
 		EE9A4F5CA4AA35852B3D645A /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
 		EFE86F868A2D5B5A825B8812 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F173CD46DBE0612AD9D873 /* AuthService.swift */; };
 		F05383C3B4AB44D838E5F814 /* ProgressDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07A661384232071008EA8E3 /* ProgressDetailView.swift */; };
+		F903ED912ABCAD4835B009DE /* Geologica-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */; };
 		FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF518BECB85AFB2EC8F75527 /* EventsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -142,6 +143,7 @@
 		48290E2C932A5BA6DFF18347 /* ReferralView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
 		48C03BFD588F38513C3464E2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseModels.swift; sourceTree = "<group>"; };
+		4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-SemiBold.ttf"; sourceTree = "<group>"; };
 		522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthWelcomeView.swift; sourceTree = "<group>"; };
 		52EFBBA1AB1C30F36093C4D5 /* ProgressPhotosView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressPhotosView.swift; sourceTree = "<group>"; };
 		5458B4589D146B653EB54FB6 /* HeroVideo.mp4 */ = {isa = PBXFileReference; includeInIndex = 1; path = HeroVideo.mp4; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 			children = (
 				2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */,
 				B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */,
+				4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */,
 			);
 			name = Fonts;
 			path = Fonts;
@@ -463,6 +466,7 @@
 				5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */,
 				073061F2B15F31F4094C9177 /* HeroVideo.mp4 in Resources */,
 				DF1A8235B3D5BA104441976B /* Localizable.xcstrings in Resources */,
+				F903ED912ABCAD4835B009DE /* Geologica-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
