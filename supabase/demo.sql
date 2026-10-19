@@ -7,7 +7,12 @@ select setseed(0.17);
 
 create or replace function pg_temp.demo_owner(p_id uuid, p_email text) returns uuid
 language plpgsql as $$
+declare
+  v_id uuid;
 begin
+  -- пользователь мог остаться от прошлого запуска с другим id — тогда используем его
+  select id into v_id from auth.users where email = p_email;
+  if v_id is not null then return v_id; end if;
   insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
                           raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
                           confirmation_token, recovery_token, email_change_token_new, email_change)
@@ -63,7 +68,7 @@ declare
   item uuid;
 begin
   if exists (select 1 from public.gyms where id = p_gym) then return; end if;
-  perform pg_temp.demo_owner(p_owner, p_email);
+  p_owner := pg_temp.demo_owner(p_owner, p_email);
 
   if ae then
     first_m := array['Omar','Ahmed','Khalid','Yousef','Ali','Hassan','Rashid','James','Daniel','Arjun','Rahul','Michael','Luca','Adam','Karim','Ryan'];
