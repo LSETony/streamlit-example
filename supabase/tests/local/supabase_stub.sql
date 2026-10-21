@@ -14,8 +14,10 @@ create table if not exists auth.users (
   id uuid primary key default gen_random_uuid(),
   email text,
   phone text,
+  email_confirmed_at timestamptz,
   created_at timestamptz default now()
 );
+alter table auth.users add column if not exists email_confirmed_at timestamptz;
 
 create or replace function auth.uid() returns uuid language sql stable as $$
   select nullif(coalesce(current_setting('request.jwt.claim.sub', true),

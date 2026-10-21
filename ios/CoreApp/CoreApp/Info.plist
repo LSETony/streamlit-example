@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>core.</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>core. uses the camera to scan supplement labels and recognize their ingredients.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>core. reads steps, sleep and heart rate from Apple Health to personalize your readiness score.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>core. can write completed workouts back to Apple Health.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>GIDClientID</key>
+	<string>REPLACE_WITH_YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>REPLACE_WITH_YOUR_REVERSED_GOOGLE_CLIENT_ID</string>
+			</array>
+		</dict>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Doto-VariableFont.ttf</string>
+		<string>Francy-Regular.ttf</string>
+		<string>Geologica-SemiBold.ttf</string>
+		<string>Geologica-Regular.ttf</string>
+		<string>Geologica-Medium.ttf</string>
+		<string>Geologica-Bold.ttf</string>
+		<string>Geologica-Light.ttf</string>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>CorePlatformURL</key>
+	<string>https://streamlit-example-6xag.vercel.app</string>
+	<key>CoreSupabaseURL</key>
+	<string>https://ubykgrowhekmsvxhvjxf.supabase.co</string>
+	<key>CoreSupabaseAnonKey</key>
+	<string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVieWtncm93aGVrbXN2eGh2anhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMDk2NDEsImV4cCI6MjEwNTU4NTY0MX0.K0QlpHidEUaQAMvo4lC8KNTf2wWZCQsKYIUFuDknm0c</string>
+</dict>
+</plist>

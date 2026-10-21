@@ -304,6 +304,11 @@ export const EN: Record<string, string> = {
   "error:STRIPE_NOT_CONNECTED": "Stripe isn’t connected. Connect it in gym settings",
   "error:STRIPE_KEY_INVALID": "Stripe rejected the key. Check it in Developers → API keys",
 
+  "Укажите тариф": "Choose a plan",
+  "Онлайн-оплата недоступна": "Online payment isn’t available",
+  "Зал пока не принимает онлайн-оплату": "This gym doesn’t take online payments yet",
+  "Не удалось создать платёж. Попробуйте позже": "Couldn’t create the payment. Please try later",
+
   // ── Меню и оболочка ─────────────────────────────────────────────────
   "Дашборд": "Dashboard",
   "Ресепшен": "Front desk",
