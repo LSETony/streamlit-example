@@ -5,6 +5,7 @@
 //           ./bulls_cows -f         игра без перемешивания: всегда начинает с 2135
 //           ./bulls_cows -z         разрешить 0 первой цифрой (5040 чисел вместо 4536)
 //           ./bulls_cows -t [-f]    самопроверка: сыграть со всеми числами и вывести статистику
+//           ./bulls_cows -b         пересчитать таблицу вторых ходов SECOND_GUESS
 //
 // Алгоритм.
 // 1. «Алфавит» и вычёркивание цифр в полном виде: храним список всех чисел,
@@ -13,7 +14,7 @@
 //    Так автоматически учитываются и «цифры, которые 100% мимо», и
 //    «зафиксированные» быки, и все более тонкие выводы.
 // 2. Первый ход 2135. Дальше фиксированной серии (4357, 6579, 8790) нет:
-//    по симуляции она даёт в среднем 5.39 хода против 4.59 у адаптивного выбора,
+//    по симуляции она даёт в среднем 5.39 хода против 4.58 у адаптивного выбора,
 //    потому что тратит ходы, когда кандидатов уже осталось мало.
 // 3. Следующая попытка выбирается среди ВСЕХ чисел, не только среди кандидатов:
 //    - много кандидатов (> ROLLOUT_MAX) — максимум энтропии: ход, ответы на который
@@ -58,6 +59,10 @@ const int NFB = 16 * 8;  // ответ кодируется как маска_б
 int N;                   // количество допустимых чисел
 vector<string> codes;    // допустимые числа
 vector<uint8_t> FB;      // FB[g * N + s] — ответ на попытку g при загаданном s
+// Энтропия считается в целых числах (k*log2(k) * 2^20, округлено), чтобы
+// результат был одинаковым на любом компьютере и совпадал с Python-версией.
+const long long SCALE = 1 << 20;
+vector<long long> ENT;   // ENT[k] = round(k * log2(k) * SCALE)
 int first_guess = -1;    // индекс первого хода (образ 2135 при перемешивании)
 
 inline int fb(int g, int s) { return FB[(size_t)g * N + s]; }
@@ -96,6 +101,8 @@ void init(bool allow_zero, bool shuffle) {
         codes.push_back(t);
     }
     N = codes.size();
+    ENT.assign(N + 1, 0);
+    for (int k = 2; k <= N; ++k) ENT[k] = llround(k * log2((double)k) * SCALE);
     FB.assign((size_t)N * N, 0);
     for (int g = 0; g < N; ++g)
         for (int s = 0; s < N; ++s)
@@ -110,12 +117,14 @@ vector<vector<int>> split(int g, const vector<int>& c) {
 
 // Меньше — лучше: сумма k*log2(k) по группам ответов (= n*log2(n) - n*энтропия).
 // Попытка-кандидат получает небольшой бонус: она может сразу оказаться ответом.
-double entropy_score(int g, const vector<int>& c, const vector<char>& is_cand) {
+// Считаем в целых числах, см. ENT.
+
+long long entropy_score(int g, const vector<int>& c, const vector<char>& is_cand) {
     int cnt[NFB] = {0};
     for (int s : c) ++cnt[fb(g, s)];
-    double e = 0;
-    for (int k : cnt) if (k > 1) e += k * log2((double)k);
-    return e - (is_cand[g] ? 0.5 : 0);
+    long long e = 0;
+    for (int k : cnt) e += ENT[k];
+    return e - (is_cand[g] ? SCALE / 2 : 0);
 }
 
 vector<char> candidate_flags(const vector<int>& c) {
@@ -127,7 +136,7 @@ vector<char> candidate_flags(const vector<int>& c) {
 // Ходы, отсортированные по энтропии (лучшие первыми).
 vector<int> ranked_guesses(const vector<int>& c) {
     vector<char> is_cand = candidate_flags(c);
-    vector<pair<double, int>> sc(N);
+    vector<pair<long long, int>> sc(N);
     for (int g = 0; g < N; ++g) sc[g] = {entropy_score(g, c, is_cand), g};
     sort(sc.begin(), sc.end());
     vector<int> res(N);
@@ -201,12 +210,68 @@ Plan greedy(const vector<int>& c) {
     return evaluate(ranked_guesses(c)[0], c);
 }
 
+// Второй ход считается дольше всего (несколько секунд), поэтому он рассчитан
+// заранее этой же программой (ключ -b) и записан таблицей: после ответа на
+// первый ход кандидаты образуют одну из групп, группа узнаётся по номеру её
+// первого числа. Номера не зависят от перемешивания, поэтому таблица верна
+// при любом запуске (кроме режима -z, где список чисел другой).
+bool use_book = true;
+const map<int, int> SECOND_GUESS = {
+    {1544, 1544},
+    {17, 1536},
+    {1, 178},
+    {0, 127},
+    {78, 134},
+    {521, 1544},
+    {505, 1513},
+    {504, 1513},
+    {638, 638},
+    {1571, 1796},
+    {1065, 1206},
+    {1064, 1206},
+    {1086, 1086},
+    {561, 1544},
+    {560, 1536},
+    {582, 582},
+    {1529, 1544},
+    {8, 197},
+    {7, 197},
+    {239, 239},
+    {512, 1544},
+    {511, 1540},
+    {743, 743},
+    {1582, 1827},
+    {1583, 1829},
+    {2087, 2087},
+    {567, 17},
+    {1543, 1544},
+    {16, 178},
+    {2, 178},
+    {121, 121},
+    {520, 1544},
+    {506, 1515},
+    {625, 625},
+    {1570, 1796},
+    {1066, 1025},
+    {1073, 1073},
+    {562, 17},
+    {1528, 1544},
+    {9, 17},
+    {65, 65},
+    {513, 17},
+    {1584, 1544}
+};
+
 bool better(const Plan& a, const Plan& b) {
     return a.height < b.height || (a.height == b.height && a.cost < b.cost);
 }
 
 int choose_guess(const vector<int>& c, int turn) {
     if (turn == 1) return first_guess;
+    if (turn == 2 && use_book) {
+        auto it = SECOND_GUESS.find(c[0]);
+        if (it != SECOND_GUESS.end()) return it->second;
+    }
     int n = c.size();
     if (n <= EXACT_MAX) return exact(c).guess;
     vector<int> ranked = ranked_guesses(c);
@@ -307,6 +372,18 @@ int play_interactive(bool allow_zero) {
     }
 }
 
+// Печать таблицы вторых ходов (для SECOND_GUESS).
+void print_book() {
+    use_book = false;
+    vector<int> all(N);
+    iota(all.begin(), all.end(), 0);
+    auto parts = split(first_guess, all);
+    for (int k = 0; k < NFB; ++k) {
+        if (k == WIN || parts[k].empty()) continue;
+        cout << "    {" << parts[k][0] << ", " << choose_guess(parts[k], 2) << "},\n";
+    }
+}
+
 // Самопроверка: сыграть со всеми возможными числами.
 void self_test() {
     vector<int> all(N);
@@ -348,20 +425,23 @@ int main(int argc, char** argv) {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 #endif
-    bool allow_zero = false, shuffle = true, test = false;
+    bool allow_zero = false, shuffle = true, test = false, book = false;
     for (int i = 1; i < argc; ++i) {
         string a = argv[i];
         if (a == "-z") allow_zero = true;
         else if (a == "-f") shuffle = false;
         else if (a == "-t") test = true;
+        else if (a == "-b") book = true;
         else {
-            cout << "Использование: " << argv[0] << " [-f] [-z] [-t]\n";
+            cout << "Использование: " << argv[0] << " [-f] [-z] [-t] [-b]\n";
             return 1;
         }
     }
 
     init(allow_zero, shuffle);
-    if (test) self_test();
+    if (allow_zero) use_book = false;
+    if (book) print_book();
+    else if (test) self_test();
     else return play_interactive(allow_zero);
     return 0;
 }
