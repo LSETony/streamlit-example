@@ -1,0 +1,165 @@
+import SwiftUI
+
+/// Opened from Workouts' "Events" card — a real, RSVP-able events calendar
+/// instead of an inert card, matching Gym Safety's treatment of "Rules".
+struct EventsView: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+    @State private var joinedEventIDs: Set<UUID> = []
+
+    private struct ClubEvent: Identifiable {
+        let id = UUID()
+        let icon: String
+        let title: String
+        let dateLabel: String
+        let timeLabel: String
+        let spotsLeft: Int
+        let description: String
+        /// A real Date backing `dateLabel`/`timeLabel` — needed so a
+        /// "Join" reminder (NotificationService.scheduleEventReminder) can
+        /// actually be scheduled instead of just displayed.
+        let date: Date
+    }
+
+    private static func eventDate(month: Int, day: Int, hour: Int, minute: Int) -> Date {
+        var components = DateComponents()
+        components.year = 2026
+        components.month = month
+        components.day = day
+        components.hour = hour
+        components.minute = minute
+        return Calendar.current.date(from: components) ?? Date()
+    }
+
+    private let events: [ClubEvent] = [
+        ClubEvent(
+            icon: "flame.fill", title: "HIIT Circuit Night",
+            dateLabel: "Fri, Oct 3", timeLabel: "19:00", spotsLeft: 6,
+            description: "A 45-minute group HIIT session on the studio floor — bodyweight and kettlebell circuits, all levels welcome.",
+            date: eventDate(month: 10, day: 3, hour: 19, minute: 0)
+        ),
+        ClubEvent(
+            icon: "figure.strengthtraining.traditional", title: "Powerlifting Seminar",
+            dateLabel: "Sat, Oct 11", timeLabel: "11:00", spotsLeft: 10,
+            description: "Squat/bench/deadlift technique breakdown with the strength floor coaches, plus a form-check Q&A.",
+            date: eventDate(month: 10, day: 11, hour: 11, minute: 0)
+        ),
+        ClubEvent(
+            icon: "leaf.fill", title: "Mobility & Recovery Workshop",
+            dateLabel: "Wed, Oct 15", timeLabel: "18:30", spotsLeft: 14,
+            description: "Guided stretching, foam rolling and breathing work to help recovery between heavy training blocks.",
+            date: eventDate(month: 10, day: 15, hour: 18, minute: 30)
+        ),
+        ClubEvent(
+            icon: "person.3.fill", title: "Member Social + New Gear Reveal",
+            dateLabel: "Sat, Oct 25", timeLabel: "17:00", spotsLeft: 30,
+            description: "Meet other members, try the new equipment on the strength floor, light snacks and drinks provided.",
+            date: eventDate(month: 10, day: 25, hour: 17, minute: 0)
+        ),
+    ]
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        EyebrowLabel(text: "This Month", color: .appAccentPurple)
+                        Text("Events")
+                            .font(.brand(32))
+                            .foregroundStyle(.white)
+                        Text("What's on this month — tap Join to reserve a spot.")
+                            .font(.uiText(size: 14))
+                            .foregroundStyle(Color.appTextSecondary)
+                    }
+
+                    VStack(spacing: 14) {
+                        ForEach(events) { event in
+                            eventCard(event)
+                        }
+                    }
+                }
+                .screenPadding()
+                .padding(.top, 12)
+                .padding(.bottom, 24)
+            }
+            .background(Color.appBackground.ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
+                }
+            }
+        }
+    }
+
+    private func eventCard(_ event: ClubEvent) -> some View {
+        let isJoined = joinedEventIDs.contains(event.id)
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Image(systemName: event.icon)
+                    .font(.uiText(size: 15, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 36, height: 36)
+                    .glassEffect(.regular.tint(.appAccentPurple.opacity(0.5)), in: Circle())
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(LocalizedStringKey(event.title))
+                        .font(.brand(17))
+                        .foregroundStyle(.white)
+                    Text("\(event.dateLabel) · \(event.timeLabel)")
+                        .font(.uiText(size: 11, weight: .bold))
+                        .tracking(0.3)
+                        .foregroundStyle(Color.appAccent)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .glassEffect(.regular.tint(.appAccent.opacity(0.3)), in: Capsule())
+                }
+                Spacer()
+            }
+
+            Text(LocalizedStringKey(event.description))
+                .font(.uiText(size: 13))
+                .foregroundStyle(Color.appTextSecondary)
+                .lineSpacing(3)
+
+            AppDivider()
+
+            HStack {
+                Text(isJoined ? "You're in!" : "\(event.spotsLeft) spots left")
+                    .font(.uiText(size: 12, weight: .semibold))
+                    .foregroundStyle(isJoined ? Color.appSuccess : Color.appTextSecondary)
+                Spacer()
+                Button {
+                    if isJoined {
+                        joinedEventIDs.remove(event.id)
+                        NotificationService.cancelEventReminder(id: event.id)
+                    } else {
+                        joinedEventIDs.insert(event.id)
+                        appState.notificationCenter.trigger(icon: "calendar.badge.checkmark", title: "You're in!", subtitle: event.title, accent: .appAccentPurple)
+                        NotificationService.scheduleEventReminder(id: event.id, title: event.title, date: event.date)
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        if isJoined { Image(systemName: "checkmark").font(.uiText(size: 11, weight: .bold)) }
+                        Text(isJoined ? "Joined" : "Join")
+                    }
+                    .font(.uiText(size: 13, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 9)
+                }
+                .buttonStyle(.plain)
+                .glassEffect(isJoined ? .regular.tint(.appSuccess) : .regular.tint(.appAccentPurple).interactive(), in: Capsule())
+            }
+        }
+        .glassCard(padding: 18)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous)
+                .stroke(.white.opacity(0.08), lineWidth: 1)
+        )
+    }
+}
+
+#Preview {
+    EventsView()
+        .environmentObject(AppState())
+}

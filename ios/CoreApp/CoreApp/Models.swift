@@ -1,0 +1,217 @@
+import SwiftUI
+import CoreLocation
+
+// MARK: - Trainers
+
+struct Trainer: Identifiable {
+    let id = UUID()
+    let imageName: String
+    let name: String
+    let specialty: String
+    let rating: String
+    let reviews: Int
+    let priceLabel: String
+    let priceCompact: String
+    let nextAvailable: String
+    let availabilityColor: Color
+    let yearsExperience: String
+    let clients: Int
+    let sessions: Int
+    let tags: [String]
+    let bio: String
+}
+
+// MARK: - Store
+
+struct Ingredient: Identifiable {
+    let id = UUID()
+    let name: String
+    let amount: String
+}
+
+struct Product: Identifiable {
+    let id = UUID()
+    let abbr: String
+    let name: String
+    let form: String
+    let dose: String
+    let count: String
+    let price: Int
+    let subscriptionPrice: Int
+    let tag: String
+    let tagColor: Color
+    let desc: String
+    let ingredients: [Ingredient]
+    let benefits: String
+    let risks: String
+    let interactions: String
+}
+
+// MARK: - Workout library / Food recipes
+
+struct WorkoutCard: Identifiable {
+    let id = UUID()
+    let imageName: String
+    let title: String
+    let level: String
+    let duration: String
+    let category: String
+    let exercises: [Exercise]
+    /// A real photo uploaded to Supabase Storage, overriding `imageName`
+    /// (a bundled asset) when present — lets new cards use real gym
+    /// photography without shipping it inside the app binary.
+    var imageURL: URL? = nil
+    /// A real video uploaded to Supabase Storage, played muted/looping as
+    /// this card's detail-screen hero background when present.
+    var videoURL: URL? = nil
+}
+
+/// One movement inside a WorkoutCard's plan, shown in its detail screen and
+/// stepped through during an active session.
+struct Exercise: Identifiable, Hashable {
+    let id = UUID()
+    let name: String
+    let icon: String
+    let sets: Int
+    let reps: String
+}
+
+struct ImportantCard: Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let subtitle: String
+}
+
+struct FoodRecipe: Identifiable {
+    let id = UUID()
+    let name: String
+    let price: Int
+    let ingredients: [String]
+    /// Real photo uploaded/linked from the internet — nil falls back to
+    /// the gradient PhotoPlaceholder.
+    var imageURL: URL? = nil
+}
+
+// MARK: - Workout progress history (behind Home's "Your Progress" card)
+
+struct WorkoutHistoryEntry: Identifiable {
+    let id = UUID()
+    let date: String
+    let title: String
+    let sets: Int
+    let minutes: Int
+    let calories: Int
+    /// A real `Date`, alongside the display label above — used to compute
+    /// the workout streak (consecutive calendar days with a logged entry).
+    /// Defaults to now so existing call sites that only cared about the
+    /// display label keep compiling; the 4 seeded entries in AppState.swift
+    /// pass real relative dates matching their labels.
+    var completedAt: Date = Date()
+}
+
+// MARK: - Achievements / streaks (Progress tab)
+
+struct Achievement: Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let detail: String
+    let isUnlocked: Bool
+}
+
+// MARK: - Progress photos (before/after gallery)
+
+struct ProgressPhoto: Identifiable, Decodable {
+    let id: UUID
+    let imageURL: URL
+    let takenAt: Date
+}
+
+// MARK: - Community (referrals + leaderboard)
+
+struct LeaderboardEntry: Identifiable {
+    let id: String // device_user_id
+    let displayName: String
+    let totalVisits: Int
+    let streakDays: Int
+    let isMe: Bool
+}
+
+/// One point on the Progress screen's muscle-mass growth chart.
+struct MuscleMassEntry: Identifiable {
+    let id = UUID()
+    let label: String
+    let kg: Double
+}
+
+/// One InBody-style body composition scan — a timestamped snapshot, not a
+/// single live reading, so Progress can show how it changes scan to scan.
+struct InBodyEntry: Identifiable {
+    let id = UUID()
+    let scannedAt: Date
+    let bodyFatPercent: Double
+    let totalBodyWaterPercent: Double
+    let visceralFatIndex: Int
+    let basalMetabolicRate: Int
+}
+
+// MARK: - Club locations (behind Home's club-name picker)
+
+/// One real club location, shown as a pin on LocationPickerView's map and
+/// as the detail sheet GymPhotoViewer renders once picked.
+struct GymLocation: Identifiable {
+    let id = UUID()
+    let name: String
+    let city: String
+    let address: String
+    let latitude: Double
+    let longitude: Double
+    let hoursLabel: String
+    let description: String
+
+    var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: latitude, longitude: longitude) }
+}
+
+// MARK: - Club subscriptions (behind Home's wallet icon)
+
+struct SubscriptionPlan: Identifiable {
+    let id = UUID()
+    let name: String
+    let price: Int
+    let period: String
+    let perks: [String]
+    let recommended: Bool
+}
+
+// MARK: - Calendar tab bookings
+
+struct BookedSession: Identifiable {
+    let id: UUID
+    var date: Date
+    let title: String
+    let trainerName: String
+
+    /// `id` defaults to a fresh UUID for locally-created bookings, but can
+    /// be passed explicitly when reconstructing a row already stored in
+    /// Supabase (see BookedSessionRow.toModel() in SupabaseModels.swift).
+    init(id: UUID = UUID(), date: Date, title: String, trainerName: String) {
+        self.id = id
+        self.date = date
+        self.title = title
+        self.trainerName = trainerName
+    }
+}
+
+// MARK: - Zone booking (behind Home's "Book" tile)
+
+/// A bookable area of the club floor — Pilates studio, running track,
+/// free weights, etc. Booking a slot adds a BookedSession, so it shows
+/// up alongside trainer sessions in the Calendar tab.
+struct GymZone: Identifiable {
+    let id = UUID()
+    let icon: String
+    let name: String
+    let subtitle: String
+    let capacity: Int
+}

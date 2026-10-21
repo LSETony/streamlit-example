@@ -1,0 +1,116 @@
+import SwiftUI
+
+/// The recipe browser — matches the Figma source exactly: title, search +
+/// sort/filter row, and a photo-card grid of recipes.
+struct FoodRecipesView: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+    @State private var search = ""
+    @State private var isShowingFilters = false
+    @State private var maxPrice: Double = 500
+    @State private var selectedIngredients: Set<String> = []
+    @State private var sortOption = "Name"
+    private let sortOptions = ["Name", "Price: low to high", "Price: high to low"]
+
+    private var priceBound: Double {
+        Double(appState.foodRecipes.map(\.price).max() ?? 50)
+    }
+
+    private var allIngredients: [String] {
+        Array(Set(appState.foodRecipes.flatMap(\.ingredients))).sorted()
+    }
+
+    private var filteredRecipes: [FoodRecipe] {
+        let filtered = appState.foodRecipes.filter { recipe in
+            let matchesSearch = search.isEmpty
+                || recipe.name.localizedCaseInsensitiveContains(search)
+                || recipe.ingredients.contains { $0.localizedCaseInsensitiveContains(search) }
+            let matchesPrice = Double(recipe.price) <= maxPrice
+            let matchesIngredients = selectedIngredients.isEmpty || !Set(recipe.ingredients).isDisjoint(with: selectedIngredients)
+            return matchesSearch && matchesPrice && matchesIngredients
+        }
+        switch sortOption {
+        case "Price: low to high":
+            return filtered.sorted { $0.price < $1.price }
+        case "Price: high to low":
+            return filtered.sorted { $0.price > $1.price }
+        default:
+            return filtered.sorted { $0.name < $1.name }
+        }
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Food recipes")
+                    .font(.brand(32))
+                    .foregroundStyle(.white)
+                SearchToolRow(search: $search, sortOptions: sortOptions, onSortSelect: { sortOption = $0 }) { isShowingFilters = true }
+
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
+                    ForEach(filteredRecipes) { recipe in
+                        RecipeTile(recipe: recipe)
+                    }
+                }
+            }
+            .screenPadding()
+            .padding(.top, 12)
+            .padding(.bottom, 24)
+        }
+        .background(Color.appBackground.ignoresSafeArea())
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Done") { dismiss() }.foregroundStyle(Color.appAccent)
+            }
+        }
+        .sheet(isPresented: $isShowingFilters) {
+            PriceTagFilterSheet(
+                title: "Filter recipes",
+                maxPrice: $maxPrice,
+                priceBound: priceBound,
+                sectionLabel: "Ingredients",
+                allOptions: allIngredients,
+                selectedOptions: $selectedIngredients
+            )
+        }
+    }
+}
+
+private struct RecipeTile: View {
+    let recipe: FoodRecipe
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            recipePhoto
+            LinearGradient(colors: [.black.opacity(0.55), .clear], startPoint: .bottom, endPoint: .center)
+            Text(recipe.name)
+                .font(.brand(16))
+                .foregroundStyle(.white)
+                .padding(14)
+        }
+        .frame(height: 190)
+        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: AppMetrics.cardCorner, style: .continuous).stroke(Color.appDivider, lineWidth: 1))
+    }
+
+    @ViewBuilder
+    private var recipePhoto: some View {
+        if let url = recipe.imageURL {
+            AsyncImage(url: url) { phase in
+                if case .success(let image) = phase {
+                    image.resizable().scaledToFill()
+                } else {
+                    PhotoPlaceholder(icon: "fork.knife")
+                }
+            }
+        } else {
+            PhotoPlaceholder(icon: "fork.knife")
+        }
+    }
+}
+
+#Preview {
+    NavigationStack { FoodRecipesView() }
+        .environmentObject(AppState())
+}

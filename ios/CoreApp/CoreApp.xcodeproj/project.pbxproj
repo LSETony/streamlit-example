@@ -1,0 +1,905 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00654D9E24395A0E12716AEB /* AppState+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F2AB7862A2EA4586A53B5A /* AppState+Supabase.swift */; };
+		01255C7D70733A31E964FC86 /* AppState+Health.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18608E39C7A284BD8F43C0A4 /* AppState+Health.swift */; };
+		01401B0AE0843F1C01D92304 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EEC3E4AC434CCDB1F33D3B /* Theme.swift */; };
+		018878DA21ABEBB04B9D2F5F /* CoreAIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E493C65B6E18E3804875719D /* CoreAIChatView.swift */; };
+		073061F2B15F31F4094C9177 /* HeroVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5458B4589D146B653EB54FB6 /* HeroVideo.mp4 */; };
+		09422EB1A147FD2B71D1B035 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C03BFD588F38513C3464E2 /* Foundation.framework */; };
+		09F5DB40DAE9A527BC3E2532 /* AuthWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */; };
+		0A1A1E8118DA1AF02F910900 /* LogInBodyScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B6551AE2831475D8A342D /* LogInBodyScanView.swift */; };
+		0A684AEED47A45E7811403F0 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F0FD454D2243F9954D55DC /* HomeView.swift */; };
+		0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2039733A32D3965970AD290D /* LiveActivityService.swift */; };
+		13665979218917FFC4BCE58C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2360973C0FF59F76A261826 /* OnboardingView.swift */; };
+		15B87935455DB719E4575547 /* SharedHealthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE67E7EDE0EC9FBDE3E4F65 /* SharedHealthStore.swift */; };
+		1B6BB854BFAD3B0D7A74F106 /* SharedProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B302EA70F1C4286289905AFF /* SharedProgressStore.swift */; };
+		1D204D15172197CC95F29C1A /* PaymentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C78F049CC8950FCEE905BD /* PaymentService.swift */; };
+		22CB65E17C3C4F9FA2E84F63 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFCFF1C6A1D454E80B7C92A /* AppState.swift */; };
+		25F438B73B94A7914709447B /* ProgressAchievementsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C5B4078B3AA456550D2C18 /* ProgressAchievementsWidget.swift */; };
+		29C465C7919C462EA2F0EE80 /* TrainersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */; };
+		2AE26B84867C3C82E2286E99 /* HealthMetricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53D6AEA6361817922FA8EC6 /* HealthMetricsView.swift */; };
+		2B11B98ED5A9373EA510D52E /* StripeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */; };
+		392881F6855843ACB49B7B46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */; };
+		3AAAE3B5419883A3BE8AC3DC /* CoreWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 30A5F510A6B3977F14D83E50 /* CoreWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3D21BB83D644E86307DAAE27 /* AppState+Growth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF9CCF5A54DD6B35ED51235 /* AppState+Growth.swift */; };
+		3D72EF131AA6CEA6CAE3B712 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97814377FFBA6C26D2370416 /* CalendarView.swift */; };
+		3F356E097DF7CAE19BDEAF07 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7767DFABE3FC38A17C249E0 /* ScanView.swift */; };
+		4043E55A4E4192970C401B2A /* CustomWorkoutBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A7B583C3630E23E55038A9 /* CustomWorkoutBuilderView.swift */; };
+		413EBE97ADC27F46502D459E /* Geologica-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6340070255C0F1639426C831 /* Geologica-Bold.ttf */; };
+		43328045AB488CECE9AF1A75 /* DynamicIslandNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */; };
+		43554B5640BA55F311A51850 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7E1851BD66A6F385905E9F /* CartView.swift */; };
+		4375D4FF1EFA212852EDAF8A /* WorkoutActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */; };
+		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
+		44D0E38093ECBF87A87876D6 /* ThinkingOrb.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */; };
+		52A35E68968F65202D122832 /* QRPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */; };
+		549E57A664D84DD0B20D5053 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48104F66160A4418A81BD9E8 /* Models.swift */; };
+		55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */; };
+		59B8AE958A4203AFF9449EE4 /* CheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D09AAE1018ED458346CC2B2 /* CheckInView.swift */; };
+		5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
+		5ABAF057522A0A5C2DD75CCA /* Geologica-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */; };
+		5B109E9053C7AB7139E42BA6 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */; };
+		5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */; };
+		5F5C090B9B20338957AE3766 /* WorkoutLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95244984817A4D1FE1DA7B22 /* WorkoutLiveActivity.swift */; };
+		6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */; };
+		6B94894A315587D410147A6B /* Geologica-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */; };
+		6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */; };
+		6F34106828F49C391B04BC87 /* LanguagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA64CB7A4B8E5FDBE751D5C5 /* LanguagePickerView.swift */; };
+		72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */; };
+		732C82C2D156E355FF600562 /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48290E2C932A5BA6DFF18347 /* ReferralView.swift */; };
+		73331FB97CF6826709377803 /* AppState+Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743BC3E253E631601128EE36 /* AppState+Avatar.swift */; };
+		73F652550548443DB32F62B9 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D5C91EAAA4F0DB404FA79 /* StoreView.swift */; };
+		751542B8D2F326DAF7C48472 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B522620C7AB48BA1A10A72FD /* HealthKitService.swift */; };
+		75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */; };
+		7C5C13D38099181B65B53829 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56518D16D8FD135E7DDD0E4 /* LeaderboardView.swift */; };
+		80147135067BF5D00B6FCE02 /* HealthMetricsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBAFA4D3D088F16E75A3B66D /* HealthMetricsWidget.swift */; };
+		80C5FB742B6220AD78A6BFBA /* Francy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */; };
+		827A626C864C99A017D8DBCA /* GymPhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */; };
+		84A8770FE10326533B8AF26E /* WorkoutActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */; };
+		85B05F926201A88F7E64D6EB /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */; };
+		8639B08C2F13376A6E25E19E /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEFF51D05DF5DAD7F5AB494 /* NotificationService.swift */; };
+		878870F83B011B123F6F9345 /* WorkoutOfTheDayWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086E0AAB07D7AF2D05AE739C /* WorkoutOfTheDayWidget.swift */; };
+		883CEF1AA585402E8C0803EB /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EEC3E4AC434CCDB1F33D3B /* Theme.swift */; };
+		8A72D0FDB7609D115EBD9467 /* SupabaseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */; };
+		8E8594599D570F7D2910CF6D /* WidgetSupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA02BAD3472B4C8560DDB10 /* WidgetSupabaseConfig.swift */; };
+		929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55950DFCC22D525533532A31 /* SubscriptionsView.swift */; };
+		94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CDD914A646D49A055E8D /* CoreAppApp.swift */; };
+		A140AD79876DA5514FB6BE1F /* SharedHealthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE67E7EDE0EC9FBDE3E4F65 /* SharedHealthStore.swift */; };
+		A2E860860761333E4C376664 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B3511191EF0FD2AE5A30D /* SplashView.swift */; };
+		A3939502A0B45B030D6E2363 /* SharedProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B302EA70F1C4286289905AFF /* SharedProgressStore.swift */; };
+		A52425A03ABDED55A30EA3BD /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
+		B107D4897AEB5C35A5BCC272 /* ProgressPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EFBBA1AB1C30F36093C4D5 /* ProgressPhotosView.swift */; };
+		B125C469AA78A39EC0FD0ED8 /* OccupancyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */; };
+		BADABC863F594B5632190BEF /* WidgetBrandBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F04AD351DD5C8A48C4CBD32 /* WidgetBrandBackground.swift */; };
+		BAEABB3643DCA16A8216CDC6 /* PaymentSheetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */; };
+		BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67286F4868E97187636094AA /* WorkoutsView.swift */; };
+		C05DCFB30D0F244A5CB9CEC3 /* AvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD756250130C03C75865E788 /* AvatarPickerView.swift */; };
+		C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */; };
+		CD6C01682CB4019E62A3746B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A6395C7AB467517757FDA0C9 /* GoogleSignIn */; };
+		D1CD4AD3F987D65633F9A927 /* VitaminDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */; };
+		D797C94F73B5119A3035A3BB /* CoreWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E33F8791E4F6E9BEF57AC18 /* CoreWidgetsBundle.swift */; };
+		DF0A25D15B132EA1F55DD11E /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */; };
+		DF1A8235B3D5BA104441976B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 78D97C91AA3F9C02D2720D25 /* Localizable.xcstrings */; };
+		DFD7622C13034D9789B7842F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3400C5EA574C43B3B4039970 /* ProfileView.swift */; };
+		E0014AAD1FB109693AE6C578 /* WelcomeBackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA2CAD9F3D37D89D0EAD0B /* WelcomeBackView.swift */; };
+		E88586642CECCFAF43508279 /* Geologica-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A4A7223229C0180EDB2C4E9 /* Geologica-Regular.ttf */; };
+		EB64BE17744245A0AF0F1987 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99018F8559804203B50FC4E6 /* Components.swift */; };
+		EE9A4F5CA4AA35852B3D645A /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
+		EFE86F868A2D5B5A825B8812 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F173CD46DBE0612AD9D873 /* AuthService.swift */; };
+		F05383C3B4AB44D838E5F814 /* ProgressDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07A661384232071008EA8E3 /* ProgressDetailView.swift */; };
+		F903ED912ABCAD4835B009DE /* Geologica-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */; };
+		FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF518BECB85AFB2EC8F75527 /* EventsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6F69E6090A27A1FFB4F8656E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F7693C8176749AA86B3F729 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10413FFAE42579714133C698;
+			remoteInfo = CoreWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E0425DCA064C4D5491E2D1D3 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3AAAE3B5419883A3BE8AC3DC /* CoreWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		04C78F049CC8950FCEE905BD /* PaymentService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaymentService.swift; sourceTree = "<group>"; };
+		086E0AAB07D7AF2D05AE739C /* WorkoutOfTheDayWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutOfTheDayWidget.swift; sourceTree = "<group>"; };
+		0BA02BAD3472B4C8560DDB10 /* WidgetSupabaseConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetSupabaseConfig.swift; sourceTree = "<group>"; };
+		0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0DFCFF1C6A1D454E80B7C92A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		157DE2C2EFBBC95314EDBA55 /* CoreWidgets.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreWidgets.entitlements; sourceTree = "<group>"; };
+		18608E39C7A284BD8F43C0A4 /* AppState+Health.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Health.swift"; sourceTree = "<group>"; };
+		187D5C91EAAA4F0DB404FA79 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
+		18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BookZoneView.swift; sourceTree = "<group>"; };
+		2039733A32D3965970AD290D /* LiveActivityService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
+		2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodRecipesView.swift; sourceTree = "<group>"; };
+		2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Doto-VariableFont.ttf"; sourceTree = "<group>"; };
+		2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
+		2F04AD351DD5C8A48C4CBD32 /* WidgetBrandBackground.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetBrandBackground.swift; sourceTree = "<group>"; };
+		30A5F510A6B3977F14D83E50 /* CoreWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CoreWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		31F2AB7862A2EA4586A53B5A /* AppState+Supabase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Supabase.swift"; sourceTree = "<group>"; };
+		3400C5EA574C43B3B4039970 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationPickerView.swift; sourceTree = "<group>"; };
+		3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutActivityAttributes.swift; sourceTree = "<group>"; };
+		3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QRPassView.swift; sourceTree = "<group>"; };
+		424658A028CA6DAF50F921BC /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		48290E2C932A5BA6DFF18347 /* ReferralView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
+		48C03BFD588F38513C3464E2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseModels.swift; sourceTree = "<group>"; };
+		4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-SemiBold.ttf"; sourceTree = "<group>"; };
+		522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthWelcomeView.swift; sourceTree = "<group>"; };
+		52EFBBA1AB1C30F36093C4D5 /* ProgressPhotosView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressPhotosView.swift; sourceTree = "<group>"; };
+		5458B4589D146B653EB54FB6 /* HeroVideo.mp4 */ = {isa = PBXFileReference; includeInIndex = 1; path = HeroVideo.mp4; sourceTree = "<group>"; };
+		55950DFCC22D525533532A31 /* SubscriptionsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
+		5A3B3511191EF0FD2AE5A30D /* SplashView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		5A4A7223229C0180EDB2C4E9 /* Geologica-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Regular.ttf"; sourceTree = "<group>"; };
+		5E33F8791E4F6E9BEF57AC18 /* CoreWidgetsBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreWidgetsBundle.swift; sourceTree = "<group>"; };
+		61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoreApp.entitlements; sourceTree = "<group>"; };
+		6340070255C0F1639426C831 /* Geologica-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Bold.ttf"; sourceTree = "<group>"; };
+		65AA2CAD9F3D37D89D0EAD0B /* WelcomeBackView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WelcomeBackView.swift; sourceTree = "<group>"; };
+		67286F4868E97187636094AA /* WorkoutsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
+		69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodaysSpecialsView.swift; sourceTree = "<group>"; };
+		6E46CDD914A646D49A055E8D /* CoreAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppApp.swift; sourceTree = "<group>"; };
+		6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StripeConfig.swift; sourceTree = "<group>"; };
+		743BC3E253E631601128EE36 /* AppState+Avatar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Avatar.swift"; sourceTree = "<group>"; };
+		77F0FD454D2243F9954D55DC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		78D97C91AA3F9C02D2720D25 /* Localizable.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		78EEC3E4AC434CCDB1F33D3B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		7FEFF51D05DF5DAD7F5AB494 /* NotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitaminDatabase.swift; sourceTree = "<group>"; };
+		8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OccupancyDetailView.swift; sourceTree = "<group>"; };
+		8BE67E7EDE0EC9FBDE3E4F65 /* SharedHealthStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedHealthStore.swift; sourceTree = "<group>"; };
+		8D09AAE1018ED458346CC2B2 /* CheckInView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CheckInView.swift; sourceTree = "<group>"; };
+		9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressTabView.swift; sourceTree = "<group>"; };
+		95244984817A4D1FE1DA7B22 /* WorkoutLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutLiveActivity.swift; sourceTree = "<group>"; };
+		9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GymPhotoViewer.swift; sourceTree = "<group>"; };
+		97814377FFBA6C26D2370416 /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		99018F8559804203B50FC4E6 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Medium.ttf"; sourceTree = "<group>"; };
+		9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaymentSheetPresenter.swift; sourceTree = "<group>"; };
+		A53D6AEA6361817922FA8EC6 /* HealthMetricsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HealthMetricsView.swift; sourceTree = "<group>"; };
+		A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ThinkingOrb.swift; sourceTree = "<group>"; };
+		AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OTPVerificationView.swift; sourceTree = "<group>"; };
+		B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Francy-Regular.ttf"; sourceTree = "<group>"; };
+		B302EA70F1C4286289905AFF /* SharedProgressStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedProgressStore.swift; sourceTree = "<group>"; };
+		B522620C7AB48BA1A10A72FD /* HealthKitService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		B56518D16D8FD135E7DDD0E4 /* LeaderboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
+		C0C5B4078B3AA456550D2C18 /* ProgressAchievementsWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressAchievementsWidget.swift; sourceTree = "<group>"; };
+		CA64CB7A4B8E5FDBE751D5C5 /* LanguagePickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LanguagePickerView.swift; sourceTree = "<group>"; };
+		CC7E1851BD66A6F385905E9F /* CartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		CDF9CCF5A54DD6B35ED51235 /* AppState+Growth.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Growth.swift"; sourceTree = "<group>"; };
+		D6A7B583C3630E23E55038A9 /* CustomWorkoutBuilderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CustomWorkoutBuilderView.swift; sourceTree = "<group>"; };
+		DBAFA4D3D088F16E75A3B66D /* HealthMetricsWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HealthMetricsWidget.swift; sourceTree = "<group>"; };
+		DD756250130C03C75865E788 /* AvatarPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AvatarPickerView.swift; sourceTree = "<group>"; };
+		E07A661384232071008EA8E3 /* ProgressDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressDetailView.swift; sourceTree = "<group>"; };
+		E2360973C0FF59F76A261826 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		E493C65B6E18E3804875719D /* CoreAIChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreAIChatView.swift; sourceTree = "<group>"; };
+		E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
+		EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-Light.ttf"; sourceTree = "<group>"; };
+		EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GymSafetyView.swift; sourceTree = "<group>"; };
+		EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainersView.swift; sourceTree = "<group>"; };
+		F19E3997796F4D24A679D9FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F67907A314E1428CADEF220C /* CoreApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F7767DFABE3FC38A17C249E0 /* ScanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		F7F173CD46DBE0612AD9D873 /* AuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		FB2B6551AE2831475D8A342D /* LogInBodyScanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LogInBodyScanView.swift; sourceTree = "<group>"; };
+		FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DynamicIslandNotifier.swift; sourceTree = "<group>"; };
+		FF518BECB85AFB2EC8F75527 /* EventsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		580FE91E7E83F907246A4CF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09422EB1A147FD2B71D1B035 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		707D533F63BB438F815B6A68 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD6C01682CB4019E62A3746B /* GoogleSignIn in Frameworks */,
+				43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		362612CA95AC4D62A8827A1B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F67907A314E1428CADEF220C /* CoreApp.app */,
+				30A5F510A6B3977F14D83E50 /* CoreWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		43C78D2FC523348C25D0FEA2 /* CoreApp */ = {
+			isa = PBXGroup;
+			children = (
+				E2360973C0FF59F76A261826 /* OnboardingView.swift */,
+				2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */,
+				97814377FFBA6C26D2370416 /* CalendarView.swift */,
+				9211968CC2C26B35B6A2E601 /* ProgressTabView.swift */,
+			);
+			name = CoreApp;
+			sourceTree = "<group>";
+		};
+		719C9FF1C8028C13C40940B4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				76634DFAD82F5D902AAD4699 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7603BAC60131412AAEF8FD7D = {
+			isa = PBXGroup;
+			children = (
+				E2EB408E61D34E718D154BF0 /* CoreApp */,
+				362612CA95AC4D62A8827A1B /* Products */,
+				EFA3677B15D269C9A0D46B61 /* CoreWidgets */,
+				719C9FF1C8028C13C40940B4 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		76634DFAD82F5D902AAD4699 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				48C03BFD588F38513C3464E2 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		E09A658973A5EBE5303D09C0 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */,
+				B2DB49C012F85523CCDDC654 /* Francy-Regular.ttf */,
+				4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */,
+				5A4A7223229C0180EDB2C4E9 /* Geologica-Regular.ttf */,
+				9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */,
+				6340070255C0F1639426C831 /* Geologica-Bold.ttf */,
+				EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */,
+			);
+			name = Fonts;
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		E2EB408E61D34E718D154BF0 /* CoreApp */ = {
+			isa = PBXGroup;
+			children = (
+				6E46CDD914A646D49A055E8D /* CoreAppApp.swift */,
+				F6DA349D3B1F417F8A2C8A53 /* ContentView.swift */,
+				78EEC3E4AC434CCDB1F33D3B /* Theme.swift */,
+				99018F8559804203B50FC4E6 /* Components.swift */,
+				48104F66160A4418A81BD9E8 /* Models.swift */,
+				0DFCFF1C6A1D454E80B7C92A /* AppState.swift */,
+				77F0FD454D2243F9954D55DC /* HomeView.swift */,
+				EFF22D8D8DFC414F82F37E4B /* TrainersView.swift */,
+				187D5C91EAAA4F0DB404FA79 /* StoreView.swift */,
+				3400C5EA574C43B3B4039970 /* ProfileView.swift */,
+				0DEA1CB3D4D6477698F2B777 /* Assets.xcassets */,
+				F19E3997796F4D24A679D9FD /* Info.plist */,
+				F7F173CD46DBE0612AD9D873 /* AuthService.swift */,
+				5A3B3511191EF0FD2AE5A30D /* SplashView.swift */,
+				522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */,
+				AF71D7C8BED977210B890C67 /* OTPVerificationView.swift */,
+				61189B5DEFF0EFAF7E222014 /* CoreApp.entitlements */,
+				E09A658973A5EBE5303D09C0 /* Fonts */,
+				67286F4868E97187636094AA /* WorkoutsView.swift */,
+				43C78D2FC523348C25D0FEA2 /* CoreApp */,
+				9596908F1DAB612D6DFEC53A /* GymPhotoViewer.swift */,
+				3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */,
+				E07A661384232071008EA8E3 /* ProgressDetailView.swift */,
+				8328088CB2AF8A093CB04497 /* OccupancyDetailView.swift */,
+				55950DFCC22D525533532A31 /* SubscriptionsView.swift */,
+				E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */,
+				3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */,
+				CC7E1851BD66A6F385905E9F /* CartView.swift */,
+				EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */,
+				18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */,
+				E493C65B6E18E3804875719D /* CoreAIChatView.swift */,
+				2BDE3CBEF2FFFFAB6086469C /* SupabaseService.swift */,
+				4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */,
+				31F2AB7862A2EA4586A53B5A /* AppState+Supabase.swift */,
+				6EBB75B1E235AA7A66D02FA5 /* StripeConfig.swift */,
+				04C78F049CC8950FCEE905BD /* PaymentService.swift */,
+				9E59530C8CF8AA8FF098189C /* PaymentSheetPresenter.swift */,
+				FF518BECB85AFB2EC8F75527 /* EventsView.swift */,
+				F7767DFABE3FC38A17C249E0 /* ScanView.swift */,
+				8085A71DF05DC8EDC5512C45 /* VitaminDatabase.swift */,
+				FB8919ED7C272B42894DA634 /* DynamicIslandNotifier.swift */,
+				A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */,
+				7FEFF51D05DF5DAD7F5AB494 /* NotificationService.swift */,
+				B522620C7AB48BA1A10A72FD /* HealthKitService.swift */,
+				8D09AAE1018ED458346CC2B2 /* CheckInView.swift */,
+				48290E2C932A5BA6DFF18347 /* ReferralView.swift */,
+				B56518D16D8FD135E7DDD0E4 /* LeaderboardView.swift */,
+				52EFBBA1AB1C30F36093C4D5 /* ProgressPhotosView.swift */,
+				CDF9CCF5A54DD6B35ED51235 /* AppState+Growth.swift */,
+				3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */,
+				2039733A32D3965970AD290D /* LiveActivityService.swift */,
+				69BF6F7390AD303DD5145943 /* TodaysSpecialsView.swift */,
+				FB2B6551AE2831475D8A342D /* LogInBodyScanView.swift */,
+				5458B4589D146B653EB54FB6 /* HeroVideo.mp4 */,
+				B302EA70F1C4286289905AFF /* SharedProgressStore.swift */,
+				65AA2CAD9F3D37D89D0EAD0B /* WelcomeBackView.swift */,
+				D6A7B583C3630E23E55038A9 /* CustomWorkoutBuilderView.swift */,
+				743BC3E253E631601128EE36 /* AppState+Avatar.swift */,
+				DD756250130C03C75865E788 /* AvatarPickerView.swift */,
+				18608E39C7A284BD8F43C0A4 /* AppState+Health.swift */,
+				A53D6AEA6361817922FA8EC6 /* HealthMetricsView.swift */,
+				8BE67E7EDE0EC9FBDE3E4F65 /* SharedHealthStore.swift */,
+				78D97C91AA3F9C02D2720D25 /* Localizable.xcstrings */,
+				CA64CB7A4B8E5FDBE751D5C5 /* LanguagePickerView.swift */,
+			);
+			path = CoreApp;
+			sourceTree = "<group>";
+		};
+		EFA3677B15D269C9A0D46B61 /* CoreWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				5E33F8791E4F6E9BEF57AC18 /* CoreWidgetsBundle.swift */,
+				086E0AAB07D7AF2D05AE739C /* WorkoutOfTheDayWidget.swift */,
+				95244984817A4D1FE1DA7B22 /* WorkoutLiveActivity.swift */,
+				0BA02BAD3472B4C8560DDB10 /* WidgetSupabaseConfig.swift */,
+				424658A028CA6DAF50F921BC /* Info.plist */,
+				C0C5B4078B3AA456550D2C18 /* ProgressAchievementsWidget.swift */,
+				157DE2C2EFBBC95314EDBA55 /* CoreWidgets.entitlements */,
+				2F04AD351DD5C8A48C4CBD32 /* WidgetBrandBackground.swift */,
+				DBAFA4D3D088F16E75A3B66D /* HealthMetricsWidget.swift */,
+			);
+			name = CoreWidgets;
+			path = CoreWidgets;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		10413FFAE42579714133C698 /* CoreWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBCB0B2E7D14C4324E090F63 /* Build configuration list for PBXNativeTarget "CoreWidgets" */;
+			buildPhases = (
+				B225C9242D645DBE626FA2B4 /* Sources */,
+				580FE91E7E83F907246A4CF8 /* Frameworks */,
+				E95DC3F3BB40D9292D7D1D65 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CoreWidgets;
+			productName = CoreWidgets;
+			productReference = 30A5F510A6B3977F14D83E50 /* CoreWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		16CB09FB82414600B0EC7B6B /* CoreApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2A98774D3C448358108B693 /* Build configuration list for PBXNativeTarget "CoreApp" */;
+			buildPhases = (
+				F8588A5F52DD491F9AD23F85 /* Sources */,
+				707D533F63BB438F815B6A68 /* Frameworks */,
+				97675624B1494732BBFE69ED /* Resources */,
+				E0425DCA064C4D5491E2D1D3 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BDEC2883C0E6646CD0F4F6E5 /* PBXTargetDependency */,
+			);
+			name = CoreApp;
+			packageProductDependencies = (
+				A6395C7AB467517757FDA0C9 /* GoogleSignIn */,
+				54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */,
+				F969DB2DA1F774B9846AC477 /* Supabase */,
+				BE7F5D40D8903F8ECB3EBD43 /* StripePaymentSheet */,
+			);
+			productName = CoreApp;
+			productReference = F67907A314E1428CADEF220C /* CoreApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1F7693C8176749AA86B3F729 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					10413FFAE42579714133C698 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					16CB09FB82414600B0EC7B6B = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 4A614144FF13435FAB57B9D6 /* Build configuration list for PBXProject "CoreApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ru,
+			);
+			mainGroup = 7603BAC60131412AAEF8FD7D;
+			packageReferences = (
+				CEAC1B87AD7D9BD3E6B9C73B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				AEB0C59DA284E11D1F0AB018 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				74C4D86CC6D2C119DD099716 /* XCRemoteSwiftPackageReference "stripe-ios" */,
+			);
+			productRefGroup = 362612CA95AC4D62A8827A1B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				16CB09FB82414600B0EC7B6B /* CoreApp */,
+				10413FFAE42579714133C698 /* CoreWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		97675624B1494732BBFE69ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9B21807FFDE44D1958B7CAE /* Assets.xcassets in Resources */,
+				A52425A03ABDED55A30EA3BD /* Doto-VariableFont.ttf in Resources */,
+				5AB54C6F8C04D4FF86248D0E /* Francy-Regular.ttf in Resources */,
+				073061F2B15F31F4094C9177 /* HeroVideo.mp4 in Resources */,
+				DF1A8235B3D5BA104441976B /* Localizable.xcstrings in Resources */,
+				F903ED912ABCAD4835B009DE /* Geologica-SemiBold.ttf in Resources */,
+				E88586642CECCFAF43508279 /* Geologica-Regular.ttf in Resources */,
+				6B94894A315587D410147A6B /* Geologica-Medium.ttf in Resources */,
+				413EBE97ADC27F46502D459E /* Geologica-Bold.ttf in Resources */,
+				5ABAF057522A0A5C2DD75CCA /* Geologica-Light.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95DC3F3BB40D9292D7D1D65 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE9A4F5CA4AA35852B3D645A /* Doto-VariableFont.ttf in Resources */,
+				80C5FB742B6220AD78A6BFBA /* Francy-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B225C9242D645DBE626FA2B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D797C94F73B5119A3035A3BB /* CoreWidgetsBundle.swift in Sources */,
+				878870F83B011B123F6F9345 /* WorkoutOfTheDayWidget.swift in Sources */,
+				5F5C090B9B20338957AE3766 /* WorkoutLiveActivity.swift in Sources */,
+				8E8594599D570F7D2910CF6D /* WidgetSupabaseConfig.swift in Sources */,
+				01401B0AE0843F1C01D92304 /* Theme.swift in Sources */,
+				4375D4FF1EFA212852EDAF8A /* WorkoutActivityAttributes.swift in Sources */,
+				A3939502A0B45B030D6E2363 /* SharedProgressStore.swift in Sources */,
+				25F438B73B94A7914709447B /* ProgressAchievementsWidget.swift in Sources */,
+				BADABC863F594B5632190BEF /* WidgetBrandBackground.swift in Sources */,
+				A140AD79876DA5514FB6BE1F /* SharedHealthStore.swift in Sources */,
+				80147135067BF5D00B6FCE02 /* HealthMetricsWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8588A5F52DD491F9AD23F85 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */,
+				392881F6855843ACB49B7B46 /* ContentView.swift in Sources */,
+				883CEF1AA585402E8C0803EB /* Theme.swift in Sources */,
+				EB64BE17744245A0AF0F1987 /* Components.swift in Sources */,
+				549E57A664D84DD0B20D5053 /* Models.swift in Sources */,
+				22CB65E17C3C4F9FA2E84F63 /* AppState.swift in Sources */,
+				0A684AEED47A45E7811403F0 /* HomeView.swift in Sources */,
+				29C465C7919C462EA2F0EE80 /* TrainersView.swift in Sources */,
+				73F652550548443DB32F62B9 /* StoreView.swift in Sources */,
+				DFD7622C13034D9789B7842F /* ProfileView.swift in Sources */,
+				EFE86F868A2D5B5A825B8812 /* AuthService.swift in Sources */,
+				A2E860860761333E4C376664 /* SplashView.swift in Sources */,
+				09F5DB40DAE9A527BC3E2532 /* AuthWelcomeView.swift in Sources */,
+				72C72954DBB2116B2AFD4773 /* OTPVerificationView.swift in Sources */,
+				BB5ABFA5E558988F72FA41EF /* WorkoutsView.swift in Sources */,
+				13665979218917FFC4BCE58C /* OnboardingView.swift in Sources */,
+				6C17FED4B0E290AAFC143DAA /* FoodRecipesView.swift in Sources */,
+				3D72EF131AA6CEA6CAE3B712 /* CalendarView.swift in Sources */,
+				85B05F926201A88F7E64D6EB /* ProgressTabView.swift in Sources */,
+				827A626C864C99A017D8DBCA /* GymPhotoViewer.swift in Sources */,
+				6ADBF3B74265539A6EBF6406 /* LocationPickerView.swift in Sources */,
+				F05383C3B4AB44D838E5F814 /* ProgressDetailView.swift in Sources */,
+				B125C469AA78A39EC0FD0ED8 /* OccupancyDetailView.swift in Sources */,
+				929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */,
+				DF0A25D15B132EA1F55DD11E /* WorkoutDetailView.swift in Sources */,
+				52A35E68968F65202D122832 /* QRPassView.swift in Sources */,
+				43554B5640BA55F311A51850 /* CartView.swift in Sources */,
+				55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */,
+				5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */,
+				018878DA21ABEBB04B9D2F5F /* CoreAIChatView.swift in Sources */,
+				5B109E9053C7AB7139E42BA6 /* SupabaseService.swift in Sources */,
+				8A72D0FDB7609D115EBD9467 /* SupabaseModels.swift in Sources */,
+				00654D9E24395A0E12716AEB /* AppState+Supabase.swift in Sources */,
+				2B11B98ED5A9373EA510D52E /* StripeConfig.swift in Sources */,
+				1D204D15172197CC95F29C1A /* PaymentService.swift in Sources */,
+				BAEABB3643DCA16A8216CDC6 /* PaymentSheetPresenter.swift in Sources */,
+				FCC12CF6DF930A95F75C06B0 /* EventsView.swift in Sources */,
+				3F356E097DF7CAE19BDEAF07 /* ScanView.swift in Sources */,
+				D1CD4AD3F987D65633F9A927 /* VitaminDatabase.swift in Sources */,
+				43328045AB488CECE9AF1A75 /* DynamicIslandNotifier.swift in Sources */,
+				44D0E38093ECBF87A87876D6 /* ThinkingOrb.swift in Sources */,
+				8639B08C2F13376A6E25E19E /* NotificationService.swift in Sources */,
+				751542B8D2F326DAF7C48472 /* HealthKitService.swift in Sources */,
+				59B8AE958A4203AFF9449EE4 /* CheckInView.swift in Sources */,
+				732C82C2D156E355FF600562 /* ReferralView.swift in Sources */,
+				7C5C13D38099181B65B53829 /* LeaderboardView.swift in Sources */,
+				B107D4897AEB5C35A5BCC272 /* ProgressPhotosView.swift in Sources */,
+				3D21BB83D644E86307DAAE27 /* AppState+Growth.swift in Sources */,
+				84A8770FE10326533B8AF26E /* WorkoutActivityAttributes.swift in Sources */,
+				0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */,
+				75470D30F5F84822EB3EEFA8 /* TodaysSpecialsView.swift in Sources */,
+				0A1A1E8118DA1AF02F910900 /* LogInBodyScanView.swift in Sources */,
+				1B6BB854BFAD3B0D7A74F106 /* SharedProgressStore.swift in Sources */,
+				E0014AAD1FB109693AE6C578 /* WelcomeBackView.swift in Sources */,
+				4043E55A4E4192970C401B2A /* CustomWorkoutBuilderView.swift in Sources */,
+				73331FB97CF6826709377803 /* AppState+Avatar.swift in Sources */,
+				C05DCFB30D0F244A5CB9CEC3 /* AvatarPickerView.swift in Sources */,
+				01255C7D70733A31E964FC86 /* AppState+Health.swift in Sources */,
+				2AE26B84867C3C82E2286E99 /* HealthMetricsView.swift in Sources */,
+				15B87935455DB719E4575547 /* SharedHealthStore.swift in Sources */,
+				6F34106828F49C391B04BC87 /* LanguagePickerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BDEC2883C0E6646CD0F4F6E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CoreWidgets;
+			target = 10413FFAE42579714133C698 /* CoreWidgets */;
+			targetProxy = 6F69E6090A27A1FFB4F8656E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2F4A6E936AFF4C2C8CBF40F1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoreApp/CoreApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoreApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.coreclub.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		36E472E7EF82429FAEEA1744 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoreApp/CoreApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoreApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.coreclub.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		60CB5C0976DC5EC55E481487 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CoreWidgets/CoreWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoreWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "core. Widgets";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.coreclub.app.CoreWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6E7C00765F26CFC9681EE74B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CoreWidgets/CoreWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoreWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "core. Widgets";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.coreclub.app.CoreWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		894F68B63D234FF4AC28985C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F6C2AEE079F94A72B24E34A9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4A614144FF13435FAB57B9D6 /* Build configuration list for PBXProject "CoreApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				894F68B63D234FF4AC28985C /* Debug */,
+				F6C2AEE079F94A72B24E34A9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2A98774D3C448358108B693 /* Build configuration list for PBXNativeTarget "CoreApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2F4A6E936AFF4C2C8CBF40F1 /* Debug */,
+				36E472E7EF82429FAEEA1744 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBCB0B2E7D14C4324E090F63 /* Build configuration list for PBXNativeTarget "CoreWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60CB5C0976DC5EC55E481487 /* Release */,
+				6E7C00765F26CFC9681EE74B /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		74C4D86CC6D2C119DD099716 /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stripe/stripe-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 23.0.0;
+			};
+		};
+		AEB0C59DA284E11D1F0AB018 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		CEAC1B87AD7D9BD3E6B9C73B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEAC1B87AD7D9BD3E6B9C73B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+		A6395C7AB467517757FDA0C9 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEAC1B87AD7D9BD3E6B9C73B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		BE7F5D40D8903F8ECB3EBD43 /* StripePaymentSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74C4D86CC6D2C119DD099716 /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripePaymentSheet;
+		};
+		F969DB2DA1F774B9846AC477 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEB0C59DA284E11D1F0AB018 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 1F7693C8176749AA86B3F729 /* Project object */;
+}

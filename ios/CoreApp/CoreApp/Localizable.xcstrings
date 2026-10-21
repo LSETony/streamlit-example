@@ -1,0 +1,3026 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "10 Workouts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 тренировок"
+          }
+        }
+      }
+    },
+    "100 Visits": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 визитов"
+          }
+        }
+      }
+    },
+    "30 Day Streak": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Серия 30 дней"
+          }
+        }
+      }
+    },
+    "50 Workouts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50 тренировок"
+          }
+        }
+      }
+    },
+    "7 Day Streak": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Серия 7 дней"
+          }
+        }
+      }
+    },
+    "A 45-minute group HIIT session on the studio floor — bodyweight and kettlebell circuits, all levels welcome.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "45-минутная групповая HIIT-тренировка в студии — круги с собственным весом и гирями, подходит для всех уровней."
+          }
+        }
+      }
+    },
+    "A private before/after timeline — newest first.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приватная хронология «до/после» — сначала новые."
+          }
+        }
+      }
+    },
+    "Ab Wheel Rollout": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ролик для пресса"
+          }
+        }
+      }
+    },
+    "Achievement unlocked!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Достижение открыто!"
+          }
+        }
+      }
+    },
+    "Achievements": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Достижения"
+          }
+        }
+      }
+    },
+    "Active until": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Активен до"
+          }
+        }
+      }
+    },
+    "Add a photo": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить фото"
+          }
+        }
+      }
+    },
+    "Add to cart": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить в корзину"
+          }
+        }
+      }
+    },
+    "Advanced": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продвинутый"
+          }
+        }
+      }
+    },
+    "Alert any staff member immediately in an emergency.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Немедленно сообщите любому сотруднику в случае ЧС."
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Все"
+          }
+        }
+      }
+    },
+    "Allergic": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аллергия"
+          }
+        }
+      }
+    },
+    "Allow access in Settings to sync workouts.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разрешите доступ в Настройках для синхронизации тренировок."
+          }
+        }
+      }
+    },
+    "Almost done": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Почти готово"
+          }
+        }
+      }
+    },
+    "Amateur": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Любитель"
+          }
+        }
+      }
+    },
+    "Apple Health not connected": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Здоровье не подключено"
+          }
+        }
+      }
+    },
+    "Arms": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Руки"
+          }
+        }
+      }
+    },
+    "Arnold Press": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жим Арнольда"
+          }
+        }
+      }
+    },
+    "Ask Core AI…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спросите Core AI…"
+          }
+        }
+      }
+    },
+    "Ask before working in on shared equipment.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спрашивайте разрешения перед тем, как присоединиться к общему тренажёру."
+          }
+        }
+      }
+    },
+    "Astma": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Астма"
+          }
+        }
+      }
+    },
+    "Avatar": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аватар"
+          }
+        }
+      }
+    },
+    "Back": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спина"
+          }
+        }
+      }
+    },
+    "Barbell Bench Press": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жим штанги лёжа"
+          }
+        }
+      }
+    },
+    "Barbell Curl": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подъём штанги на бицепс"
+          }
+        }
+      }
+    },
+    "Barbell Squats": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приседания со штангой"
+          }
+        }
+      }
+    },
+    "Basal Metabolic Rate": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Базовый метаболизм"
+          }
+        }
+      }
+    },
+    "Battle Ropes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Боевые канаты"
+          }
+        }
+      }
+    },
+    "Beginner": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начинающий"
+          }
+        }
+      }
+    },
+    "Beginner's Plan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "План для начинающих"
+          }
+        }
+      }
+    },
+    "Benefits": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преимущества"
+          }
+        }
+      }
+    },
+    "Bent-over Row": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тяга штанги в наклоне"
+          }
+        }
+      }
+    },
+    "Bicycle Crunches": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скручивания «велосипед»"
+          }
+        }
+      }
+    },
+    "Body": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тело"
+          }
+        }
+      }
+    },
+    "Body Composition": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Состав тела"
+          }
+        }
+      }
+    },
+    "Body Fat %": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "% жира в теле"
+          }
+        }
+      }
+    },
+    "Body fat trend": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Динамика жира"
+          }
+        }
+      }
+    },
+    "Book": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бронь"
+          }
+        }
+      }
+    },
+    "Book a Zone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Забронировать зону"
+          }
+        }
+      }
+    },
+    "Build Your Own": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создайте свою"
+          }
+        }
+      }
+    },
+    "Build Your Own Workout": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создать свою тренировку"
+          }
+        }
+      }
+    },
+    "Burpees": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бёрпи"
+          }
+        }
+      }
+    },
+    "Busiest": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Больше людей"
+          }
+        }
+      }
+    },
+    "Cable Crunch": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скручивания на блоке"
+          }
+        }
+      }
+    },
+    "Cable Flyes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сведение рук в тренажёре"
+          }
+        }
+      }
+    },
+    "Calendar": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Календарь"
+          }
+        }
+      }
+    },
+    "Calf Raises": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подъёмы на носки"
+          }
+        }
+      }
+    },
+    "Calories": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калории"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмена"
+          }
+        }
+      }
+    },
+    "Cancel booking": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменить бронь"
+          }
+        }
+      }
+    },
+    "Cancel booking?": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменить бронирование?"
+          }
+        }
+      }
+    },
+    "Cardio": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кардио"
+          }
+        }
+      }
+    },
+    "Cart": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корзина"
+          }
+        }
+      }
+    },
+    "Change plan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменить план"
+          }
+        }
+      }
+    },
+    "Check in 100 times": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отметьтесь 100 раз"
+          }
+        }
+      }
+    },
+    "Check out": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оформить заказ"
+          }
+        }
+      }
+    },
+    "Check your connection and try again": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверьте подключение и попробуйте снова"
+          }
+        }
+      }
+    },
+    "Check-in code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Код для check-in"
+          }
+        }
+      }
+    },
+    "Checked in!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы отметились!"
+          }
+        }
+      }
+    },
+    "Chest": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Грудь"
+          }
+        }
+      }
+    },
+    "Chest Press Machine": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жим в тренажёре (грудь)"
+          }
+        }
+      }
+    },
+    "Choose Location": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбрать локацию"
+          }
+        }
+      }
+    },
+    "Choose this location": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбрать это место"
+          }
+        }
+      }
+    },
+    "Choose your level": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите ваш уровень"
+          }
+        }
+      }
+    },
+    "Close-Grip Bench Press": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жим узким хватом"
+          }
+        }
+      }
+    },
+    "Club Guide": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гид по клубу"
+          }
+        }
+      }
+    },
+    "Club Occupancy": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загруженность клуба"
+          }
+        }
+      }
+    },
+    "Complete 10 sessions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завершите 10 тренировок"
+          }
+        }
+      }
+    },
+    "Complete 50 sessions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завершите 50 тренировок"
+          }
+        }
+      }
+    },
+    "Complete Set": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завершить подход"
+          }
+        }
+      }
+    },
+    "Confirm reschedule": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подтвердить перенос"
+          }
+        }
+      }
+    },
+    "Connect Apple Health": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подключить Apple Health"
+          }
+        }
+      }
+    },
+    "Connect Apple Health to see your heart rate, steps, sleep and more here.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подключите Apple Health, чтобы видеть пульс, шаги, сон и другое здесь."
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продолжить"
+          }
+        }
+      }
+    },
+    "Core": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корпус"
+          }
+        }
+      }
+    },
+    "Couldn't upload photo": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось загрузить фото"
+          }
+        }
+      }
+    },
+    "Current plan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Текущий план"
+          }
+        }
+      }
+    },
+    "Custom Workout": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Своя тренировка"
+          }
+        }
+      }
+    },
+    "Deadlift": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тяга штанги на прямых ногах"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить"
+          }
+        }
+      }
+    },
+    "Diabetes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Диабет"
+          }
+        }
+      }
+    },
+    "Didn't get a code?": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не пришёл код?"
+          }
+        }
+      }
+    },
+    "Dips": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отжимания на брусьях"
+          }
+        }
+      }
+    },
+    "Do you have any\ncontradictions?": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Есть ли у вас\nпротивопоказания?"
+          }
+        }
+      }
+    },
+    "Don't have a code? Show a test one": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет кода? Показать тестовый"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готово"
+          }
+        }
+      }
+    },
+    "EXERCISES": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "УПРАЖНЕНИЯ"
+          }
+        }
+      }
+    },
+    "Email": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email"
+          }
+        }
+      }
+    },
+    "Emergency Procedures": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Действия в экстренных случаях"
+          }
+        }
+      }
+    },
+    "Emergency exits are marked at both ends of the floor.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запасные выходы отмечены в обоих концах зала."
+          }
+        }
+      }
+    },
+    "End": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завершить"
+          }
+        }
+      }
+    },
+    "Enter the numbers from your latest InBody printout.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите данные с последней распечатки InBody."
+          }
+        }
+      }
+    },
+    "Equipment Rules": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правила использования оборудования"
+          }
+        }
+      }
+    },
+    "Event starting soon": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Событие скоро начнётся"
+          }
+        }
+      }
+    },
+    "Events": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "События"
+          }
+        }
+      }
+    },
+    "Exercises": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Упражнения"
+          }
+        }
+      }
+    },
+    "FOCUS ZONE": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЗОНА АКЦЕНТА"
+          }
+        }
+      }
+    },
+    "Face Pulls": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тяга к лицу"
+          }
+        }
+      }
+    },
+    "Facility Etiquette": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этикет в зале"
+          }
+        }
+      }
+    },
+    "Filter recipes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фильтр рецептов"
+          }
+        }
+      }
+    },
+    "Filter supplements": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фильтр добавок"
+          }
+        }
+      }
+    },
+    "Filter trainers": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фильтр тренеров"
+          }
+        }
+      }
+    },
+    "First Workout": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Первая тренировка"
+          }
+        }
+      }
+    },
+    "First aid kits and the AED are at reception.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аптечки и дефибриллятор находятся на ресепшене."
+          }
+        }
+      }
+    },
+    "Flexibility": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Растяжка"
+          }
+        }
+      }
+    },
+    "Food": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Питание"
+          }
+        }
+      }
+    },
+    "Food recipes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рецепты"
+          }
+        }
+      }
+    },
+    "For anything life-threatening, call 911, then notify staff.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "При угрозе жизни звоните 911, затем сообщите персоналу."
+          }
+        }
+      }
+    },
+    "Full name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Полное имя"
+          }
+        }
+      }
+    },
+    "Get Directions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маршрут"
+          }
+        }
+      }
+    },
+    "Get Stronger": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стать сильнее"
+          }
+        }
+      }
+    },
+    "Give us more details, so we can better assist you": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расскажите подробнее, чтобы мы могли лучше вам помочь"
+          }
+        }
+      }
+    },
+    "Guided stretching, foam rolling and breathing work to help recovery between heavy training blocks.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Растяжка с инструктором, массажный ролик и дыхательные практики для восстановления между тяжёлыми тренировками."
+          }
+        }
+      }
+    },
+    "Gym Safety": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правила зала"
+          }
+        }
+      }
+    },
+    "HIIT Circuit Night": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вечер круговых HIIT-тренировок"
+          }
+        }
+      }
+    },
+    "Hammer Curl": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Молотковые сгибания"
+          }
+        }
+      }
+    },
+    "Hanging Leg Raise": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подъём ног в висе"
+          }
+        }
+      }
+    },
+    "Have an\nexperience": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "У вас есть\nопыт"
+          }
+        }
+      }
+    },
+    "Health Metrics": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показатели здоровья"
+          }
+        }
+      }
+    },
+    "History": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "История"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Главная"
+          }
+        }
+      }
+    },
+    "I know\neverything": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы знаете\nвсё"
+          }
+        }
+      }
+    },
+    "I workout all\nthe time": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы тренируетесь\nпостоянно"
+          }
+        }
+      }
+    },
+    "Important": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Важное"
+          }
+        }
+      }
+    },
+    "Incline Dumbbell Press": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жим гантелей на наклонной скамье"
+          }
+        }
+      }
+    },
+    "Included": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включено"
+          }
+        }
+      }
+    },
+    "Ingredients per serving": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ингредиенты на порцию"
+          }
+        }
+      }
+    },
+    "Interactions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Взаимодействия"
+          }
+        }
+      }
+    },
+    "Intermediate": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Средний"
+          }
+        }
+      }
+    },
+    "Invite a friend": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пригласить друга"
+          }
+        }
+      }
+    },
+    "Join": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записаться"
+          }
+        }
+      }
+    },
+    "Joined": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записан"
+          }
+        }
+      }
+    },
+    "Jump Rope": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скакалка"
+          }
+        }
+      }
+    },
+    "Keep booking": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оставить бронь"
+          }
+        }
+      }
+    },
+    "Keep phone calls off the training floor.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не разговаривайте по телефону в зоне тренировок."
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык"
+          }
+        }
+      }
+    },
+    "Lat Pulldown": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тяга верхнего блока"
+          }
+        }
+      }
+    },
+    "Lateral Raises": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разведение гантелей в стороны"
+          }
+        }
+      }
+    },
+    "Leaderboard": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Таблица лидеров"
+          }
+        }
+      }
+    },
+    "Leg Curl": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сгибание ног в тренажёре"
+          }
+        }
+      }
+    },
+    "Leg Press": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жим ногами"
+          }
+        }
+      }
+    },
+    "Legs": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ноги"
+          }
+        }
+      }
+    },
+    "Log InBody Scan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить скан InBody"
+          }
+        }
+      }
+    },
+    "Log scan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записать скан"
+          }
+        }
+      }
+    },
+    "Log your first session": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запишите первую тренировку"
+          }
+        }
+      }
+    },
+    "Logout": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выйти"
+          }
+        }
+      }
+    },
+    "Lose Weight": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снижение веса"
+          }
+        }
+      }
+    },
+    "MOST POPULAR": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ПОПУЛЯРНЫЙ"
+          }
+        }
+      }
+    },
+    "Max price": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Макс. цена"
+          }
+        }
+      }
+    },
+    "Meet other members, try the new equipment on the strength floor, light snacks and drinks provided.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Познакомьтесь с другими участниками, опробуйте новое оборудование в силовой зоне, лёгкие закуски и напитки предоставляются."
+          }
+        }
+      }
+    },
+    "Member Social + New Gear Reveal": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Встреча участников + презентация нового оборудования"
+          }
+        }
+      }
+    },
+    "Membership": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Абонемент"
+          }
+        }
+      }
+    },
+    "Men": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мужчина"
+          }
+        }
+      }
+    },
+    "Mobility & Recovery Workshop": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мастер-класс по мобильности и восстановлению"
+          }
+        }
+      }
+    },
+    "Muscle Built": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Набор мышечной массы"
+          }
+        }
+      }
+    },
+    "Muscle Mass": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мышечная масса"
+          }
+        }
+      }
+    },
+    "NOW": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "СЕЙЧАС"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Имя"
+          }
+        }
+      }
+    },
+    "Never drop weights — lower them under control.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Никогда не бросайте веса — опускайте их подконтрольно."
+          }
+        }
+      }
+    },
+    "Next Exercise": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следующее упражнение"
+          }
+        }
+      }
+    },
+    "Next free slots": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ближайшие свободные слоты"
+          }
+        }
+      }
+    },
+    "Next free slots · Tue 15": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ближайшие свободные слоты · Вт 15"
+          }
+        }
+      }
+    },
+    "No %@ workouts yet.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока нет тренировок категории «%@»."
+          }
+        }
+      }
+    },
+    "No bookings on this day": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В этот день нет броней"
+          }
+        }
+      }
+    },
+    "No check-ins yet — be the first.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока никто не отметился — будьте первым."
+          }
+        }
+      }
+    },
+    "No data": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет данных"
+          }
+        }
+      }
+    },
+    "No filming other members without their consent.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не снимайте других участников без их согласия."
+          }
+        }
+      }
+    },
+    "No leftover slots right now — check back later today.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сейчас нет свободных окон — загляните позже сегодня."
+          }
+        }
+      }
+    },
+    "No photos yet — add your first to start the timeline.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока нет фото — добавьте первое, чтобы начать хронологию."
+          }
+        }
+      }
+    },
+    "No workouts logged yet — finish one to see it here.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренировок пока нет — завершите одну, чтобы увидеть её здесь."
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ОК"
+          }
+        }
+      }
+    },
+    "OR CHOOSE AN AVATAR": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ИЛИ ВЫБЕРИТЕ АВАТАР"
+          }
+        }
+      }
+    },
+    "Occupancy": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загруженность"
+          }
+        }
+      }
+    },
+    "One-Time Code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одноразовый код"
+          }
+        }
+      }
+    },
+    "Order placed": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заказ оформлен"
+          }
+        }
+      }
+    },
+    "Overhead Press": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жим штанги над головой"
+          }
+        }
+      }
+    },
+    "Overview": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обзор"
+          }
+        }
+      }
+    },
+    "PAUSED": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ПАУЗА"
+          }
+        }
+      }
+    },
+    "Paused — resume to continue": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На паузе — продолжите тренировку"
+          }
+        }
+      }
+    },
+    "Payment successful": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оплата прошла успешно"
+          }
+        }
+      }
+    },
+    "Personal Safety": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Личная безопасность"
+          }
+        }
+      }
+    },
+    "Personal Trainers": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Персональные тренеры"
+          }
+        }
+      }
+    },
+    "Personal trainer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Персональный тренер"
+          }
+        }
+      }
+    },
+    "Pick a zone to focus on, then choose which exercises to include.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите зону акцента, затем упражнения для включения."
+          }
+        }
+      }
+    },
+    "Pick a zone, choose your exercises": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите зону, подберите упражнения"
+          }
+        }
+      }
+    },
+    "Plank": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Планка"
+          }
+        }
+      }
+    },
+    "Point the camera at a supplement label": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наведите камеру на этикетку добавки"
+          }
+        }
+      }
+    },
+    "Powerlifting Seminar": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Семинар по пауэрлифтингу"
+          }
+        }
+      }
+    },
+    "Price: high to low": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цена: по убыванию"
+          }
+        }
+      }
+    },
+    "Price: low to high": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цена: по возрастанию"
+          }
+        }
+      }
+    },
+    "Print this at reception, or scan it from another device to test check-in.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Распечатайте это на ресепшене или отсканируйте с другого устройства для теста."
+          }
+        }
+      }
+    },
+    "Profile": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профиль"
+          }
+        }
+      }
+    },
+    "Progress": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогресс"
+          }
+        }
+      }
+    },
+    "Progress Photos": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото прогресса"
+          }
+        }
+      }
+    },
+    "Pull-ups": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подтягивания"
+          }
+        }
+      }
+    },
+    "Push-ups": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отжимания"
+          }
+        }
+      }
+    },
+    "QR access pass": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-пропуск"
+          }
+        }
+      }
+    },
+    "Quietest": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Меньше людей"
+          }
+        }
+      }
+    },
+    "Ranked by total visits, across every core. member.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рейтинг по количеству визитов среди всех участников core."
+          }
+        }
+      }
+    },
+    "Re-rack weights and plates after every set.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Возвращайте гантели и диски на место после каждого подхода."
+          }
+        }
+      }
+    },
+    "Rear Delt Flyes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разведение рук на заднюю дельту"
+          }
+        }
+      }
+    },
+    "Reschedule": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перенести"
+          }
+        }
+      }
+    },
+    "Resend": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отправить снова"
+          }
+        }
+      }
+    },
+    "Reset": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сбросить"
+          }
+        }
+      }
+    },
+    "Return dumbbells and accessories to their racks.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Возвращайте гантели и аксессуары на стойки."
+          }
+        }
+      }
+    },
+    "Risks and cautions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Риски и предостережения"
+          }
+        }
+      }
+    },
+    "Romanian Deadlift": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Румынская тяга"
+          }
+        }
+      }
+    },
+    "Route": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маршрут"
+          }
+        }
+      }
+    },
+    "Rowing Machine": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гребной тренажёр"
+          }
+        }
+      }
+    },
+    "Rules and equipment guide for using the club safely.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правила и инструкция по безопасному использованию оборудования."
+          }
+        }
+      }
+    },
+    "Russian Twists": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Русские скручивания"
+          }
+        }
+      }
+    },
+    "Save scan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранить скан"
+          }
+        }
+      }
+    },
+    "Scan": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сканер"
+          }
+        }
+      }
+    },
+    "Scan the check-in QR at reception": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отсканируйте QR для check-in на ресепшене"
+          }
+        }
+      }
+    },
+    "Scanning needs a real iPhone camera — it isn't available in the Simulator or on this device.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для сканирования нужна настоящая камера iPhone — недоступно в симуляторе или на этом устройстве."
+          }
+        }
+      }
+    },
+    "Seated Cable Row": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тяга нижнего блока сидя"
+          }
+        }
+      }
+    },
+    "Select exercises to start": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите упражнения для начала"
+          }
+        }
+      }
+    },
+    "Selected date": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбранная дата"
+          }
+        }
+      }
+    },
+    "Sets": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подходы"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки"
+          }
+        }
+      }
+    },
+    "Share invite": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поделиться приглашением"
+          }
+        }
+      }
+    },
+    "Share machines during peak hours — work in sets.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Делитесь тренажёрами в часы пик — работайте по подходам."
+          }
+        }
+      }
+    },
+    "Share your code — every friend who joins with it counts toward both your streaks.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поделитесь кодом — каждый друг, который присоединится по нему, засчитывается в серию вам обоим."
+          }
+        }
+      }
+    },
+    "Shoulders": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Плечи"
+          }
+        }
+      }
+    },
+    "Show this code at the turnstile or reception to check in": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покажите этот код на турникете или ресепшене для входа"
+          }
+        }
+      }
+    },
+    "Sign in or create your account": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите или создайте аккаунт"
+          }
+        }
+      }
+    },
+    "Sign in with Apple": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войти через Apple"
+          }
+        }
+      }
+    },
+    "Sign in with Google": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войти через Google"
+          }
+        }
+      }
+    },
+    "Skull Crushers": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Французский жим"
+          }
+        }
+      }
+    },
+    "Special booked!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Акция забронирована!"
+          }
+        }
+      }
+    },
+    "Specials for today": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Специальные предложения"
+          }
+        }
+      }
+    },
+    "Specialty": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Специализация"
+          }
+        }
+      }
+    },
+    "Squat/bench/deadlift technique breakdown with the strength floor coaches, plus a form-check Q&A.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разбор техники приседаний, жима и тяги с тренерами силовой зоны, плюс разбор техники в формате вопрос-ответ."
+          }
+        }
+      }
+    },
+    "Stair Climber": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Степпер"
+          }
+        }
+      }
+    },
+    "Start Workout": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начать тренировку"
+          }
+        }
+      }
+    },
+    "Starting in an hour": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начинается через час"
+          }
+        }
+      }
+    },
+    "Stay Fit & Healthy": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поддержание формы"
+          }
+        }
+      }
+    },
+    "Stay active 30 days running": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Будьте активны 30 дней подряд"
+          }
+        }
+      }
+    },
+    "Stay active 7 days running": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Будьте активны 7 дней подряд"
+          }
+        }
+      }
+    },
+    "Stay hydrated — water stations are on every floor.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пейте воду — питьевые станции есть на каждом этаже."
+          }
+        }
+      }
+    },
+    "Store": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Магазин"
+          }
+        }
+      }
+    },
+    "Strength": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Силовые"
+          }
+        }
+      }
+    },
+    "Subscription renewing soon": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подписка скоро продлится"
+          }
+        }
+      }
+    },
+    "Subscriptions": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подписки"
+          }
+        }
+      }
+    },
+    "Supplements": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавки"
+          }
+        }
+      }
+    },
+    "This Month": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В этом месяце"
+          }
+        }
+      }
+    },
+    "This means\nyou've just started": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это значит,\nчто вы только начали"
+          }
+        }
+      }
+    },
+    "This tailor plans and your experience": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это адаптирует план под ваш опыт"
+          }
+        }
+      }
+    },
+    "This week": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На этой неделе"
+          }
+        }
+      }
+    },
+    "Time": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Время"
+          }
+        }
+      }
+    },
+    "Top 10 workouts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Топ-10 тренировок"
+          }
+        }
+      }
+    },
+    "Top rated": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Высокий рейтинг"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Итого"
+          }
+        }
+      }
+    },
+    "Total Body Water %": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "% воды в теле"
+          }
+        }
+      }
+    },
+    "Trainers": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренеры"
+          }
+        }
+      }
+    },
+    "Treadmill Intervals": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Интервалы на беговой дорожке"
+          }
+        }
+      }
+    },
+    "Tricep Pushdown": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разгибание рук на трицепс (блок)"
+          }
+        }
+      }
+    },
+    "Turnstile and reception check-in": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Турникет и регистрация на ресепшене"
+          }
+        }
+      }
+    },
+    "Type here…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите здесь…"
+          }
+        }
+      }
+    },
+    "Unbooked trainer slots, discounted so they don't go to waste.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Незабронированные окна тренеров со скидкой, чтобы не пропадали зря."
+          }
+        }
+      }
+    },
+    "Upcoming reminders": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ближайшие напоминания"
+          }
+        }
+      }
+    },
+    "Upload a Photo": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загрузить фото"
+          }
+        }
+      }
+    },
+    "Uploading…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загрузка…"
+          }
+        }
+      }
+    },
+    "Upright Row": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тяга штанги к подбородку"
+          }
+        }
+      }
+    },
+    "Usage": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Использование"
+          }
+        }
+      }
+    },
+    "Use a spotter for heavy bench, squat, or overhead work.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Используйте страхующего при тяжёлом жиме, приседаниях или жиме над головой."
+          }
+        }
+      }
+    },
+    "Verification": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подтверждение"
+          }
+        }
+      }
+    },
+    "View more": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подробнее"
+          }
+        }
+      }
+    },
+    "Visceral Fat Index": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Индекс висцерального жира"
+          }
+        }
+      }
+    },
+    "Visit logged": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Визит зафиксирован"
+          }
+        }
+      }
+    },
+    "Vitamin Recommendations": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рекомендации по витаминам"
+          }
+        }
+      }
+    },
+    "Walking Lunges": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выпады в ходьбе"
+          }
+        }
+      }
+    },
+    "Warm up for at least 5–10 minutes before lifting.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разминайтесь не менее 5–10 минут перед силовыми упражнениями."
+          }
+        }
+      }
+    },
+    "We're here to help you out": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мы здесь, чтобы помочь вам"
+          }
+        }
+      }
+    },
+    "Wear closed-toe athletic shoes on the gym floor.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Носите закрытую спортивную обувь в зале."
+          }
+        }
+      }
+    },
+    "Welcome": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добро пожаловать"
+          }
+        }
+      }
+    },
+    "What's on this month — tap Join to reserve a spot.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что проходит в этом месяце — нажмите «Присоединиться», чтобы занять место."
+          }
+        }
+      }
+    },
+    "What's your goal?": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Какая у вас цель?"
+          }
+        }
+      }
+    },
+    "Wipe down benches and machines after use.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Протирайте скамьи и тренажёры после использования."
+          }
+        }
+      }
+    },
+    "Women": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Женщина"
+          }
+        }
+      }
+    },
+    "Workout complete!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренировка завершена!"
+          }
+        }
+      }
+    },
+    "Workout history": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "История тренировок"
+          }
+        }
+      }
+    },
+    "Workouts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренировки"
+          }
+        }
+      }
+    },
+    "You're checked in!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы отметились!"
+          }
+        }
+      }
+    },
+    "You're in!": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы записаны!"
+          }
+        }
+      }
+    },
+    "Your cart is empty": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корзина пуста"
+          }
+        }
+      }
+    },
+    "Your membership auto-renews on this date unless cancelled.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Абонемент автоматически продлевается в эту дату, если не отменён."
+          }
+        }
+      }
+    },
+    "Your referral code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваш реферальный код"
+          }
+        }
+      }
+    },
+    "cap.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "вмест."
+          }
+        }
+      }
+    },
+    "huge traffic": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "высокая загруженность"
+          }
+        }
+      }
+    },
+    "light traffic": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "низкая загруженность"
+          }
+        }
+      }
+    },
+    "moderate traffic": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "средняя загруженность"
+          }
+        }
+      }
+    },
+    "or": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "или"
+          }
+        }
+      }
+    },
+    "pt left": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "трен. осталось"
+          }
+        }
+      }
+    },
+    "scans": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сканы"
+          }
+        }
+      }
+    },
+    "search": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "поиск"
+          }
+        }
+      }
+    },
+    "visits": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "визитов"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
