@@ -65,5 +65,11 @@
 	<string>Dark</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>CorePlatformURL</key>
+	<string>https://streamlit-example-6xag.vercel.app</string>
+	<key>CoreSupabaseURL</key>
+	<string>https://ubykgrowhekmsvxhvjxf.supabase.co</string>
+	<key>CoreSupabaseAnonKey</key>
+	<string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVieWtncm93aGVrbXN2eGh2anhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMDk2NDEsImV4cCI6MjEwNTU4NTY0MX0.K0QlpHidEUaQAMvo4lC8KNTf2wWZCQsKYIUFuDknm0c</string>
 </dict>
 </plist>

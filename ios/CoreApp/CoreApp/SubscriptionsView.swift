@@ -4,6 +4,7 @@ import SwiftUI
 /// switch between the club's 3 subscription tiers.
 struct SubscriptionsView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var coreMember: CoreMemberService
     @Environment(\.dismiss) private var dismiss
     @StateObject private var paymentService = PaymentService()
     @State private var payingPlanName: String?
@@ -16,18 +17,22 @@ struct SubscriptionsView: View {
                         .font(.brand(32))
                         .foregroundStyle(.white)
 
-                    VStack(alignment: .leading, spacing: 14) {
-                        EyebrowLabel(text: "Change plan")
-                        VStack(spacing: 18) {
-                            ForEach(appState.subscriptionPlans) { plan in
-                                let isCurrent = plan.name == appState.membershipPlanName
-                                PlanCard(
-                                    plan: plan,
-                                    isCurrent: isCurrent,
-                                    isLoading: paymentService.isStartingPayment && payingPlanName == plan.name
-                                ) {
-                                    payingPlanName = plan.name
-                                    Task { await paymentService.startPayment(amountDollars: plan.price, description: "\(plan.name) subscription") }
+                    if coreMember.isLinked {
+                        CoreMembershipsSection()
+                    } else {
+                        VStack(alignment: .leading, spacing: 14) {
+                            EyebrowLabel(text: "Change plan")
+                            VStack(spacing: 18) {
+                                ForEach(appState.subscriptionPlans) { plan in
+                                    let isCurrent = plan.name == appState.membershipPlanName
+                                    PlanCard(
+                                        plan: plan,
+                                        isCurrent: isCurrent,
+                                        isLoading: paymentService.isStartingPayment && payingPlanName == plan.name
+                                    ) {
+                                        payingPlanName = plan.name
+                                        Task { await paymentService.startPayment(amountDollars: plan.price, description: "\(plan.name) subscription") }
+                                    }
                                 }
                             }
                         }
@@ -37,6 +42,7 @@ struct SubscriptionsView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 24)
             }
+            .refreshable { await coreMember.refresh() }
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -145,4 +151,5 @@ private struct PlanCard: View {
 #Preview {
     SubscriptionsView()
         .environmentObject(AppState())
+        .environmentObject(CoreMemberService())
 }

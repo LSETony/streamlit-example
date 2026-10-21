@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum HomeSheet: String, Identifiable {
-    case trainers, nutrition, store, location, progress, occupancy, subscriptions, book, coreAI, specials
+    case trainers, nutrition, store, location, progress, occupancy, subscriptions, book, coreAI, specials, gymSchedule
     var id: String { rawValue }
 }
 
@@ -12,6 +12,7 @@ private enum HomeSheet: String, Identifiable {
 /// sparkline card layout.
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var coreMember: CoreMemberService
     @State private var activeSheet: HomeSheet?
     @State private var showGymPhoto = false
     @State private var pendingGymPhoto = false
@@ -249,7 +250,7 @@ struct HomeView: View {
     private var iconGrid: some View {
         GlassEffectContainer(spacing: 14) {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-                rectTile(icon: "IconCalendar", title: "Book", highlighted: true) { activeSheet = .book }
+                rectTile(icon: "IconCalendar", title: "Book", highlighted: true) { activeSheet = coreMember.isLinked ? .gymSchedule : .book }
                 rectTile(icon: "IconPerson", title: "Trainers") { activeSheet = .trainers }
                 rectTile(icon: "IconFood", title: "Food") { activeSheet = .nutrition }
                 rectTile(icon: "IconCart", title: "Store") { activeSheet = .store }
@@ -303,6 +304,7 @@ struct HomeView: View {
         case .book: BookZoneView()
         case .coreAI: CoreAIChatView()
         case .specials: TodaysSpecialsView()
+        case .gymSchedule: CoreScheduleView()
         }
     }
 }
@@ -310,4 +312,5 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environmentObject(AppState())
+        .environmentObject(CoreMemberService())
 }

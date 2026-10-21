@@ -92,6 +92,48 @@ present exactly as designed, not wired to a screen that doesn't exist.
 - **Profile** — Apple Health sync toggle (local switch only — see below)
   and a working Logout button (`AuthService.signOut()`).
 
+## Connection to the core. gym platform
+
+The app is connected to the core. platform — the dashboard the gym's front
+desk and owner use (`web/` and `supabase/` in this repository). After a
+member signs in with an email code, `CoreMemberService.swift` links the
+account to their record at the gym and the app shows real data:
+
+| Where | What comes from the platform |
+|---|---|
+| Sign-in → "Choose your gym" sheet | if the account isn't a client yet, the member picks a gym and becomes a client there |
+| Profile → QR access pass | a rotating pass (`CORE1:…`, new code every 30 s, signed with this iPhone's secret) that the reception scanner accepts |
+| Home → Book | the gym's class schedule with free spots, booking and cancellation |
+| Home → wallet (Subscriptions) | the member's memberships, freezing, and buying a plan online (Stripe in the UAE, YooKassa in Russia) |
+| Profile | real name, visit count, member-since date and current membership; **Delete account** |
+
+Workouts, recipes, the store, trainers and Core AI keep using the app's own
+tables (`supabase/*.sql` in this folder).
+
+### Setup
+
+1. **One Supabase project for both.** In `CoreApp/Info.plist` set
+   `CoreSupabaseURL` and `CoreSupabaseAnonKey` to the platform's project
+   (the dashboard's `NEXT_PUBLIC_SUPABASE_URL` and
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY`). If the app's own tables (trainers,
+   products, workouts…) aren't in that project yet, run this folder's
+   `supabase/schema.sql` and the `add_*.sql` files there — they don't clash
+   with the platform's tables.
+2. **Platform migrations.** The project must include the platform
+   migrations up to `supabase/migrations/20261021000001_ios_app.sql`
+   (sign-in by email, joining a gym from the app).
+3. **`CorePlatformURL`** in `Info.plist` — the dashboard's address (used for
+   online payment and account deletion), e.g.
+   `https://streamlit-example-6xag.vercel.app`.
+4. Build and run. Sign in with email → choose a gym (or ask the front desk
+   to add your email to your client card — the app then finds you
+   automatically) → Profile → QR access pass, and scan it at the front desk
+   in the dashboard (Reception → scan).
+
+Apple and Google sign-in in this app don't create a Supabase session, so
+those members see the app without gym data; use email sign-in for the gym
+features.
+
 ## Project layout
 
 ```

@@ -9,6 +9,10 @@ import SwiftUI
 struct ProfileView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var authService: AuthService
+    @EnvironmentObject var coreMember: CoreMemberService
+    @State private var isConfirmingDelete = false
+    @State private var isDeleting = false
+    @State private var deleteError: String?
     @State private var isShowingQRPass = false
     @State private var isShowingMembership = false
     @State private var isShowingReferral = false
@@ -261,10 +265,41 @@ struct ProfileView: View {
     }
 
     private var logoutButton: some View {
-        PrimaryButton(title: "Logout", color: .appAccentPurple) {
-            authService.signOut()
+        VStack(spacing: 12) {
+            PrimaryButton(title: "Logout", color: .appAccentPurple) {
+                authService.signOut()
+            }
+            if coreMember.phase != .signedOut {
+                Button(role: .destructive) { isConfirmingDelete = true } label: {
+                    if isDeleting { ProgressView() } else { Text("Delete account").font(.uiText(size: 15, weight: .semibold)) }
+                }
+                .foregroundStyle(Color.appAccent)
+                .disabled(isDeleting)
+            }
         }
         .padding(.top, 20)
+        .alert("Delete account?", isPresented: $isConfirmingDelete) {
+            Button("Delete", role: .destructive) {
+                isDeleting = true
+                Task {
+                    do {
+                        try await coreMember.deleteAccount()
+                        authService.signOut()
+                    } catch {
+                        deleteError = CoreError.message(for: error)
+                    }
+                    isDeleting = false
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Your data at every gym will be anonymised and your sign-in account deleted. Gyms keep payment records for accounting.")
+        }
+        .alert("Couldn't delete the account", isPresented: Binding(get: { deleteError != nil }, set: { if !$0 { deleteError = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(deleteError ?? "")
+        }
     }
 }
 
@@ -347,4 +382,5 @@ private struct MembershipDetailView: View {
     ProfileView()
         .environmentObject(AppState())
         .environmentObject(AuthService())
+        .environmentObject(CoreMemberService())
 }

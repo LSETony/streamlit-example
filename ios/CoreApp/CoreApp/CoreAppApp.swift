@@ -5,6 +5,7 @@ import StripePaymentSheet
 struct CoreAppApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var authService = AuthService()
+    @StateObject private var coreMember = CoreMemberService()
 
     init() {
         StripeAPI.defaultPublishableKey = StripeConfig.publishableKey
@@ -15,6 +16,7 @@ struct CoreAppApp: App {
             RootView()
                 .environmentObject(appState)
                 .environmentObject(authService)
+                .environmentObject(coreMember)
                 .environment(\.locale, appState.preferredLanguage.locale)
                 .preferredColorScheme(.dark)
                 .onOpenURL { url in
@@ -44,8 +46,10 @@ let requiresSignIn = true
 struct RootView: View {
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var coreMember: CoreMemberService
     @State private var showSplash = true
     @State private var showWelcomeBack = false
+    @State private var showJoinGym = false
 
     var body: some View {
         Group {
@@ -84,6 +88,21 @@ struct RootView: View {
             if let newName, !newName.isEmpty {
                 appState.fullName = newName
             }
+        }
+        // core. platform: link the signed-in account to the member's gym and
+        // load memberships, visits, schedule and the QR pass.
+        .task(id: authService.isAuthenticated) {
+            if authService.isAuthenticated { await coreMember.refresh() } else { coreMember.reset() }
+        }
+        .onChange(of: coreMember.phase) { _, phase in
+            if phase == .ready { appState.applyPlatformProfile(coreMember) }
+            if phase == .needsGym && !showSplash { showJoinGym = true }
+        }
+        .onChange(of: showSplash) { _, splash in
+            if !splash && coreMember.phase == .needsGym && authService.isAuthenticated { showJoinGym = true }
+        }
+        .sheet(isPresented: $showJoinGym) {
+            CoreJoinGymView()
         }
     }
 }

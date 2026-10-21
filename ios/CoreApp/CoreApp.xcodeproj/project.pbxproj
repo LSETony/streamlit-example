@@ -39,6 +39,8 @@
 		43DEDE797DD968D790F33F8C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 54C4DE7C53762B58BABB0672 /* GoogleSignInSwift */; };
 		44D0E38093ECBF87A87876D6 /* ThinkingOrb.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C5DA15385CF1123D62BD00 /* ThinkingOrb.swift */; };
 		52A35E68968F65202D122832 /* QRPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */; };
+		A3378720E55A0B3DE031D57A /* CorePlatformViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04207EE0228D3E13D7274558 /* CorePlatformViews.swift */; };
+		D4BC089A63833E50856913FA /* CoreMemberService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354BD2322CD487BA7D46686C /* CoreMemberService.swift */; };
 		549E57A664D84DD0B20D5053 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48104F66160A4418A81BD9E8 /* Models.swift */; };
 		55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */; };
 		59B8AE958A4203AFF9449EE4 /* CheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D09AAE1018ED458346CC2B2 /* CheckInView.swift */; };
@@ -142,6 +144,8 @@
 		3A8F4F1FEBA387C1FDE46AAB /* LocationPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationPickerView.swift; sourceTree = "<group>"; };
 		3BE74FF0450359B8BD337A8C /* WorkoutActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutActivityAttributes.swift; sourceTree = "<group>"; };
 		3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QRPassView.swift; sourceTree = "<group>"; };
+		04207EE0228D3E13D7274558 /* CorePlatformViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CorePlatformViews.swift; sourceTree = "<group>"; };
+		354BD2322CD487BA7D46686C /* CoreMemberService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreMemberService.swift; sourceTree = "<group>"; };
 		424658A028CA6DAF50F921BC /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		48290E2C932A5BA6DFF18347 /* ReferralView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
@@ -321,6 +325,8 @@
 				55950DFCC22D525533532A31 /* SubscriptionsView.swift */,
 				E67CE2384C958F9A0E7F2F0F /* WorkoutDetailView.swift */,
 				3C0CEF9EA3F115FCAA605C80 /* QRPassView.swift */,
+				04207EE0228D3E13D7274558 /* CorePlatformViews.swift */,
+				354BD2322CD487BA7D46686C /* CoreMemberService.swift */,
 				CC7E1851BD66A6F385905E9F /* CartView.swift */,
 				EBEF7DE2F8883830B83A7820 /* GymSafetyView.swift */,
 				18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */,
@@ -545,6 +551,8 @@
 				929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */,
 				DF0A25D15B132EA1F55DD11E /* WorkoutDetailView.swift in Sources */,
 				52A35E68968F65202D122832 /* QRPassView.swift in Sources */,
+				A3378720E55A0B3DE031D57A /* CorePlatformViews.swift in Sources */,
+				D4BC089A63833E50856913FA /* CoreMemberService.swift in Sources */,
 				43554B5640BA55F311A51850 /* CartView.swift in Sources */,
 				55134D5C604068B49E059A28 /* GymSafetyView.swift in Sources */,
 				5ECC36A9F8C5B769218369E9 /* BookZoneView.swift in Sources */,

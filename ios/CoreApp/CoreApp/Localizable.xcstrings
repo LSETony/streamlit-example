@@ -3020,6 +3020,516 @@
           }
         }
       }
+    },
+    "%lld days": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld дн."
+          }
+        }
+      }
+    },
+    "%lld days available. The membership is extended by the same number of days.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доступно %lld дн. Абонемент продлится на столько же."
+          }
+        }
+      }
+    },
+    "%lld of %lld spots free": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свободно мест: %1$lld из %2$lld"
+          }
+        }
+      }
+    },
+    "%lld visits · %lld days": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld посещений · %2$lld дн."
+          }
+        }
+      }
+    },
+    "Active": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Действует"
+          }
+        }
+      }
+    },
+    "Awaiting payment": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ожидает оплаты"
+          }
+        }
+      }
+    },
+    "Buy a membership": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Купить абонемент"
+          }
+        }
+      }
+    },
+    "Cancelled": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменён"
+          }
+        }
+      }
+    },
+    "Choose your gym": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите свой зал"
+          }
+        }
+      }
+    },
+    "Couldn't book": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось записаться"
+          }
+        }
+      }
+    },
+    "Couldn't delete the account": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось удалить аккаунт"
+          }
+        }
+      }
+    },
+    "Days: %lld": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дней: %lld"
+          }
+        }
+      }
+    },
+    "Delete account": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить аккаунт"
+          }
+        }
+      }
+    },
+    "Delete account?": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить аккаунт?"
+          }
+        }
+      }
+    },
+    "Enter your phone number": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Укажите номер телефона"
+          }
+        }
+      }
+    },
+    "Expired": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Истёк"
+          }
+        }
+      }
+    },
+    "Freeze": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заморозить"
+          }
+        }
+      }
+    },
+    "Freeze limit exceeded": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Превышен лимит заморозки"
+          }
+        }
+      }
+    },
+    "Freeze membership": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заморозка абонемента"
+          }
+        }
+      }
+    },
+    "Freeze: %lld of %lld days used": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заморозка: использовано %1$lld из %2$lld дн."
+          }
+        }
+      }
+    },
+    "Frozen": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заморожен"
+          }
+        }
+      }
+    },
+    "Full": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мест нет"
+          }
+        }
+      }
+    },
+    "Get news and offers from the gym": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Получать новости и акции зала"
+          }
+        }
+      }
+    },
+    "I agree to the processing of my personal data": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Согласен на обработку персональных данных"
+          }
+        }
+      }
+    },
+    "It's too late to cancel this booking": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменить запись уже поздно"
+          }
+        }
+      }
+    },
+    "Later": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Позже"
+          }
+        }
+      }
+    },
+    "My memberships": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мои абонементы"
+          }
+        }
+      }
+    },
+    "No active membership": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет действующего абонемента"
+          }
+        }
+      }
+    },
+    "No active membership on the class date": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет действующего абонемента на дату занятия"
+          }
+        }
+      }
+    },
+    "No classes in the next two weeks": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В ближайшие две недели занятий нет"
+          }
+        }
+      }
+    },
+    "No memberships yet. Buy one below or at the front desk.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Абонементов пока нет. Купите ниже или на ресепшене."
+          }
+        }
+      }
+    },
+    "No spots left": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свободных мест нет"
+          }
+        }
+      }
+    },
+    "Nothing found": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ничего не нашлось"
+          }
+        }
+      }
+    },
+    "Phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Телефон"
+          }
+        }
+      }
+    },
+    "Refreshes in %lld s": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обновится через %lld с"
+          }
+        }
+      }
+    },
+    "Schedule": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расписание"
+          }
+        }
+      }
+    },
+    "Search by name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поиск по названию"
+          }
+        }
+      }
+    },
+    "Something went wrong": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что-то пошло не так"
+          }
+        }
+      }
+    },
+    "Starting from": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "С какого дня"
+          }
+        }
+      }
+    },
+    "The class has already started": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Занятие уже началось"
+          }
+        }
+      }
+    },
+    "The gym doesn't allow freezing from the app — please contact the front desk": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зал не разрешает заморозку из приложения — обратитесь на ресепшен"
+          }
+        }
+      }
+    },
+    "The gym isn't accepting changes right now": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зал временно не принимает изменения"
+          }
+        }
+      }
+    },
+    "This gym doesn't take online payments yet": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зал пока не принимает онлайн-оплату"
+          }
+        }
+      }
+    },
+    "This number is already registered at the gym. Ask the front desk to add your email": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этот номер уже есть в зале. Попросите ресепшен добавить ваш email"
+          }
+        }
+      }
+    },
+    "This plan isn't sold in the app": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этот тариф не продаётся в приложении"
+          }
+        }
+      }
+    },
+    "Visits left: %lld": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Осталось посещений: %lld"
+          }
+        }
+      }
+    },
+    "We couldn't find your account at any gym yet. Pick your gym — the front desk will see you in their client list.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мы пока не нашли вас ни в одном зале. Выберите свой — ресепшен увидит вас в списке клиентов."
+          }
+        }
+      }
+    },
+    "You'll pay on the gym's secure payment page. The membership activates automatically — pull down to refresh.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оплата проходит на защищённой странице зала. Абонемент активируется сам — потяните экран вниз, чтобы обновить."
+          }
+        }
+      }
+    },
+    "You're already booked for this class": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы уже записаны на это занятие"
+          }
+        }
+      }
+    },
+    "Your data at every gym will be anonymised and your sign-in account deleted. Gyms keep payment records for accounting.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваши данные во всех залах будут обезличены, а аккаунт входа удалён. Записи об оплатах залы сохранят для бухгалтерии."
+          }
+        }
+      }
+    },
+    "Your pass appears once you're a client of your gym": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пропуск появится, когда вы станете клиентом зала"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
