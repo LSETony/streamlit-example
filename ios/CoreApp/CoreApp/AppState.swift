@@ -63,9 +63,9 @@ final class AppState: ObservableObject {
     @Published var preferredLanguage: AppLanguage {
         didSet {
             UserDefaults.standard.set(preferredLanguage.rawValue, forKey: Self.preferredLanguageKey)
-            let usesGeologica = preferredLanguage == .russian
-            Font.brandFontOverride = usesGeologica ? "Geologica-Medium" : nil
-            Font.uiFontFamilyOverride = usesGeologica ? "Geologica" : nil
+            let isRussian = preferredLanguage == .russian
+            Font.brandFontOverride = isRussian ? "Rubik-ExtraBold" : nil
+            Font.uiFontFamilyOverride = isRussian ? "Geologica" : nil
         }
     }
     private static let preferredLanguageKey = "core.preferredLanguage"

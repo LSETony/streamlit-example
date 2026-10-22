@@ -88,6 +88,7 @@
 		DF1A8235B3D5BA104441976B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 78D97C91AA3F9C02D2720D25 /* Localizable.xcstrings */; };
 		DFD7622C13034D9789B7842F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3400C5EA574C43B3B4039970 /* ProfileView.swift */; };
 		E0014AAD1FB109693AE6C578 /* WelcomeBackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA2CAD9F3D37D89D0EAD0B /* WelcomeBackView.swift */; };
+		E6EF86FA53C89788FF8C8993 /* Rubik-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48FA75DDE564A66A023C2C21 /* Rubik-ExtraBold.ttf */; };
 		E88586642CECCFAF43508279 /* Geologica-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A4A7223229C0180EDB2C4E9 /* Geologica-Regular.ttf */; };
 		EB64BE17744245A0AF0F1987 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99018F8559804203B50FC4E6 /* Components.swift */; };
 		EE9A4F5CA4AA35852B3D645A /* Doto-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */; };
@@ -146,6 +147,7 @@
 		48104F66160A4418A81BD9E8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		48290E2C932A5BA6DFF18347 /* ReferralView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
 		48C03BFD588F38513C3464E2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		48FA75DDE564A66A023C2C21 /* Rubik-ExtraBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Rubik-ExtraBold.ttf"; sourceTree = "<group>"; };
 		4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseModels.swift; sourceTree = "<group>"; };
 		4EEF73EB94E5EF956CB74726 /* Geologica-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Geologica-SemiBold.ttf"; sourceTree = "<group>"; };
 		522ABE70DC963FEE93280E9F /* AuthWelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthWelcomeView.swift; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 				9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */,
 				6340070255C0F1639426C831 /* Geologica-Bold.ttf */,
 				EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */,
+				48FA75DDE564A66A023C2C21 /* Rubik-ExtraBold.ttf */,
 			);
 			name = Fonts;
 			path = Fonts;
@@ -482,6 +485,7 @@
 				6B94894A315587D410147A6B /* Geologica-Medium.ttf in Resources */,
 				413EBE97ADC27F46502D459E /* Geologica-Bold.ttf in Resources */,
 				5ABAF057522A0A5C2DD75CCA /* Geologica-Light.ttf in Resources */,
+				E6EF86FA53C89788FF8C8993 /* Rubik-ExtraBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

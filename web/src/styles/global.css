@@ -40,6 +40,12 @@
   font-display: swap;
 }
 @font-face {
+  font-family: "RubikXB";
+  src: url("/fonts/Rubik-ExtraBold.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
   font-family: "Doto";
   src: url("/fonts/Doto-VariableFont.ttf") format("truetype-variations");
   font-weight: 100 900;
@@ -69,12 +75,18 @@
   --font-digital: "Doto", monospace;
 }
 
-/* Russian: the brand face has no Cyrillic glyphs, and (by request) every
-   weight collapses to one consistent Geologica Medium instead of mapping
-   each system weight to its own Geologica weight — mirrors
+/* Russian: Francy has no Cyrillic glyphs, so headlines swap to Rubik
+   ExtraBold (a static wght=800 instance pulled from Rubik's variable
+   font — Google only ships Rubik variable) — picked specifically to
+   match Francy's look: bold, upright, rounded-geometric, uniform stroke
+   weight. (Days One looked right at a glance but turned out subtly
+   italic/slanted next to Francy's upright stance once checked against a
+   vertical guide line — ruled out for that reason.) Body/UI text (by
+   request) collapses to one consistent Geologica Medium instead of
+   mapping each system weight to its own Geologica weight — mirrors
    Font.uiFontFamilyOverride / Font.brandFontOverride in Theme.swift. */
 html.lang-ru {
-  --font-brand: "Geologica", sans-serif;
+  --font-brand: "RubikXB", sans-serif;
   --font-ui: "Geologica", sans-serif;
 }
 html.lang-ru body,
@@ -149,7 +161,7 @@ a {
   font-weight: 400;
 }
 html.lang-ru .brand {
-  font-weight: 500;
+  font-weight: 400; /* Days One ships one weight only */
 }
 
 .digital {
@@ -207,7 +219,7 @@ html.lang-ru .brand {
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
 html.lang-ru .btn-primary {
-  font-weight: 500;
+  font-weight: 400; /* Days One ships one weight only */
 }
 .btn-primary:active {
   transform: scale(0.98);
