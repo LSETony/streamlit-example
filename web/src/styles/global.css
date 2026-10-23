@@ -40,8 +40,8 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "RubikXB";
-  src: url("/fonts/Rubik-ExtraBold.ttf") format("truetype");
+  font-family: "MontserratAltXB";
+  src: url("/fonts/MontserratAlternates-ExtraBold.ttf") format("truetype");
   font-weight: 400;
   font-display: swap;
 }
@@ -75,18 +75,17 @@
   --font-digital: "Doto", monospace;
 }
 
-/* Russian: Francy has no Cyrillic glyphs, so headlines swap to Rubik
-   ExtraBold (a static wght=800 instance pulled from Rubik's variable
-   font — Google only ships Rubik variable) — picked specifically to
-   match Francy's look: bold, upright, rounded-geometric, uniform stroke
-   weight. (Days One looked right at a glance but turned out subtly
-   italic/slanted next to Francy's upright stance once checked against a
-   vertical guide line — ruled out for that reason.) Body/UI text (by
-   request) collapses to one consistent Geologica Medium instead of
-   mapping each system weight to its own Geologica weight — mirrors
-   Font.uiFontFamilyOverride / Font.brandFontOverride in Theme.swift. */
+/* Russian: Francy has no Cyrillic glyphs, so headlines swap to
+   Montserrat Alternates ExtraBold — chosen by the member directly from
+   a side-by-side comparison of several Cyrillic-capable candidates
+   (Geologica, used previously; Days One, ruled out as subtly italic
+   next to Francy's upright stance; Rubik ExtraBold, which worked but
+   wasn't preferred on looks). Body/UI text (by request) collapses to
+   one consistent Geologica Medium instead of mapping each system weight
+   to its own Geologica weight — mirrors Font.uiFontFamilyOverride /
+   Font.brandFontOverride in Theme.swift. */
 html.lang-ru {
-  --font-brand: "RubikXB", sans-serif;
+  --font-brand: "MontserratAltXB", sans-serif;
   --font-ui: "Geologica", sans-serif;
 }
 html.lang-ru body,

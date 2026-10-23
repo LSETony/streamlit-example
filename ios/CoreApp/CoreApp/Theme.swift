@@ -77,18 +77,13 @@ extension Font {
     /// headline (page titles, the Home club name, names on detail cards).
     /// Francy has no Cyrillic glyphs of its own, so when the member's
     /// language is Russian, AppState swaps `brandFontOverride` to
-    /// "Rubik-ExtraBold" (which does) instead — every existing
-    /// `.font(.brand(_:))` call site picks this up automatically, no
-    /// per-view changes needed. Picked (over Geologica, used here
-    /// previously, and over Days One, which looked right until a
-    /// side-by-side check against a vertical guide line showed it's
-    /// subtly italic/slanted while Francy is upright) specifically to
-    /// match Francy's look: both are bold, rounded, upright, uniform-
-    /// stroke geometric display faces — side by side they read as one
-    /// typeface, not two, including in mixed Latin+Cyrillic strings like
-    /// a club name. Bundled as a static instance pulled from Rubik's
-    /// variable font at wght=800 (fonttools' instancer), not a separate
-    /// standalone weight file, since Google only ships Rubik variable.
+    /// "MontserratAlternates-ExtraBold" (which does) instead — every
+    /// existing `.font(.brand(_:))` call site picks this up automatically,
+    /// no per-view changes needed. Chosen by the member directly from a
+    /// side-by-side comparison of several Cyrillic-capable candidates
+    /// (Geologica, used previously, then Days One — ruled out as subtly
+    /// italic next to Francy's upright stance — then Rubik ExtraBold,
+    /// which worked but wasn't preferred on looks).
     static var brandFontOverride: String?
 
     static func brand(_ size: CGFloat) -> Font {
