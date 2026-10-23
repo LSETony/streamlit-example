@@ -40,8 +40,8 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "MontserratAltXB";
-  src: url("/fonts/MontserratAlternates-ExtraBold.ttf") format("truetype");
+  font-family: "MontserratAltReg";
+  src: url("/fonts/MontserratAlternates-Regular.ttf") format("truetype");
   font-weight: 400;
   font-display: swap;
 }
@@ -76,16 +76,17 @@
 }
 
 /* Russian: Francy has no Cyrillic glyphs, so headlines swap to
-   Montserrat Alternates ExtraBold — chosen by the member directly from
-   a side-by-side comparison of several Cyrillic-capable candidates
+   Montserrat Alternates Regular — chosen by the member directly from a
+   side-by-side comparison of several Cyrillic-capable candidates
    (Geologica, used previously; Days One, ruled out as subtly italic
    next to Francy's upright stance; Rubik ExtraBold, which worked but
-   wasn't preferred on looks). Body/UI text (by request) collapses to
+   wasn't preferred on looks), then asked for the Regular weight of that
+   family instead of ExtraBold. Body/UI text (by request) collapses to
    one consistent Geologica Medium instead of mapping each system weight
    to its own Geologica weight — mirrors Font.uiFontFamilyOverride /
    Font.brandFontOverride in Theme.swift. */
 html.lang-ru {
-  --font-brand: "MontserratAltXB", sans-serif;
+  --font-brand: "MontserratAltReg", sans-serif;
   --font-ui: "Geologica", sans-serif;
 }
 html.lang-ru body,

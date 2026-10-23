@@ -18,7 +18,6 @@
 		0A684AEED47A45E7811403F0 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F0FD454D2243F9954D55DC /* HomeView.swift */; };
 		0C5D1613EBEA6ECD89D4B4EC /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2039733A32D3965970AD290D /* LiveActivityService.swift */; };
 		13665979218917FFC4BCE58C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2360973C0FF59F76A261826 /* OnboardingView.swift */; };
-		15471FEE0B4A4D40DD1CA206 /* MontserratAlternates-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1EFFFFAF155F8A49E3109815 /* MontserratAlternates-ExtraBold.ttf */; };
 		15B87935455DB719E4575547 /* SharedHealthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE67E7EDE0EC9FBDE3E4F65 /* SharedHealthStore.swift */; };
 		1B6BB854BFAD3B0D7A74F106 /* SharedProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B302EA70F1C4286289905AFF /* SharedProgressStore.swift */; };
 		1D204D15172197CC95F29C1A /* PaymentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C78F049CC8950FCEE905BD /* PaymentService.swift */; };
@@ -68,6 +67,7 @@
 		878870F83B011B123F6F9345 /* WorkoutOfTheDayWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086E0AAB07D7AF2D05AE739C /* WorkoutOfTheDayWidget.swift */; };
 		883CEF1AA585402E8C0803EB /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EEC3E4AC434CCDB1F33D3B /* Theme.swift */; };
 		8A72D0FDB7609D115EBD9467 /* SupabaseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E0CDAB4515D49E0957D8710 /* SupabaseModels.swift */; };
+		8C36E24E468FE0D50DF59D24 /* MontserratAlternates-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D315799CB04A0D05E3454E5A /* MontserratAlternates-Regular.ttf */; };
 		8E8594599D570F7D2910CF6D /* WidgetSupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA02BAD3472B4C8560DDB10 /* WidgetSupabaseConfig.swift */; };
 		929A13D19187BC17BC7DC17D /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55950DFCC22D525533532A31 /* SubscriptionsView.swift */; };
 		94433A9AEC3147A99FB70FA4 /* CoreAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CDD914A646D49A055E8D /* CoreAppApp.swift */; };
@@ -132,7 +132,6 @@
 		18608E39C7A284BD8F43C0A4 /* AppState+Health.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Health.swift"; sourceTree = "<group>"; };
 		187D5C91EAAA4F0DB404FA79 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
 		18A7FDF5DCCAAC44B813AE51 /* BookZoneView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BookZoneView.swift; sourceTree = "<group>"; };
-		1EFFFFAF155F8A49E3109815 /* MontserratAlternates-ExtraBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "MontserratAlternates-ExtraBold.ttf"; sourceTree = "<group>"; };
 		2039733A32D3965970AD290D /* LiveActivityService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
 		2698120D9A63E2D44AAC0BAC /* FoodRecipesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodRecipesView.swift; sourceTree = "<group>"; };
 		2790B29059F99625C54A6141 /* Doto-VariableFont.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Doto-VariableFont.ttf"; sourceTree = "<group>"; };
@@ -191,6 +190,7 @@
 		CA64CB7A4B8E5FDBE751D5C5 /* LanguagePickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LanguagePickerView.swift; sourceTree = "<group>"; };
 		CC7E1851BD66A6F385905E9F /* CartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		CDF9CCF5A54DD6B35ED51235 /* AppState+Growth.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AppState+Growth.swift"; sourceTree = "<group>"; };
+		D315799CB04A0D05E3454E5A /* MontserratAlternates-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "MontserratAlternates-Regular.ttf"; sourceTree = "<group>"; };
 		D6A7B583C3630E23E55038A9 /* CustomWorkoutBuilderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CustomWorkoutBuilderView.swift; sourceTree = "<group>"; };
 		DBAFA4D3D088F16E75A3B66D /* HealthMetricsWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HealthMetricsWidget.swift; sourceTree = "<group>"; };
 		DD756250130C03C75865E788 /* AvatarPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AvatarPickerView.swift; sourceTree = "<group>"; };
@@ -288,7 +288,7 @@
 				9E293E0AF7ACF1505E642F95 /* Geologica-Medium.ttf */,
 				6340070255C0F1639426C831 /* Geologica-Bold.ttf */,
 				EB5F14D7882B4460526BCBC6 /* Geologica-Light.ttf */,
-				1EFFFFAF155F8A49E3109815 /* MontserratAlternates-ExtraBold.ttf */,
+				D315799CB04A0D05E3454E5A /* MontserratAlternates-Regular.ttf */,
 			);
 			name = Fonts;
 			path = Fonts;
@@ -485,7 +485,7 @@
 				6B94894A315587D410147A6B /* Geologica-Medium.ttf in Resources */,
 				413EBE97ADC27F46502D459E /* Geologica-Bold.ttf in Resources */,
 				5ABAF057522A0A5C2DD75CCA /* Geologica-Light.ttf in Resources */,
-				15471FEE0B4A4D40DD1CA206 /* MontserratAlternates-ExtraBold.ttf in Resources */,
+				8C36E24E468FE0D50DF59D24 /* MontserratAlternates-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

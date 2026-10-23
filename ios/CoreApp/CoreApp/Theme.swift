@@ -77,23 +77,27 @@ extension Font {
     /// headline (page titles, the Home club name, names on detail cards).
     /// Francy has no Cyrillic glyphs of its own, so when the member's
     /// language is Russian, AppState swaps `brandFontOverride` to
-    /// "MontserratAlternates-ExtraBold" (which does) instead — every
+    /// "MontserratAlternates-Regular" (which does) instead — every
     /// existing `.font(.brand(_:))` call site picks this up automatically,
     /// no per-view changes needed. Chosen by the member directly from a
     /// side-by-side comparison of several Cyrillic-capable candidates
     /// (Geologica, used previously, then Days One — ruled out as subtly
     /// italic next to Francy's upright stance — then Rubik ExtraBold,
-    /// which worked but wasn't preferred on looks).
+    /// which worked but wasn't preferred on looks), then asked for the
+    /// Regular weight of that same family instead of ExtraBold — lighter
+    /// than Francy's own weight, but that's the explicit request.
     ///
-    /// The bundled .ttf is NOT the stock Google Fonts file: Montserrat
-    /// Alternates' capHeight is 700/1000 em vs Francy's 630/1000, so at
-    /// any shared `.brand(size)` call it rendered ~11% taller than
-    /// Francy — "too big" at a glance even though the point size matched.
-    /// Fixed once, in the font file itself (every glyph outline + hmtx +
-    /// OS/2/hhea vertical metrics scaled ×0.9 via a fontTools pen, same
-    /// PostScript name kept), rather than threading a per-language size
-    /// multiplier through every call site — so this file's capHeight
-    /// ratio is 0.63, matching Francy exactly.
+    /// The bundled .ttf is NOT the stock Google Fonts file: every static
+    /// weight of Montserrat Alternates ships with capHeight 700/1000 em
+    /// vs Francy's 630/1000, so at any shared `.brand(size)` call it
+    /// rendered ~11% taller than Francy — "too big" at a glance even
+    /// though the point size matched. Fixed once, in the font file
+    /// itself (every glyph outline + hmtx + OS/2/hhea vertical metrics
+    /// scaled ×0.9 via a fontTools pen, same PostScript name kept),
+    /// rather than threading a per-language size multiplier through
+    /// every call site — so this file's capHeight ratio is 0.63,
+    /// matching Francy exactly, same fix applied when the weight was
+    /// later switched from ExtraBold to Regular.
     static var brandFontOverride: String?
 
     static func brand(_ size: CGFloat) -> Font {
