@@ -39,6 +39,8 @@
 | `20261017000005_member_app.sql` | приложение клиента `/m` и виджет расписания `/w/<id зала>` |
 | `20261017000006_multi_gym.sql` | несколько залов в одном аккаунте |
 | `20261017000007_stripe.sql` | Stripe для залов в ОАЭ и оплата подписки core. |
+| `20261021000001_ios_app.sql` | подключение iOS-приложения клиента |
+| `20261116000001_ai_agents.sql` | ИИ-агенты (раздел «ИИ-агенты», API и MCP для внешних агентов) — `docs/ai-agents.md` |
 
 Свой домен, почта, SMS, Stripe, мониторинг и бэкапы — `docs/operations.md`.
 
@@ -54,6 +56,8 @@
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon / publishable key |
    | `SUPABASE_SERVICE_ROLE_KEY` | service_role / secret key (только на сервере) |
    | `GYM_SECRETS_KEY` | необязательно: нужен для сохранения ключей ЮKassa; 32 случайных байта в base64 |
+   | `ANTHROPIC_API_KEY` | необязательно: встроенные ИИ-агенты (Claude); ключ с console.anthropic.com |
+   | `CRON_SECRET` | необязательно: ежедневный запуск ИИ-агентов по расписанию (Vercel Cron) |
 
 4. **Deploy**. Пока код в ветке `claude/pensive-hawking-361iv6`, а не в `main`: в **Settings → Git → Production Branch**
    укажите эту ветку (или слейте её в `main`) и нажмите **Redeploy** — тогда ссылка `https://<проект>.vercel.app`
