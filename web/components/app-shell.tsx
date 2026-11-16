@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import {
   LayoutDashboard, ScanLine, Users, AlertTriangle, CalendarDays, Wallet, Tags, UserCog, ScrollText, Settings, LogOut, X, Moon, Sun, ChevronLeft,
-  Search, Plus, LayoutGrid, Check, ChevronsUpDown,
+  Search, Plus, LayoutGrid, Check, ChevronsUpDown, Bot,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { CommandMenu, Kbd } from "@/components/command-menu";
@@ -50,6 +50,7 @@ const NAV: { title: string; items: NavItem[] }[] = [
     title: "Зал",
     items: [
       { href: "/staff", label: "Сотрудники", icon: UserCog, roles: ["owner"] },
+      { href: "/agents", label: "ИИ-агенты", icon: Bot, roles: ["owner", "admin"] },
       { href: "/audit", label: "Журнал действий", icon: ScrollText, roles: ["owner"], feature: "audit" },
       { href: "/settings", label: "Настройки", icon: Settings, roles: ["owner"] },
     ],

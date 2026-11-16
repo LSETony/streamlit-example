@@ -12,7 +12,7 @@ end $$;
 
 drop view if exists public.v_client_risk, public.v_clients, public.v_in_gym, public.v_gym_kpi_month,
   public.v_occupancy_hourly, public.public_gyms cascade;
-drop table if exists public.audit_log, public.notifications_outbox, public.risk_contacts, public.client_devices,
+drop table if exists public.ai_agent_actions, public.ai_agent_runs, public.ai_agent_keys, public.ai_agents, public.audit_log, public.notifications_outbox, public.risk_contacts, public.client_devices,
   public.bookings, public.schedule_items, public.zones, public.visits, public.gym_secrets, public.payments,
   public.freezes, public.memberships, public.membership_plans, public.clients, public.platform_admins,
   public.staff, public.gyms cascade;
