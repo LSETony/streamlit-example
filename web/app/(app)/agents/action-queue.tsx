@@ -33,8 +33,8 @@ const STATUS: Record<ActionRow["status"], { label: string; variant: "warning" | 
   failed: { label: "Ошибка", variant: "danger" },
 };
 
-// Параметры действия, понятные сотруднику (идентификаторы не показываем)
-const DETAIL_KEYS = ["text", "note", "channel", "from", "to", "reason"] as const;
+// Параметры действия, понятные сотруднику (идентификаторы и служебные коды не показываем)
+const DETAIL_KEYS = ["text", "note", "from", "to"] as const;
 
 export function ActionQueue({ rows, timezone, readOnly }: { rows: ActionRow[]; timezone: string; readOnly: boolean }) {
   const t = useT();

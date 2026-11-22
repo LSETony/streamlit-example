@@ -70,7 +70,7 @@ export function RunPanel({ agentId, defaultTask, runs, timezone, disabled, confi
           {result ? (
             <div className="grid gap-2 rounded-2xl bg-field p-4">
               {result.status === "failed" ? <Alert variant="danger">{t(result.error ?? "Не удалось выполнить задание")}</Alert> : null}
-              {result.output ? <p className="whitespace-pre-wrap text-sm">{result.output}</p> : null}
+              {result.output ? <p className="whitespace-pre-wrap text-sm [overflow-wrap:anywhere]">{result.output}</p> : null}
               <Steps steps={result.steps} />
             </div>
           ) : null}
@@ -83,7 +83,7 @@ export function RunPanel({ agentId, defaultTask, runs, timezone, disabled, confi
           <CardContent className="grid gap-3">
             {runs.map((r) => (
               <details key={r.id} className="group rounded-2xl bg-field px-4 py-3">
-                <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 text-sm">
+                <summary className="flex min-w-0 cursor-pointer list-none flex-wrap items-center gap-2 text-sm">
                   <span className="font-medium">{dateTime(r.created_at, timezone)}</span>
                   <Badge variant={r.status === "done" ? "success" : r.status === "failed" ? "danger" : "info"}>
                     {r.status === "done" ? "Готово" : r.status === "failed" ? "Ошибка" : "Выполняется"}
@@ -93,7 +93,7 @@ export function RunPanel({ agentId, defaultTask, runs, timezone, disabled, confi
                 </summary>
                 <div className="mt-3 grid gap-2">
                   {r.error ? <p className="text-sm text-destructive">{t(r.error)}</p> : null}
-                  {r.output ? <p className="whitespace-pre-wrap text-sm">{r.output}</p> : null}
+                  {r.output ? <p className="whitespace-pre-wrap text-sm [overflow-wrap:anywhere]">{r.output}</p> : null}
                   <Steps steps={r.steps} />
                 </div>
               </details>
